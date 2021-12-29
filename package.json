@@ -1,0 +1,22 @@
+{
+  "name": "industrial",
+  "version": "0.0.1",
+  "description": "工业ui",
+  "main": "index.js",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "ln": "lerna",
+    "dev:docs": "yarn workspace inl-docs run docs:dev",
+    "dev:build": "yarn workspace docs run docs:build",
+    "dev:app": "yarn workspace inl-app-ui run dev"
+  },
+  "repository": "https://github.com/industrial-club/industrial-ui",
+  "author": "bhabgs",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^8.5.0"
+  }
+}
