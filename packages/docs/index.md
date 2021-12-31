@@ -1,5 +1,1 @@
-# Hello bbb
-
-<ClientOnly>
-  <inl-button />
-</ClientOnly>
+# 首页

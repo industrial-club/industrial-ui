@@ -1,13 +1,13 @@
-import DefaultTheme from "vitepress/theme";
-import a from "inl-app-ui";
+import inlui from "inl-app-ui";
+import pcui from "inl-pc-ui";
+import Layout from "./inl/Layout";
+import "./style/index.less";
+import "inl-pc-ui/dist/style.css";
+import "./style/markdown/index.less";
 
 export default {
-  ...DefaultTheme,
-  NotFound: () => "custom 404", // <- this is a Vue 3 functional component
+  Layout,
   enhanceApp({ app, router, siteData }) {
-    // app is the Vue 3 app instance from `createApp()`. router is VitePress'
-    // custom router. `siteData`` is a `ref`` of current site-level metadata.
-    console.log(a);
-    app.use(a);
+    app.use(inlui).use(pcui);
   },
 };

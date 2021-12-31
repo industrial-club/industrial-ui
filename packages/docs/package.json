@@ -12,5 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "vitepress": "^0.20.10"
+  },
+  "devDependencies": {
+    "vue-router": "4"
   }
 }

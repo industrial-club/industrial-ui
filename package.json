@@ -10,7 +10,9 @@
     "ln": "lerna",
     "dev:docs": "yarn workspace inl-docs run docs:dev",
     "dev:build": "yarn workspace docs run docs:build",
-    "dev:app": "yarn workspace inl-app-ui run dev"
+    "dev:app": "yarn workspace inl-app-ui run dev",
+    "dev:pc": "yarn workspace inl-pc-ui run dev",
+    "dev:util": "yarn workspace inl-util run dev"
   },
   "repository": "https://github.com/industrial-club/industrial-ui",
   "author": "bhabgs",

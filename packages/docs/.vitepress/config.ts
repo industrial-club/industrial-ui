@@ -6,37 +6,28 @@
  * @LastEditors: bhabgs
  * @LastEditTime: 2021-04-08 13:27:07
  */
+import { defineConfig } from "vitepress";
+import inlUi from "./inl-app-ui";
+import inlpc from "./inl-pc-ui";
+import head from "./head";
 
-module.exports = {
+module.exports = defineConfig({
   lang: "en-US",
-  head: [
-    [
-      "meta",
-      {
-        name: "viewport",
-        content:
-          "width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no",
-      },
-    ],
-    ["meta", { name: "keywords", content: "inl ui" }],
-    ["link", { rel: "icon", href: "/favicon.ico" }],
-  ],
+  head: head() as any,
   title: "工业俱乐部",
   base: "/",
   themeConfig: {
-    repo: "bhabgs/vite-vui",
+    docsDir: ".",
+    docsBranch: ".",
+    editLinks: true,
+    repo: "industrial-club/industrial-ui/tree/master/packages/app",
     sidebar: {
-      "/": [
-        {
-          text: "inl-app-ui",
-          children: [{ text: "介绍", link: "/" }],
-        },
-      ],
+      "/": [inlUi(), inlpc()],
     },
     author: "bhabgs",
     nav: [
-      { text: "首页", link: "/" },
-      { text: "分类", link: "/tags" },
+      { text: "app", link: "/app/started.html" },
+      { text: "pc", link: "/pc/started.html", open: true },
     ],
   },
   vite: {
@@ -44,9 +35,5 @@ module.exports = {
       chunkSizeWarningLimit: 1024 * 50,
       target: "chrome58",
     },
-    ssr: {
-      external: ["@antv/x6"],
-    },
   },
-  dest: "public",
-};
+});

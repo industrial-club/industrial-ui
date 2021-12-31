@@ -1,0 +1,14 @@
+// 颜色
+@c_d: #1890ff;
+@c_m_c: rgb(234, 247, 255);
+// 默认喵边颜色
+@border_c: #eaecef;
+
+// 动画
+.create_animate(@n, @i: 1) when (@i =< @n) {
+  .anim@{i} {
+    transition: all @i*0.1 + 0s;
+  }
+  .create_animate(@n, (@i + 1));
+}
+.create_animate(10);
