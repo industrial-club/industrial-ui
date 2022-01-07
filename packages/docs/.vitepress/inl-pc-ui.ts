@@ -6,7 +6,10 @@ export default () => {
       { text: "更新日志", link: "/pc/log" },
       {
         text: "组件",
-        children: [{ text: "button(按钮)", link: "/pc/button" }],
+        children: [
+          { text: "button(按钮)", link: "/pc/button" },
+          { text: "Menu(菜单)", link: "/pc/menu/" },
+        ],
       },
     ],
     sidebarDepth: 1,

@@ -1,4 +1,4 @@
-import { defineComponent, PropType, ref, provide, watch } from "vue";
+import { defineComponent, PropType, ref, provide, useSlots } from "vue";
 import util from "@/utll";
 
 export interface inlMenuItem {
@@ -46,7 +46,7 @@ const com = defineComponent({
   props,
   setup(_props, _context) {
     const classes = ref(className(["menu", _props.theme]));
-    const { inlMenuTitle } = getSlots(_context);
+    const { inlMenuTitle } = useSlots();
     const activeKey = ref(_props.activeKey);
     const updataFun = (item: inlMenuItem) => {
       activeKey.value = item.url;
@@ -59,18 +59,21 @@ const com = defineComponent({
 
     // 渲染菜单头部
     const renderInlTitle = () => {
-      if (!inlMenuTitle) {
-        return () => <div class={className(["menu-title"])}></div>;
+      if (typeof inlMenuTitle !== "function") {
+        return <div class={className(["menu-title"])}></div>;
       }
-      return <div class={className(["menu-title"])}>{inlMenuTitle()}</div>;
+      return (
+        <div class={className(["menu-title"])}>
+          <inlMenuTitle />
+        </div>
+      );
     };
-
     // 渲染menu
     const renderMenus = () => {
       const menusList: Array<JSX.Element> = [];
       for (let i of _props.menus) {
         if (i.child && i.child.length > 0) {
-          menusList.push(<inl-menu-sub {...i} />);
+          menusList.push(<inl-menu-group {...i} />);
         } else {
           menusList.push(renderMenuItem(i));
         }

@@ -2,3 +2,88 @@
   justify-content: center;
   flex: 1;
 }
+
+.code-box {
+  border: 1px solid #ebedf0;
+  border-radius: 2px;
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  margin: 0 0 16px;
+  transition: all 0.2s;
+  .code-box-demo {
+    border-bottom: 1px solid #ebedf0;
+    padding: 42px 24px 50px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+  .code-box-meta {
+    position: relative;
+    width: 100%;
+    font-size: 14px;
+    border-radius: 0 0 2px 2px;
+    transition: background-color 0.4s;
+    border-radius: 0;
+    border-bottom: 1px dashed #ebedf0;
+    h4 {
+      margin: 0;
+      position: absolute;
+      top: -14px;
+      padding: 1px 8px;
+      margin-left: 16px;
+      color: #777;
+      border-radius: 2px 2px 0 0;
+      background: #fff;
+      font-size: 14px;
+      width: auto;
+    }
+    p {
+      font-size: 12px;
+      margin: 0.5em 0;
+      padding: 18px 24px 12px;
+      width: 100%;
+      word-break: break-word;
+      margin: 0;
+      width: 98%;
+    }
+    .code-box-actions {
+      padding-top: 12px;
+      text-align: center;
+      opacity: 0.7;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      border-top: 1px dashed #ebedf0;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  .highlight-wrapper {
+    display: flex;
+    .vue-tsx-box,
+    .vue-code-box {
+      flex: 1;
+    }
+    .custom-code-box {
+      > div {
+        margin-bottom: 0;
+      }
+    }
+
+    .vue-code-box {
+      display: flex;
+      flex-direction: column;
+      .vue-code-box-js,
+      .vue-code-box-html {
+        flex: 1;
+      }
+    }
+  }
+  .code-expand-icon {
+    span {
+      margin-right: 1rem;
+      &.active {
+        color: #1890ff;
+      }
+    }
+  }
+}

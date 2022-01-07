@@ -7,6 +7,7 @@
  * @LastEditTime: 2021-04-08 13:27:07
  */
 import { defineConfig } from "vitepress";
+import { blockPlugin } from "./demo.render";
 import inlUi from "./inl-app-ui";
 import inlpc from "./inl-pc-ui";
 import head from "./head";
@@ -34,6 +35,11 @@ module.exports = defineConfig({
     build: {
       chunkSizeWarningLimit: 1024 * 50,
       target: "chrome58",
+    },
+  },
+  markdown: {
+    config: (md) => {
+      md.use(blockPlugin);
     },
   },
 });

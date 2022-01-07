@@ -54,9 +54,11 @@ export default defineComponent({
           router.go(item.url);
         }}
         activeKey={activeKey}
-        vSlots={{
-          inlMenuTitle: () => <div>title</div>,
-        }}
+        vSlots={
+          {
+            // inlMenuTitle: () => <div>title</div>,
+          }
+        }
       />
     );
   },
