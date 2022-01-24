@@ -61,6 +61,7 @@ export default defineComponent({
 | width  | 设置菜单的占位宽度                      |              `number`               | 200                   |
 |  mode  | 设置菜单的展示形式                      | `vertical` , `horizontal`, `inline` | `horizontal`          |
 | theme  | 设置菜单主题                            |           `dark`,`light`            | `light`               |
+| allOpen  | 子菜单全部展开                            |           `Boolean`            | `false`               |
 
 ## Event(事件)
 

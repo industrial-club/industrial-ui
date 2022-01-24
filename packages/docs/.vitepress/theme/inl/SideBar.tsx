@@ -53,6 +53,7 @@ export default defineComponent({
         onChange={(item: inlMenuItem) => {
           router.go(item.url);
         }}
+        allOpen
         activeKey={activeKey}
         vSlots={
           {

@@ -32,6 +32,9 @@ const props = {
       return 200;
     },
   },
+  allOpen: {
+    type: Boolean,
+  },
   menus: {
     type: Array as PropType<Array<inlMenuItem>>,
     default: [],
@@ -56,6 +59,7 @@ const com = defineComponent({
     provide("activeKey", activeKey);
     provide("updataFun", updataFun);
     provide("router", _props.router);
+    provide("allOpen", _props.allOpen);
 
     // 渲染菜单头部
     const renderInlTitle = () => {

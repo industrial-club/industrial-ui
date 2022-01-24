@@ -20,12 +20,16 @@ const com = defineComponent({
   setup(_props, _context) {
     const cn = ref(className(["menu-group", "menu-item"]));
     const key = inject<Ref<string>>("activeKey")!;
+    const allOpen = inject<Ref<boolean>>("allOpen")!; // 是否全部打开
+    const isopen = ref(false);
 
-    watch(
-      () => key,
-      () => {},
-      { deep: true }
-    );
+    if (allOpen) {
+      isopen.value = true;
+    }
+
+    const menuGroupClick = () => {
+      isopen.value = !isopen.value;
+    };
 
     const renderMenusSubBox = (item: Array<inlMenuItem>) => {
       const menusubel: Array<JSX.Element> = [];
@@ -38,10 +42,26 @@ const com = defineComponent({
       }
       return (
         <li class={cn.value}>
-          <div class={className(["menu-group-title", "menu-item"])}>
+          <div
+            class={className(["menu-group-title", "menu-item"])}
+            onClick={menuGroupClick}
+          >
             <span class={className(["menu-group-name"])}>{_props.name}</span>
+            <i
+              class={[
+                "industrial",
+                "rotate",
+                isopen.value ? "rotate-open" : "rotate-close",
+              ]}
+            ></i>
           </div>
-          <ul class={className(["menu-group-list", "menu-group-list-open"])}>
+          <ul
+            class={[
+              ...className(["menu-group-list"]),
+              "expand",
+              isopen.value ? "expand-open" : "expand-close",
+            ]}
+          >
             {menusubel}
           </ul>
         </li>
