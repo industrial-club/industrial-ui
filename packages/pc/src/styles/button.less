@@ -1,0 +1,59 @@
+.inl-button {
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  background-color: @color_white;
+  color: @color_gray2;
+  border: 1px solid @color_border_default;
+  .anim3();
+  &:active {
+    opacity: 0.9;
+  }
+  &:target {
+    background-color: red;
+  }
+  &[class*="inl-button-type-"] {
+    color: @color_white;
+    border: none;
+  }
+  &-block {
+    width: 100%;
+    display: block;
+  }
+  &-type {
+    &-primary {
+      background-color: @color_default;
+    }
+    &-success {
+      background-color: @color_success;
+    }
+    &-error {
+      background-color: @color_err;
+    }
+    &-warn {
+      background-color: @color_warning;
+    }
+  }
+  &-size {
+    &-m {
+      padding: @padding_m;
+    }
+    &-l {
+      padding: @padding_l;
+    }
+    &-xl {
+      padding: @padding_xl;
+    }
+    &-xxl {
+      padding: @padding_xxl;
+    }
+  }
+  &-shape {
+    &-circle {
+      border-radius: 0.2rem;
+    }
+    &-round {
+      border-radius: 50%;
+    }
+  }
+}

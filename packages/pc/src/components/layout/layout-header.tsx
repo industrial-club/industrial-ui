@@ -6,13 +6,21 @@ const props = {
     type: String as PropType<"row" | "column">,
     default: "row",
   },
+  height: {
+    type: Number,
+    default: 40,
+  },
 };
 
 const com = defineComponent({
   props,
   setup(_props, _context) {
     const cls = className(["layout-header", `layout-header-${_props.arrange}`]);
-    return () => <div class={cls}>{getSlots(_context).default()}</div>;
+    return () => (
+      <div class={cls} style={{ height: _props.height + "px" }}>
+        {getSlots(_context).default()}
+      </div>
+    );
   },
 });
 

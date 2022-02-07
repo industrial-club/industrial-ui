@@ -23,7 +23,8 @@ module.exports = defineConfig({
     editLinks: true,
     repo: "industrial-club/industrial-ui/tree/master/packages/app",
     sidebar: {
-      "/": [inlUi(), inlpc()],
+      "/pc/": inlpc(),
+      "/app/": inlUi(),
     },
     author: "bhabgs",
     nav: [

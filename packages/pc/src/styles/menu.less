@@ -2,24 +2,24 @@
   width: 200px;
   overflow-y: auto;
   @itemHeight: 40px;
-  border-right: 1px solid @border_c;
+  border-right: 1px solid @color_border_default;
   .pd(@n: 10) {
     padding-left: @n + 0px;
   }
   .itemHover() {
     &:hover {
       > .inl-menu-item-name {
-        color: @c_d;
+        color: @color_default;
       }
       & {
-        background-color: @c_m_c;
+        background-color: @color_default_active;
       }
     }
   }
   .active {
     position: relative;
     > .inl-menu-item-name {
-      color: @c_d;
+      color: @color_default;
     }
     // 线折叠
     @keyframes lineEm {
@@ -31,14 +31,14 @@
       }
     }
     & {
-      background-color: @c_m_c;
+      background-color: @color_default_active;
       &::after {
         content: "";
         right: 0;
         position: absolute;
         width: 3px;
         height: 100%;
-        background-color: @c_d;
+        background-color: @color_default;
         animation: lineEm 0.2s;
       }
     }
@@ -84,11 +84,15 @@
 
     &-title {
       &:hover {
-        color: @c_d;
-        i.industrial {
+        color: @color_default;
+        i.industrial.rotate {
           &::before,
           &::after {
-            background-color: @c_d;
+            background-image: linear-gradient(
+              90deg,
+              @color_default,
+              @color_default
+            );
           }
         }
       }

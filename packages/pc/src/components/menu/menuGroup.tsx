@@ -1,6 +1,7 @@
-import { defineComponent, PropType, ref, inject, Ref, watch } from "vue";
+import { defineComponent, PropType, ref, inject, Ref, Transition } from "vue";
 import util from "@/utll";
 import { inlMenuItem, renderMenuItem } from "./index";
+import trans from "./transitionAnimate";
 
 const { className, installComponent, getSlots } = util;
 const props = {
@@ -30,7 +31,6 @@ const com = defineComponent({
     const menuGroupClick = () => {
       isopen.value = !isopen.value;
     };
-
     const renderMenusSubBox = (item: Array<inlMenuItem>) => {
       const menusubel: Array<JSX.Element> = [];
       for (let i of item) {
@@ -55,15 +55,14 @@ const com = defineComponent({
               ]}
             ></i>
           </div>
-          <ul
-            class={[
-              ...className(["menu-group-list"]),
-              "expand",
-              isopen.value ? "expand-open" : "expand-close",
-            ]}
-          >
-            {menusubel}
-          </ul>
+          <Transition {...trans}>
+            <ul
+              v-show={isopen.value}
+              class={[...className(["menu-group-list"])]}
+            >
+              {menusubel}
+            </ul>
+          </Transition>
         </li>
       );
     };

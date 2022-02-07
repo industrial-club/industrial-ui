@@ -32,16 +32,14 @@ export default defineComponent({
       }
       return subList;
     };
-
+    const subkey = router.route.path.split("/")[1];
+    const sidebarByKey = sidebar[`/${subkey}/`] || {};
     const setMenu = () => {
-      for (let i in sidebar) {
-        const item = sidebar[i];
-        for (let n of item) {
-          if (n.children && n.children.length > 0) {
-            menus.push(setSub(n));
-          } else {
-            menus.push(setItem(n));
-          }
+      for (let n of sidebarByKey.children) {
+        if (n.children && n.children.length > 0) {
+          menus.push(setSub(n));
+        } else {
+          menus.push(setItem(n));
         }
       }
     };
