@@ -13,7 +13,6 @@ export default defineComponent({
   setup(_prop, _context) {
     const { comb } = useSlots();
     const highlight = highlightJs.highlight;
-
     const com = ref(null);
     const opt = ref([
       {
@@ -31,8 +30,12 @@ export default defineComponent({
     onMounted(() => {
       highlightJs.configure({
         classPrefix: "token ",
+        languages: ["undefined", "vue", "tsx", "ts"],
+        ignoreUnescapedHTML: true,
       });
-      highlightJs.initHighlighting();
+      setTimeout(() => {
+        highlightJs.initHighlighting();
+      }, 100);
     });
     return () => (
       <div class={"code-box"}>
@@ -62,25 +65,28 @@ export default defineComponent({
             </div>
           </div>
         </div>
+
         <div class={"highlight-wrapper"} v-show={open.value}>
           <div
             class={"custom-code-box vue-code-box"}
             v-show={optActive.value === "vue"}
           >
-            <div class={"vue-code-box-html language-html"}>
+            <div class="vue-code-box-html language-html">
               <pre>
                 <code
-                  v-html={highlight("html", _prop.html + _prop.js).value}
+                  v-html={
+                    highlightJs.highlightAuto(_prop.html + _prop.js).value
+                  }
                 ></code>
               </pre>
             </div>
           </div>
           <div
-            class={"custom-code-box vue-tsx-box language-tsx"}
+            class="custom-code-box vue-tsx-box language-tsx"
             v-show={optActive.value === "tsx"}
           >
             <pre>
-              <code v-html={highlight("tsx", _prop.ts).value}></code>
+              <code v-html={highlightJs.highlightAuto(_prop.ts).value}></code>
             </pre>
           </div>
         </div>

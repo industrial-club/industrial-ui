@@ -29,7 +29,9 @@ const com = defineComponent({
   props,
   setup(_props, _context) {
     let cls: any = "";
-
+    if (_props.disabled) {
+      console.log(_props.disabled);
+    }
     watch(
       () => [_props.type, _props.size, _props.shape, _props.block],
       () => {

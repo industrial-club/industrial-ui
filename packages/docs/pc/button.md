@@ -1,64 +1,14 @@
 # button
 
-> 按钮组件
-
-:::dm title="按钮类型" describe="根据相关数据渲染菜单"
-
-<template v-slot:comb>
-    <div>
-        <inl-button>default</inl-button>
-        <inl-button type="primary">primary</inl-button>
-        <inl-button type="success">success</inl-button>
-        <inl-button type="error">error</inl-button>
-        <inl-button type="warn">warn</inl-button>
-    </div>
-</template>   
-
-```tsx
-import { defineComponent } from "vue";
-import { inlMenuItem } from "inl-pc-ui/dist/types/src/components/menu/index";
-export default defineComponent({
-  setup() {
-    const list: Array<inlMenuItem> = [];
-    return <inl-menu menus={list} />;
-  },
-});
-```
-:::
-
-:::dm title="按钮形状" describe="根据相关数据渲染菜单"
-
-<template v-slot:comb>
-    <div>
-        <inl-button shape="circle">circle</inl-button>
-        <inl-button shape="circle" type="primary">primary</inl-button>
-        <inl-button shape="circle" type="success">success</inl-button>
-        <inl-button shape="circle" type="error">error</inl-button>
-        <inl-button shape="circle" type="warn">warn</inl-button>
-        <inl-button shape="round"></inl-button>
-    </div>
-</template>   
-
-```tsx
-import { defineComponent } from "vue";
-import { inlMenuItem } from "inl-pc-ui/dist/types/src/components/menu/index";
-export default defineComponent({
-  setup() {
-    const list: Array<inlMenuItem> = [];
-    return <inl-menu menus={list} />;
-  },
-});
-```
-:::
-
-
-:::dm title="按钮大小" describe="根据相关数据渲染菜单"
 <script setup>
     import { ref } from "vue";
     const size = ref('l');
     const sizeList = ['m','l','xl','xxl'];
     const changeSize = (item) => {
         size.value = item
+    }
+    const setAlert = () => {
+        alert(123)
     }
     let arr = [
         {id: 1, name: '部门1', pid: 0},
@@ -67,8 +17,69 @@ export default defineComponent({
         {id: 4, name: '部门4', pid: 3},
         {id: 5, name: '部门5', pid: 4},
     ];
-
 </script>
+
+> 按钮组件
+
+:::dm title="按钮类型" describe="按钮类型"
+
+<template v-slot:comb>
+    <div>
+        <inl-button>default</inl-button>
+        <inl-button type="primary">primary</inl-button>
+        <inl-button type="success">success</inl-button>
+        <inl-button type="error">error</inl-button>
+        <inl-button type="warning">warn</inl-button>
+    </div>
+</template>
+
+<div></div>
+
+```tsx
+import { defineComponent } from "vue";
+import { inlMenuItem } from "inl-pc-ui/dist/types/src/components/menu/index";
+export default defineComponent({
+  setup() {
+    const list: Array<inlMenuItem> = [];
+    return <inl-menu menus={list} />;
+  },
+});
+```
+
+:::
+
+:::dm title="按钮形状" describe="按钮形状"
+
+<div></div>
+
+<template v-slot:comb>
+    <div>
+        <inl-button shape="circle">circle</inl-button>
+        <inl-button shape="circle" type="primary">primary</inl-button>
+        <inl-button shape="circle" type="success">success</inl-button>
+        <inl-button shape="circle" type="error">error</inl-button>
+        <inl-button shape="circle" type="warning">warn</inl-button>
+        <inl-button shape="round"></inl-button>
+    </div>
+</template>
+
+```tsx
+import { defineComponent } from "vue";
+import { inlMenuItem } from "inl-pc-ui/dist/types/src/components/menu/index";
+export default defineComponent({
+  setup() {
+    const list: Array<inlMenuItem> = [];
+    return <inl-menu menus={list} />;
+  },
+});
+```
+
+:::
+
+:::dm title="按钮大小" describe="根据相关数据渲染菜单"
+
+<div></div>
+
 <template v-slot:comb>
     <div>
         <div>
@@ -83,21 +94,56 @@ export default defineComponent({
             </div>
         </div>
     </div>
-</template>   
+</template>
+
+<script>
+    import { ref } from "vue";
+    const size = ref('l');
+    const sizeList = ['m','l','xl','xxl'];
+    const changeSize = (item) => {
+        size.value = item
+    }
+    let arr = [
+        {id: 1, name: '部门1', pid: 0},
+        {id: 2, name: '部门2', pid: 1},
+        {id: 3, name: '部门3', pid: 1},
+        {id: 4, name: '部门4', pid: 3},
+        {id: 5, name: '部门5', pid: 4},
+    ];
+</script>
 
 ```tsx
 
 ```
+
 :::
 
-:::dm title="按钮block" describe="根据相关数据渲染菜单"
+:::dm title="按钮 block" describe="根据相关数据渲染菜单"
+
+<div></div>
 
 <template v-slot:comb>
     <div>
             <inl-button block type="primary">block</inl-button>
             <inl-button block type="success">block</inl-button>
             <inl-button block type="error">block</inl-button>
-            <inl-button block type="warn">block</inl-button>
+            <inl-button block type="warning">block</inl-button>
+    </div>
+</template>
+
+```tsx
+
+```
+
+:::
+
+:::dm title="按钮 disabled" describe=""
+
+<div></div>
+
+<template v-slot:comb>
+    <div>
+            <inl-button disabled type="primary" @click="setAlert()">disabled</inl-button>
     </div>
 </template>
 
@@ -111,11 +157,11 @@ export default defineComponent({
 
 > aa
 
-|   参数   | 说明                 |    类型    | 默认值    |
-| :------: | :------------------- | :--------: | --------- |
+|   参数   | 说明                 |                            类型                            | 默认值    |
+| :------: | :------------------- | :--------------------------------------------------------: | --------- |
 |   type   | 设置按钮类型样子     | `"default" 、 "success" 、 "error" 、 "warn"` 、 `default` |
-|   size   | 设置按钮大小         | `"m" 、 "l" 、 "xl"  、"xxl"`| `default` |
-| disabled | 设置按钮是否可以点击 | `Boolean`  | `false`   |
-|   icon   | 设置按钮 icon        | `String`  | “” |
-|   block   | 设置按钮块        | `Boolean`  | `false`|
-|  shape   | 设置按钮形状         | `"circle" 、 "round" 、 ""`  | “” |
+|   size   | 设置按钮大小         |                `"m" 、 "l" 、 "xl" 、"xxl"`                | `default` |
+| disabled | 设置按钮是否可以点击 |                         `Boolean`                          | `false`   |
+|   icon   | 设置按钮 icon        |                          `String`                          | “”        |
+|  block   | 设置按钮块           |                         `Boolean`                          | `false`   |
+|  shape   | 设置按钮形状         |                `"circle" 、 "round" 、 ""`                 | “”        |

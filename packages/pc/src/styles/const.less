@@ -1,13 +1,28 @@
+// default
+@types: default, primary, success, error, warning;
+@typeslength: length(@types) + 1;
+
+@sizes: m, l, xl, xxl;
+@sizeslength: length(@sizes) + 1;
+
+// .a(@index) when(@index<@typeslength) {
+//   ~"@a{b}":6;
+//   a(@index+1);
+// }
+
 // 颜色
 @color_default: #3f85db;
 @color_default_active: #eef9ff;
 @color_default_shallow: #eef9ff;
+@color_primary: #3f85db;
+@color_primary_active: #eef9ff;
+@color_primary_shallow: #eef9ff;
 @color_success: #33c19e;
 @color_success_shallow: #ecfaf6;
 @color_warning: #f1ba24;
 @color_warning_shallow: #fffcf3;
-@color_err: #e06868;
-@color_err_shallow: #fef8f6;
+@color_error: #e06868;
+@color_error_shallow: #fef8f6;
 @color_gray1: rgba(0, 0, 0, 0.45);
 @color_gray2: rgba(0, 0, 0, 0.65);
 @color_white: rgb(255, 255, 255);
@@ -29,7 +44,7 @@
 // 动画
 .create_animate(@n, @i: 1) when (@i =< @n) {
   .anim@{i} {
-    transition: all @i*0.1 + 0s;
+    transition: all @i*0.1s;
   }
   .create_animate(@n, (@i + 1));
 }

@@ -20,34 +20,29 @@
     width: 100%;
     display: block;
   }
-  &-type {
-    &-primary {
-      background-color: @color_default;
+
+  .LoopTypes(@index) when(@index<@typeslength) {
+    @typeItem: extract(@types, @index);
+    &-type {
+      &-@{typeItem} {
+        background-color: ~"@{color_@{typeItem}}";
+      }
     }
-    &-success {
-      background-color: @color_success;
-    }
-    &-error {
-      background-color: @color_err;
-    }
-    &-warn {
-      background-color: @color_warning;
-    }
+    .LoopTypes(@index+1);
   }
-  &-size {
-    &-m {
-      padding: @padding_m;
+  .LoopTypes(1);
+
+  .LoopSize(@index) when(@index<@sizeslength) {
+    @typeItem: extract(@sizes, @index);
+
+    &-size {
+      &-@{typeItem} {
+        padding: ~"@{padding_@{typeItem}}";
+      }
     }
-    &-l {
-      padding: @padding_l;
-    }
-    &-xl {
-      padding: @padding_xl;
-    }
-    &-xxl {
-      padding: @padding_xxl;
-    }
+    .LoopSize(@index+1);
   }
+  .LoopSize(1);
   &-shape {
     &-circle {
       border-radius: 0.2rem;
