@@ -27,14 +27,14 @@ export interface WebRtc {
 }
 ```
 
-|      参数      | 说明                                                   |       类型       | 默认值                |
-| :------------: | :----------------------------------------------------- | :--------------: | --------------------- | ---- |
-|       el       | 父级别盒子(暂时无效，可用 body 代替)                   |  `HTMLElement`   | 必填                  |
-|       w        | 视频窗口宽度                                           |     `Number`     | `auto`                |
-|       h        | 视频窗口高度                                           |     `Number`     | `auto`                |
-|    autoPlay    | 自动播放（目前无法更改，全部自动播放）                 |    `boolean`     | true                  |
-|     plays      | 播放视频源信息 [PlayVideoArgs](#参数描述playvideoargs) | ` PlayVideoArgs  | Array<PlayVideoArgs>` | null |
-| endpointConfig | 视频配置[类型](#参数描述endpointconfig)                | `EndpointConfig` | {}                    |
+|      参数      | 说明                                                   |                   类型                   | 默认值 |
+| :------------: | :----------------------------------------------------- | :--------------------------------------: | ------ |
+|       el       | 父级别盒子(暂时无效，可用 body 代替)                   |              `HTMLElement`               | 必填   |
+|       w        | 视频窗口宽度                                           |                 `Number`                 | `auto` |
+|       h        | 视频窗口高度                                           |                 `Number`                 | `auto` |
+|    autoPlay    | 自动播放（目前无法更改，全部自动播放）                 |                `boolean`                 | true   |
+|     plays      | 播放视频源信息 [PlayVideoArgs](#参数描述playvideoargs) | ` PlayVideoArgs 、 Array<PlayVideoArgs>` | null   |
+| endpointConfig | 视频配置[类型](#参数描述endpointconfig)                |             `EndpointConfig`             | {}     |
 
 ### 参数描述(PlayVideoArgs)
 
