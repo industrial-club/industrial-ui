@@ -1,5 +1,12 @@
 import axios from "axios";
-import { Endpoint, Events } from "./ZLMRTCClient";
+import {
+  Endpoint,
+  Events,
+  GetAllScanResolution,
+  GetSupportCameraResolutions,
+  Media,
+  isSupportResolution,
+} from "./ZLMRTCClient";
 
 let appName = "live";
 
@@ -32,7 +39,7 @@ export interface WebRtc {
   endpointConfig?: EndpointConfig;
 }
 
-export default class WEBRTCPLAY {
+export class webRtcMt {
   constructor(opt: WebRtc) {
     this.init(opt);
   }
@@ -222,3 +229,12 @@ export default class WEBRTCPLAY {
     }, 10);
   }
 }
+
+export default {
+  Endpoint,
+  Events,
+  GetAllScanResolution,
+  GetSupportCameraResolutions,
+  Media,
+  isSupportResolution,
+};

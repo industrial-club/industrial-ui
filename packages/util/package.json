@@ -1,6 +1,6 @@
 {
   "name": "inl-util",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "工业工具库",
   "main": "dist/index.js",
   "module": "dist/index.js",
