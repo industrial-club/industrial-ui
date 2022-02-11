@@ -34,7 +34,7 @@ export default defineComponent({
         ignoreUnescapedHTML: true,
       });
       setTimeout(() => {
-        highlightJs.initHighlighting();
+        highlightJs.highlightAll();
       }, 100);
     });
     return () => (
@@ -71,7 +71,7 @@ export default defineComponent({
             class={"custom-code-box vue-code-box"}
             v-show={optActive.value === "vue"}
           >
-            <div class="vue-code-box-html language-html">
+            <div class="vue-code-box-html language-vue">
               <pre>
                 <code
                   v-html={

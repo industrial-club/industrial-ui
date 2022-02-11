@@ -23,6 +23,8 @@
 
 :::dm title="按钮类型" describe="按钮类型"
 
+<script></script>
+
 <template v-slot:comb>
     <div>
         <inl-button>default</inl-button>
@@ -32,8 +34,6 @@
         <inl-button type="warning">warn</inl-button>
     </div>
 </template>
-
-<div></div>
 
 ```tsx
 import { defineComponent } from "vue";
@@ -50,7 +50,7 @@ export default defineComponent({
 
 :::dm title="按钮形状" describe="按钮形状"
 
-<div></div>
+<script></script>
 
 <template v-slot:comb>
     <div>
@@ -78,7 +78,7 @@ export default defineComponent({
 
 :::dm title="按钮大小" describe="根据相关数据渲染菜单"
 
-<div></div>
+<script></script>
 
 <template v-slot:comb>
     <div>
@@ -96,59 +96,47 @@ export default defineComponent({
     </div>
 </template>
 
-<script>
-    import { ref } from "vue";
-    const size = ref('l');
-    const sizeList = ['m','l','xl','xxl'];
-    const changeSize = (item) => {
-        size.value = item
-    }
-    let arr = [
-        {id: 1, name: '部门1', pid: 0},
-        {id: 2, name: '部门2', pid: 1},
-        {id: 3, name: '部门3', pid: 1},
-        {id: 4, name: '部门4', pid: 3},
-        {id: 5, name: '部门5', pid: 4},
-    ];
-</script>
-
 ```tsx
-
+import { ref } from "vue";
+const size = ref("l");
+const sizeList = ["m", "l", "xl", "xxl"];
+const changeSize = (item) => {
+  size.value = item;
+};
+let arr = [
+  { id: 1, name: "部门1", pid: 0 },
+  { id: 2, name: "部门2", pid: 1 },
+  { id: 3, name: "部门3", pid: 1 },
+  { id: 4, name: "部门4", pid: 3 },
+  { id: 5, name: "部门5", pid: 4 },
+];
 ```
 
 :::
 
-:::dm title="按钮 block" describe="根据相关数据渲染菜单"
+::: dm
 
 <div></div>
 
 <template v-slot:comb>
     <div>
-            <inl-button block type="primary">block</inl-button>
-            <inl-button block type="success">block</inl-button>
-            <inl-button block type="error">block</inl-button>
-            <inl-button block type="warning">block</inl-button>
+        <inl-button block>default</inl-button>
+        <inl-button block type="primary">primary</inl-button>
+        <inl-button block type="success">success</inl-button>
+        <inl-button block type="error">error</inl-button>
+        <inl-button block type="warning">warn</inl-button>
     </div>
 </template>
 
 ```tsx
-
-```
-
-:::
-
-:::dm title="按钮 disabled" describe=""
-
-<div></div>
-
-<template v-slot:comb>
-    <div>
-            <inl-button disabled type="primary" @click="setAlert()">disabled</inl-button>
-    </div>
-</template>
-
-```tsx
-
+import { defineComponent } from "vue";
+import { inlMenuItem } from "inl-pc-ui/dist/types/src/components/menu/index";
+export default defineComponent({
+  setup() {
+    const list: Array<inlMenuItem> = [];
+    return <inl-menu menus={list} />;
+  },
+});
 ```
 
 :::

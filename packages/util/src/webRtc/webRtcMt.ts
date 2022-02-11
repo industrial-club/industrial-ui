@@ -31,10 +31,10 @@ export interface EndpointConfig {
 }
 
 export interface WebRtc {
-  el: HTMLElement;
+  el?: HTMLElement;
   w?: number;
   h?: number;
-  autoPlay: boolean;
+  autoPlay?: boolean;
   plays: PlayVideoArgs | Array<PlayVideoArgs>;
   endpointConfig?: EndpointConfig;
 }
@@ -108,7 +108,7 @@ export class webRtcMt {
     this.mediaServerAddrMap.set(plays.videoElm, plays);
     const { addRtspProxyUrl } = this.createRtspUrl(plays);
     this.instance.get(addRtspProxyUrl).then((res: any) => {
-      if (res.code === 0) {
+      if (res.data.code === 0) {
         // 拉流成功
         this.startPlay(plays);
       } else {
