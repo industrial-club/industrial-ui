@@ -3,23 +3,19 @@ import util from "inl-util";
 
 const { className, installComponent, getSlots } = util;
 
-export type InlButtonSize = "m" | "l" | "xl" | "xxl";
-export type InlButtonType = "default" | "success" | "error" | "warn" | "";
-export type InlButtonShape = "circle" | "round" | "";
-
 const props = {
   type: {
-    type: String as PropType<InlButtonType>,
+    type: String as PropType<InlPc.Type>,
     default: "",
   },
   size: {
-    type: String as PropType<InlButtonSize>,
+    type: String as PropType<InlPc.Size>,
     default: "",
   },
   disabled: Boolean,
   icon: String,
   shape: {
-    type: String as PropType<InlButtonShape>,
+    type: String as PropType<InlPc.Shape>,
     default: "",
   },
   block: Boolean,
@@ -28,7 +24,7 @@ const props = {
 const com = defineComponent({
   props,
   setup(_props, _context) {
-    let cls: any = "";
+    let cls: InlPc.Class = "";
     if (_props.disabled) {
       console.log(_props.disabled);
     }

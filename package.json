@@ -13,7 +13,8 @@
     "dev:app": "yarn workspace inl-app-ui run dev",
     "dev:pc": "yarn workspace inl-pc-ui run dev",
     "dev:util": "yarn workspace inl-util run dev",
-    "build:util": "yarn workspace inl-util run build"
+    "build:util": "yarn workspace inl-util run build",
+    "build:utilVideo": "yarn workspace inl-util run buildVideo"
   },
   "repository": "https://github.com/industrial-club/industrial-ui",
   "author": "bhabgs",

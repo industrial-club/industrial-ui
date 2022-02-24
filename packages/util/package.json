@@ -1,6 +1,6 @@
 {
   "name": "inl-util",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "工业工具库",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=dev rollup -c conf/rollup.config.ts  -w",
+    "buildVideo": "rollup -c conf/video.ts",
     "build": "rollup -c conf/rollup.config.ts"
   },
   "devDependencies": {

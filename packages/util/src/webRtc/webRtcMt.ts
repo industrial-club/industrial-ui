@@ -73,12 +73,13 @@ export class webRtcMt {
       mediaServerAddr,
     } = plays;
     const rtsp = `rtsp://${cameraUserName}:${cameraPwd}@${cameraIp}:${cameraRtspPort}/id=${cameraChannel}%26type=${cameraStream}`;
+    const hkNvrRtsp = `rtsp://%s:%s@%s:%s/Streaming/tracks/%s01/`;
     const stream = `video-${cameraIp}-${cameraRtspPort}-${cameraChannel}-${cameraStream}`;
     const addRtspProxyUrl = `${mediaServerAddr}/index/api/addStreamProxy?secret=035c73f7-bb6b-4889-a715-d9eb2d1925cc&vhost=__defaultVhost__&app=${appName}&stream=${stream}&url=${rtsp}`;
     const sdpUrl = `${mediaServerAddr}/index/api/webrtc?app=${appName}&stream=${stream}&type=play`;
 
     this.streamMap.set(videoElm, stream);
-    return { rtsp, stream, addRtspProxyUrl, sdpUrl };
+    return { rtsp, stream, addRtspProxyUrl, sdpUrl, hkNvrRtsp };
   }
 
   // 初始化
