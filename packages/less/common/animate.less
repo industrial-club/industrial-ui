@@ -1,0 +1,27 @@
+.rotate {
+  &-open {
+    &::after {
+      transform: translateX(3px) rotate(-45deg) !important;
+    }
+    &::before {
+      transform: rotate(45deg) !important;
+    }
+  }
+  &-close {
+    &::after {
+      transform: translateX(3px) rotate(-135deg) !important;
+    }
+    &::before {
+      transform: rotate(135deg) !important;
+    }
+  }
+}
+
+.expand {
+  &-close {
+    height: 0;
+  }
+  &-open {
+    height: auto;
+  }
+}
