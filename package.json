@@ -9,12 +9,14 @@
   "scripts": {
     "ln": "lerna",
     "dev:docs": "yarn workspace inl-docs run docs:dev",
+    "build:docs": "yarn workspace inl-docs run docs:build",
     "dev:build": "yarn workspace docs run docs:build",
     "dev:app": "yarn workspace inl-app-ui run dev",
     "dev:pc": "yarn workspace inl-pc-ui run dev",
     "dev:util": "yarn workspace inl-util run dev",
     "build:util": "yarn workspace inl-util run build",
-    "build:utilVideo": "yarn workspace inl-util run buildVideo"
+    "build:utilVideo": "yarn workspace inl-util run buildVideo",
+    "build:lessVar": "yarn workspace inl-less run build"
   },
   "repository": "https://github.com/industrial-club/industrial-ui",
   "author": "bhabgs",

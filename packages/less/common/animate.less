@@ -25,3 +25,10 @@
     height: auto;
   }
 }
+.create_animate(@n, @i: 1) when (@i =< @n) {
+  .anim@{i} {
+    transition: all @i*0.1s;
+  }
+  .create_animate(@n, (@i + 1));
+}
+.create_animate(10);

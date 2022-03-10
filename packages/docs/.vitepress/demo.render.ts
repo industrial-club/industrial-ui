@@ -23,8 +23,6 @@ export const blockPlugin = (md) => {
         const html = tokens[idx + 2].content || "";
         const ts = tokens[idx + 3].content || "";
 
-        console.log(md.utils.escapeHtml(ts));
-
         return `<comb title="${props.title || ""}"  describe="${
           props.describe || ""
         }" html="${

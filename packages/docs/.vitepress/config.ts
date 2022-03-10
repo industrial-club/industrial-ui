@@ -7,8 +7,8 @@
  * @LastEditTime: 2021-04-08 13:27:07
  */
 import { defineConfig } from "vitepress";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import { blockPlugin } from "./demo.render";
-import inlUi from "./inl-app-ui";
 import inlpc from "./inl-pc-ui";
 import head from "./head";
 
@@ -16,27 +16,26 @@ module.exports = defineConfig({
   lang: "en-US",
   head: head() as any,
   title: "工业俱乐部",
-  base: "/",
+  base: "/inl/",
   themeConfig: {
-    docsDir: ".",
+    docsDir: "",
     docsBranch: ".",
     editLinks: true,
     repo: "industrial-club/industrial-ui/tree/master/packages/app",
-    sidebar: {
-      "/pc/": inlpc(),
-      "/app/": inlUi(),
-    },
+    sidebar: inlpc(),
     author: "bhabgs",
-    nav: [
-      { text: "app", link: "/app/started.html" },
-      { text: "pc", link: "/pc/started.html", open: true },
-    ],
   },
   vite: {
     build: {
       chunkSizeWarningLimit: 1024 * 50,
-      target: "chrome58",
+      target: "chrome99",
     },
+    server: {
+      fs: {
+        allow: [".."],
+      },
+    },
+    // plugins: [vueJsx()],
   },
   markdown: {
     config: (md) => {

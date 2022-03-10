@@ -25,9 +25,6 @@ const com = defineComponent({
   props,
   setup(_props, _context) {
     let cls: InlPc.Class = "";
-    if (_props.disabled) {
-      console.log(_props.disabled);
-    }
     watch(
       () => [_props.type, _props.size, _props.shape, _props.block],
       () => {
@@ -45,7 +42,7 @@ const com = defineComponent({
     );
     const defText = getSlots(_context).default;
     return () => (
-      <button class={cls}>
+      <button class={cls} disabled={_props.disabled}>
         {_props.icon ? <i class={_props.icon}></i> : ""}
         <span>
           <defText />

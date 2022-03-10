@@ -6821,9 +6821,6 @@ function isSupportResolution$1(w, h) {
       });
   });
 }
-
-console.log("build date:", BUILD_DATE);
-console.log("version:", VERSION);
 const Events = Events$1;
 const Media = media;
 const Endpoint = RTCEndpoint;

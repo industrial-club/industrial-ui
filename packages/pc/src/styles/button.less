@@ -1,3 +1,10 @@
+@sizes: m, l, xl, xxl;
+@sizeslength: length(@sizes) + 1;
+// padding-size
+@padding_m: 0.2rem 0.4rem;
+@padding_l: 0.5rem 1rem;
+@padding_xl: 0.6rem 1.2rem;
+@padding_xxl: 0.8rem 1.4rem;
 .inl-button {
   padding: 0.5rem 1rem;
   margin-right: 0.5rem;
@@ -6,6 +13,12 @@
   color: @color_gray2;
   border: 1px solid @color_border_default;
   .anim3();
+  &[disabled] {
+    background-color: fade(@color_border_default, 40%);
+    color: @color_white;
+    border: none;
+    cursor: wait;
+  }
   &:active {
     opacity: 0.9;
   }
@@ -15,6 +28,15 @@
   &[class*="inl-button-type-"] {
     color: @color_white;
     border: none;
+  }
+  &.inl-button-type-text {
+    color: @color_main;
+    &:hover {
+      color: @color_main_90;
+    }
+    &:active {
+      color: @color_main_80;
+    }
   }
   &-block {
     width: 100%;
@@ -26,10 +48,15 @@
     &-type {
       &-@{typeItem} {
         background-color: ~"@{color_@{typeItem}}";
+        &[disabled] {
+          cursor: wait;
+          background-color: ~"@{color_@{typeItem}_shallow}";
+        }
       }
     }
     .LoopTypes(@index+1);
   }
+
   .LoopTypes(1);
 
   .LoopSize(@index) when(@index<@sizeslength) {

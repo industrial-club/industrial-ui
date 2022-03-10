@@ -28,10 +28,11 @@
 <template v-slot:comb>
     <div>
         <inl-button>default</inl-button>
-        <inl-button type="primary">primary</inl-button>
+        <inl-button  type="primary">primary</inl-button>
         <inl-button type="success">success</inl-button>
-        <inl-button type="error">error</inl-button>
+        <inl-button type="danger">danger</inl-button>
         <inl-button type="warning">warn</inl-button>
+        <inl-button type="text">文本按钮</inl-button>
     </div>
 </template>
 
@@ -57,7 +58,7 @@ export default defineComponent({
         <inl-button shape="circle">circle</inl-button>
         <inl-button shape="circle" type="primary">primary</inl-button>
         <inl-button shape="circle" type="success">success</inl-button>
-        <inl-button shape="circle" type="error">error</inl-button>
+        <inl-button shape="circle" type="danger">danger</inl-button>
         <inl-button shape="circle" type="warning">warn</inl-button>
         <inl-button shape="round"></inl-button>
     </div>
@@ -114,17 +115,17 @@ let arr = [
 
 :::
 
-::: dm
+::: dm title="按钮禁用" describe=""
 
 <div></div>
 
 <template v-slot:comb>
     <div>
-        <inl-button block>default</inl-button>
-        <inl-button block type="primary">primary</inl-button>
-        <inl-button block type="success">success</inl-button>
-        <inl-button block type="error">error</inl-button>
-        <inl-button block type="warning">warn</inl-button>
+        <inl-button disabled>default</inl-button>
+        <inl-button disabled type="primary">primary</inl-button>
+        <inl-button disabled type="success">success</inl-button>
+        <inl-button disabled type="danger">danger</inl-button>
+        <inl-button disabled type="warning">warn</inl-button>
     </div>
 </template>
 

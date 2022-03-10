@@ -15,7 +15,6 @@ export default defineComponent({
       child: [],
     });
     const activeKey = router.route.path.split(".html")[0];
-
     const setSub = (inlMI: any): inlMenuItem => {
       const subList: inlMenuItem = {
         name: inlMI.text,
@@ -34,8 +33,9 @@ export default defineComponent({
     };
     const subkey = router.route.path.split("/")[1];
     const sidebarByKey = sidebar[`/${subkey}/`] || {};
+    console.log(sidebar);
     const setMenu = () => {
-      for (let n of sidebarByKey.children) {
+      for (let n of sidebar.children) {
         if (n.children && n.children.length > 0) {
           menus.push(setSub(n));
         } else {

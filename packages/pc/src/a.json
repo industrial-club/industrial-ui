@@ -1,0 +1,67 @@
+{
+  "v": "7.2.7",
+  "p": {
+    "autoAdjustIndex": true,
+    "hierarchicalRendering": true
+  },
+  "a": {},
+  "d": [
+    {
+      "c": "ht.Node",
+      "i": 1625,
+      "p": {
+        "image": "symbols/basic/node.json",
+        "rotation": 5.23599,
+        "position": {
+          "x": 21.11079,
+          "y": 113.0048
+        },
+        "anchor": {
+          "x": 0.10128,
+          "y": 0.15635
+        }
+      }
+    },
+    {
+      "c": "ht.Node",
+      "i": 1626,
+      "p": {
+        "image": "symbols/basic/node.json",
+        "rotation": 5.75959,
+        "position": {
+          "x": 179.15764,
+          "y": 185.37738
+        },
+        "anchor": {
+          "x": 0.5,
+          "y": 4.71053
+        }
+      }
+    },
+    {
+      "c": "ht.Edge",
+      "i": 1635,
+      "p": {
+        "source": {
+          "__i": 1625
+        },
+        "target": {
+          "__i": 1626
+        }
+      },
+      "s": {
+        "edge.color": "#EFF1F4",
+        "edge.width": 5,
+        "edge.dash": true,
+        "edge.dash.color": "#05D84B"
+      }
+    }
+  ],
+  "modified": "Thu Mar 10 2022 12:46:29 GMT+0800 (中国标准时间)",
+  "contentRect": {
+    "x": 13.88923,
+    "y": 20.10846,
+    "width": 112.52232,
+    "height": 112.5219
+  }
+}
