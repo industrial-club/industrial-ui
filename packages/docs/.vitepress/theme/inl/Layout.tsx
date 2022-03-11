@@ -1,16 +1,19 @@
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import sid from "./SideBar";
 import headerInl from "./header";
 
 export default defineComponent({
   components: { sid, headerInl },
   setup(_prop, _context) {
-    const isRootPath = window.location.pathname !== "/";
+    let isRootPath = ref<boolean>(false);
+    onMounted(() => {
+      isRootPath.value = window.location.pathname !== "/";
+    });
     return () => (
       <inl-layout isBody arrange="column">
-        {isRootPath ? <headerInl /> : ""}
+        {isRootPath.value ? <headerInl /> : ""}
         <inl-layout style={{ flex: 1 }}>
-          {isRootPath ? <sid /> : ""}
+          {isRootPath.value ? <sid /> : ""}
           <inl-layout class="content">
             <content class="markdown-body" />
           </inl-layout>

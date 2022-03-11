@@ -38,15 +38,15 @@ export default defineComponent({
       }, 100);
     });
     return () => (
-      <div class={"code-box"}>
-        <div class={"code-box-demo"}>
+      <div class="code-box">
+        <div class="code-box-demo">
           <comb ref={com}></comb>
         </div>
-        <div class={"code-box-meta"}>
+        <div class="code-box-meta">
           <h4 id="内嵌菜单">{_prop.title} </h4>
           <p>{_prop.describe}</p>
-          <div class={"code-box-actions"}>
-            <div class={"code-expand-icon"}>
+          <div class="code-box-actions">
+            <div class="code-expand-icon">
               {opt.value.map((item) => (
                 <span
                   onClick={() => {
@@ -66,9 +66,9 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class={"highlight-wrapper"} v-show={open.value}>
+        <div class="highlight-wrapper" v-show={open.value}>
           <div
-            class={"custom-code-box vue-code-box"}
+            class="custom-code-box vue-code-box"
             v-show={optActive.value === "vue"}
           >
             <div class="vue-code-box-html language-vue">
