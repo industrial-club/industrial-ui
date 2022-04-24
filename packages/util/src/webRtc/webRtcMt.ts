@@ -19,6 +19,7 @@ export interface PlayVideoArgs {
   cameraRtspPort: string;
   cameraChannel: string;
   cameraStream: string;
+  addRtspProxyUrl?: string;
 }
 
 export interface EndpointConfig {

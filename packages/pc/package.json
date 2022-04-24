@@ -1,5 +1,5 @@
 {
-  "name": "inl-pc-ui",
+  "name": "inl-ui",
   "version": "0.0.1",
   "description": "工业 pc ui库",
   "main": "dist/index.js",
