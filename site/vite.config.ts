@@ -1,9 +1,9 @@
-import path from "path";
 import vueJsx from "@vitejs/plugin-vue-jsx";
-import { additionalData } from "./themeConfig";
+import viteThemeAnt from "../scripts/vite-less-ant-theme";
 /**
  * @type {import('vite').UserConfig}
  */
+
 export default {
   resolve: {
     alias: {
@@ -42,14 +42,13 @@ export default {
   },
   css: {
     preprocessorOptions: {
+      // less: viteThemeAnt("dark"),
       less: {
         modifyVars: {
           hack: `true;@import "${require.resolve("./src/theme/dark.less")}";`,
           "root-entry-name": "dark",
         },
         javascriptEnabled: true,
-        // includePaths: ["node_modules/"],
-        // additionalData,
       },
     },
   },
