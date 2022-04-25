@@ -98,6 +98,7 @@ export default defineComponent({
 
           <a-form-item label="表格">{renderTable()}</a-form-item>
         </a-form>
+        <inl-about />
       </div>
     );
   },

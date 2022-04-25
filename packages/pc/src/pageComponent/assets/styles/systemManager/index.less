@@ -1,0 +1,89 @@
+@import './menu-manager.less';
+@import './param-manager.less';
+
+.systemManager {
+  width: 100%;
+  height: 100%;
+
+  .LayoutSider {
+    background: #fff;
+    overflow: auto;
+    margin-right: 14px;
+  }
+}
+
+.logManager,
+.userManager,
+.role-manager,
+.personalSetting,
+.depManager,
+.postManager {
+  display: flex;
+  flex-direction: column;
+
+  .control {
+    margin-bottom: 16px;
+  }
+
+  .titleLine {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    .title {
+      font-weight: bolder;
+    }
+  }
+
+  .searchLine {
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+}
+
+.logModal {
+  .col {
+    display: flex;
+    margin-bottom: 10px;
+    .label {
+      padding: 0 10px;
+      text-align: right;
+      min-width: 140px;
+      color: gray;
+    }
+  }
+}
+
+.depManager {
+  flex-direction: row;
+  .left {
+    width: 300px;
+    margin-right: 20px;
+  }
+  .right {
+    flex: 1;
+    .basic-info {
+      .basic-info-header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+        .basic-info-title {
+          font-size: 18px;
+          color: #31363c;
+          font-weight: 600;
+        }
+      }
+    }
+    .employee-container {
+      .title {
+        font-size: 18px;
+        color: #31363c;
+        font-weight: 600;
+      }
+      .operation {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+    }
+  }
+}
