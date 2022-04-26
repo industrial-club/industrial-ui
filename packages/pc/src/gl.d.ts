@@ -11,3 +11,9 @@ declare module "@vue/runtime-core" {
     $axios: typeof instance;
   }
 }
+
+declare global {
+  interface Window {
+    sid: string;
+  }
+}

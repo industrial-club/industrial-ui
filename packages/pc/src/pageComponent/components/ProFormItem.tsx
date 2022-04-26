@@ -14,8 +14,8 @@ import {
   ref,
   watch,
   PropType,
-} from 'vue';
-import { isObject } from 'lodash';
+} from "vue";
+import { isObject } from "lodash";
 
 import {
   FormItem,
@@ -24,7 +24,7 @@ import {
   Switch,
   Select,
   SelectOption,
-} from 'inl-ui';
+} from "ant-design-vue";
 
 const ProFormItem = defineComponent({
   props: {
@@ -45,10 +45,10 @@ const ProFormItem = defineComponent({
     // 表单类型
     const type = computed(() => paramDefine.value.type);
     // 是否是开关表单
-    const isSwitch = computed(() => type.value === 'boolean');
+    const isSwitch = computed(() => type.value === "boolean");
 
     /* 是否修改状态 */
-    const isEdit = inject<Ref<boolean>>('isEdit')!;
+    const isEdit = inject<Ref<boolean>>("isEdit")!;
 
     /* ===== 输入框值 ===== */
     const inputValue = ref();
@@ -59,12 +59,12 @@ const ProFormItem = defineComponent({
         const value = props.description.paramDefineValue.value;
         // boolean类型 true/false是字符串 所以需要单独判断
         inputValue.value = isSwitch.value
-          ? value === 'false'
+          ? value === "false"
             ? false
             : true
           : value;
       },
-      { deep: true, immediate: true },
+      { deep: true, immediate: true }
     );
     // 输入框变化回调
     const handleValueChange = (e: any) => {
@@ -80,14 +80,14 @@ const ProFormItem = defineComponent({
     /* ==== 根据类型 返回不同的表单项 ===== */
     let Filed: any = null;
     switch (type.value) {
-      case 'float':
-      case 'int':
+      case "float":
+      case "int":
         Filed = InputNumber;
         break;
-      case 'boolean':
+      case "boolean":
         Filed = Switch;
         break;
-      case 'select':
+      case "select":
         Filed = Select;
         break;
 
@@ -102,7 +102,7 @@ const ProFormItem = defineComponent({
       // 最大值
       if (paramDefine.value.maxValue !== null) {
         res.push({
-          type: 'number',
+          type: "number",
           max: paramDefine.value.maxValue,
           message: `最大值为${paramDefine.value.maxValue}`,
         });
@@ -110,7 +110,7 @@ const ProFormItem = defineComponent({
       // 最小值
       if (paramDefine.value.minValue !== null) {
         res.push({
-          type: 'number',
+          type: "number",
           min: paramDefine.value.minValue,
           message: `最小值为${paramDefine.value.minValue}`,
         });
@@ -139,7 +139,7 @@ const ProFormItem = defineComponent({
 
       // 单位
       if (paramDefine.value.unit) {
-        res['addon-after'] = paramDefine.value.unit;
+        res["addon-after"] = paramDefine.value.unit;
       }
       // 是否可修改
       if (!paramDefine.value.writeable || !isEdit.value) {
@@ -160,8 +160,8 @@ const ProFormItem = defineComponent({
       // console.log(isSwitch.value);
 
       const vModel = isSwitch.value
-        ? [inputValue.value, 'checked']
-        : [inputValue.value, 'value'];
+        ? [inputValue.value, "checked"]
+        : [inputValue.value, "value"];
       return (
         <FormItem
           name={paramDefine.value.code}
@@ -170,11 +170,11 @@ const ProFormItem = defineComponent({
           rules={rules.value}
         >
           <Filed
-            style={{ width: isSwitch.value ? '' : '100%' }}
+            style={{ width: isSwitch.value ? "" : "100%" }}
             {...inputProps.value}
             onChange={handleValueChange}
           >
-            <SelectOption key='你好'>你好</SelectOption>
+            <SelectOption key="你好">你好</SelectOption>
           </Filed>
         </FormItem>
       );

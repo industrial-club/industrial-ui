@@ -5,9 +5,9 @@ import {
   h,
   resolveComponent,
   watch,
-} from 'vue';
-import { Menu, MenuItem, SubMenu } from 'inl-ui';
-import { useRoute, useRouter } from 'vue-router';
+} from "vue";
+import { Menu, MenuItem, SubMenu } from "ant-design-vue";
+import { useRoute, useRouter } from "vue-router";
 
 // props
 const props = {
@@ -17,7 +17,7 @@ const props = {
   },
   path: {
     type: String,
-    default: '',
+    default: "",
   },
 };
 
@@ -46,11 +46,11 @@ export default defineComponent({
     watch(
       route,
       (nVal) => {
-        const urlList = nVal.path.split('/');
+        const urlList = nVal.path.split("/");
         state.openKeys = [urlList[urlList.length - 2]];
         state.selectedKeys = [urlList[urlList.length - 1]];
       },
-      { deep: true, immediate: true },
+      { deep: true, immediate: true }
     );
 
     const toPath = (path: string) => {
@@ -78,8 +78,8 @@ export default defineComponent({
         ele = (
           <MenuItem
             key={item.path}
-            onClick={() => toPath((fPath ? `${fPath}/` : '') + item.path)}
-            v-slots={getSlots(meta.title, meta?.icon || 'container-outlined')}
+            onClick={() => toPath((fPath ? `${fPath}/` : "") + item.path)}
+            v-slots={getSlots(meta.title, meta?.icon || "container-outlined")}
           >
             {meta.title}
           </MenuItem>
@@ -110,10 +110,10 @@ export default defineComponent({
 
     return () => (
       <Menu
-        mode='inline'
+        mode="inline"
         v-models={[
-          [state.selectedKeys, 'selectedKeys'],
-          [state.openKeys, 'openKeys'],
+          [state.selectedKeys, "selectedKeys"],
+          [state.openKeys, "openKeys"],
         ]}
       >
         {getSubMenu(prop.menu)}

@@ -5,9 +5,9 @@ import {
   h,
   resolveComponent,
   watch,
-} from 'vue';
-import { Menu, MenuItem, SubMenu } from 'inl-ui';
-import { useRoute, useRouter } from 'vue-router';
+} from "vue";
+import { Menu, MenuItem, SubMenu } from "ant-design-vue";
+import { useRoute, useRouter } from "vue-router";
 
 // props
 const props = {
@@ -40,10 +40,10 @@ export default defineComponent({
     watch(
       route,
       (nVal) => {
-        const urlList = nVal.path.split('/');
+        const urlList = nVal.path.split("/");
         state.selectedKeys = [`/${urlList[1]}`];
       },
-      { deep: true, immediate: true },
+      { deep: true, immediate: true }
     );
 
     const toPath = (path: string) => {
@@ -71,7 +71,7 @@ export default defineComponent({
           ele = (
             <MenuItem
               key={item.path}
-              onClick={() => toPath((fPath ? `${fPath}/` : '') + item.path)}
+              onClick={() => toPath((fPath ? `${fPath}/` : "") + item.path)}
               v-slots={getSlots(meta.title, meta?.icon)}
             >
               {meta.title}
@@ -85,9 +85,9 @@ export default defineComponent({
 
     return () => (
       <Menu
-        class='topMenu'
-        mode='horizontal'
-        v-model={[state.selectedKeys, 'selectedKeys']}
+        class="topMenu"
+        mode="horizontal"
+        v-model={[state.selectedKeys, "selectedKeys"]}
       >
         {getMenuItem(prop.menu)}
       </Menu>

@@ -6,13 +6,13 @@
  * @LastEditTime: 2022-04-25 15:10:09
  */
 
-import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
-import useProxy from '@/hooks/useProxy';
-import useBus from '@/hooks/useBus';
-import { debounce } from 'lodash';
-import { findById } from '@/utils/tree';
+import { defineComponent, onBeforeUnmount, onMounted, ref } from "vue";
+import useProxy from "@/pageComponent/hooks/useProxy";
+import useBus from "@/pageComponent/hooks/useBus";
+import { debounce } from "lodash";
+import { findById } from "@/pageComponent/utils/tree";
 
-import { Tree, Input, Space, Button, Spin, Modal, Empty } from 'inl-ui';
+import { Tree, Input, Space, Button, Spin, Modal, Empty } from "ant-design-vue";
 import {
   SearchOutlined,
   CloudUploadOutlined,
@@ -22,13 +22,13 @@ import {
   DeleteOutlined,
   PlusCircleOutlined,
   HolderOutlined,
-} from '@ant-design/icons-vue';
+} from "@ant-design/icons-vue";
 
 const CommonTree = defineComponent({
   props: {
     downLoadName: {
       type: String,
-      default: '树结构数据.json',
+      default: "树结构数据.json",
     },
     getData: {
       type: Function,
@@ -59,9 +59,9 @@ const CommonTree = defineComponent({
   },
   setup(props) {
     const proxy = useProxy();
-    const bus = useBus('system');
+    const bus = useBus("system");
 
-    const searchText = ref('');
+    const searchText = ref("");
 
     const treeData = ref([]);
     const originData = ref([]);
@@ -110,7 +110,7 @@ const CommonTree = defineComponent({
       const str = JSON.stringify(originData.value, null, 2);
       const blob = new Blob([str]);
       const url = URL.createObjectURL(blob);
-      const aEl = document.createElement('a');
+      const aEl = document.createElement("a");
       aEl.href = url;
       aEl.download = props.downLoadName;
       aEl.click();
@@ -118,7 +118,7 @@ const CommonTree = defineComponent({
     // 复制节点
     const handleCopy = (node: any) => {
       Modal.confirm({
-        title: '复制菜单',
+        title: "复制菜单",
         content: `确定复制菜单“${node.name}”?`,
         async onOk() {
           props.onCopy?.(node);
@@ -137,7 +137,7 @@ const CommonTree = defineComponent({
     // 删除节点
     const handleDelete = (node: any) => {
       Modal.confirm({
-        title: '删除菜单',
+        title: "删除菜单",
         content: `确定删除菜单“${node.name}”?`,
         async onOk() {
           props.onDelete?.(node);
@@ -150,7 +150,7 @@ const CommonTree = defineComponent({
     const handleDrop = (info: any) => {
       const dropKey = info.node.id;
       const dragKey = info.dragNode.id;
-      const dropPos = info.node.pos.split('-');
+      const dropPos = info.node.pos.split("-");
       const dropPosition =
         info.dropPosition - Number(dropPos[dropPos.length - 1]);
       const loop = (data: any, id: string | number, callback: any) => {
@@ -218,7 +218,7 @@ const CommonTree = defineComponent({
       // 转换第一层数据
       const res = data.map((item: any, index: number) => {
         setSort(item, index);
-        item.id = parseInt(item.id.replace('sys', ''));
+        item.id = parseInt(item.id.replace("sys", ""));
         item.menuList = item.subList;
         return item;
       });
@@ -231,30 +231,30 @@ const CommonTree = defineComponent({
     const handleRefresh = async () => {
       await getTreeData(proxy._reselect);
     };
-    onMounted(() => bus.on('tree/refresh', handleRefresh));
-    onBeforeUnmount(() => bus.off('tree/refresh', handleRefresh));
+    onMounted(() => bus.on("tree/refresh", handleRefresh));
+    onBeforeUnmount(() => bus.off("tree/refresh", handleRefresh));
 
     return () => (
-      <div class='common-tree'>
+      <div class="common-tree">
         {/* 搜索 */}
         <Input
-          style={{ marginBottom: '16px' }}
-          placeholder='请输入内容'
+          style={{ marginBottom: "16px" }}
+          placeholder="请输入内容"
           allowClear
           suffix={<SearchOutlined />}
-          v-model={[searchText.value, 'value']}
+          v-model={[searchText.value, "value"]}
           onChange={getTreeData}
         />
         {/* 工具栏容器 */}
-        <div class='utils-container'>
+        <div class="utils-container">
           <Space>
             {props.isJSONOperation && (
               <>
-                <Button type='link'>
+                <Button type="link">
                   <CloudUploadOutlined />
                   上传JSON文件
                 </Button>
-                <Button type='link' onClick={handleDownload}>
+                <Button type="link" onClick={handleDownload}>
                   <CloudDownloadOutlined />
                   下载JSON文件
                 </Button>
@@ -262,7 +262,7 @@ const CommonTree = defineComponent({
             )}
           </Space>
         </div>
-        <div class='tree-container'>
+        <div class="tree-container">
           <Spin spinning={isLoading.value}>
             {treeData.value.length > 0 ? (
               <Tree
@@ -270,20 +270,20 @@ const CommonTree = defineComponent({
                 blockNode
                 draggable={isDraggable.value}
                 defaultExpandAll
-                fieldNames={{ children: 'subList', key: 'id', title: 'name' }}
+                fieldNames={{ children: "subList", key: "id", title: "name" }}
                 treeData={treeData.value}
-                v-model={[selectedKeys.value, 'selectedKeys']}
+                v-model={[selectedKeys.value, "selectedKeys"]}
                 onSelect={handleSelectNode}
                 onDrop={handleDrop}
               >
                 {{
                   title: ({ name, selected, isSystem, dataRef }: any) => {
                     return (
-                      <span class='tree-node-title'>
-                        <span class='name'>{name}</span>
+                      <span class="tree-node-title">
+                        <span class="name">{name}</span>
                         {/* 当前选中的节点需要展示操作按钮 */}
                         {selected && isSystem && (
-                          <span class='operation' style={{ float: 'right' }}>
+                          <span class="operation" style={{ float: "right" }}>
                             <PlusCircleOutlined
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -293,7 +293,7 @@ const CommonTree = defineComponent({
                           </span>
                         )}
                         {selected && !isSystem && (
-                          <span class='operation' style={{ float: 'right' }}>
+                          <span class="operation" style={{ float: "right" }}>
                             <Space>
                               {/* 只能复制没有子菜单的菜单 */}
                               {!dataRef.subList.length &&

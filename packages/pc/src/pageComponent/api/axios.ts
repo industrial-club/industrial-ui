@@ -5,26 +5,26 @@
  * @LastEditors: wang liang
  * @LastEditTime: 2022-04-19 16:10:57
  */
-import axios from 'axios';
-import { omit, isPlainObject } from 'lodash';
-import { message } from 'inl-ui';
+import axios from "axios";
+import { omit, isPlainObject } from "lodash";
+import { message } from "ant-design-vue";
 
 const instance = axios.create({
-  baseURL: '/api/comlite/v1', // /api/
+  baseURL: "/api/comlite/v1", // /api/
   timeout: 5000,
   headers: {
-    'X-Custom-Header': 'foobar',
-    clientType: 'app',
-    'Content-Type': 'application/json;charset=UTF-8',
+    "X-Custom-Header": "foobar",
+    clientType: "app",
+    "Content-Type": "application/json;charset=UTF-8",
   },
 });
 
 const getToken = (): string => {
-  return `${sessionStorage.getItem('token')}`;
+  return `${sessionStorage.getItem("token")}`;
 };
 
 const getUser = () => {
-  const user = sessionStorage.getItem('userinfo');
+  const user = sessionStorage.getItem("userinfo");
   if (user) {
     return JSON.parse(user);
   }
@@ -32,7 +32,7 @@ const getUser = () => {
 
 instance.interceptors.request.use(
   (conf) => {
-    const corpId = sessionStorage.getItem('corpId');
+    const corpId = sessionStorage.getItem("corpId");
     conf.headers.token = getToken();
     conf.headers.userId = getUser()?.userId;
     conf.headers.userName = getUser()?.userName;
@@ -41,10 +41,10 @@ instance.interceptors.request.use(
     if (isPlainObject(data)) {
       conf.data = omit(
         data,
-        'createDt',
-        'createUser',
-        'updateDt',
-        'updateUser',
+        "createDt",
+        "createUser",
+        "updateDt",
+        "updateUser"
       );
     }
     if (corpId) {
@@ -54,24 +54,24 @@ instance.interceptors.request.use(
   },
   (err) => {
     return Promise.reject(err);
-  },
+  }
 );
 
 instance.interceptors.response.use(
   (res) => {
     const resData = res.data;
-    const status = resData.code === '0';
+    const status = resData.code === "0";
     if (status) {
       return Promise.resolve(resData);
     }
-    const msg = res.data?.msg ?? '请求失败';
+    const msg = res.data?.msg ?? "请求失败";
     message.error(msg);
 
     return Promise.reject(resData);
   },
   (err) => {
     return Promise.reject(err);
-  },
+  }
 );
 
 export { instance };

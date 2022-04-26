@@ -6,17 +6,17 @@
  * @LastEditTime: 2022-04-24 13:58:53
  */
 
-import { PropType, defineComponent, ref, watch } from 'vue';
-import useVModel from '@/hooks/useVModel';
-import { instance } from '@/api';
-import { isNil, debounce, isEqual } from 'lodash';
-import { every } from '@/utils/is';
+import { PropType, defineComponent, ref, watch } from "vue";
+import useVModel from "@/pageComponent/hooks/useVModel";
+import { instance } from "@/pageComponent/api";
+import { isNil, debounce, isEqual } from "lodash";
+import { every } from "@/pageComponent/utils/is";
 
-import { Select, SelectOption } from 'inl-ui';
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue';
+import { Select, SelectOption } from "ant-design-vue";
+import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons-vue";
 
 const SearchSelect = defineComponent({
-  emits: ['update:value'],
+  emits: ["update:value"],
   props: {
     value: {
       type: [String, Array, Number],
@@ -41,7 +41,7 @@ const SearchSelect = defineComponent({
     },
   },
   setup(props, { emit, attrs }) {
-    const modelValue = useVModel(props, 'value', emit);
+    const modelValue = useVModel(props, "value", emit);
 
     /* 列表 */
     const optionList = ref([]);
@@ -71,15 +71,15 @@ const SearchSelect = defineComponent({
         }
       }
     }, 300);
-    getOptionList('');
+    getOptionList("");
 
     watch(
       () => props.extParams,
       (curr, prev) => {
         if (!isEqual(curr, prev)) {
-          getOptionList('');
+          getOptionList("");
         }
-      },
+      }
     );
 
     watch(
@@ -88,36 +88,36 @@ const SearchSelect = defineComponent({
         if (isEqual(curr, prev)) return;
         if (Array.isArray(modelValue.value)) {
           modelValue.value = modelValue.value.filter(
-            (item) => !props.excludeValues.includes(item),
+            (item) => !props.excludeValues.includes(item)
           );
         } else {
           if (props.excludeValues.includes(modelValue.value)) {
             modelValue.value = undefined;
           }
         }
-      },
+      }
     );
 
     return () => (
       <Select
         {...attrs}
-        notFoundContent={isFetching.value ? '加载中' : '暂无数据'}
+        notFoundContent={isFetching.value ? "加载中" : "暂无数据"}
         showSearch
         defaultActiveFirstOption={false}
         showArrow={true}
         filterOption={false}
-        v-model={[modelValue.value, 'value']}
+        v-model={[modelValue.value, "value"]}
         onSearch={getOptionList}
       >
         {optionList.value.map(
           (item: any) =>
             !props.excludeValues.includes(
-              item[props.valuePorp.key ?? 'id'],
+              item[props.valuePorp.key ?? "id"]
             ) && (
-              <SelectOption key={item[props.valuePorp.key ?? 'id']}>
-                {item[props.valuePorp.label ?? 'name']}
+              <SelectOption key={item[props.valuePorp.key ?? "id"]}>
+                {item[props.valuePorp.label ?? "name"]}
               </SelectOption>
-            ),
+            )
         )}
       </Select>
     );
