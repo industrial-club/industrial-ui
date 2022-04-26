@@ -2,7 +2,7 @@ import { defineComponent, onMounted, ref, reactive } from "vue";
 // import mtLogoBig from "@/pageComponent/assets/img/mtLogoBig.png";
 // import mtInfo from "@/pageComponent/assets/img/mtInfo.png";
 import { Card, Button, Modal, Popconfirm } from "ant-design-vue";
-import utils from "@/utll";
+import utils from "@/utils";
 
 const About = defineComponent({
   setup(prop, context) {
