@@ -12,6 +12,7 @@
     "build:docs": "yarn workspace inl-docs run docs:build",
     "dev:app": "yarn workspace inl-app-ui run dev",
     "dev:pc": "yarn workspace inl-ui run dev",
+    "build:pc": "yarn workspace inl-ui run build",
     "dev:util": "yarn workspace inl-util run dev",
     "build:util": "yarn workspace inl-util run build",
     "build:utilVideo": "yarn workspace inl-util run buildVideo",
@@ -26,6 +27,7 @@
     "eslint": "^8.5.0",
     "ant-design-vue": "^3.2.0",
     "less": "^4.1.2",
-    "less-vars-to-js": "^1.3.0"
+    "less-vars-to-js": "^1.3.0",
+    "axios": "^0.21.1"
   }
 }

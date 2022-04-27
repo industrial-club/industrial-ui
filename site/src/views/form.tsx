@@ -361,6 +361,7 @@ export default defineComponent({
             </div>
           </a-form-item>
         </a-form>
+        <inl-about />
       </div>
     );
   },

@@ -1,0 +1,44 @@
+.param-manager {
+  .tab-item {
+    .operation {
+      text-align: right;
+      & > .ant-space {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    }
+    .group-container {
+      .group-item {
+        &-title {
+          font-size: 14px;
+          font-weight: 600;
+        }
+      }
+      .collapse-container {
+        margin: 16px 0;
+        .header {
+          position: relative;
+          display: flex;
+          // justify-content: space-between;
+          align-items: center;
+          padding-left: 16px;
+          line-height: 1;
+          .container-title {
+            font-size: 14px;
+            font-weight: 600;
+          }
+          &::before {
+            content: ' ';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #4b7ff7;
+          }
+        }
+      }
+    }
+  }
+}

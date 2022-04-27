@@ -1,0 +1,56 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+
+  .logoLine {
+    justify-content: space-between;
+    .logo {
+      width: 600px;
+      margin-bottom: 40px;
+    }
+  }
+
+  .titleLine {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    .title {
+      font-weight: bolder;
+      &::before {
+        content: '';
+        border-left: 2px solid #3377ff;
+        height: 10px;
+        margin-right: 12px;
+      }
+    }
+  }
+
+  .card {
+    color: rgba(0, 0, 0, 0.45);
+    margin: 0 0 20px 16px;
+    background: #f8f7fc;
+  }
+
+  .litTitle {
+    margin: 0 0 4px 20px;
+  }
+
+  .down {
+    margin: 10px 0 20px 16px;
+  }
+
+  .info {
+    width: 800px;
+  }
+
+  .infoBtn {
+    margin: 10px 0;
+  }
+
+  .update {
+    position: absolute;
+    right: 65px;
+    top: 220px;
+  }
+}

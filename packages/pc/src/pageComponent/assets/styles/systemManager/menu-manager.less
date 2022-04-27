@@ -1,0 +1,52 @@
+.menu-manager {
+  display: flex;
+  gap: 32px;
+  height: 100%;
+  .tree {
+    width: 300px;
+    .menu-select-tree {
+      .utils-container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .tree-container {
+        padding: 8px;
+        .ant-tree-show-line .ant-tree-indent-unit::before {
+          border-right: 1px dashed #d9d9d9;
+        }
+      }
+    }
+  }
+  .right-detail {
+    flex: auto;
+    .menu-detail {
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        .header-text {
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .form {
+        max-width: 500px;
+      }
+    }
+  }
+}
+.tree-cotextmenu .context-utils {
+  display: flex;
+  gap: 8px;
+}
+.util-item {
+  margin: 8px 0;
+  padding: 4px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  line-height: 1;
+  color: #ccc;
+  cursor: pointer;
+}
