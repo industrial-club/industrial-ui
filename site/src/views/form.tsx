@@ -304,7 +304,6 @@ export default defineComponent({
                   [selectedKeys.value, "selectedKeys"],
                 ]}
                 mode="inline"
-                theme="dark"
                 inline-collapsed={collapsed.value}
               >
                 <a-menu-item
