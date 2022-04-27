@@ -177,6 +177,15 @@ body{
 @dropdown-menu-bg:@white;
 
 // menu
-@menu-dark-selected-item-text-color:#3E7EFF;
-@menu-dark-selected-item-icon-color:#3E7EFF;
-@menu-item-padding-horizontal:'100%';
+@menu-highlight-color:#3E7EFF;
+@menu-item-active-bg:fade(@white, 10%);
+@menu-bg:@menu-dark-bg;
+@menu-item-color:@white;
+// 
+.ant-menu-inline .ant-menu-item::after {
+    left: 0;
+    right: initial;
+}
+.ant-menu.ant-menu-root > li > .ant-menu-title-content {
+    font-weight: 400;
+}
