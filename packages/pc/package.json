@@ -9,7 +9,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev rollup -c conf/rollup.config.ts  -w",
-    "build": " rollup -c conf/rollup.config.ts"
+    "build": "rollup -c conf/rollup.config.ts && node conf/cp.js",
+    "bb": "rollup -c conf/rollup.config.ts && "
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
