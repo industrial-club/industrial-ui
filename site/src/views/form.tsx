@@ -1,4 +1,4 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import {
   UserOutlined,
   PlusOutlined,
@@ -18,6 +18,7 @@ export default defineComponent({
     const collapsed = ref(false);
     const openKeys = ref(["sub1"]);
     const selectedKeys = ref(["1"]);
+    const name = ref("monitor");
     const dataSource = [
       {
         key: "1",
@@ -60,7 +61,12 @@ export default defineComponent({
         />
       );
     };
-
+    watch(
+      () => name.value,
+      (e) => {
+        console.log(e);
+      }
+    );
     return () => (
       <div class={"form-demo"}>
         <a-form
@@ -284,7 +290,7 @@ export default defineComponent({
           </a-form-item>
 
           <a-form-item label="导航">
-            <div style="width: 256px">
+            {/* <div style="width: 256px">
               <a-button
                 type="primary"
                 style="margin-bottom: 16px"
@@ -357,10 +363,74 @@ export default defineComponent({
                   </a-sub-menu>
                 </a-sub-menu>
               </a-menu>
-            </div>
+            </div>   */}
+            <a-menu
+              v-models={[
+                [openKeys.value, "openKeys"],
+                [selectedKeys.value, "selectedKeys"],
+              ]}
+              mode="horizontal"
+            >
+              <a-menu-item
+                key="1"
+                v-slots={{
+                  icon: () => <PieChartOutlined />,
+                }}
+              >
+                <span>Option 1</span>
+              </a-menu-item>
+              <a-menu-item
+                key="2"
+                v-slots={{
+                  icon: () => <DesktopOutlined />,
+                }}
+              >
+                <span>Option 2</span>
+              </a-menu-item>
+              <a-menu-item
+                key="3"
+                v-slots={{
+                  icon: () => <InboxOutlined />,
+                }}
+              >
+                <span>Option 3</span>
+              </a-menu-item>
+              <a-sub-menu
+                key="sub1"
+                v-slots={{
+                  icon: () => <MailOutlined />,
+                  title: () => <span>Navigation One</span>,
+                }}
+              >
+                <a-menu-item key="5">Option 5</a-menu-item>
+                <a-menu-item key="6">Option 6</a-menu-item>
+                <a-menu-item key="7">Option 7</a-menu-item>
+                <a-menu-item key="8">Option 8</a-menu-item>
+              </a-sub-menu>
+              <a-sub-menu
+                key="sub2"
+                v-slots={{
+                  icon: () => <AppstoreOutlined />,
+                  title: () => <span>Navigation Two</span>,
+                }}
+              >
+                <a-menu-item key="9">Option 9</a-menu-item>
+                <a-menu-item key="10">Option 10</a-menu-item>
+                <a-sub-menu key="sub3" title="Submenu">
+                  <a-menu-item key="11">Option 11</a-menu-item>
+                  <a-menu-item key="12">Option 12</a-menu-item>
+                </a-sub-menu>
+              </a-sub-menu>
+            </a-menu>
           </a-form-item>
         </a-form>
         <inl-about />
+
+        <inl-header-menu
+          v-model={[name.value, "active"]}
+          title={"数据可视化大屏标题"}
+          mode="center"
+        ></inl-header-menu>
       </div>
     );
   },

@@ -178,9 +178,19 @@ body{
 
 // menu
 @menu-highlight-color:#3E7EFF;
+@menu-dark-selected-item-icon-color:#3E7EFF;
+@menu-dark-selected-item-text-color:#3E7EFF;
+@menu-dark-highlight-color:#3E7EFF;
+@menu-dark-item-active-bg:fade(@white, 10%);
+@menu-dark-item-hover-bg:fade(@white, 10%);
+@menu-dark-inline-submenu-bg:@menu-dark-bg;
+@menu-inline-submenu-bg:@menu-dark-bg;
 @menu-item-active-bg:fade(@white, 10%);
 @menu-bg:@menu-dark-bg;
-@menu-item-color:@white;
+@menu-item-color:fade(@white, 65%);
+@border-color-split:@menu-dark-bg;
+@menu-popup-bg:@menu-dark-bg;
+
 // 
 .ant-menu-inline .ant-menu-item::after {
     left: 0;
@@ -188,4 +198,7 @@ body{
 }
 .ant-menu.ant-menu-root > li > .ant-menu-title-content {
     font-weight: 400;
+}
+.ant-menu-dark.ant-menu-inline .ant-menu-item-selected::after {
+    border-right: 3px solid #3E7EFF;
 }
