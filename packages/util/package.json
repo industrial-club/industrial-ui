@@ -1,8 +1,8 @@
 {
   "name": "inl-util",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "description": "工业工具库",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "types": "dist/types/src/index.d.ts",
   "repository": "https://github.com/industrial-club/industrial-ui",
