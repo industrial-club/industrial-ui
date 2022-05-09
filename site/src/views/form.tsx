@@ -290,7 +290,7 @@ export default defineComponent({
           </a-form-item>
 
           <a-form-item label="导航">
-            {/* <div style="width: 256px">
+            <div style="width: 256px">
               <a-button
                 type="primary"
                 style="margin-bottom: 16px"
@@ -363,7 +363,7 @@ export default defineComponent({
                   </a-sub-menu>
                 </a-sub-menu>
               </a-menu>
-            </div>   */}
+            </div>
             <a-menu
               v-models={[
                 [openKeys.value, "openKeys"],
