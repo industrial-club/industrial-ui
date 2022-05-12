@@ -12,19 +12,43 @@
  * @LastEditors: wang liang
  * @LastEditTime: 2022-03-29 15:03:27
  */
-import { defineComponent, ref } from "vue";
-
-import { Tabs, TabPane } from "ant-design-vue";
+import { defineComponent, PropType, provide, ref } from "vue";
 import { api } from "@/pageComponent/api/param";
+import utils from "@/utils";
+
 import TabItem from "./tabItem";
 
+export interface IUrlObj {
+  // 参数列表
+  list: string;
+  // 参数定义对象
+  define: string;
+  // 批量保存
+  save: string;
+}
+
+const DEFAULT_URL: IUrlObj = {
+  list: "/comlite/v1/param/group/list",
+  define: "/comlite/v1/param/group/getDefineAndValueListByGroupId",
+  save: "/comlite/v1/param/value/updateBatch",
+};
+
 const ParamManager = defineComponent({
-  setup() {
+  props: {
+    url: {
+      type: Object as PropType<Partial<IUrlObj>>,
+      default: () => ({}),
+    },
+  },
+  setup(props) {
+    const urlMap = { ...DEFAULT_URL, ...props.url };
+    provide("urlMap", urlMap);
+
     const tabs = ref([]);
 
     /* 获取标签页数据 */
     const getTabs = async () => {
-      const { data } = await api.getGroupList({ level: "tab" });
+      const { data } = await api.getGroupList(urlMap.list)({ level: "tab" });
       tabs.value = data;
     };
 
@@ -32,16 +56,16 @@ const ParamManager = defineComponent({
 
     return () => (
       <div class="param-manager">
-        <Tabs>
+        <a-tabs>
           {tabs.value.map((item: any) => (
-            <TabPane key={item.id} tab={item.name}>
+            <a-tab-pane key={item.id} tab={item.name}>
               <TabItem tabId={item.id} />
-            </TabPane>
+            </a-tab-pane>
           ))}
-        </Tabs>
+        </a-tabs>
       </div>
     );
   },
 });
 
-export default ParamManager;
+export default utils.installComponent(ParamManager, "param-manager");

@@ -6,7 +6,6 @@ import {
   resolveComponent,
   watch,
 } from "vue";
-import { Menu, MenuItem, SubMenu } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
 
 // props
@@ -32,7 +31,6 @@ interface State {
 }
 
 export default defineComponent({
-  components: { Menu, MenuItem, SubMenu },
   props,
   setup(prop, context) {
     const router = useRouter();
@@ -76,13 +74,13 @@ export default defineComponent({
 
       if (meta.hide !== true) {
         ele = (
-          <MenuItem
+          <menu-item
             key={item.path}
             onClick={() => toPath((fPath ? `${fPath}/` : "") + item.path)}
             v-slots={getSlots(meta.title, meta?.icon || "container-outlined")}
           >
             {meta.title}
-          </MenuItem>
+          </menu-item>
         );
       }
       return ele;
@@ -96,9 +94,9 @@ export default defineComponent({
         if (meta.hide !== true) {
           if (item?.children && item?.children.length > 0) {
             result = (
-              <SubMenu key={item.path} v-slots={getSlots(meta.title)}>
+              <a-sub-menu key={item.path} v-slots={getSlots(meta.title)}>
                 {getSubMenu(item.children, item.path)}
-              </SubMenu>
+              </a-sub-menu>
             );
           } else {
             result = getMenuItem(item, fPath);
@@ -109,7 +107,7 @@ export default defineComponent({
     };
 
     return () => (
-      <Menu
+      <a-menu
         mode="inline"
         v-models={[
           [state.selectedKeys, "selectedKeys"],
@@ -117,7 +115,7 @@ export default defineComponent({
         ]}
       >
         {getSubMenu(prop.menu)}
-      </Menu>
+      </a-menu>
     );
   },
 });

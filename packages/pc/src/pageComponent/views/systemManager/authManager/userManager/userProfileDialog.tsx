@@ -6,11 +6,12 @@
  * @LastEditTime: 2022-04-14 10:37:33
  */
 
-import { defineComponent, watch, nextTick, ref } from "vue";
+import { defineComponent, watch, nextTick, ref, inject } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import api from "@/pageComponent/api/auth/userManager";
+import { IUrlObj } from "./index";
 
-import { Modal, Descriptions, DescriptionsItem, Button } from "ant-design-vue";
+import { Modal } from "ant-design-vue";
 
 const UserProfileDialog = defineComponent({
   emits: ["update:visible"],
@@ -25,6 +26,8 @@ const UserProfileDialog = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const isVisible = useVModel(props, "visible", emit);
 
     const profile = ref<any>({});
@@ -33,7 +36,7 @@ const UserProfileDialog = defineComponent({
     watch(isVisible, async (val) => {
       if (val) {
         await nextTick();
-        const { data } = await api.getEmployeeDetailInfo(
+        const { data } = await api.getEmployeeDetailInfo(urlMap.employeeDetail)(
           props.record.employeeId
         );
         profile.value = data;
@@ -49,7 +52,7 @@ const UserProfileDialog = defineComponent({
         >
           {{
             default: () => (
-              <Descriptions
+              <a-descriptions
                 column={2}
                 labelStyle={{
                   display: "block",
@@ -57,40 +60,42 @@ const UserProfileDialog = defineComponent({
                   width: "100px",
                 }}
               >
-                <DescriptionsItem label="编号">
+                <a-descriptions-item label="编号">
                   {profile.value.code}
-                </DescriptionsItem>
-                <DescriptionsItem label="姓名">
+                </a-descriptions-item>
+                <a-descriptions-item label="姓名">
                   {profile.value.name}
-                </DescriptionsItem>
-                <DescriptionsItem label="性别">
+                </a-descriptions-item>
+                <a-descriptions-item label="性别">
                   {profile.value.sex === 0 ? "女" : "男"}
-                </DescriptionsItem>
-                <DescriptionsItem label="年龄">
+                </a-descriptions-item>
+                <a-descriptions-item label="年龄">
                   {profile.value.age}
-                </DescriptionsItem>
-                <DescriptionsItem label="籍贯">
+                </a-descriptions-item>
+                <a-descriptions-item label="籍贯">
                   {profile.value.nativePlace}
-                </DescriptionsItem>
-                <DescriptionsItem label="身份证号">
+                </a-descriptions-item>
+                <a-descriptions-item label="身份证号">
                   {profile.value.identityCard}
-                </DescriptionsItem>
-                <DescriptionsItem label="入职时间">
+                </a-descriptions-item>
+                <a-descriptions-item label="入职时间">
                   {profile.value.hiredate}
-                </DescriptionsItem>
-                <DescriptionsItem label="手机号">
+                </a-descriptions-item>
+                <a-descriptions-item label="手机号">
                   {profile.value.mobile}
-                </DescriptionsItem>
-                <DescriptionsItem label="直属领导">
+                </a-descriptions-item>
+                <a-descriptions-item label="直属领导">
                   {profile.value.bossName}
-                </DescriptionsItem>
-                <DescriptionsItem label="岗位">
+                </a-descriptions-item>
+                <a-descriptions-item label="岗位">
                   {profile.value.jobPostNames}
-                </DescriptionsItem>
-              </Descriptions>
+                </a-descriptions-item>
+              </a-descriptions>
             ),
             footer: () => (
-              <Button onClick={() => (isVisible.value = false)}>关闭</Button>
+              <a-button onClick={() => (isVisible.value = false)}>
+                关闭
+              </a-button>
             ),
           }}
         </Modal>

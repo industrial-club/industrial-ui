@@ -6,44 +6,44 @@
  * @LastEditTime: 2022-04-22 16:00:59
  */
 
-import { instance } from '../axios';
+import { instance } from "../axios";
 
 const api = {
   /**
    * 获取角色列表
    */
-  getRoleListByPager(params: any) {
-    return instance.get('/role/all/page', { params });
+  getRoleListByPager: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 切换角色启用状态
    */
-  switchRoleEnableStatus(params: any) {
-    return instance.get('/role/roleEnabe', { params });
+  switchRoleEnableStatus: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 保存角色及权限树
    */
-  insertRole(params: any) {
-    return instance.post('/role/insertRole', params);
+  insertRole: (url: string) => (params: any) => {
+    return instance.post(url, params);
   },
   /**
    * 获取角色权限树- 编辑角色
    */
-  getRoleTreeEdit(params: any) {
-    return instance.get('/role/getRoleTreeEdit', { params });
+  getRoleTreeEdit: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 获取角色权限树- 新建角色
    */
-  getRoleTree() {
-    return instance.get('/role/getRoleTree');
+  getRoleTree: (url: string) => () => {
+    return instance.get(url);
   },
   /**
    * 删除角色
    */
-  deleteRoleById(roleTypeId: number) {
-    return instance.get('/role/deleteRoleType', { params: { roleTypeId } });
+  deleteRoleById: (url: string) => (roleTypeId: number) => {
+    return instance.get(url, { params: { roleTypeId } });
   },
 };
 

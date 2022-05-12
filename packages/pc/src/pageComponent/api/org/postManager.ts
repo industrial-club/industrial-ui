@@ -6,26 +6,26 @@
  * @LastEditTime: 2022-04-06 16:40:19
  */
 
-import { instance } from '../axios';
+import { instance } from "../axios";
 
 const api = {
   /**
    * 获取岗位列表
    */
-  getPostList(params: any) {
-    return instance.get('/jobPost/all/page', { params });
+  getPostList: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 切换岗位启用状态
    */
-  switchPostEnable(data: { id: number; valid: 0 | 1 }) {
-    return instance.post('/jobPost/modify', data);
+  switchPostEnable: (url: string) => (data: { id: number; valid: 0 | 1 }) => {
+    return instance.post(url, data);
   },
   /**
    * 获取部门列表(添加、编辑 部门下拉框)
    */
-  async getDepList() {
-    const { data } = await instance.get('/department/all', {
+  getDepList: (url: string) => async () => {
+    const { data } = await instance.get(url, {
       params: { orgId: 1 },
     });
     return data.departmentList ?? [];
@@ -33,20 +33,20 @@ const api = {
   /**
    * 修改岗位信息
    */
-  updatePostRecord(data: any) {
-    return instance.post('/jobPost/modify', data);
+  updatePostRecord: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 新增岗位信息
    */
-  insertPostRecord(data: any) {
-    return instance.post('/jobPost/add', data);
+  insertPostRecord: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 删除一条岗位信息
    */
-  deletePostById(jobPostId: number) {
-    return instance.get(`/jobPost/remove/${jobPostId}`);
+  deletePostById: (url: string) => (jobPostId: number) => {
+    return instance.get(`${url}${jobPostId}`);
   },
 };
 

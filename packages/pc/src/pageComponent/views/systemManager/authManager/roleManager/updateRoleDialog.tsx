@@ -5,24 +5,15 @@ import {
   ref,
   watch,
   nextTick,
-  reactive,
+  inject,
 } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import { cloneDeep } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import { transformMenuTree } from "@/pageComponent/utils/transform";
+import { IUrlObj } from "./index";
 
-import {
-  Modal,
-  Form,
-  FormItem,
-  Input,
-  Textarea,
-  Space,
-  Button,
-  Tree,
-  message,
-} from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import api from "@/pageComponent/api/auth/roleManager";
 
 const UpdateRoleDialog = defineComponent({
@@ -44,6 +35,8 @@ const UpdateRoleDialog = defineComponent({
   },
   emits: ["update:visible"],
   setup(props, { emit }) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const isVisible = useVModel(props, "visible", emit);
 
     // 树结构数据
@@ -62,11 +55,11 @@ const UpdateRoleDialog = defineComponent({
       // 打开对话框时复制表单 新建用户时不用
       if (val) {
         if (props.mode === "add") {
-          const { data } = await api.getRoleTree();
+          const { data } = await api.getRoleTree(urlMap.addPermission)();
           treeData.value = transformMenuTree(data);
           return;
         } else if (props.mode === "edit" || props.mode === "view") {
-          const { data } = await api.getRoleTreeEdit({
+          const { data } = await api.getRoleTreeEdit(urlMap.editPermission)({
             roleTypeId: props.record.roleTypeId,
           });
 
@@ -114,10 +107,10 @@ const UpdateRoleDialog = defineComponent({
         checkedMenuIds: checkedPermissionList.value,
       };
       if (props.mode === "add") {
-        await api.insertRole(res);
+        await api.insertRole(urlMap.save)(res);
         message.success("添加成功");
       } else if (props.mode === "edit") {
-        await api.insertRole(res);
+        await api.insertRole(urlMap.save)(res);
         message.success("修改成功");
       }
       props.onRefresh?.();
@@ -133,8 +126,8 @@ const UpdateRoleDialog = defineComponent({
         >
           {{
             default: () => (
-              <Form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
-                <FormItem
+              <a-form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
+                <a-form-item
                   label="角色编码"
                   name="roleCode"
                   required
@@ -143,10 +136,10 @@ const UpdateRoleDialog = defineComponent({
                   {isView.value ? (
                     <span>{form.value.roleCode}</span>
                   ) : (
-                    <Input v-model={[form.value.roleCode, "value"]} />
+                    <a-input v-model={[form.value.roleCode, "value"]} />
                   )}
-                </FormItem>
-                <FormItem
+                </a-form-item>
+                <a-form-item
                   label="角色名称"
                   name="roleTypeName"
                   required
@@ -155,47 +148,49 @@ const UpdateRoleDialog = defineComponent({
                   {isView.value ? (
                     <span>{form.value.roleTypeName}</span>
                   ) : (
-                    <Input v-model={[form.value.roleTypeName, "value"]} />
+                    <a-input v-model={[form.value.roleTypeName, "value"]} />
                   )}
-                </FormItem>
-                <FormItem label="角色描述" name="roleDesc">
+                </a-form-item>
+                <a-form-item label="角色描述" name="roleDesc">
                   {isView.value ? (
                     <span>{form.value.roleDesc}</span>
                   ) : (
-                    <Textarea v-model={[form.value.roleDesc, "value"]} />
+                    <a-textarea v-model={[form.value.roleDesc, "value"]} />
                   )}
-                </FormItem>
-                <FormItem
+                </a-form-item>
+                <a-form-item
                   name="abc"
                   rules={{ validator: validatePermission }}
                   label="角色权限"
                 >
                   {treeData.value.length > 0 && (
-                    <Tree
-                      defaultExpandAll
-                      fieldNames={{
-                        key: "id",
-                        children: "subList",
-                        title: "name",
-                      }}
-                      disabled={isView.value}
-                      checkable
-                      tree-data={treeData.value}
-                      v-model={[checkedPermissionList.value, "checkedKeys"]}
-                    />
+                    <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                      <a-tree
+                        defaultExpandAll
+                        fieldNames={{
+                          key: "id",
+                          children: "subList",
+                          title: "name",
+                        }}
+                        disabled={isView.value}
+                        checkable
+                        tree-data={treeData.value}
+                        v-model={[checkedPermissionList.value, "checkedKeys"]}
+                      />
+                    </div>
                   )}
-                </FormItem>
-              </Form>
+                </a-form-item>
+              </a-form>
             ),
             footer: () => (
-              <Space>
-                <Button onClick={cancel}>关闭</Button>
+              <a-space>
+                <a-button onClick={cancel}>关闭</a-button>
                 {!isView.value && (
-                  <Button type="primary" onClick={handleCommit}>
+                  <a-button type="primary" onClick={handleCommit}>
                     保存
-                  </Button>
+                  </a-button>
                 )}
-              </Space>
+              </a-space>
             ),
           }}
         </Modal>

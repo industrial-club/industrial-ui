@@ -6,7 +6,6 @@ import {
   resolveComponent,
   watch,
 } from "vue";
-import { Menu, MenuItem, SubMenu } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
 
 // props
@@ -27,7 +26,6 @@ interface State {
 }
 
 export default defineComponent({
-  components: { Menu, MenuItem, SubMenu },
   props,
   setup(prop, context) {
     const router = useRouter();
@@ -69,13 +67,13 @@ export default defineComponent({
         let ele;
         if (meta.hide !== true) {
           ele = (
-            <MenuItem
+            <a-menu-item
               key={item.path}
               onClick={() => toPath((fPath ? `${fPath}/` : "") + item.path)}
               v-slots={getSlots(meta.title, meta?.icon)}
             >
               {meta.title}
-            </MenuItem>
+            </a-menu-item>
           );
         }
 
@@ -84,13 +82,13 @@ export default defineComponent({
     };
 
     return () => (
-      <Menu
+      <a-menu
         class="topMenu"
         mode="horizontal"
         v-model={[state.selectedKeys, "selectedKeys"]}
       >
         {getMenuItem(prop.menu)}
-      </Menu>
+      </a-menu>
     );
   },
 });

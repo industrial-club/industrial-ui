@@ -3,14 +3,12 @@
  * @Author: wang liang
  * @Date: 2022-04-14 16:10:51
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-14 16:45:42
+ * @LastEditTime: 2022-04-27 11:30:29
  */
 
 import { defineComponent, PropType, ref } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import useProxy from "@/pageComponent/hooks/useProxy";
-
-import { Form, FormItem, InputPassword } from "ant-design-vue";
 
 export interface IEditPasswordForm {
   oldPassWord: string;
@@ -56,32 +54,36 @@ const Editpasswordform = defineComponent({
     const formRef = ref();
 
     proxy._validate = async () => {
-      console.log("验证");
-
       await formRef.value.validate();
     };
 
+    proxy._reset = () => {
+      formRef.value.resetFields();
+    };
+
     return () => (
-      <Form
+      <a-form
         ref={formRef}
         labelCol={{ style: { width: "100px" } }}
         model={formModel.value}
         rules={rules}
       >
-        <FormItem
+        <a-form-item
           name="oldPassWord"
           rules={{ required: true, message: "请输入原密码" }}
           label="原密码"
         >
-          <InputPassword v-model={[formModel.value.oldPassWord, "value"]} />
-        </FormItem>
-        <FormItem name="passWord" label="新密码">
-          <InputPassword v-model={[formModel.value.passWord, "value"]} />
-        </FormItem>
-        <FormItem name="checkPassWord" label="确认新密码">
-          <InputPassword v-model={[formModel.value.checkPassWord, "value"]} />
-        </FormItem>
-      </Form>
+          <a-input-password v-model={[formModel.value.oldPassWord, "value"]} />
+        </a-form-item>
+        <a-form-item name="passWord" label="新密码">
+          <a-input-password v-model={[formModel.value.passWord, "value"]} />
+        </a-form-item>
+        <a-form-item name="checkPassWord" label="确认新密码">
+          <a-input-password
+            v-model={[formModel.value.checkPassWord, "value"]}
+          />
+        </a-form-item>
+      </a-form>
     );
   },
 });

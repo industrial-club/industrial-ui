@@ -11,4 +11,16 @@ export function getRequiredRule(label: string) {
   };
 }
 
+/**
+ * 创建最大长度规则对象
+ * @param label 名称
+ * @param max 最大长度
+ */
+export function getMaxRule(label: string, max: number) {
+  return {
+    max,
+    message: `${label}长度不能超过${max}个字符`,
+  };
+}
+
 export default {};

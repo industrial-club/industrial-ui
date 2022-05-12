@@ -6,24 +6,15 @@
  * @LastEditTime: 2022-04-14 14:31:57
  */
 
-import { defineComponent, computed, ref, PropType } from "vue";
+import { defineComponent, computed, ref, PropType, inject } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import useModalForm from "@/pageComponent/hooks/manage-module/useModalForm";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import api from "@/pageComponent/api/org/postManager";
+import { IUrlObj } from "./index";
 
-import {
-  Modal,
-  Form,
-  FormItem,
-  TreeSelect,
-  Input,
-  Textarea,
-  Space,
-  Button,
-  message,
-} from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 
 const UpdatePostDialog = defineComponent({
   emits: ["update:visible"],
@@ -45,6 +36,8 @@ const UpdatePostDialog = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const isVisible = useVModel(props, "visible", emit);
 
     const modalTitle = useModalTitle(props.mode, "岗位");
@@ -54,7 +47,7 @@ const UpdatePostDialog = defineComponent({
     /* ===== 部门列表 ===== */
     const depList = ref([]);
     const getDepList = async () => {
-      const list = await api.getDepList();
+      const list = await api.getDepList(urlMap.depList)();
       depList.value = list;
     };
     getDepList();
@@ -69,10 +62,10 @@ const UpdatePostDialog = defineComponent({
     const handleSave = async () => {
       await formRef.value.validate();
       if (props.mode === "add") {
-        await api.insertPostRecord(form.value);
+        await api.insertPostRecord(urlMap.add)(form.value);
         message.success("新增成功");
       } else if (props.mode === "edit") {
-        await api.updatePostRecord({
+        await api.updatePostRecord(urlMap.update)({
           ...form.value,
           createDt: null,
         });
@@ -91,8 +84,8 @@ const UpdatePostDialog = defineComponent({
         >
           {{
             default: () => (
-              <Form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
-                <FormItem
+              <a-form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
+                <a-form-item
                   name="depId"
                   required
                   label="所属部门"
@@ -101,7 +94,7 @@ const UpdatePostDialog = defineComponent({
                   {isView.value ? (
                     <span>{props.record.depName}</span>
                   ) : (
-                    <TreeSelect
+                    <a-tree-select
                       fieldNames={{
                         label: "name",
                         value: "id",
@@ -109,10 +102,10 @@ const UpdatePostDialog = defineComponent({
                       }}
                       treeData={depList.value}
                       v-model={[form.value.depId, "value"]}
-                    ></TreeSelect>
+                    ></a-tree-select>
                   )}
-                </FormItem>
-                <FormItem
+                </a-form-item>
+                <a-form-item
                   name="name"
                   required
                   label="岗位名称"
@@ -121,27 +114,29 @@ const UpdatePostDialog = defineComponent({
                   {isView.value ? (
                     <span>{props.record.name}</span>
                   ) : (
-                    <Input v-model={[form.value.name, "value"]} />
+                    <a-input v-model={[form.value.name, "value"]} />
                   )}
-                </FormItem>
-                <FormItem name="remark" label="岗位描述">
+                </a-form-item>
+                <a-form-item name="remark" label="岗位描述">
                   {isView.value ? (
                     <span>{props.record.remark}</span>
                   ) : (
-                    <Textarea v-model={[form.value.remark, "value"]} />
+                    <a-textarea v-model={[form.value.remark, "value"]} />
                   )}
-                </FormItem>
-              </Form>
+                </a-form-item>
+              </a-form>
             ),
             footer: () => (
-              <Space>
-                <Button onClick={() => (isVisible.value = false)}>关闭</Button>
+              <a-space>
+                <a-button onClick={() => (isVisible.value = false)}>
+                  关闭
+                </a-button>
                 {!isView.value && (
-                  <Button type="primary" onClick={handleSave}>
+                  <a-button type="primary" onClick={handleSave}>
                     保存
-                  </Button>
+                  </a-button>
                 )}
-              </Space>
+              </a-space>
             ),
           }}
         </Modal>
