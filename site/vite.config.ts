@@ -42,7 +42,6 @@ export default {
   },
   css: {
     preprocessorOptions: {
-      // less: viteThemeAnt("dark"),
       less: {
         modifyVars: {
           hack: `true;@import "${require.resolve(

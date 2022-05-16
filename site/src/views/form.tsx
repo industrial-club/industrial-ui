@@ -50,6 +50,10 @@ export default defineComponent({
         dataIndex: "address",
         key: "address",
       },
+      {
+        title: "操作",
+        dataIndex: "operation",
+      },
     ];
     const visible = ref(false);
     const renderTable = () => {
@@ -58,7 +62,15 @@ export default defineComponent({
           dataSource={dataSource}
           columns={columns}
           pagination={{ pageSize: 1 }}
-        />
+        >
+          {{
+            bodyCell: ({ column }: any) => {
+              if (column.dataIndex === "operation") {
+                return <a>设置</a>;
+              }
+            },
+          }}
+        </a-table>
       );
     };
     watch(
