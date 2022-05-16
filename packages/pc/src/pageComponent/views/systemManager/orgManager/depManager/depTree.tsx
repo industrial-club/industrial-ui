@@ -3,13 +3,14 @@
  * @Author: wang liang
  * @Date: 2022-04-07 14:41:29
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-22 13:15:32
+ * @LastEditTime: 2022-04-27 11:04:19
  */
 
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, inject } from "vue";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import { removeDateProp } from "@/pageComponent/utils/tree";
 import api from "@/pageComponent/api/org/depManager";
+import { IUrlObj } from "./index";
 
 import CommonTree from "@/pageComponent/components/CommonTree";
 import UpdateDepDialog from "./updateDepDialog";
@@ -22,6 +23,8 @@ const DepTree = defineComponent({
     },
   },
   setup(props) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const treeRef = ref();
 
     // 获取数据
@@ -30,7 +33,7 @@ const DepTree = defineComponent({
     onMounted(() => (refresh = treeRef.value._refresh));
 
     const getTreeData = async (keyword = "") => {
-      const { data } = await api.getDepData({ keyword });
+      const { data } = await api.getDepData(urlMap.tree)({ keyword });
       const res = [data].map((item: any) => {
         item.id = `sys${item.id}`;
         item.subList = item.departmentList;
@@ -41,7 +44,7 @@ const DepTree = defineComponent({
     };
 
     // 选中部门
-    const handleSelect = (node: any) => {
+    const handleSelect = (node?: any) => {
       props.onSelect?.(node);
     };
 
@@ -54,14 +57,15 @@ const DepTree = defineComponent({
       useModalVisibleControl();
     // 删除部门
     const hanldeDeleteDep = async (node: any) => {
-      await api.deleteDepById(node.id);
+      await api.deleteDepById(urlMap.delete)(node.id);
       message.success("删除成功");
       refresh();
+      handleSelect();
     };
     // 部门排序
     const hanldeDrop = async (data: any) => {
       removeDateProp(data);
-      await api.sortDepList(data[0]);
+      await api.sortDepList(urlMap.sort)(data[0]);
       message.success("排序成功");
       refresh();
     };

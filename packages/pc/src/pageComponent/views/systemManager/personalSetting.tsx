@@ -1,20 +1,36 @@
-import { defineComponent, reactive, ref, onMounted } from "vue";
 import {
-  Form,
-  FormItem,
-  Input,
-  Button,
-  Modal,
-  Space,
-  message,
-} from "ant-design-vue";
+  defineComponent,
+  reactive,
+  ref,
+  onMounted,
+  watch,
+  PropType,
+} from "vue";
+import { Modal, message } from "ant-design-vue";
 import { cloneDeep } from "lodash";
 import { encodeStr } from "@/pageComponent/utils/base64";
+import { getRequiredRule, getMaxRule } from "@/pageComponent/utils/validation";
 import api from "@/pageComponent/api/auth/userManager";
+import utils from "@/utils";
 
 import EditPasswordForm, {
   IEditPasswordForm,
 } from "@/pageComponent/components/EditPasswordForm";
+
+export interface IUrlObj {
+  // 当前用户详情
+  detail: string;
+  // 更新当前用户信息
+  update: string;
+  // 修改密码
+  updatePass: string;
+}
+
+const DEFAULT_URL: IUrlObj = {
+  detail: "/comlite/v1/user/detail",
+  update: "/comlite/v1/user/updateUser",
+  updatePass: "/comlite/v1/user/resetPassword",
+};
 
 interface ModalFormState {
   oldPwd: string;
@@ -22,8 +38,17 @@ interface ModalFormState {
   newPwd2: string;
 }
 
-export default defineComponent({
+const PersonalSetting = defineComponent({
+  props: {
+    url: {
+      type: Object as PropType<Partial<IUrlObj>>,
+      default: () => ({}),
+    },
+  },
   setup(prop, context) {
+    const urlMap = { ...DEFAULT_URL, ...prop.url };
+
+    const formRef = ref();
     const passwordFormRef = ref();
 
     const state = reactive({
@@ -40,15 +65,14 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      const resp = await api.detail({});
+      const resp = await api.detail(urlMap.detail)({});
       formState.value = resp.data;
       copyForm.value = cloneDeep(formState.value);
     });
 
     const handleSubmit = async () => {
-      console.log(formState.value);
-
-      const resp = await api.editUserRecord({
+      await formRef.value.validate();
+      const resp = await api.editUserRecord(urlMap.update)({
         ...formState.value,
         oldPassWord: formState.value.passWord,
       });
@@ -61,7 +85,7 @@ export default defineComponent({
     const visible = ref(false);
     const handleSavePassword = async () => {
       await passwordFormRef.value._validate();
-      const resp = await api.changePassword({
+      const resp = await api.changePassword(urlMap.updatePass)({
         oldPassWord: encodeStr(passwordForm.value.oldPassWord),
         passWord: encodeStr(passwordForm.value.passWord),
         userId: formState.value.userId,
@@ -70,51 +94,72 @@ export default defineComponent({
 
       visible.value = false;
     };
+    watch(visible, (val) => {
+      if (!val) {
+        passwordFormRef.value._reset();
+      }
+    });
+
+    // 点击取消
+    const handleCancelClick = () => {
+      state.canEdit = false;
+      formState.value = copyForm.value;
+      formRef.value.clearValidate();
+    };
 
     return () => (
       <div class="personalSetting">
         <div class="titleLine">
           <div class="title">基本信息</div>
-          <Space>
-            <Button
+          <a-space>
+            <a-button
               type="primary"
               onClick={() => {
                 state.canEdit = true;
               }}
             >
               修改信息
-            </Button>
-            <Button
+            </a-button>
+            <a-button
               onClick={() => {
                 visible.value = true;
               }}
             >
               修改密码
-            </Button>
-          </Space>
+            </a-button>
+          </a-space>
         </div>
 
-        <Form
-          v-model={formState.value}
+        <a-form
+          ref={formRef}
+          model={formState.value}
           label-col={{ style: { width: "100px" } }}
           name="basic"
           onSubmit={handleSubmit}
           style="min-width: 400px; width: 50%"
         >
-          <FormItem label="用户名" rules={[{ required: true }]}>
+          <a-form-item
+            name="userName"
+            label="用户名"
+            rules={[getRequiredRule("用户名"), getMaxRule("用户名", 32)]}
+          >
             {state.canEdit ? (
-              <Input
+              <a-input
                 v-model={[formState.value.userName, "value"]}
                 placeholder="请输入"
               />
             ) : (
               <span>{formState.value.userName || "-"}</span>
             )}
-          </FormItem>
+          </a-form-item>
 
-          <FormItem label="所属角色" rules={[{ required: true }]}>
+          <a-form-item
+            name="roleTypeNames"
+            label="所属角色"
+            rules={[{ required: true }]}
+          >
             {state.canEdit ? (
-              <Input
+              <a-input
                 disabled
                 v-model={[formState.value.roleTypeNames, "value"]}
                 placeholder="请输入"
@@ -122,72 +167,89 @@ export default defineComponent({
             ) : (
               <span>{formState.value.roleTypeNames || "-"}</span>
             )}
-          </FormItem>
+          </a-form-item>
 
-          <FormItem label="电话" rules={[{ required: true }]}>
+          <a-form-item
+            name="phone"
+            label="电话"
+            rules={[getRequiredRule("电话"), getMaxRule("电话", 16)]}
+          >
             {state.canEdit ? (
-              <Input
+              <a-input
                 v-model={[formState.value.phone, "value"]}
                 placeholder="请输入"
               />
             ) : (
               <span>{formState.value.phone || "-"}</span>
             )}
-          </FormItem>
+          </a-form-item>
 
-          <FormItem label="智信">
+          <a-form-item
+            name="zhixin"
+            label="智信"
+            rules={[getMaxRule("智信", 16)]}
+          >
             {state.canEdit ? (
-              <Input
+              <a-input
                 v-model={[formState.value.zhixin, "value"]}
                 placeholder="请输入"
               />
             ) : (
               <span>{formState.value.zhixin || "-"}</span>
             )}
-          </FormItem>
+          </a-form-item>
 
-          <FormItem label="微信">
+          <a-form-item
+            name="wechat"
+            label="微信"
+            rules={[getMaxRule("微信", 16)]}
+          >
             {state.canEdit ? (
-              <Input
+              <a-input
                 v-model={[formState.value.wechat, "value"]}
                 placeholder="请输入"
               />
             ) : (
               <span>{formState.value.wechat || "-"}</span>
             )}
-          </FormItem>
+          </a-form-item>
 
-          <FormItem label="邮箱">
+          <a-form-item
+            name="mail"
+            label="邮箱"
+            rules={[
+              getMaxRule("邮箱", 32),
+              { type: "email", message: "请输入正确的邮箱" },
+            ]}
+          >
             {state.canEdit ? (
-              <Input
+              <a-input
                 v-model={[formState.value.mail, "value"]}
                 placeholder="请输入"
               />
             ) : (
               <span>{formState.value.mail || "-"}</span>
             )}
-          </FormItem>
+          </a-form-item>
 
           {state.canEdit && (
-            <FormItem>
+            <a-form-item>
               <div style="text-align: center;">
-                <Button type="primary" html-type="submit">
+                <a-button type="primary" onClick={handleSubmit}>
                   保存
-                </Button>
+                </a-button>
 
                 <a-button
                   html-type="button"
                   style="margin: 0 8px"
-                  onClick={() => {
-                    state.canEdit = false;
-                  }}
+                  onClick={handleCancelClick}
                 >
                   取消
                 </a-button>
               </div>
-            </FormItem>
+            </a-form-item>
           )}
-        </Form>
+        </a-form>
 
         <Modal
           title="修改密码"
@@ -204,3 +266,5 @@ export default defineComponent({
     );
   },
 });
+
+export default utils.installComponent(PersonalSetting, "personal-setting");

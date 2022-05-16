@@ -3,74 +3,72 @@
  * @Author: wang liang
  * @Date: 2022-03-30 17:05:32
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-19 13:13:33
+ * @LastEditTime: 2022-04-26 17:29:51
  */
 
-import { instance } from '../axios';
+import { instance } from "../axios";
 
 export default {
   /**
    * 获取用户列表 分页
    */
-  getUserList(params: any) {
-    return instance.get('/user/managerList', { params });
+  getUserList: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 获取角色下拉列表
    */
-  getRoleList() {
-    return instance.get('/role/list');
+  getRoleList: (url: string) => () => {
+    return instance.get(url);
   },
   /**
    * 获取员工下拉列表
    */
-  getEmployeeList() {
-    return instance.get('/employee/all/summary');
+  getEmployeeList: (url: string) => () => {
+    return instance.get(url);
   },
   /**
    * 新增用户
    */
-  insertOneUserRecord(data: any) {
-    return instance.post('/user/create', data);
+  insertOneUserRecord: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 修改用户
    */
-  editUserRecord(data: any) {
-    return instance.put('user/updateUser', data);
+  editUserRecord: (url: string) => (data: any) => {
+    return instance.put(url, data);
   },
   /**
    * 编辑页面重置密码
    * @param userId 用户id
    */
-  resetPassword(userId: number) {
-    return instance.post('/user/resetPasswordForManager', { userId });
+  resetPassword: (url: string) => (userId: number) => {
+    return instance.post(url, { userId });
   },
   /**
    * 个人设置 修改密码
    */
-  changePassword(data: any) {
-    return instance.post('/user/resetPassword', data);
+  changePassword: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 查询用户详情|个人设置页
    * userId 个人设置页 此值为null
    */
-  detail(data: any) {
-    return instance.get('/user/detail', { data });
+  detail: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 删除用户
    */
-  deleteUserById(id: string) {
-    return instance.delete(`/user/delete/${id}`);
+  deleteUserById: (url: string) => (id: string) => {
+    return instance.delete(`${url}${id}`);
   },
   /**
    * 获取员工详情 (点击员工姓名)
    */
-  getEmployeeDetailInfo(employeeId: number) {
-    return instance.get(`/employee/detail/${employeeId}`, {
-      params: { employeeId },
-    });
+  getEmployeeDetailInfo: (url: string) => (employeeId: number) => {
+    return instance.get(`${url}${employeeId}`);
   },
 };

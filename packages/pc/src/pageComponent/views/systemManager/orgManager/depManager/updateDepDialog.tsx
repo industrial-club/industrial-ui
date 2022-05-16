@@ -6,26 +6,16 @@
  * @LastEditTime: 2022-04-25 15:12:45
  */
 
-import { computed, defineComponent, PropType, ref, watch } from "vue";
+import { computed, defineComponent, inject, PropType, ref, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import useModalForm from "@/pageComponent/hooks/manage-module/useModalForm";
 import { omit } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import api from "@/pageComponent/api/org/depManager";
+import { IUrlObj } from "./index";
 
-import {
-  Modal,
-  Form,
-  FormItem,
-  Select,
-  SelectOption,
-  Input,
-  TreeSelect,
-  Space,
-  Button,
-  message,
-} from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import { isEmpty } from "lodash";
 
 const UpdateDepDialog = defineComponent({
@@ -52,6 +42,8 @@ const UpdateDepDialog = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const isVisible = useVModel(props, "visible", emit);
 
     const modalTitle = useModalTitle(props.mode, "部门");
@@ -68,7 +60,7 @@ const UpdateDepDialog = defineComponent({
     // 部门列表
     const depList = ref<any[]>([]);
     const getDepList = async () => {
-      const { data } = await api.getDepData({});
+      const { data } = await api.getDepData(urlMap.tree)({});
       depList.value = [data].map((item) => {
         item.subList = item.departmentList;
         item.id = `sys${item.id}`;
@@ -99,7 +91,10 @@ const UpdateDepDialog = defineComponent({
     // 选择部门列表时获取员工列表 (当前部门和上一级部门)
     const getEmployeeList = async () => {
       if (!props.record.id) return;
-      const { data } = await api.getDepEmployeeSelectList(props.record.id, 0);
+      const { data } = await api.getDepEmployeeSelectList(urlMap.empSelect)(
+        props.record.id,
+        0
+      );
       employeeList.value = data;
     };
 
@@ -129,7 +124,7 @@ const UpdateDepDialog = defineComponent({
         });
         message.success("添加成功");
       } else if (props.mode === "edit") {
-        await api.updateDepRecord({
+        await api.updateDepRecord(urlMap.update)({
           ...omit(data, "subList"),
           parentId: isTopLevel ? null : props.parent.id,
         });
@@ -149,8 +144,8 @@ const UpdateDepDialog = defineComponent({
           >
             {{
               default: () => (
-                <Form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
-                  <FormItem
+                <a-form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
+                  <a-form-item
                     name="code"
                     required
                     label="部门编号"
@@ -159,10 +154,10 @@ const UpdateDepDialog = defineComponent({
                     {isView.value ? (
                       <span>{props.record.code}</span>
                     ) : (
-                      <Input v-model={[form.value.code, "value"]} />
+                      <a-input v-model={[form.value.code, "value"]} />
                     )}
-                  </FormItem>
-                  <FormItem
+                  </a-form-item>
+                  <a-form-item
                     name="name"
                     required
                     label="部门名称"
@@ -171,12 +166,12 @@ const UpdateDepDialog = defineComponent({
                     {isView.value ? (
                       <span>{props.record.name}</span>
                     ) : (
-                      <Input v-model={[form.value.name, "value"]} />
+                      <a-input v-model={[form.value.name, "value"]} />
                     )}
-                  </FormItem>
+                  </a-form-item>
                   {/* 新建部门 不选择上级部门 */}
                   {props.mode !== "add" && (
-                    <FormItem
+                    <a-form-item
                       name="parentId"
                       required
                       label="上级部门"
@@ -185,7 +180,7 @@ const UpdateDepDialog = defineComponent({
                       {isView.value ? (
                         <span>{props.record.parentName}</span>
                       ) : (
-                        <TreeSelect
+                        <a-tree-select
                           v-model={[form.value.parentId, "value"]}
                           treeData={filteredDepList.value}
                           treeDefaultExpandAll
@@ -194,49 +189,51 @@ const UpdateDepDialog = defineComponent({
                             label: "name",
                             children: "subList",
                           }}
-                        ></TreeSelect>
+                        ></a-tree-select>
                       )}
-                    </FormItem>
+                    </a-form-item>
                   )}
 
                   {/* 新建部门 不选择负责人 */}
-                  <FormItem name="bossId" label="部门负责人">
+                  <a-form-item name="bossId" label="部门负责人">
                     {isView.value ? (
                       <span>{props.record.bossName}</span>
                     ) : (
-                      <Select v-model={[form.value.bossId, "value"]}>
+                      <a-select v-model={[form.value.bossId, "value"]}>
                         {employeeList.value.map((item: any) => (
-                          <SelectOption key={item.id}>{item.name}</SelectOption>
+                          <a-select-option key={item.id}>
+                            {item.name}
+                          </a-select-option>
                         ))}
-                      </Select>
+                      </a-select>
                     )}
-                  </FormItem>
-                  <FormItem name="valid" label="部门状态">
+                  </a-form-item>
+                  <a-form-item name="valid" label="部门状态">
                     {isView.value ? (
                       <span>{props.record.valid ? "启用" : "禁用"}</span>
                     ) : (
-                      <Select
+                      <a-select
                         defaultValue={1}
                         v-model={[form.value.valid, "value"]}
                       >
-                        <SelectOption key={1}>启用</SelectOption>
-                        <SelectOption key={0}>禁用</SelectOption>
-                      </Select>
+                        <a-select-option key={1}>启用</a-select-option>
+                        <a-select-option key={0}>禁用</a-select-option>
+                      </a-select>
                     )}
-                  </FormItem>
-                </Form>
+                  </a-form-item>
+                </a-form>
               ),
               footer: () => (
-                <Space>
-                  <Button onClick={() => (isVisible.value = false)}>
+                <a-space>
+                  <a-button onClick={() => (isVisible.value = false)}>
                     关闭
-                  </Button>
+                  </a-button>
                   {!isView.value && (
-                    <Button type="primary" onClick={handleSave}>
+                    <a-button type="primary" onClick={handleSave}>
                       保存
-                    </Button>
+                    </a-button>
                   )}
-                </Space>
+                </a-space>
               ),
             }}
           </Modal>

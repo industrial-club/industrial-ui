@@ -1,7 +1,7 @@
 // declare module "cssnano";
 // declare module "acorn-jsx";
-import Store from "./pageComponent/config/install";
-import { instance } from "./pageComponent/api";
+import Store from "../pageComponent/config/install";
+import { instance } from "../pageComponent/api";
 
 declare namespace InlPc {}
 

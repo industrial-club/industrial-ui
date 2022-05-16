@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-03-31 14:03:07
  */
 import { defineComponent, ref } from "vue";
-import { Button } from "ant-design-vue";
+
 import { CaretUpOutlined, CaretRightOutlined } from "@ant-design/icons-vue";
 
 const CollapseContainer = defineComponent({
@@ -28,7 +28,7 @@ const CollapseContainer = defineComponent({
       <div class="collapse-container">
         <div class="header">
           <span class="container-title">{props.title}</span>
-          <Button type="link" onClick={() => (isOpen.value = !isOpen.value)}>
+          <a-button type="link" onClick={() => (isOpen.value = !isOpen.value)}>
             {isOpen.value ? (
               <span>
                 收起 <CaretUpOutlined />
@@ -38,7 +38,7 @@ const CollapseContainer = defineComponent({
                 展开 <CaretRightOutlined />
               </span>
             )}
-          </Button>
+          </a-button>
         </div>
         <div
           class="default-container"

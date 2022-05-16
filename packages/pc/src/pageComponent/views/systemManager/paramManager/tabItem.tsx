@@ -1,6 +1,8 @@
-import { defineComponent, ref, provide, onBeforeUpdate } from "vue";
+import { defineComponent, ref, provide, onBeforeUpdate, inject } from "vue";
 import { api } from "@/pageComponent/api/param";
-import { Space, Button, Empty, message } from "ant-design-vue";
+import { IUrlObj } from "./index";
+
+import { message } from "ant-design-vue";
 import DynamicForm from "./dynamicForm";
 import CollapseContainer from "./collapseContainer";
 
@@ -12,6 +14,8 @@ const TabItem = defineComponent({
     },
   },
   setup(props) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     /* ===== 表单ref ===== */
     // 菜单级别form ref
     const groupFormRef = ref<any[]>([]);
@@ -31,7 +35,7 @@ const TabItem = defineComponent({
     const groupList = ref([]);
     const getGoupAndCellParams = async () => {
       // 组级别
-      const { data: groupRes } = await api.getGroupList({
+      const { data: groupRes } = await api.getGroupList(urlMap.list)({
         level: "group",
         parentId: props.tabId,
       });
@@ -39,7 +43,7 @@ const TabItem = defineComponent({
       const cellPromises: Array<Promise<any>> = [];
       groupRes.forEach((item: any) => {
         cellPromises.push(
-          api.getGroupList({
+          api.getGroupList(urlMap.list)({
             level: "cell",
             parentId: item.id,
           })
@@ -80,7 +84,7 @@ const TabItem = defineComponent({
         },
         []
       );
-      await api.batchSaveParamsValue(formList);
+      await api.batchSaveParamsValue(urlMap.save)(formList);
       message.success("保存成功");
       // 更新表单的值
       const updateFormList: Promise<any>[] = [];
@@ -93,36 +97,36 @@ const TabItem = defineComponent({
       <div class="tab-item">
         {/* 编辑按钮 */}
         <div class="operation">
-          <Space>
+          <a-space>
             {isEdit.value ? (
               <>
-                <Button
+                <a-button
                   key="cancle"
                   style={{ width: "100px" }}
                   onClick={() => (isEdit.value = false)}
                 >
                   取消
-                </Button>
-                <Button
+                </a-button>
+                <a-button
                   key="save"
                   style={{ width: "100px" }}
                   type="primary"
                   onClick={handleSave}
                 >
                   保存
-                </Button>
+                </a-button>
               </>
             ) : (
-              <Button
+              <a-button
                 key="edit"
                 style={{ width: "100px" }}
                 type="primary"
                 onClick={() => (isEdit.value = true)}
               >
                 编辑
-              </Button>
+              </a-button>
             )}
-          </Space>
+          </a-space>
         </div>
         {/* 标签级别的参数 (暂时不要) */}
         {/* <DynamicForm id={props.tabId} /> */}
@@ -152,7 +156,7 @@ const TabItem = defineComponent({
               </div>
             ))
           ) : (
-            <Empty />
+            <a-empty />
           )}
         </div>
       </div>
