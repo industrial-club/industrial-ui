@@ -1,28 +1,45 @@
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent, PropType, provide, ref } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import api from "@/pageComponent/api/org/postManager";
+import utils from "@/utils";
 
-import {
-  Table,
-  Input,
-  Button,
-  Switch,
-  Space,
-  message,
-  Modal,
-} from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import UpdatePostDialog from "./updatePostDialog";
 
+export interface IUrlObj {
+  // 岗位列表
+  list: string;
+  // 新增岗位
+  add: string;
+  // 更新岗位
+  update: string;
+  // 删除岗位
+  delete: string;
+  // 部门列表 (添加、编辑 部门下拉框)
+  depList: string;
+  // 切换岗位启用状态
+  switchStatus: string;
+}
+
+const DEFAULT_URL: IUrlObj = {
+  list: "/comlite/v1/jobPost/all/page",
+  add: "/comlite/v1/jobPost/modify",
+  update: "/comlite/v1/jobPost/modify",
+  delete: "/comlite/v1/jobPost/remove/",
+  depList: "/comlite/v1/department/all",
+  switchStatus: "/comlite/v1/jobPost/modify",
+};
+
 const column = [
-  {
-    title: "所属部门",
-    dataIndex: "depName",
-  },
   {
     title: "岗位名称",
     dataIndex: "name",
+  },
+  {
+    title: "所属部门",
+    dataIndex: "depName",
   },
   {
     title: "使用人数",
@@ -52,8 +69,17 @@ const column = [
   },
 ];
 
-export default defineComponent({
+const PostManager = defineComponent({
+  props: {
+    url: {
+      type: Object as PropType<Partial<IUrlObj>>,
+      default: () => ({}),
+    },
+  },
   setup(prop, context) {
+    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    provide("urlMap", urlMap);
+
     const form = ref({
       keyWord: "",
     });
@@ -61,7 +87,7 @@ export default defineComponent({
     const { currPage, total, handlePageChange, isLoading, refresh, tableList } =
       useTableList(
         () =>
-          api.getPostList({
+          api.getPostList(urlMap.list)({
             pageNum: currPage.value,
             pageSize: 10,
             keyword: form.value.keyWord,
@@ -87,7 +113,7 @@ export default defineComponent({
         title: "删除岗位",
         content: `是否删除岗位“${record.name}”?`,
         async onOk() {
-          await api.deletePostById(record.id);
+          await api.deletePostById(urlMap.delete)(record.id);
           message.success("删除成功");
           refresh();
         },
@@ -103,7 +129,7 @@ export default defineComponent({
         title: "提示",
         content: `确定${checked ? "启用" : "禁用"}吗`,
         async onOk() {
-          await api.switchPostEnable({
+          await api.switchPostEnable(urlMap.switchStatus)({
             id: record.id,
             valid: checked ? 1 : 0,
           });
@@ -116,22 +142,21 @@ export default defineComponent({
     return () => (
       <div class="postManager">
         <div class="control">
-          <Space style={{ width: "100%", justifyContent: "space-between" }}>
-            <Button type="primary" onClick={handleAddClick}>
+          <a-space style={{ width: "100%", justifyContent: "space-between" }}>
+            <a-button type="primary" onClick={handleAddClick}>
               新建岗位
-            </Button>
-            <Input
-              placeholder="请输入"
+            </a-button>
+            <a-input
+              placeholder="请输入岗位名称"
               allowClear
               suffix={<SearchOutlined />}
               v-model={[form.value.keyWord, "value"]}
               onChange={refresh}
-            ></Input>
-          </Space>
+            ></a-input>
+          </a-space>
         </div>
 
-        <Table
-          size="middle"
+        <a-table
           loading={isLoading.value}
           dataSource={tableList.value}
           columns={column}
@@ -139,7 +164,7 @@ export default defineComponent({
           v-slots={{
             valid: ({ record }: any) => {
               return (
-                <Switch
+                <a-switch
                   checked={record.valid === 1}
                   onClick={
                     ((checked: boolean, e: any) =>
@@ -150,21 +175,30 @@ export default defineComponent({
             },
             action: ({ record }: any) => {
               return (
-                <Space>
-                  <Button type="link" onClick={() => handleViewClick(record)}>
+                <>
+                  <a-button
+                    size="small"
+                    type="link"
+                    onClick={() => handleViewClick(record)}
+                  >
                     查看
-                  </Button>
-                  <Button type="link" onClick={() => handleEditClick(record)}>
+                  </a-button>
+                  <a-button
+                    size="small"
+                    type="link"
+                    onClick={() => handleEditClick(record)}
+                  >
                     编辑
-                  </Button>
-                  <Button
+                  </a-button>
+                  <a-button
+                    size="small"
                     type="link"
                     danger
                     onClick={() => handleDeleteClick(record)}
                   >
                     删除
-                  </Button>
-                </Space>
+                  </a-button>
+                </>
               );
             },
           }}
@@ -190,3 +224,5 @@ export default defineComponent({
     );
   },
 });
+
+export default utils.installComponent(PostManager, "post-manager");

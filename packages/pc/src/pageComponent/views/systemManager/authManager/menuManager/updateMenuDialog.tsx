@@ -6,12 +6,13 @@
  * @LastEditTime: 2022-04-24 11:29:48
  */
 
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, inject, ref, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import api from "@/pageComponent/api/auth/menuManager";
+import { IUrlObj } from "./index";
 
-import { Modal, Form, FormItem, Input, Switch, message } from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import IconSelect from "@/pageComponent/components/IconSelect";
 
 const UpdateMenuDialog = defineComponent({
@@ -30,6 +31,8 @@ const UpdateMenuDialog = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const formRef = ref();
 
     const isVisible = useVModel(props, "visible", emit);
@@ -44,11 +47,12 @@ const UpdateMenuDialog = defineComponent({
 
     const handleCommit = async () => {
       await formRef.value.validate();
-      await api.insertMenuRecord({
+      const isSystemParent = props.parent.id.startsWith("sys");
+      await api.insertMenuRecord(urlMap.add)({
         ...form.value,
         valid: Number(form.value.valid),
-        level: props.parent.level + 1,
-        parentId: props.parent.id,
+        level: isSystemParent ? 1 : props.parent.level + 1,
+        parentId: isSystemParent ? null : props.parent.id,
         softSysId: props.parent.softSysId,
       });
       message.success("添加成功");
@@ -67,41 +71,42 @@ const UpdateMenuDialog = defineComponent({
       <div class="update-menu-dialog">
         <Modal
           title="添加菜单"
+          centered
           v-model={[isVisible.value, "visible"]}
           onOk={handleCommit}
         >
-          <Form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
-            <FormItem
+          <a-form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
+            <a-form-item
               label="菜单编码"
               name="code"
               required
               rules={getRequiredRule("菜单编码")}
             >
-              <Input v-model={[form.value.code, "value"]}></Input>
-            </FormItem>
-            <FormItem
+              <a-input v-model={[form.value.code, "value"]}></a-input>
+            </a-form-item>
+            <a-form-item
               label="页面名称"
               name="name"
               required
               rules={getRequiredRule("页面名称")}
             >
-              <Input v-model={[form.value.name, "value"]}></Input>
-            </FormItem>
-            <FormItem
+              <a-input v-model={[form.value.name, "value"]}></a-input>
+            </a-form-item>
+            <a-form-item
               label="页面URL"
               name="url"
               required
               rules={getRequiredRule("页面URL")}
             >
-              <Input v-model={[form.value.url, "value"]}></Input>
-            </FormItem>
-            <FormItem label="启用状态" name="valid">
-              <Switch v-model={[form.value.valid, "checked"]}></Switch>
-            </FormItem>
-            <FormItem label="ICON" name="icon">
+              <a-input v-model={[form.value.url, "value"]}></a-input>
+            </a-form-item>
+            <a-form-item label="启用状态" name="valid">
+              <a-switch v-model={[form.value.valid, "checked"]}></a-switch>
+            </a-form-item>
+            <a-form-item label="ICON" name="icon">
               <IconSelect v-model={[form.value.icon, "value"]} />
-            </FormItem>
-          </Form>
+            </a-form-item>
+          </a-form>
         </Modal>
       </div>
     );

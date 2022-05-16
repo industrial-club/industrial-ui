@@ -1,21 +1,48 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, provide, PropType } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import api from "@/pageComponent/api/org/teamManager";
+import utils from "@/utils";
 
-import {
-  Table,
-  Input,
-  Button,
-  Switch,
-  Space,
-  message,
-  Modal,
-} from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import UpdateTeamDialog from "./updateTeamDialog";
 
+export interface IUrlObj {
+  // 班组列表
+  list: string;
+  // 新增班组
+  add: string;
+  // 更新班组
+  update: string;
+  // 删除班组
+  delete: string;
+  // 启用/禁用班组
+  switchStatus: string;
+  // 获取部门列表(添加、编辑 部门下拉框)
+  depList: string;
+  // 岗位下拉列表
+  postList: string;
+  // 获取人员列表 (下拉框)
+  empList: string;
+}
+
+const DEFAULT_URL: IUrlObj = {
+  list: "/comlite/v1/workgroup/all/page",
+  add: "/comlite/v1/workgroup/add",
+  update: "/comlite/v1/workgroup/modify",
+  delete: "/comlite/v1/workgroup/remove/",
+  switchStatus: "/comlite/v1/workgroup/modify",
+  depList: "/comlite/v1/department/all",
+  postList: "/comlite/v1/jobPost/all/summary",
+  empList: "/comlite/v1/employee/all/summary",
+};
+
 const column = [
+  {
+    title: "班组名称",
+    dataIndex: "name",
+  },
   {
     title: "所属部门",
     dataIndex: "depName",
@@ -23,10 +50,6 @@ const column = [
   {
     title: "岗位名称",
     dataIndex: "jobPostName",
-  },
-  {
-    title: "班组名称",
-    dataIndex: "name",
   },
   {
     title: "班组组长",
@@ -56,8 +79,17 @@ const column = [
   },
 ];
 
-export default defineComponent({
+const TeamManager = defineComponent({
+  props: {
+    url: {
+      type: Object as PropType<Partial<IUrlObj>>,
+      default: () => ({}),
+    },
+  },
   setup(prop, context) {
+    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    provide("urlMap", urlMap);
+
     const form = ref({
       keyWord: "",
     });
@@ -65,7 +97,7 @@ export default defineComponent({
     const { currPage, total, handlePageChange, isLoading, refresh, tableList } =
       useTableList(
         () =>
-          api.getTeamListByPage({
+          api.getTeamListByPage(urlMap.list)({
             pageNum: currPage.value,
             pageSize: 10,
             keyword: form.value.keyWord,
@@ -89,7 +121,7 @@ export default defineComponent({
         title: "删除班组",
         content: `确定删除班组“${record.name}”?`,
         async onOk() {
-          await api.deleteTeamById(record.id);
+          await api.deleteTeamById(urlMap.delete)(record.id);
           message.success("删除成功");
           refresh();
         },
@@ -102,7 +134,7 @@ export default defineComponent({
         title: "提示",
         content: `确定${checked ? "启用" : "禁用"}吗`,
         async onOk() {
-          await api.switchEnableTeam({
+          await api.switchEnableTeam(urlMap.switchStatus)({
             id: record.id,
             valid: checked ? 1 : 0,
           });
@@ -115,22 +147,21 @@ export default defineComponent({
     return () => (
       <div class="postManager">
         <div class="control">
-          <Space style={{ width: "100%", justifyContent: "space-between" }}>
-            <Button type="primary" onClick={handleAddClick}>
+          <a-space style={{ width: "100%", justifyContent: "space-between" }}>
+            <a-button type="primary" onClick={handleAddClick}>
               新建班组
-            </Button>
-            <Input
-              placeholder="请输入"
+            </a-button>
+            <a-input
+              placeholder="请输入班组名称"
               allowClear
               suffix={<SearchOutlined />}
               v-model={[form.value.keyWord, "value"]}
               onChange={refresh}
-            ></Input>
-          </Space>
+            ></a-input>
+          </a-space>
         </div>
 
-        <Table
-          size="middle"
+        <a-table
           loading={isLoading.value}
           dataSource={tableList.value}
           columns={column}
@@ -138,7 +169,7 @@ export default defineComponent({
           v-slots={{
             valid: ({ record }: any) => {
               return (
-                <Switch
+                <a-switch
                   checked={record.valid === 1}
                   onClick={
                     ((checked: boolean, e: any) =>
@@ -149,21 +180,30 @@ export default defineComponent({
             },
             action: ({ record }: any) => {
               return (
-                <Space>
-                  <Button type="link" onClick={() => handleViewClick(record)}>
+                <a-space>
+                  <a-button
+                    size="small"
+                    type="link"
+                    onClick={() => handleViewClick(record)}
+                  >
                     查看
-                  </Button>
-                  <Button type="link" onClick={() => handleEditClick(record)}>
+                  </a-button>
+                  <a-button
+                    size="small"
+                    type="link"
+                    onClick={() => handleEditClick(record)}
+                  >
                     编辑
-                  </Button>
-                  <Button
+                  </a-button>
+                  <a-button
+                    size="small"
                     type="link"
                     danger
                     onClick={() => handleDeleteClick(record)}
                   >
                     删除
-                  </Button>
-                </Space>
+                  </a-button>
+                </a-space>
               );
             },
           }}
@@ -189,3 +229,5 @@ export default defineComponent({
     );
   },
 });
+
+export default utils.installComponent(TeamManager, "team-manager");

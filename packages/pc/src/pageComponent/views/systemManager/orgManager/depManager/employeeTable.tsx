@@ -3,15 +3,16 @@
  * @Author: wang liang
  * @Date: 2022-04-07 13:51:43
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-24 11:55:35
+ * @LastEditTime: 2022-04-27 10:59:14
  */
 
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent, inject, ref, watch } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import api from "@/pageComponent/api/org/depManager";
+import { IUrlObj } from "./index";
 
-import { Space, Button, Table, Input, Modal } from "ant-design-vue";
+import { Modal } from "ant-design-vue";
 import UpdateEmployeeDialog from "./updateEmployeeDialog";
 
 const columns = [
@@ -69,6 +70,8 @@ const EmployeeTable = defineComponent({
     },
   },
   setup(props) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const keyword = ref("");
 
     const isTopLevel = computed(() => `${props.depId}`.startsWith("sys"));
@@ -78,7 +81,7 @@ const EmployeeTable = defineComponent({
         if (props.depId) {
           // 选煤厂不加部门id  查全部
           const depId = isTopLevel.value ? null : props.depId;
-          return api.getEmployeeList({
+          return api.getEmployeeList(urlMap.empList)({
             departmentId: depId,
             keyword: keyword.value,
             pageNum: currPage.value,
@@ -119,7 +122,7 @@ const EmployeeTable = defineComponent({
         title: "删除人员",
         content: `确定删除人员${record.name}?`,
         async onOk() {
-          await api.deleteEmployeeById(record.id);
+          await api.deleteEmployeeById(urlMap.deleteEmp)(record.id);
           refresh();
         },
       });
@@ -129,24 +132,24 @@ const EmployeeTable = defineComponent({
       <div class="employee-table">
         <h2 class="部门人员详情"></h2>
         <div class="operation">
-          <Space>
-            <Button
+          <a-space>
+            <a-button
               type="primary"
               disabled={isTopLevel.value || !props.isValid}
               onClick={handleAddClick}
             >
               新建
-            </Button>
-          </Space>
-          <Input
+            </a-button>
+          </a-space>
+          <a-input
             style={{ width: "200px" }}
-            placeholder="请输入"
+            placeholder="请输入姓名"
             allowClear
             v-model={[keyword.value, "value"]}
             onInput={refresh}
           />
         </div>
-        <Table
+        <a-table
           loading={isLoading.value}
           columns={columns}
           dataSource={tableList.value}
@@ -159,24 +162,33 @@ const EmployeeTable = defineComponent({
         >
           {{
             action: ({ record }: any) => (
-              <Space>
-                <Button type="link" onClick={() => handleViewClick(record)}>
+              <a-space>
+                <a-button
+                  size="small"
+                  type="link"
+                  onClick={() => handleViewClick(record)}
+                >
                   查看
-                </Button>
-                <Button type="link" onClick={() => handleEditClick(record)}>
+                </a-button>
+                <a-button
+                  size="small"
+                  type="link"
+                  onClick={() => handleEditClick(record)}
+                >
                   编辑
-                </Button>
-                <Button
+                </a-button>
+                <a-button
+                  size="small"
                   type="link"
                   danger
                   onClick={() => handleDeleteClick(record)}
                 >
                   删除
-                </Button>
-              </Space>
+                </a-button>
+              </a-space>
             ),
           }}
-        </Table>
+        </a-table>
 
         <UpdateEmployeeDialog
           mode="view"

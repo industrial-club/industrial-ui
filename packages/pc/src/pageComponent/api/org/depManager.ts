@@ -5,93 +5,95 @@
  * @LastEditors: wang liang
  * @LastEditTime: 2022-04-24 11:55:24
  */
-import { instance } from '../axios';
+import { instance } from "../axios";
 
 const api = {
   /**
    * 查询组织树- 部门列表
    */
-  getDepData(params: any) {
-    return instance.get('/department/all', { params });
+  getDepData: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 新增部门
    */
-  insertDepRecord(data: any) {
-    return instance.post('/department/add', data);
+  insertDepRecord: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
 
   /**
    * 编辑部门
    */
-  updateDepRecord(data: any) {
-    return instance.post('/department/modify', data);
+  updateDepRecord: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 删除部门
    */
-  deleteDepById(departmentId: number) {
-    return instance.get(`/department/remove/${departmentId}`);
+  deleteDepById: (url: string) => (departmentId: number) => {
+    return instance.get(`${url}${departmentId}`);
   },
   /**
    * 获取部门下的员工下拉列表
    */
-  getDepEmployeeSelectList(departmentId: number, ruleType: 0 | 1 | 2 = 1) {
-    return instance.get('/employee/all/summary', {
-      params: { departmentId, ruleType },
-    });
-  },
+  getDepEmployeeSelectList:
+    (url: string) =>
+    (departmentId: number, ruleType: 0 | 1 | 2 = 1) => {
+      return instance.get(url, {
+        params: { departmentId, ruleType },
+      });
+    },
 
   /**
    * 部门排序
    */
-  sortDepList(data: any) {
-    return instance.post('/department/sort/adjust', data);
+  sortDepList: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
 
   /**
    * 查询部门详情
    */
-  getDetail(params: any) {
-    return instance.get(`/department/detail/${params}`);
+  getDetail: (url: string) => (params: any) => {
+    return instance.get(`${url}${params}`);
   },
 
   /* ====== 人员api ====== */
   /**
    * 获取部门下的员工列表
    */
-  getEmployeeList(params: any) {
-    return instance.get('/employee/all/page', { params });
+  getEmployeeList: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 获取岗位下拉列表
    */
-  getPostList() {
-    return instance.get('/jobPost/all/summary');
+  getPostList: (url: string) => () => {
+    return instance.get(url);
   },
   /**
    * 获取员工详细信息 查看/编辑 回显
    */
-  getEmployeeDetail(employeeId: number) {
-    return instance.get(`/employee/detail/${employeeId}`);
+  getEmployeeDetail: (url: string) => (employeeId: number) => {
+    return instance.get(`${url}${employeeId}`);
   },
   /**
    * 新增员工
    */
-  insetEmployee(data: any) {
-    return instance.post('/employee/add', data);
+  insetEmployee: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 修改员工信息
    */
-  updateEmployee(data: any) {
-    return instance.post('/employee/modify', data);
+  updateEmployee: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 删除员工
    */
-  deleteEmployeeById(employeeId: number) {
-    return instance.get(`/employee/remove/${employeeId}`);
+  deleteEmployeeById: (url: string) => (employeeId: number) => {
+    return instance.get(`${url}${employeeId}`);
   },
 };
 

@@ -1,10 +1,39 @@
-import { defineComponent, onMounted, ref, reactive } from "vue";
+import { defineComponent, onMounted, ref, reactive, PropType } from "vue";
 // import mtLogoBig from "@/pageComponent/assets/img/mtLogoBig.png";
 // import mtInfo from "@/pageComponent/assets/img/mtInfo.png";
 import { Card, Button, Modal, Popconfirm } from "ant-design-vue";
 import utils from "@/utils";
 
+export interface IVersionDetail {
+  // 版本号
+  version: string | number;
+  // 版本概述
+  summary?: string;
+}
+
 const About = defineComponent({
+  props: {
+    // 产品简介
+    summary: {
+      type: String,
+    },
+    // 硬件版本
+    hardware: {
+      type: Object as PropType<IVersionDetail>,
+    },
+    // 软件版本
+    software: {
+      type: Object as PropType<IVersionDetail>,
+    },
+    // 数据库版本
+    database: {
+      type: Object as PropType<IVersionDetail>,
+    },
+    // 系统说明书下载链接 （不传不展示下载链接）
+    manualUrl: {
+      type: String,
+    },
+  },
   setup(prop, context) {
     const visible = ref(false);
 
@@ -102,22 +131,42 @@ const About = defineComponent({
         <div class="titleLine">
           <div class="title">产品简介</div>
         </div>
-        <Card class="card">本版本内容及功能特点概要。</Card>
+        <Card class="card">{prop.summary}</Card>
 
         <div class="titleLine">
           <div class="title">版本详情</div>
         </div>
-        <div class="litTitle">硬件版本：TLS-HW-V 1.0.0.1</div>
-        <Card class="card">本版本内容及功能特点概要。</Card>
-        <div class="litTitle">软件版本：TLS-SW-V 1.0.0.1</div>
-        <Card class="card">本版本内容及功能特点概要。</Card>
-        <div class="litTitle">数据库版本：TLS-DB-V 1.0.0.1</div>
-        <Card class="card">本版本内容及功能特点概要。</Card>
+        {prop.hardware && (
+          <>
+            <div class="litTitle">硬件版本：{prop.hardware.version}</div>
+            <Card class="card">{prop.hardware.summary}</Card>
+          </>
+        )}
+        {prop.software && (
+          <>
+            <div class="litTitle">软件版本：{prop.software.version}</div>
+            <Card class="card">{prop.software.summary}</Card>
+          </>
+        )}
 
-        <div class="titleLine">
-          <div class="title">系统功能说明书</div>
-        </div>
-        <a class="down">点击下载系统使用说明书{">>"}</a>
+        {prop.database && (
+          <>
+            <div class="litTitle">数据库版本：{prop.database.version}</div>
+            <Card class="card">{prop.database.summary}</Card>
+          </>
+        )}
+
+        {prop.manualUrl && (
+          <div class="manual">
+            <div class="titleLine">
+              <div class="title">系统功能说明书</div>
+            </div>
+            <a class="down" target="_BLANK" href={prop.manualUrl}>
+              点击下载系统使用说明书&gt;&gt;
+            </a>
+          </div>
+        )}
+
         {/* <img src={mtInfo} class="info" /> */}
       </div>
     );

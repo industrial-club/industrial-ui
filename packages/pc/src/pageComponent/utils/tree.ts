@@ -3,7 +3,7 @@
  * @Author: wang liang
  * @Date: 2022-04-18 09:12:12
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-25 10:23:49
+ * @LastEditTime: 2022-04-26 16:06:15
  */
 
 /**
@@ -54,6 +54,30 @@ export function removeDateProp(treeData: any[]) {
 /**
  * 查询父节点数据
  */
-// export function getParent(treeData: any[], id: number, childProp = 'subList') {}
+export function getParentById(
+  list: any[],
+  id: number,
+  sub = 'subList',
+  obj?: any,
+) {
+  let result: any;
+
+  list.some((item) => {
+    if (item.id === id) {
+      result = obj;
+      return true;
+    }
+    if (sub in item) {
+      result = getParentById(item[sub], id, sub, item);
+      if (result && Object.keys(result).length > 0) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  });
+
+  return result;
+}
 
 export default '';

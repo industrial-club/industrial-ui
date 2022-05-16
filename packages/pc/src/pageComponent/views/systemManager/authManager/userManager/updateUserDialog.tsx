@@ -1,23 +1,21 @@
-import { computed, defineComponent, nextTick, PropType, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  PropType,
+  ref,
+  watch,
+  inject,
+} from "vue";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import { cloneDeep, omit } from "lodash";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import api from "@/pageComponent/api/auth/userManager";
+import { IUrlObj } from "./index";
 
-import {
-  Modal,
-  Form,
-  FormItem,
-  Input,
-  Select,
-  SelectOption,
-  InputPassword,
-  Space,
-  Button,
-  message,
-} from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import UserProfileDialog from "./userProfileDialog";
 import SearchSelect from "@/pageComponent/components/SearchSelect";
 
@@ -44,6 +42,8 @@ const UpdateUserDialog = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const isVisible = useVModel(props, "visible", emit);
 
     /* ===== 初始化表单 ===== */
@@ -57,7 +57,7 @@ const UpdateUserDialog = defineComponent({
         if (props.mode === "add") return;
         form.value = cloneDeep(props.record);
         // 转换角色列表
-        form.value.roleIds = form.value.roleIds.split(",").map(Number);
+        form.value.roleIds = form.value.roleIds.split(",");
       } else {
         // 清空表单
         formRef.value.resetFields();
@@ -66,7 +66,9 @@ const UpdateUserDialog = defineComponent({
 
     // 获取员工列表
     const employeeList = ref([]);
-    api.getEmployeeList().then(({ data }) => (employeeList.value = data));
+    api
+      .getEmployeeList(urlMap.employeeList)()
+      .then(({ data }) => (employeeList.value = data));
 
     /* 对话框标题 */
     const modalTitle = computed(() => {
@@ -91,7 +93,7 @@ const UpdateUserDialog = defineComponent({
         title: "密码重置",
         content: "确定重置密码?",
         async onOk() {
-          await api.resetPassword(form.value.userId);
+          await api.resetPassword(urlMap.resetPass)(form.value.userId);
           message.success("重置密码！");
         },
       });
@@ -125,12 +127,12 @@ const UpdateUserDialog = defineComponent({
       };
       let res;
       if (props.mode === "add") {
-        res = await api.insertOneUserRecord({
+        res = await api.insertOneUserRecord(urlMap.add)({
           ...omit(data, "checkPass"),
           passWord: encodeStr(data.passWord),
         });
       } else if (props.mode === "edit") {
-        res = await api.editUserRecord(data);
+        res = await api.editUserRecord(urlMap.update)(data);
       }
 
       cancel();
@@ -146,8 +148,8 @@ const UpdateUserDialog = defineComponent({
         >
           {{
             default: () => (
-              <Form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
-                <FormItem
+              <a-form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
+                <a-form-item
                   name="userName"
                   label="用户名"
                   required
@@ -156,30 +158,35 @@ const UpdateUserDialog = defineComponent({
                   {isView.value ? (
                     <span>{form.value.userName}</span>
                   ) : (
-                    <Input v-model={[form.value.userName, "value"]} />
+                    <a-input v-model={[form.value.userName, "value"]} />
                   )}
-                </FormItem>
-                <FormItem
+                </a-form-item>
+                <a-form-item
                   name="employeeName"
                   label="员工姓名"
                   help="中英文均可，最长14个英文或者7个汉字"
                 >
                   {isView.value ? (
-                    <Button type="link" onClick={handleProfileClick}>
+                    <a-button type="link" onClick={handleProfileClick}>
                       {form.value.employeeName}
-                    </Button>
+                    </a-button>
                   ) : (
-                    <Select v-model={[form.value.employeeId, "value"]}>
+                    <a-select
+                      allowClear
+                      v-model={[form.value.employeeId, "value"]}
+                    >
                       {employeeList.value.map((item: any) => (
-                        <SelectOption key={item.id}>{item.name}</SelectOption>
+                        <a-select-option key={item.id}>
+                          {item.name}
+                        </a-select-option>
                       ))}
-                    </Select>
+                    </a-select>
                   )}
-                </FormItem>
+                </a-form-item>
                 {props.mode === "add" ? (
                   // 新增用户 展示新建密码 和 确认密码
                   <>
-                    <FormItem
+                    <a-form-item
                       name="passWord"
                       label="新建密码"
                       required
@@ -189,11 +196,11 @@ const UpdateUserDialog = defineComponent({
                         { required: true, message: "请输入密码" },
                       ]}
                     >
-                      <InputPassword
+                      <a-input-password
                         v-model={[form.value.passWord, "value"]}
-                      ></InputPassword>
-                    </FormItem>
-                    <FormItem
+                      ></a-input-password>
+                    </a-form-item>
+                    <a-form-item
                       name="checkPass"
                       label="确认密码"
                       required
@@ -202,23 +209,23 @@ const UpdateUserDialog = defineComponent({
                         { required: true, message: "请确认密码" },
                       ]}
                     >
-                      <InputPassword
+                      <a-input-password
                         v-model={[form.value.checkPass, "value"]}
-                      ></InputPassword>
-                    </FormItem>
+                      ></a-input-password>
+                    </a-form-item>
                   </>
                 ) : (
                   // 查看和编辑用户 展示重置密码
-                  <FormItem name="passWord" label="密码重置">
+                  <a-form-item name="passWord" label="密码重置">
                     <span>●●●●●●●●</span>
                     {props.mode === "edit" && (
-                      <Button type="link" onClick={handleResetPassword}>
+                      <a-button type="link" onClick={handleResetPassword}>
                         重置密码
-                      </Button>
+                      </a-button>
                     )}
-                  </FormItem>
+                  </a-form-item>
                 )}
-                <FormItem
+                <a-form-item
                   name="roleIds"
                   label="所属角色"
                   required
@@ -234,8 +241,8 @@ const UpdateUserDialog = defineComponent({
                       v-model={[form.value.roleIds, "value"]}
                     ></SearchSelect>
                   )}
-                </FormItem>
-                <FormItem
+                </a-form-item>
+                <a-form-item
                   name="phone"
                   label="电话"
                   required
@@ -244,41 +251,41 @@ const UpdateUserDialog = defineComponent({
                   {isView.value ? (
                     <span>{form.value.phone}</span>
                   ) : (
-                    <Input v-model={[form.value.phone, "value"]} />
+                    <a-input v-model={[form.value.phone, "value"]} />
                   )}
-                </FormItem>
-                <FormItem name="zhixin" label="智信">
+                </a-form-item>
+                <a-form-item name="zhixin" label="智信">
                   {isView.value ? (
                     <span>{form.value.zhixin}</span>
                   ) : (
-                    <Input v-model={[form.value.zhixin, "value"]} />
+                    <a-input v-model={[form.value.zhixin, "value"]} />
                   )}
-                </FormItem>
-                <FormItem name="wechat" label="微信">
+                </a-form-item>
+                <a-form-item name="wechat" label="微信">
                   {isView.value ? (
                     <span>{form.value.wechat}</span>
                   ) : (
-                    <Input v-model={[form.value.wechat, "value"]} />
+                    <a-input v-model={[form.value.wechat, "value"]} />
                   )}
-                </FormItem>
-                <FormItem name="mail" label="邮箱">
+                </a-form-item>
+                <a-form-item name="mail" label="邮箱">
                   {isView.value ? (
                     <span>{form.value.mail}</span>
                   ) : (
-                    <Input v-model={[form.value.mail, "value"]} />
+                    <a-input v-model={[form.value.mail, "value"]} />
                   )}
-                </FormItem>
-              </Form>
+                </a-form-item>
+              </a-form>
             ),
             footer: () => (
-              <Space>
-                <Button onClick={cancel}>关闭</Button>
+              <a-space>
+                <a-button onClick={cancel}>关闭</a-button>
                 {!isView.value && (
-                  <Button type="primary" onClick={handleCommit}>
+                  <a-button type="primary" onClick={handleCommit}>
                     保存
-                  </Button>
+                  </a-button>
                 )}
-              </Space>
+              </a-space>
             ),
           }}
         </Modal>

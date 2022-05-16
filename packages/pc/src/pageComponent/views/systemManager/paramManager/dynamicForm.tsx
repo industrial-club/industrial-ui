@@ -5,11 +5,12 @@
  * @LastEditors: wang liang
  * @LastEditTime: 2022-03-31 10:38:03
  */
-import { defineComponent, ref, watch } from "vue";
+import { computed, defineComponent, inject, ref, unref, watch } from "vue";
 import useProxy from "@/pageComponent/hooks/useProxy";
 import { api } from "@/pageComponent/api/param";
+import { IUrlObj } from "./index";
+
 import ProFormItem from "@/pageComponent/components/ProFormItem";
-import { Form, Row, Col } from "ant-design-vue";
 
 const DynamicForm = defineComponent({
   props: {
@@ -19,12 +20,14 @@ const DynamicForm = defineComponent({
     },
   },
   setup(props) {
+    const urmMap = inject<IUrlObj>("urlMap")!;
+
     const proxy = useProxy();
 
     /* ===== 获取表单描述列表 ===== */
     const formDescList = ref([]);
     const getFormDescList = async () => {
-      const { data } = await api.getParamDefineList(props.id);
+      const { data } = await api.getParamDefineList(urmMap.define)(props.id);
       formDescList.value = data.paramDefineValueVoList;
     };
     getFormDescList();
@@ -68,15 +71,15 @@ const DynamicForm = defineComponent({
 
     return () => (
       <div class="dynamic-form">
-        <Form ref={formRef} labelCol={{ span: 10 }} model={form.value}>
-          <Row gutter={16}>
+        <a-form ref={formRef} labelCol={{ span: 10 }} model={form.value}>
+          <a-row gutter={16}>
             {formDescList.value.map((item: any, index) => (
-              <Col key={index} xl={6} lg={8} md={12} xs={24}>
+              <a-col key={index} xl={6} lg={8} md={12} xs={24}>
                 <ProFormItem description={item} onChange={handleFieldChange} />
-              </Col>
+              </a-col>
             ))}
-          </Row>
-        </Form>
+          </a-row>
+        </a-form>
       </div>
     );
   },

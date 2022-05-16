@@ -6,25 +6,15 @@
  * @LastEditTime: 2022-04-24 13:46:27
  */
 
-import { computed, defineComponent, nextTick, PropType, ref, watch } from "vue";
+import { computed, defineComponent, inject, PropType, ref, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import useModalForm from "@/pageComponent/hooks/manage-module/useModalForm";
 import api from "@/pageComponent/api/org/teamManager";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
+import { IUrlObj } from "./index";
 
-import {
-  Modal,
-  Form,
-  FormItem,
-  Select,
-  SelectOption,
-  Input,
-  TreeSelect,
-  Space,
-  Button,
-  message,
-} from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import SearchSelect from "@/pageComponent/components/SearchSelect";
 
 const UpdatePostDialog = defineComponent({
@@ -47,6 +37,8 @@ const UpdatePostDialog = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const isVisible = useVModel(props, "visible", emit);
 
     const modalTitle = useModalTitle(props.mode, "班组");
@@ -58,7 +50,7 @@ const UpdatePostDialog = defineComponent({
       () => props.record,
       props.mode,
       (r) => {
-        r.memberIds = (r?.memberIds?.split(",") ?? []).map(Number);
+        r.memberIds = r?.memberIds?.split(",") ?? [];
       }
     );
 
@@ -70,7 +62,7 @@ const UpdatePostDialog = defineComponent({
     // 部门列表
     const depList = ref<any[]>([]);
     const getDepList = async () => {
-      const list = await api.getDepList();
+      const list = await api.getDepList(urlMap.depList)();
       depList.value = list;
     };
     getDepList();
@@ -80,7 +72,9 @@ const UpdatePostDialog = defineComponent({
     // 选择部门列表时获取员工列表
     const getEmployeeList = async (isClean = true) => {
       if (!form.value.depId) return;
-      const { data } = await api.getEmployeeList(form.value.depId);
+      const { data } = await api.getEmployeeList(urlMap.empList)(
+        form.value.depId
+      );
       employeeList.value = data;
       // 清空选中的员工和班长
       if (isClean) {
@@ -93,7 +87,7 @@ const UpdatePostDialog = defineComponent({
     const postList = ref([]);
     const getPostList = () => {
       api
-        .getPostList({ depId: form.value.depId })
+        .getPostList(urlMap.postList)({ depId: form.value.depId })
         .then(({ data }) => (postList.value = data));
     };
 
@@ -113,10 +107,10 @@ const UpdatePostDialog = defineComponent({
         memberIds: form.value?.memberIds?.join(",") ?? "",
       };
       if (props.mode === "add") {
-        await api.insertTeam(data);
+        await api.insertTeam(urlMap.add)(data);
         message.success("添加成功");
       } else if (props.mode === "edit") {
-        await api.edidTeamRecord(data);
+        await api.edidTeamRecord(urlMap.update)(data);
         message.success("修改成功");
       }
       props.onRefresh?.();
@@ -133,8 +127,8 @@ const UpdatePostDialog = defineComponent({
           >
             {{
               default: () => (
-                <Form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
-                  <FormItem
+                <a-form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
+                  <a-form-item
                     name="code"
                     required
                     label="班组编码"
@@ -143,10 +137,10 @@ const UpdatePostDialog = defineComponent({
                     {isView.value ? (
                       <span>{props.record.code}</span>
                     ) : (
-                      <Input v-model={[form.value.code, "value"]} />
+                      <a-input v-model={[form.value.code, "value"]} />
                     )}
-                  </FormItem>
-                  <FormItem
+                  </a-form-item>
+                  <a-form-item
                     name="depId"
                     required
                     label="所属部门"
@@ -155,7 +149,7 @@ const UpdatePostDialog = defineComponent({
                     {isView.value ? (
                       <span>{props.record.depName}</span>
                     ) : (
-                      <TreeSelect
+                      <a-tree-select
                         fieldNames={{
                           label: "name",
                           value: "id",
@@ -164,21 +158,26 @@ const UpdatePostDialog = defineComponent({
                         treeData={depList.value}
                         v-model={[form.value.depId, "value"]}
                         onChange={getEmployeeList}
-                      ></TreeSelect>
+                      ></a-tree-select>
                     )}
-                  </FormItem>
-                  <FormItem name="jobPostId" label="岗位名称">
+                  </a-form-item>
+                  <a-form-item name="jobPostId" label="岗位名称">
                     {isView.value ? (
                       <span>{props.record.jobPostName}</span>
                     ) : (
-                      <Select v-model={[form.value.jobPostId, "value"]}>
+                      <a-select
+                        allowClear
+                        v-model={[form.value.jobPostId, "value"]}
+                      >
                         {postList.value.map((item: any) => (
-                          <SelectOption key={item.id}>{item.name}</SelectOption>
+                          <a-select-option key={item.id}>
+                            {item.name}
+                          </a-select-option>
                         ))}
-                      </Select>
+                      </a-select>
                     )}
-                  </FormItem>
-                  <FormItem
+                  </a-form-item>
+                  <a-form-item
                     name="name"
                     required
                     label="班组名称"
@@ -187,10 +186,10 @@ const UpdatePostDialog = defineComponent({
                     {isView.value ? (
                       <span>{props.record.name}</span>
                     ) : (
-                      <Input v-model={[form.value.name, "value"]} />
+                      <a-input v-model={[form.value.name, "value"]} />
                     )}
-                  </FormItem>
-                  <FormItem
+                  </a-form-item>
+                  <a-form-item
                     name="memberIds"
                     required
                     label="班组成员"
@@ -201,14 +200,14 @@ const UpdatePostDialog = defineComponent({
                     ) : (
                       <SearchSelect
                         {...{ mode: "multiple" }}
-                        getUrl="/employee/all/summary"
+                        getUrl={urlMap.empList}
                         extParams={{ departmentId: form.value.depId }}
                         excludeValues={[form.value.leaderId]}
                         v-model={[form.value.memberIds, "value"]}
                       />
                     )}
-                  </FormItem>
-                  <FormItem
+                  </a-form-item>
+                  <a-form-item
                     name="leaderId"
                     required
                     label="班组班长"
@@ -218,26 +217,26 @@ const UpdatePostDialog = defineComponent({
                       <span>{props.record.leaderName}</span>
                     ) : (
                       <SearchSelect
-                        getUrl="/employee/all/summary"
+                        getUrl={urlMap.empList}
                         extParams={{ departmentId: form.value.depId }}
                         excludeValues={form.value.memberIds}
                         v-model={[form.value.leaderId, "value"]}
                       />
                     )}
-                  </FormItem>
-                </Form>
+                  </a-form-item>
+                </a-form>
               ),
               footer: () => (
-                <Space>
-                  <Button onClick={() => (isVisible.value = false)}>
+                <a-space>
+                  <a-button onClick={() => (isVisible.value = false)}>
                     关闭
-                  </Button>
+                  </a-button>
                   {!isView.value && (
-                    <Button type="primary" onClick={handleSave}>
+                    <a-button type="primary" onClick={handleSave}>
                       保存
-                    </Button>
+                    </a-button>
                   )}
-                </Space>
+                </a-space>
               ),
             }}
           </Modal>

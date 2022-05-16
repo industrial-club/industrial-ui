@@ -3,25 +3,17 @@
  * @Author: wang liang
  * @Date: 2022-03-25 09:03:01
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-24 10:59:48
+ * @LastEditTime: 2022-04-27 11:49:31
  */
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, inject } from "vue";
 import useProxy from "@/pageComponent/hooks/useProxy";
 import useBus from "@/pageComponent/hooks/useBus";
 import { cloneDeep, omit } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import api from "@/pageComponent/api/auth/menuManager";
+import { IUrlObj } from "./index";
 
-import {
-  Space,
-  Button,
-  Form,
-  FormItem,
-  Input,
-  Switch,
-  Empty,
-  message,
-} from "ant-design-vue";
+import { message } from "ant-design-vue";
 import IconSelect from "@/pageComponent/components/IconSelect";
 import Dynamicicon from "@/pageComponent/components/DynamicIcon";
 
@@ -32,6 +24,8 @@ const MenuDetail = defineComponent({
     },
   },
   setup(props) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const proxy = useProxy();
     const bus = useBus("system");
 
@@ -42,22 +36,21 @@ const MenuDetail = defineComponent({
 
     const form = ref<any>({});
 
-    watch(
-      () => props.node,
-      async () => {
-        if (props.node) {
-          form.value = cloneDeep({
-            ...props.node.dataRef,
-            valid: props.node.valid === 1,
-          });
-        }
+    const startEdit = () => {
+      if (props.node) {
+        isEdit.value = false;
+        form.value = cloneDeep({
+          ...(props.node.dataRef ?? props.node),
+          valid: props.node.valid === 1,
+        });
+        isEdit.value = true;
       }
-    );
+    };
 
     const handleSave = async () => {
       await formRef.value.validate();
 
-      await api.editMenuRecord({
+      await api.editMenuRecord(urlMap.update)({
         ...omit(form.value, "subList"),
         valid: form.value.valid ? 1 : 0,
       });
@@ -67,7 +60,9 @@ const MenuDetail = defineComponent({
     };
 
     /* 暴露编辑函数 */
-    proxy._edit = () => (isEdit.value = true);
+    proxy._edit = () => {
+      startEdit();
+    };
 
     return () => {
       return (
@@ -76,94 +71,95 @@ const MenuDetail = defineComponent({
             <>
               <div class="header">
                 <span class="header-text">基本详情</span>
-                <Space>
+                <a-space>
                   {isEdit.value ? (
                     <>
-                      <Button
+                      <a-button
                         key="close"
                         onClick={() => (isEdit.value = false)}
                       >
                         关闭
-                      </Button>
-                      <Button key="save" type="primary" onClick={handleSave}>
+                      </a-button>
+                      <a-button key="save" type="primary" onClick={handleSave}>
                         保存
-                      </Button>
+                      </a-button>
                     </>
                   ) : (
-                    <Button
+                    <a-button
                       key="edit"
                       type="primary"
-                      onClick={() => (isEdit.value = true)}
+                      onClick={startEdit}
+                      disabled={props.node.isSystem}
                     >
                       编辑
-                    </Button>
+                    </a-button>
                   )}
-                </Space>
+                </a-space>
               </div>
-              <Form
+              <a-form
                 class="form"
                 ref={formRef}
                 labelCol={{ span: 4 }}
                 labelAlign="right"
                 model={form.value}
               >
-                <FormItem
+                <a-form-item
                   label="菜单编码"
                   name="code"
                   required
                   rules={getRequiredRule("菜单编码")}
                 >
                   {isEdit.value ? (
-                    <Input v-model={[form.value.code, "value"]} />
+                    <a-input v-model={[form.value.code, "value"]} />
                   ) : (
                     <span>{props.node.code}</span>
                   )}
-                </FormItem>
-                <FormItem
+                </a-form-item>
+                <a-form-item
                   label="页面名称"
                   name="name"
                   required
                   rules={getRequiredRule("页面名称")}
                 >
                   {isEdit.value ? (
-                    <Input v-model={[form.value.name, "value"]} />
+                    <a-input v-model={[form.value.name, "value"]} />
                   ) : (
                     <span>{props.node.name}</span>
                   )}
-                </FormItem>
-                <FormItem label="父级页面">
+                </a-form-item>
+                <a-form-item label="父级页面">
                   <span>{props.node?.parent?.node?.name}</span>
-                </FormItem>
-                <FormItem
+                </a-form-item>
+                <a-form-item
                   label="页面URL"
                   name="url"
                   required
                   rules={getRequiredRule("页面URL")}
                 >
                   {isEdit.value ? (
-                    <Input v-model={[form.value.url, "value"]} />
+                    <a-input v-model={[form.value.url, "value"]} />
                   ) : (
                     <span>{props.node.url}</span>
                   )}
-                </FormItem>
-                <FormItem label="启用状态" name="valid">
+                </a-form-item>
+                <a-form-item label="启用状态" name="valid">
                   {isEdit.value ? (
-                    <Switch v-model={[form.value.valid, "checked"]} />
+                    <a-switch v-model={[form.value.valid, "checked"]} />
                   ) : (
                     <span>{props.node.valid ? "启用" : "禁用"}</span>
                   )}
-                </FormItem>
-                <FormItem label="ICON" name="icon">
+                </a-form-item>
+                <a-form-item label="ICON" name="icon">
                   {isEdit.value ? (
                     <IconSelect v-model={[form.value.icon, "value"]} />
                   ) : (
                     <Dynamicicon icon={props.node.icon} />
                   )}
-                </FormItem>
-              </Form>
+                </a-form-item>
+              </a-form>
             </>
           ) : (
-            <Empty style={{ maxWidth: "500px" }} description="请选择菜单" />
+            <a-empty style={{ maxWidth: "500px" }} description="请选择菜单" />
           )}
         </div>
       );
