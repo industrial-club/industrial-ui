@@ -8,6 +8,7 @@ const props = {
   camera: {
     type: Object as PropType<videoInfo>,
   },
+
   // 视频uuid
   cameraUuid: String,
 };
@@ -41,6 +42,8 @@ const VideoPlayer = defineComponent({
         },
       });
     };
+
+    // 播放 uuid 变化, 获取播放信息, 初始化视频
     watch(
       () => _prop.cameraUuid,
       async (e) => {
@@ -55,10 +58,13 @@ const VideoPlayer = defineComponent({
         immediate: true,
       }
     );
+
+    // 播放信息变化初始化视频
     watch(
       () => _prop.camera,
       (e) => {
         if (e) {
+          stopPlay();
           init(e);
         }
       },
@@ -67,11 +73,17 @@ const VideoPlayer = defineComponent({
         deep: true,
       }
     );
-    onUnmounted(() => {
-      // 停止播放
+
+    // 停止播放
+    const stopPlay = () => {
       if (play) {
-        play.stopPlay("video");
+        play.stopPlay(`videoPlayer${timer}`);
       }
+    };
+
+    // 页面销毁时停止播放视频流
+    onUnmounted(() => {
+      stopPlay();
     });
     return () => (
       <video
