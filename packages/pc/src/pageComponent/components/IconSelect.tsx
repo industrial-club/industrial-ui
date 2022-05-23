@@ -9,7 +9,6 @@
 import { defineComponent } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 
-import { Select, SelectOption } from "ant-design-vue";
 import {
   CiOutlined,
   UpOutlined,
@@ -37,13 +36,13 @@ const IconSelect = defineComponent({
     const selectValue = useVModel(props, "value", emit);
 
     return () => (
-      <Select v-model={[selectValue.value, "value"]}>
+      <a-select v-model={[selectValue.value, "value"]}>
         {iconsList.map((item) => (
-          <SelectOption key={item.name}>
+          <a-select-option key={item.name}>
             <item.icon />
-          </SelectOption>
+          </a-select-option>
         ))}
-      </Select>
+      </a-select>
     );
   },
 });

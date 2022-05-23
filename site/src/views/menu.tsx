@@ -7,7 +7,7 @@ const SubMenu = Menu.SubMenu;
 export default defineComponent({
   setup() {
     return () => (
-      <Menu theme="dark">
+      <Menu>
         <item>item1</item>
         <SubMenu title={"sub"}>
           <item>sub-item1</item>

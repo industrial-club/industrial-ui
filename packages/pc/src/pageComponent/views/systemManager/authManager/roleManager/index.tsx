@@ -1,20 +1,35 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, PropType, provide, ref } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import api from "@/pageComponent/api/auth/roleManager";
+import utils from "@/utils";
 
-import {
-  Input,
-  Space,
-  Button,
-  Table,
-  Switch,
-  message,
-  Form,
-  FormItem,
-  Modal,
-} from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons-vue";
 import UpdateRoleDialog from "./updateRoleDialog";
+
+export interface IUrlObj {
+  // 角色列表
+  list: string;
+  // 切换角色启用状态
+  switchStatus: string;
+  // 保存角色 新增/更新
+  save: string;
+  // 删除角色
+  delete: string;
+  // 获取角色权限树- 编辑角色
+  editPermission: string;
+  // 获取角色权限树- 新建角色
+  addPermission: string;
+}
+
+const DEFAULT_URL: IUrlObj = {
+  list: "/comlite/v1/role/all/page",
+  save: "/comlite/v1/role/insertRole",
+  addPermission: "/comlite/v1/role/getRoleTree",
+  delete: "/comlite/v1/role/deleteRoleType",
+  editPermission: "/comlite/v1/role/getRoleTreeEdit",
+  switchStatus: "/comlite/v1/role/roleEnabe",
+};
 
 const columns = [
   {
@@ -53,7 +68,16 @@ const columns = [
  * 角色管理
  */
 const RoleManager = defineComponent({
-  setup() {
+  props: {
+    url: {
+      type: Object as PropType<Partial<IUrlObj>>,
+      default: () => ({}),
+    },
+  },
+  setup(props) {
+    const urlMap = { ...DEFAULT_URL, ...props.url };
+    provide("urlMap", urlMap);
+
     const filter = ref({
       keyword: "",
     });
@@ -61,8 +85,8 @@ const RoleManager = defineComponent({
     const { isLoading, refresh, tableList, total, currPage, handlePageChange } =
       useTableList(
         () =>
-          api.getRoleListByPager({
-            keyWord: filter.value.keyword,
+          api.getRoleListByPager(urlMap.list)({
+            keyword: filter.value.keyword,
             pageNum: currPage.value,
             pageSize: 10,
           }),
@@ -76,7 +100,7 @@ const RoleManager = defineComponent({
         title: "提示",
         content: `是否${status ? "启用" : "禁用"}角色“${record.roleTypeName}”?`,
         async onOk() {
-          await api.switchRoleEnableStatus({
+          await api.switchRoleEnableStatus(urlMap.switchStatus)({
             roleTypeId: record.roleTypeId,
             enable: Number(status),
           });
@@ -117,7 +141,7 @@ const RoleManager = defineComponent({
           title: "删除角色",
           content: `确定删除角色“${record.roleTypeName}”?`,
           async onOk() {
-            await api.deleteRoleById(record.roleTypeId);
+            await api.deleteRoleById(urlMap.delete)(record.roleTypeId);
             message.success("删除成功");
             refresh();
           },
@@ -131,39 +155,36 @@ const RoleManager = defineComponent({
 
     return () => (
       <div class="role-manager">
-        <Form
-          v-model={filter}
-          name="basic"
-          layout="inline"
-          class="searchLine"
-          onSubmit={handleSubmit}
-        >
-          <div>
-            <FormItem label="角色名称">
-              <Input
+        <div class="table-search">
+          <a-form
+            v-model={filter.value}
+            name="basic"
+            layout="inline"
+            class="searchLine"
+            onSubmit={handleSubmit}
+          >
+            <a-form-item label="角色名称">
+              <a-input
                 placeholder="请输入角色名称"
                 allowClear
                 v-model={[filter.value.keyword, "value"]}
               />
-            </FormItem>
+            </a-form-item>
 
-            <FormItem>
-              <Button type="primary" html-type="submit">
-                <SearchOutlined />
-                查询角色
-              </Button>
-            </FormItem>
-          </div>
-
-          <FormItem>
-            <Button type="primary" onClick={handleAddClick}>
+            <a-button type="primary" html-type="submit">
+              <SearchOutlined />
+              查询角色
+            </a-button>
+          </a-form>
+          <div class="operator">
+            <a-button type="primary" onClick={handleAddClick}>
               <PlusOutlined />
               新建角色
-            </Button>
-          </FormItem>
-        </Form>
+            </a-button>
+          </div>
+        </div>
 
-        <Table
+        <a-table
           pagination={{
             pageSize: 10,
             current: currPage.value,
@@ -176,7 +197,7 @@ const RoleManager = defineComponent({
         >
           {{
             status: ({ record }: any) => (
-              <Switch
+              <a-switch
                 checked={record.enable === 1}
                 onClick={
                   ((status: boolean) =>
@@ -185,28 +206,37 @@ const RoleManager = defineComponent({
               />
             ),
             operation: ({ record }: any) => (
-              <Space>
-                <Button type="link" onClick={() => handleViewClick(record)}>
+              <a-space>
+                <a-button
+                  size="small"
+                  type="link"
+                  onClick={() => handleViewClick(record)}
+                >
                   查看
-                </Button>
+                </a-button>
                 {record.editFlg && (
-                  <Button type="link" onClick={() => handleEditClick(record)}>
+                  <a-button
+                    size="small"
+                    type="link"
+                    onClick={() => handleEditClick(record)}
+                  >
                     编辑
-                  </Button>
+                  </a-button>
                 )}
                 {record.deleteFlg && (
-                  <Button
+                  <a-button
+                    size="small"
                     type="link"
                     danger
                     onClick={() => handleDeleteClick(record)}
                   >
                     删除
-                  </Button>
+                  </a-button>
                 )}
-              </Space>
+              </a-space>
             ),
           }}
-        </Table>
+        </a-table>
 
         {/* 对话框 */}
         <UpdateRoleDialog
@@ -230,4 +260,4 @@ const RoleManager = defineComponent({
   },
 });
 
-export default RoleManager;
+export default utils.installComponent(RoleManager, "role-manager");

@@ -3,17 +3,19 @@
  * @Author: wang liang
  * @Date: 2022-03-25 10:51:32
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-24 10:59:56
+ * @LastEditTime: 2022-04-27 11:03:50
  */
-import { defineComponent, onMounted, onUnmounted, ref } from "vue";
+import { defineComponent, onMounted, ref, inject } from "vue";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import useBus from "@/pageComponent/hooks/useBus";
 import { omit } from "lodash";
 import api from "@/pageComponent/api/auth/menuManager";
+import { IUrlObj } from "./index";
 
-import { message } from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import CommonTree from "@/pageComponent/components/CommonTree";
 import UpdateMenuDialog from "./updateMenuDialog";
+import UploadJSONDialog from "./uploadJSONDialog";
 
 /**
  * 菜单树结构
@@ -28,6 +30,8 @@ const MenuSelectTree = defineComponent({
     },
   },
   setup(props) {
+    const urlMap = inject<IUrlObj>("urlMap")!;
+
     const bus = useBus("system");
 
     const treeRef = ref();
@@ -38,7 +42,7 @@ const MenuSelectTree = defineComponent({
 
     // 获取数据函数
     const getTreeData = async (keyword = "") => {
-      const { data } = await api.getMenuTreeList({ keyword });
+      const { data } = await api.getMenuTreeList(urlMap.tree)({ keyword });
       return data.map((item: any) => {
         item.name = item.softSysName;
         item.id = "sys" + item.softSysId;
@@ -49,14 +53,16 @@ const MenuSelectTree = defineComponent({
     };
 
     /* 当前选中的节点 */
-    const handleSelectNode = (node: any) => {
+    const handleSelectNode = (node?: any) => {
       props.onSelect?.(node);
     };
 
     /* ===== 节点操作 ===== */
     // 复制节点
     const handleCopy = async (node: any) => {
-      await api.insertMenuRecord(omit(node, "id", "sort", "subList"));
+      await api.insertMenuRecord(urlMap.add)(
+        omit(node, "id", "sort", "subList")
+      );
       message.success("复制成功");
       refresh();
     };
@@ -66,9 +72,10 @@ const MenuSelectTree = defineComponent({
     };
     // 删除节点
     const handleDelete = async (node: any) => {
-      await api.deleteMenuById(node.id);
+      await api.deleteMenuById(urlMap.delete)(node.id);
       message.success("删除成功");
       refresh();
+      handleSelectNode();
     };
     // 添加节点
     const [isAddNodeDialogShow, handleAddNodeClick, addNodeParent] =
@@ -77,11 +84,16 @@ const MenuSelectTree = defineComponent({
     /* ===== 拖拽操作 ===== */
     const handleDrop = (data: any) => {
       // 发送排序请求 成功后重新查询数据
-      api.sortMenu(data).then(() => {
-        message.success("排序成功");
-        refresh();
-      });
+      api
+        .sortMenu(urlMap.sort)(data)
+        .then(() => {
+          message.success("排序成功");
+          refresh();
+        });
     };
+
+    // 上传json文件
+    const [isUploadDialogShow, handleUploadClick] = useModalVisibleControl();
 
     return () => (
       <div class="menu-select-tree">
@@ -96,12 +108,18 @@ const MenuSelectTree = defineComponent({
           onDelete={handleDelete}
           onDrop={handleDrop}
           onSelect={handleSelectNode}
+          onJSONUploadClick={handleUploadClick}
         />
 
         <UpdateMenuDialog
           onRefresh={refresh}
           parent={addNodeParent.value}
           v-model={[isAddNodeDialogShow.value, "visible"]}
+        />
+
+        <UploadJSONDialog
+          v-model={[isUploadDialogShow.value, "visible"]}
+          onRefresh={refresh}
         />
       </div>
     );

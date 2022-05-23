@@ -12,7 +12,6 @@ import { instance } from "@/pageComponent/api";
 import { isNil, debounce, isEqual } from "lodash";
 import { every } from "@/pageComponent/utils/is";
 
-import { Select, SelectOption } from "ant-design-vue";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons-vue";
 
 const SearchSelect = defineComponent({
@@ -99,7 +98,7 @@ const SearchSelect = defineComponent({
     );
 
     return () => (
-      <Select
+      <a-select
         {...attrs}
         notFoundContent={isFetching.value ? "加载中" : "暂无数据"}
         showSearch
@@ -114,12 +113,12 @@ const SearchSelect = defineComponent({
             !props.excludeValues.includes(
               item[props.valuePorp.key ?? "id"]
             ) && (
-              <SelectOption key={item[props.valuePorp.key ?? "id"]}>
+              <a-select-option key={item[props.valuePorp.key ?? "id"]}>
                 {item[props.valuePorp.label ?? "name"]}
-              </SelectOption>
+              </a-select-option>
             )
         )}
-      </Select>
+      </a-select>
     );
   },
 });

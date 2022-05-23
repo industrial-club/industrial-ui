@@ -3,16 +3,16 @@
  * @Author: wang liang
  * @Date: 2022-04-07 14:42:40
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-25 15:10:09
+ * @LastEditTime: 2022-04-27 10:26:03
  */
 
 import { defineComponent, onBeforeUnmount, onMounted, ref } from "vue";
 import useProxy from "@/pageComponent/hooks/useProxy";
 import useBus from "@/pageComponent/hooks/useBus";
 import { debounce } from "lodash";
-import { findById } from "@/pageComponent/utils/tree";
+import { findById, getParentById } from "@/pageComponent/utils/tree";
 
-import { Tree, Input, Space, Button, Spin, Modal, Empty } from "ant-design-vue";
+import { Modal } from "ant-design-vue";
 import {
   SearchOutlined,
   CloudUploadOutlined,
@@ -56,6 +56,9 @@ const CommonTree = defineComponent({
       type: Boolean,
       default: false,
     },
+    onJSONUploadClick: {
+      type: Function,
+    },
   },
   setup(props) {
     const proxy = useProxy();
@@ -98,10 +101,13 @@ const CommonTree = defineComponent({
     // 更新节点后重新选中节点 展示最新的信息
     proxy._reselect = () => {
       const node: any = findById(treeData.value, selectedKeys.value[0]);
-      // const res = getParent(treeData.value, node.id);
+      const parent = getParentById(treeData.value, node.id);
       // console.log(res);
 
-      handleSelectNode([], { node, selected: true });
+      handleSelectNode([], {
+        node: { ...node, parent: { node: parent } },
+        selected: true,
+      });
     };
 
     /* ===== 节点操作 ===== */
@@ -237,7 +243,7 @@ const CommonTree = defineComponent({
     return () => (
       <div class="common-tree">
         {/* 搜索 */}
-        <Input
+        <a-input
           style={{ marginBottom: "16px" }}
           placeholder="请输入内容"
           allowClear
@@ -247,25 +253,31 @@ const CommonTree = defineComponent({
         />
         {/* 工具栏容器 */}
         <div class="utils-container">
-          <Space>
-            {props.isJSONOperation && (
-              <>
-                <Button type="link">
-                  <CloudUploadOutlined />
-                  上传JSON文件
-                </Button>
-                <Button type="link" onClick={handleDownload}>
-                  <CloudDownloadOutlined />
-                  下载JSON文件
-                </Button>
-              </>
-            )}
-          </Space>
+          {props.isJSONOperation && (
+            <>
+              <a-button
+                style={{ padding: "4px 0" }}
+                type="link"
+                onClick={() => props.onJSONUploadClick?.()}
+              >
+                <CloudUploadOutlined />
+                上传json文件
+              </a-button>
+              <a-button
+                style={{ padding: "4px 0" }}
+                type="link"
+                onClick={handleDownload}
+              >
+                <CloudDownloadOutlined />
+                下载json文件
+              </a-button>
+            </>
+          )}
         </div>
         <div class="tree-container">
-          <Spin spinning={isLoading.value}>
+          <a-spin spinning={isLoading.value}>
             {treeData.value.length > 0 ? (
-              <Tree
+              <a-tree
                 showLine={{ showLeafIcon: true }}
                 blockNode
                 draggable={isDraggable.value}
@@ -294,7 +306,7 @@ const CommonTree = defineComponent({
                         )}
                         {selected && !isSystem && (
                           <span class="operation" style={{ float: "right" }}>
-                            <Space>
+                            <a-space>
                               {/* 只能复制没有子菜单的菜单 */}
                               {!dataRef.subList.length &&
                                 props.onCopy !== undefined && (
@@ -341,18 +353,18 @@ const CommonTree = defineComponent({
                                   }}
                                 />
                               )}
-                            </Space>
+                            </a-space>
                           </span>
                         )}
                       </span>
                     );
                   },
                 }}
-              </Tree>
+              </a-tree>
             ) : (
-              <Empty />
+              <a-empty />
             )}
-          </Spin>
+          </a-spin>
         </div>
       </div>
     );

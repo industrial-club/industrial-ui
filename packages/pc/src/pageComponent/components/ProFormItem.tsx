@@ -103,7 +103,7 @@ const ProFormItem = defineComponent({
       if (paramDefine.value.maxValue !== null) {
         res.push({
           type: "number",
-          max: paramDefine.value.maxValue,
+          max: Number(paramDefine.value.maxValue),
           message: `最大值为${paramDefine.value.maxValue}`,
         });
       }
@@ -111,17 +111,23 @@ const ProFormItem = defineComponent({
       if (paramDefine.value.minValue !== null) {
         res.push({
           type: "number",
-          min: paramDefine.value.minValue,
+          min: Number(paramDefine.value.minValue),
           message: `最小值为${paramDefine.value.minValue}`,
         });
       }
       // 最大长度
       if (paramDefine.value.limitLength !== null) {
-        res.push({ max: paramDefine.value.limitLength });
+        res.push({
+          max: Number(paramDefine.value.limitLength),
+          message: `最多输入${paramDefine.value.limitLength}个字符`,
+        });
       }
       // 正则
       if (paramDefine.value.regularExpression) {
-        res.push({ pattern: new RegExp(paramDefine.value.regularExpression) });
+        res.push({
+          pattern: new RegExp(paramDefine.value.regularExpression),
+          message: `请输入正确的格式: ${paramDefine.value.regularExpression}`,
+        });
       }
       // 是否必须
       if (paramDefine.value.required) {

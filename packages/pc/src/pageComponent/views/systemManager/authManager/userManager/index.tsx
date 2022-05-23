@@ -1,19 +1,52 @@
-import { defineComponent, reactive, h, resolveComponent, ref } from "vue";
+import {
+  defineComponent,
+  reactive,
+  h,
+  resolveComponent,
+  ref,
+  PropType,
+  provide,
+} from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import api from "@/pageComponent/api/auth/userManager";
+import utils from "@/utils";
 
-import {
-  Table,
-  Form,
-  FormItem,
-  Input,
-  Button,
-  Space,
-  Modal,
-  message,
-} from "ant-design-vue";
+import { Modal, message } from "ant-design-vue";
 import UpdateUserDialog from "./updateUserDialog";
 import UserProfileDialog from "./userProfileDialog";
+
+export interface IUrlObj {
+  // 列表查询
+  list: string;
+  // 用户详情
+  detail: string;
+  // 新增用户
+  add: string;
+  // 更新用户
+  update: string;
+  // 删除用户
+  delete: string;
+  // 角色列表（下拉框）
+  roleList: string;
+  // 员工列表(下拉框)
+  employeeList: string;
+  // 重置密码
+  resetPass: string;
+  // 员工详情
+  employeeDetail: string;
+}
+
+const DEFAULT_URL: IUrlObj = {
+  list: "/comlite/v1/user/managerList",
+  detail: "/comlite/v1/user/detail",
+  add: "/comlite/v1/user/create",
+  update: "/comlite/v1/user/updateUser",
+  delete: "/comlite/v1/user/delete/",
+  roleList: "/comlite/v1/role/list",
+  employeeDetail: "/comlite/v1/employee/detail/",
+  employeeList: "/comlite/v1/employee/all/summary",
+  resetPass: "/comlite/v1/user/resetPasswordForManager",
+};
 
 interface FormState {
   userName: string;
@@ -58,9 +91,19 @@ const column = [
   },
 ];
 
-export default defineComponent({
-  setup() {
-    const formState = reactive<FormState>({
+const UserManager = defineComponent({
+  props: {
+    // 请求url集合 (/api/后面的)
+    url: {
+      type: Object as PropType<Partial<IUrlObj>>,
+      default: () => ({}),
+    },
+  },
+  setup(props) {
+    const urlMap = { ...DEFAULT_URL, ...props.url };
+    provide("urlMap", urlMap);
+
+    const formState = ref<FormState>({
       userName: "",
     });
 
@@ -68,8 +111,8 @@ export default defineComponent({
     const { currPage, handlePageChange, isLoading, refresh, tableList, total } =
       useTableList(
         () =>
-          api.getUserList({
-            keyWord: formState.userName,
+          api.getUserList(urlMap.list)({
+            keyWord: formState.value.userName,
             pageNum: currPage.value,
             pageSize: 10,
           }),
@@ -89,7 +132,7 @@ export default defineComponent({
     const isViewDialogShow = ref(false);
     const viewUserRecord = ref({});
     const handleView = async (row: any) => {
-      const { data } = await api.detail({ userId: row.id });
+      const { data } = await api.detail(urlMap.detail)({ userId: row.userId });
       viewUserRecord.value = {
         ...data,
         employeeName: row.employeeName,
@@ -103,7 +146,7 @@ export default defineComponent({
     const isEditDialogShow = ref(false);
     const editUserRecord = ref({});
     const handleEditClick = async (row: any) => {
-      const { data } = await api.detail({ userId: row.id });
+      const { data } = await api.detail(urlMap.detail)({ userId: row.userId });
       editUserRecord.value = {
         ...data,
         employeeName: row.employeeName,
@@ -128,7 +171,7 @@ export default defineComponent({
         title: "删除用户",
         content: `确定删除用户“${record.userName}”?`,
         async onOk() {
-          await api.deleteUserById(record.userId);
+          await api.deleteUserById(urlMap.delete)(record.userId);
           message.success("删除成功");
           refresh();
         },
@@ -137,37 +180,36 @@ export default defineComponent({
 
     return () => (
       <div class="userManager">
-        <Form
-          v-model={formState}
-          name="basic"
-          layout="inline"
-          class="searchLine"
-          onSubmit={handleSubmit}
-        >
-          <div>
-            <FormItem label="用户名称">
-              <Input
+        <div class="table-search" style={{ marginBottom: "16px" }}>
+          <a-form
+            v-model={formState.value}
+            name="basic"
+            layout="inline"
+            class="searchLine"
+            onSubmit={handleSubmit}
+          >
+            <a-form-item label="用户名称">
+              <a-input
                 placeholder="请输入用户名称"
                 allowClear
-                v-model={[formState.userName, "value"]}
+                v-model={[formState.value.userName, "value"]}
               />
-            </FormItem>
+            </a-form-item>
 
-            <FormItem>
-              <Button
-                type="primary"
-                html-type="submit"
-                v-slots={{
-                  icon: () => h(resolveComponent("SearchOutlined")),
-                }}
-              >
-                搜索
-              </Button>
-            </FormItem>
-          </div>
-
-          <FormItem>
-            <Button
+            {/* <a-form-item> */}
+            <a-button
+              type="primary"
+              html-type="submit"
+              v-slots={{
+                icon: () => h(resolveComponent("SearchOutlined")),
+              }}
+            >
+              搜索
+            </a-button>
+            {/* </a-form-item> */}
+          </a-form>
+          <div class="operation">
+            <a-button
               type="primary"
               v-slots={{
                 icon: () => h(resolveComponent("PlusOutlined")),
@@ -175,14 +217,14 @@ export default defineComponent({
               onClick={handleAddClick}
             >
               新建用户
-            </Button>
-          </FormItem>
-        </Form>
+            </a-button>
+          </div>
+        </div>
 
-        <Table
+        <a-table
           dataSource={tableList.value}
           columns={column}
-          size="middle"
+          rowKey="userId"
           loading={isLoading.value}
           pagination={{
             pageSize: 10,
@@ -201,26 +243,32 @@ export default defineComponent({
             action: ({ record }: any) => {
               return (
                 <>
-                  <Button type="link" onClick={() => handleView(record)}>
+                  <a-button
+                    size="small"
+                    type="link"
+                    onClick={() => handleView(record)}
+                  >
                     查看
-                  </Button>
+                  </a-button>
                   {record.editFlg && (
-                    <Button
+                    <a-button
+                      size="small"
                       type="link"
                       onClick={() => handleEditClick(record)}
                       style="margin: 0 10px"
                     >
                       编辑
-                    </Button>
+                    </a-button>
                   )}
                   {record.deleteFlg && (
-                    <Button
+                    <a-button
+                      size="small"
                       type="link"
                       danger
                       onClick={() => handleDeleteUser(record)}
                     >
                       删除
-                    </Button>
+                    </a-button>
                   )}
                 </>
               );
@@ -253,3 +301,5 @@ export default defineComponent({
     );
   },
 });
+
+export default utils.installComponent(UserManager, "user-manager");

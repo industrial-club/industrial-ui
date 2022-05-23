@@ -3,41 +3,51 @@
  * @Author: wang liang
  * @Date: 2022-03-31 15:40:05
  * @LastEditors: wang liang
- * @LastEditTime: 2022-04-20 11:45:57
+ * @LastEditTime: 2022-04-26 15:45:58
  */
 
-import { instance } from '../axios';
+import { instance } from "../axios";
 
 const api = {
   /**
    * 用户权限树- 以树状结构返回菜单项
    */
-  getMenuTreeList(params: any) {
-    return instance.get('/menu/all', { params });
+  getMenuTreeList: (url: string) => (params: any) => {
+    return instance.get(url, { params });
   },
   /**
    * 添加菜单
    */
-  insertMenuRecord(data: any) {
-    return instance.post('/menu/add', data);
+  insertMenuRecord: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 修改菜单
    */
-  editMenuRecord(data: any) {
-    return instance.post('/menu/modify', data);
+  editMenuRecord: (url: string) => (data: any) => {
+    return instance.post(url, data);
   },
   /**
    * 删除菜单
    */
-  deleteMenuById(menuId: number) {
-    return instance.get(`/menu/delete/${menuId}`);
+  deleteMenuById: (url: string) => (menuId: number) => {
+    return instance.get(`${url}${menuId}`);
   },
   /**
    * 菜单排序接口
    */
-  sortMenu(data: any) {
-    return instance.post('/menu/sort/adjust', data);
+  sortMenu: (url: string) => (data: any) => {
+    return instance.post(url, data);
+  },
+  /**
+   * 上传JSON文件
+   */
+  uploadJSONFile: (url: string) => (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return instance.post(url, formData, {
+      headers: { ContentType: "multipart/form-data" },
+    });
   },
 };
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { resolve } from "path";
 import {
   Endpoint,
   Events,
@@ -6,9 +7,9 @@ import {
   GetSupportCameraResolutions,
   Media,
   isSupportResolution,
-} from "./ZLMRTCClient";
+} from "./ZLMRTCClient.js";
 
-let appName = "live";
+const appName = "live";
 
 export interface PlayVideoArgs {
   videoElm: string;
@@ -19,7 +20,7 @@ export interface PlayVideoArgs {
   cameraRtspPort: string;
   cameraChannel: string;
   cameraStream: string;
-  addRtspProxyUrl?: string;
+  addRtspProxyUrl: string;
 }
 
 export interface EndpointConfig {
@@ -40,10 +41,12 @@ export interface WebRtc {
   endpointConfig?: EndpointConfig;
 }
 
-export class webRtcMt {
+export class WebRtcMt {
   constructor(opt: WebRtc) {
     this.init(opt);
   }
+
+  public p_player: any; // 返回播放视频数据
 
   protected instance = axios.create({
     timeout: 60000,
@@ -62,7 +65,7 @@ export class webRtcMt {
   };
 
   // 根据参数配置组装相关url
-  protected createRtspUrl(plays: PlayVideoArgs) {
+  protected createRtspUrl(plays: any) {
     const {
       cameraUserName,
       cameraPwd,
@@ -72,13 +75,14 @@ export class webRtcMt {
       cameraStream,
       videoElm,
       mediaServerAddr,
+      addRtspProxyUrl,
     } = plays;
-    const rtsp = `rtsp://${cameraUserName}:${cameraPwd}@${cameraIp}:${cameraRtspPort}/id=${cameraChannel}%26type=${cameraStream}`;
+    // const rtsp = `rtsp://${cameraUserName}:${cameraPwd}@${cameraIp}:${cameraRtspPort}/id=${cameraChannel}%26type=${cameraStream}`;
     const hkNvrRtsp = `rtsp://%s:%s@%s:%s/Streaming/tracks/%s01/`;
-    const stream = `video-${cameraIp}-${cameraRtspPort}-${cameraChannel}-${cameraStream}`;
-    const addRtspProxyUrl = `${mediaServerAddr}/index/api/addStreamProxy?secret=035c73f7-bb6b-4889-a715-d9eb2d1925cc&vhost=__defaultVhost__&app=${appName}&stream=${stream}&url=${rtsp}`;
+    const stream = `v${cameraIp}-${cameraRtspPort}-${cameraChannel}-${cameraStream}`;
+    // const addRtspProxyUrl = `${mediaServerAddr}/index/api/addStreamProxy?secret=035c73f7-bb6b-4889-a715-d9eb2d1925cc&vhost=__defaultVhost__&app=${appName}&stream=${stream}&url=${rtsp}`;
     const sdpUrl = `${mediaServerAddr}/index/api/webrtc?app=${appName}&stream=${stream}&type=play`;
-
+    const rtsp = "";
     this.streamMap.set(videoElm, stream);
     return { rtsp, stream, addRtspProxyUrl, sdpUrl, hkNvrRtsp };
   }
@@ -97,27 +101,33 @@ export class webRtcMt {
     // 判断是否是多个视频同时播放
     if (Object.prototype.toString.call(opt.plays) === "[object Object]") {
       // 单个视频播放
-      this.createVideo(opt.plays as PlayVideoArgs);
+      this.p_player = this.createVideo(opt.plays as PlayVideoArgs);
     } else {
       // 多个视频播放
-      for (let i of opt.plays as Array<PlayVideoArgs>) {
+      for (const i of opt.plays as Array<PlayVideoArgs>) {
         this.createVideo(i);
       }
     }
   }
+
   // 拉流创建播放器
   protected createVideo(plays: PlayVideoArgs) {
     this.mediaServerAddrMap.set(plays.videoElm, plays);
     const { addRtspProxyUrl } = this.createRtspUrl(plays);
-    this.instance.get(addRtspProxyUrl).then((res: any) => {
-      if (res.data.code === 0) {
-        // 拉流成功
-        this.startPlay(plays);
-      } else {
-        // 拉流失败删除缓存信息
-        this.mediaServerAddrMap.delete(plays.videoElm);
-        this.log("err", "从服务端拉流失败，请重试");
-      }
+
+    return new Promise((resolve, reject) => {
+      this.instance.get(addRtspProxyUrl).then((res: any) => {
+        if (res.data.code === 0) {
+          // 拉流成功
+          this.startPlay(plays);
+          resolve(res.data);
+        } else {
+          // 拉流失败删除缓存信息
+          this.mediaServerAddrMap.delete(plays.videoElm);
+          reject();
+          this.log("err", "从服务端拉流失败，请重试");
+        }
+      });
     });
   }
 
@@ -133,17 +143,20 @@ export class webRtcMt {
     }
   }
 
+  protected stop(id: string) {
+    let player = this.playerMap.get(id);
+    if (player) {
+      player.close();
+      this.playerMap.delete(id);
+      player = null;
+    }
+  }
+
   // 停止播放0
   stopPlay(id?: string) {
     if (id) {
-      // 关闭指定video
-      let player = this.playerMap.get(id);
-      if (player) {
-        player.close();
-        this.playerMap.delete(id);
-        this.mediaServerAddrMap.delete(id);
-        player = null;
-      }
+      this.stop(id);
+      this.mediaServerAddrMap.delete(id);
     } else {
       // 关闭所有video
       this.playerMap.forEach((item) => {
@@ -158,30 +171,30 @@ export class webRtcMt {
   // 注册事件监听
   protected playEvent(player: any, videoElm: string, sdpUrl: string) {
     // 下边监听事件如果出现问题得重启一下服务器才行。
-    player.on(Events.WEBRTC_ICE_CANDIDATE_ERROR, (e) => {
+    player.on(Events.WEBRTC_ICE_CANDIDATE_ERROR, (e: any) => {
       // ICE 协商出错
       this.log("err", "ICE 协商出错");
       this.rePlay(videoElm);
     });
-    player.on(Events.WEBRTC_ON_REMOTE_STREAMS, (e) => {
+    player.on(Events.WEBRTC_ON_REMOTE_STREAMS, (e: any) => {
       // 获取到了远端流，可以播放
       console.log("播放成功", e.streams);
     });
-    player.on(Events.WEBRTC_OFFER_ANWSER_EXCHANGE_FAILED, (e) => {
+    player.on(Events.WEBRTC_OFFER_ANWSER_EXCHANGE_FAILED, (e: any) => {
       // offer anwser 交换失败,这里前端得重新调用添加视频拉流代码。
-      this.log("err", `offer anwser 交换失败，获取视频流失败, ${e}`);
+      this.log("warn", `offer anwser 交换失败，获取视频流失败, ${e}`);
       this.rePlay(videoElm);
     });
-    player.on(Events.DISCONNECTED, (e) => {
+    player.on(Events.DISCONNECTED, (e: any) => {
       this.log("warn", `事件检测到连接断开${videoElm}`);
       this.rePlay(videoElm);
     });
-    player.on(Events.LOST_SERVER, (e) => {
+    player.on(Events.LOST_SERVER, (e: any) => {
       this.log("warn", `事件检测到视频服务器丢失${videoElm}`);
       this.rePlay(videoElm);
     });
 
-    player.on(Events.WEBRTC_ON_CONNECTION_STATE_CHANGE, (state) => {
+    player.on(Events.WEBRTC_ON_CONNECTION_STATE_CHANGE, (state: any) => {
       // RTC 状态变化 ,详情参考 https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/connectionState
       if (state === "disconnected" || state === "failed") {
         this.rePlay(videoElm);
@@ -216,7 +229,7 @@ export class webRtcMt {
       recvOnly: true,
       resolution: { w, h },
     };
-    let player = new Endpoint({
+    const player = new Endpoint({
       ...Object.assign(EndpointConfig, this.config.endpointConfig),
     });
     this.playEvent(player, videoElm, sdpUrl);
@@ -224,15 +237,14 @@ export class webRtcMt {
   }
 
   // 开始播放
-  startPlay(plays: PlayVideoArgs) {
-    this.stopPlay(plays.videoElm);
-    setTimeout(() => {
-      this.play(plays.videoElm);
-    }, 10);
+  async startPlay(plays: PlayVideoArgs) {
+    await this.stop(plays.videoElm);
+    this.play(plays.videoElm);
   }
 }
 
 export default {
+  // test,
   Endpoint,
   Events,
   GetAllScanResolution,

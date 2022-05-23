@@ -10,7 +10,7 @@ import { omit, isPlainObject } from "lodash";
 import { message } from "ant-design-vue";
 
 const instance = axios.create({
-  baseURL: "/api/comlite/v1", // /api/
+  baseURL: "/api/", // /api/
   timeout: 5000,
   headers: {
     "X-Custom-Header": "foobar",
@@ -37,8 +37,14 @@ instance.interceptors.request.use(
     conf.headers.userId = getUser()?.userId;
     conf.headers.userName = getUser()?.userName;
     const { data = {} } = conf;
-    // 去掉不需要的属性
     if (isPlainObject(data)) {
+      // 把undefined转换为null
+      for (const key in data) {
+        if (data[key] === undefined) {
+          data[key] = null;
+        }
+      }
+      // 去掉不需要的属性
       conf.data = omit(
         data,
         "createDt",
