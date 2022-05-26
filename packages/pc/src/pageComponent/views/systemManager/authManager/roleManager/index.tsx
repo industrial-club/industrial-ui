@@ -157,7 +157,7 @@ const RoleManager = defineComponent({
       <div class="role-manager">
         <div class="table-search">
           <a-form
-            v-model={filter}
+            model={filter.value}
             name="basic"
             layout="inline"
             class="searchLine"

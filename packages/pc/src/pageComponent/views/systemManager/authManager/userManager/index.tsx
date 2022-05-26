@@ -182,7 +182,7 @@ const UserManager = defineComponent({
       <div class="userManager">
         <div class="table-search" style={{ marginBottom: "16px" }}>
           <a-form
-            v-model={formState}
+            model={formState}
             name="basic"
             layout="inline"
             class="searchLine"
