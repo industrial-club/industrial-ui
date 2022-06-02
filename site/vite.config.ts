@@ -1,5 +1,5 @@
 import vueJsx from "@vitejs/plugin-vue-jsx";
-import viteThemeAnt from "../scripts/vite-less-ant-theme";
+// import viteThemeAnt from "../scripts/vite-less-ant-theme";
 /**
  * @type {import('vite').UserConfig}
  */
@@ -44,9 +44,7 @@ export default {
     preprocessorOptions: {
       less: {
         modifyVars: {
-          hack: `true;@import "${require.resolve(
-            "./src/theme/default.less"
-          )}";`,
+          hack: `true;@import "${require.resolve("./src/theme/dark.less")}";`,
           "root-entry-name": "default",
         },
         javascriptEnabled: true,

@@ -13,13 +13,22 @@ const globals = {
 
 export default defineConfig({
   input: "src/index.ts",
-  output: {
-    file: "dist/index.js",
-    format: "esm",
-    globals,
-    sourcemap: true,
-    name: "inlUtil",
-  },
+  output: [
+    {
+      file: "dist/index.cjs.js",
+      format: "cjs",
+      globals,
+      sourcemap: true,
+      name: "inlUtil",
+    },
+    {
+      file: "dist/index.js",
+      format: "esm",
+      globals,
+      sourcemap: true,
+      name: "inlUtil",
+    },
+  ],
   plugins: [
     json(),
     ts({
