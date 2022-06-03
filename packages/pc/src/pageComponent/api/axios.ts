@@ -9,77 +9,82 @@ import axios from "axios";
 import { omit, isPlainObject } from "lodash";
 import { message } from "ant-design-vue";
 
-const instance = axios.create({
-  baseURL: "/api/", // /api/
-  timeout: 5000,
-  headers: {
-    "X-Custom-Header": "foobar",
-    clientType: "app",
-    "Content-Type": "application/json;charset=UTF-8",
-  },
-});
+const getInstance = (baseURL?: string) => {
+  const instance = axios.create({
+    baseURL: "/api/", // /api/
+    timeout: 5000,
+    headers: {
+      "X-Custom-Header": "foobar",
+      clientType: "app",
+      "Content-Type": "application/json;charset=UTF-8",
+    },
+  });
 
-const getToken = (): string => {
-  return `${sessionStorage.getItem("token")}`;
-};
+  const getToken = (): string => {
+    return `${sessionStorage.getItem("token")}`;
+  };
 
-const getUser = () => {
-  const user = sessionStorage.getItem("userinfo");
-  if (user) {
-    return JSON.parse(user);
-  }
-};
+  const getUser = () => {
+    const user = sessionStorage.getItem("userinfo");
+    if (user) {
+      return JSON.parse(user);
+    }
+  };
 
-instance.interceptors.request.use(
-  (conf) => {
-    const corpId = sessionStorage.getItem("corpId");
-    conf.headers.token = getToken();
-    conf.headers.userId = getUser()?.userId;
-    conf.headers.userName = getUser()?.userName;
-    const { data = {} } = conf;
-    if (isPlainObject(data)) {
-      // 把undefined转换为null
-      for (const key in data) {
-        if (data[key] === undefined) {
-          data[key] = null;
+  instance.interceptors.request.use(
+    (conf) => {
+      const corpId = sessionStorage.getItem("corpId");
+      conf.headers.token = getToken();
+      conf.headers.userId = getUser()?.userId;
+      conf.headers.userName = getUser()?.userName;
+      const { data = {} } = conf;
+      if (isPlainObject(data)) {
+        // 把undefined转换为null
+        for (const key in data) {
+          if (data[key] === undefined) {
+            data[key] = null;
+          }
         }
+        // 去掉不需要的属性
+        conf.data = omit(
+          data,
+          "createDt",
+          "createUser",
+          "updateDt",
+          "updateUser"
+        );
       }
-      // 去掉不需要的属性
-      conf.data = omit(
-        data,
-        "createDt",
-        "createUser",
-        "updateDt",
-        "updateUser"
-      );
+      if (corpId) {
+        conf.headers.corpId = corpId;
+      }
+      return conf;
+    },
+    (err) => {
+      return Promise.reject(err);
     }
-    if (corpId) {
-      conf.headers.corpId = corpId;
+  );
+
+  instance.interceptors.response.use(
+    (res) => {
+      const resData = res.data;
+      const status = resData.code === "0";
+      if (status) {
+        return Promise.resolve(resData);
+      }
+      const msg = res.data?.msg ?? "请求失败";
+      message.error(msg);
+
+      return Promise.reject(resData);
+    },
+    (err) => {
+      return Promise.reject(err);
     }
-    return conf;
-  },
-  (err) => {
-    return Promise.reject(err);
-  }
-);
+  );
+  return instance;
+};
 
-instance.interceptors.response.use(
-  (res) => {
-    const resData = res.data;
-    const status = resData.code === "0";
-    if (status) {
-      return Promise.resolve(resData);
-    }
-    const msg = res.data?.msg ?? "请求失败";
-    message.error(msg);
+const instance = getInstance();
 
-    return Promise.reject(resData);
-  },
-  (err) => {
-    return Promise.reject(err);
-  }
-);
-
-export { instance };
+export { instance, getInstance };
 
 export default axios;
