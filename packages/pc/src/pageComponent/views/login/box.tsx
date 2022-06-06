@@ -23,7 +23,7 @@ const props = {
     type: String,
   },
   prefix: {
-    default: "",
+    default: "/api/",
     type: String,
   },
   loginTab: {
@@ -64,9 +64,11 @@ export default defineComponent({
       password: prop.password,
       username: prop.username,
     });
+    const serverName = inject<string>("serverName");
+    const prefix = inject<string>("prefix");
     const instance = getInstance({
-      serverName: prop.serverName,
-      prefix: prop.prefix,
+      serverName,
+      prefix,
     });
     const systemTitle = inject<string>("systemTitle");
     const platformLogo = inject<string>("platformLogo");

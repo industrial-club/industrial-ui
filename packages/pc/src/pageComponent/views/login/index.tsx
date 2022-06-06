@@ -2,7 +2,7 @@ import { Component, defineComponent, ref, PropType, provide } from "vue";
 import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import utils from "@/utils";
-import { instance } from "@/pageComponent/api";
+import { getInstance } from "@/api/axios";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import loginBox, { EventBySubmitParams } from "./box";
 import leftImg from "./leftImg";
@@ -15,6 +15,14 @@ const components: Component = {
 const Login = defineComponent({
   components,
   props: {
+    serverName: {
+      default: "comlite/v1/",
+      type: String,
+    },
+    prefix: {
+      default: "",
+      type: String,
+    },
     titleLogo: String, // 公司 集团logo
     loginMainImg: String,
     systemLogo: String, // 登录框上的logo
@@ -32,6 +40,10 @@ const Login = defineComponent({
     projectName: {
       default: "工业物联平台",
     },
+    bg: {
+      default: "",
+      type: String,
+    },
   },
   setup(prop) {
     const router = useRouter();
@@ -48,6 +60,13 @@ const Login = defineComponent({
     provide("systemTitle", prop.projectName);
     provide("leftText", prop.systemDescribe);
     provide("platformLogo", prop.systemLogo);
+    provide("serverName", prop.serverName);
+    provide("prefix", prop.prefix);
+
+    const instance = getInstance({
+      serverName: prop.serverName,
+      prefix: prop.prefix,
+    });
     /**
      * 登录动作
      */
@@ -58,7 +77,7 @@ const Login = defineComponent({
     //
 
     const handleSubmit = async (e: EventBySubmitParams) => {
-      const { data } = await instance.post("/comlite/v1/auth/login", {
+      const { data } = await instance.post("auth/login", {
         userName: e.username,
         passWord: encodeStr(e.password),
       });
@@ -75,7 +94,12 @@ const Login = defineComponent({
     };
 
     return () => (
-      <div class="login">
+      <div
+        class="login"
+        style={{
+          background: `url(${prop.bg})`,
+        }}
+      >
         <topTitle corpLogo={prop.titleLogo} />
         <div class={["content_login flex-center", prop.status]}>
           {prop.status === "platform" ? (
