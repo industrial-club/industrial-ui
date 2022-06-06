@@ -1,0 +1,180 @@
+  // 图片验证
+  
+  .login_slider{
+    .ant-modal-body{
+      padding: 0;
+    }
+    .imgBox{
+      width: 432px;
+      height: 268px;
+      position: relative;
+      .anticon{
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 3;
+        color: #fff;
+      }
+      img{
+        z-index: 2;
+        position: absolute;
+      }
+      .bgImg{
+        z-index: 1;
+        width: 432px;
+        height: 268px;
+      }
+     
+    }
+    .modal-box {
+      box-sizing:content-box;
+    }
+    .ant-slider{
+    height: 30px;
+    background-color: #F4F6F8;
+    margin: 0;
+    padding: 0;
+    margin-top:0.6rem;
+    .ant-slider-rail, .ant-slider-track, .ant-slider-step{
+      height: 30px;
+      top: 0;
+      padding: 0;
+    }
+    &:hover{
+      .ant-slider-track{
+        background-color: green;
+      }
+    }
+
+    .ant-slider-track{
+      background-color: green;
+    }
+
+    .ant-slider-handle{
+      top: 3px;
+      width: 34px;
+      height: 34px;
+      background-color: #fff;
+      border-radius: 0.1rem;
+      border-color: #ccc;
+      border: 1px solid #ccc;
+      &::after{
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        content: ">>";
+        line-height: 30px;
+      }
+    }
+    .ant-slider-rail{
+      background-color: #F4F6F8;
+      position: relative;
+      &::before{
+        position: absolute;
+        width: 100%;
+        line-height: 30px;
+        content: '向右滑动完成拼图';
+        text-align: center;
+      }
+    }
+    // #F4F6F8
+  }
+}
+.login_box {
+  display: flex;
+  flex-direction: column;
+  input{
+    color: #fff;
+  }
+  input:-internal-autofill-previewed,
+  input:-internal-autofill-selected {
+      -webkit-text-fill-color: #fff;
+      color: #fff !important;
+      transition: background-color 9999s ease-out 0.1s;
+  }
+
+
+  
+  .ant-input-password span span svg {
+    color: #fff;
+  }
+  .ant-form {
+    padding: 0 67px;
+  }
+
+  .ant-form-item {
+    margin-bottom: 28px;
+
+    input, .ant-input-password {
+      border-radius: 0.5rem;
+      background: none;
+    }
+    .ant-btn{
+      border-radius: 0;
+      height: 44px;
+      border:none;
+    }
+    .ant-form-item-control-input-content{
+      background-color: rgba(255,255,255,0.3);
+      .ant-input-password, >.ant-input{
+        border-radius: 0;
+        height: 44px;
+        border:1px solid #fff;
+      }
+    }
+  }
+
+  .titleBox {
+    margin: 65px 0 32px 0;
+    justify-content: center;
+    display: flex;
+    img {
+      width: 40px;
+      height: 36px;
+      margin-right: 15px;
+    }
+    .title {
+      height: 46px;
+      font-size: 35px;
+      font-family: YouSheBiaoTiHei;
+      color: #ffffff;
+      line-height: 46px;
+      font-weight: bold;
+      font-style:italic;
+      padding: 0;
+    }
+  }
+
+  .ant-form {
+    label {
+      height: 22px;
+      font-size: 16px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #ffffff;
+      line-height: 22px;
+    }
+  }
+
+  .login_tab {
+    height: 3rem;
+    display: flex;
+
+    .item {
+      flex: 1;
+      text-align: center;
+      line-height: 2.8rem;
+      cursor: pointer;
+      background: #ebf8ff;
+      transition: all 0.3s ease;
+      opacity: 0.5;
+
+      &.active,
+      &:hover {
+        color: #fff;
+        opacity: 0.8;
+        background: linear-gradient(90deg, #2eb2ff, #6d71ff);
+      }
+    }
+  }
+}
