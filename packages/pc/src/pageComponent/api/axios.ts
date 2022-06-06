@@ -11,7 +11,7 @@ import { message } from "ant-design-vue";
 
 const getInstance = (baseURL?: string) => {
   const instance = axios.create({
-    baseURL: "/api/", // /api/
+    baseURL, // /api/
     timeout: 5000,
     headers: {
       "X-Custom-Header": "foobar",

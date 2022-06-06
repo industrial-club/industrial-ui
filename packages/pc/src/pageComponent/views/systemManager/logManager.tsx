@@ -7,7 +7,7 @@ import {
   PropType,
 } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api from "@/pageComponent/api/logManager";
+import api, { setInstance } from "@/pageComponent/api/logManager";
 import { Moment } from "moment";
 import utils from "@/utils";
 
@@ -17,11 +17,6 @@ export interface IUrlObj {
   // 筛选列表
   searchList: string;
 }
-
-const DEFAULT_URL: IUrlObj = {
-  list: "/comlite/v1/log/list",
-  searchList: "/comlite/v1/log/head",
-};
 
 const column = [
   {
@@ -87,9 +82,13 @@ const LogManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    urlPrefix: {
+      type: String,
+    },
   },
   setup(prop, context) {
-    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    if (prop.urlPrefix) setInstance(prop.urlPrefix);
+    const urlMap = { ...prop.url };
 
     const formRef = ref();
 

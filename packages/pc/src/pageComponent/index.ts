@@ -8,7 +8,6 @@ import DepManager from "@/pageComponent/views/systemManager/orgManager/depManage
 import LogManager from "@/pageComponent/views/systemManager/logManager";
 import ParamManager from "@/pageComponent/views/systemManager/paramManager";
 import PersonalSetting from "@/pageComponent/views/systemManager/personalSetting";
-import LoginPage from "@/pageComponent/views/login";
 
 export default [
   About,
@@ -21,5 +20,4 @@ export default [
   LogManager,
   ParamManager,
   PersonalSetting,
-  LoginPage,
 ];

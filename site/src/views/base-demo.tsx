@@ -19,30 +19,30 @@ const BaseDemo = defineComponent({
         ></inl-about> */}
 
         {/* ====== 日志管理 ====== */}
-        {/* <inl-log-manager></inl-log-manager> */}
+        <inl-log-manager urlPrefix="/aaa/"></inl-log-manager>
 
         {/* ====== 参数管理 ====== */}
-        {/* <inl-param-manager></inl-param-manager> */}
+        {/* <inl-param-manager urlPrefix="/user/"></inl-param-manager> */}
 
         {/* ====== 个人设置 ====== */}
         {/* <inl-personal-setting></inl-personal-setting> */}
 
         {/* ====== 权限管理 ====== */}
         {/* 用户管理 */}
-        {/* <inl-user-manager></inl-user-manager> */}
+        {/* <inl-user-manager urlPrefix="/user/"></inl-user-manager> */}
         {/* 角色管理 */}
-        {/* <inl-role-manager></inl-role-manager> */}
+        {/* <inl-role-manager urlPrefix="/user/"></inl-role-manager> */}
         {/* 菜单管理 */}
-        {/* <inl-menu-manager></inl-menu-manager> */}
+        {/* <inl-menu-manager urlPrefix="/user/"></inl-menu-manager> */}
 
         {/* ====== 组织管理 ====== */}
         {/* 岗位管理 */}
-        {/* <inl-post-manager></inl-post-manager> */}
+        {/* <inl-post-manager urlPrefix="/user/"></inl-post-manager> */}
         {/* 班组管理 */}
-        {/* <inl-team-manager></inl-team-manager> */}
+        {/* <inl-team-manager urlPrefix="/aaa/"></inl-team-manager> */}
         {/* 部门管理 */}
-        {/* <inl-dep-manager></inl-dep-manager> */}
-        <inl-login-page
+        {/* <inl-dep-manager urlPrefix="/kkkk/"></inl-dep-manager> */}
+        {/* <inl-login-page
           loginMainImg={loginPicBig}
           titleLogo={logoBig}
           systemLogo={platformLogo}
@@ -52,7 +52,7 @@ const BaseDemo = defineComponent({
           systemDescribe=""
           projectName="工业物联平台"
           copyright="天津美腾科技股份有限公司 Tianjin Meiteng Technology Co.,Itd"
-        ></inl-login-page>
+        ></inl-login-page> */}
       </div>
     );
   },
