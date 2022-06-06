@@ -10,6 +10,7 @@ import {
   MailOutlined,
   AppstoreOutlined,
 } from "@ant-design/icons-vue";
+import { TreeProps } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
@@ -33,6 +34,55 @@ export default defineComponent({
         address: "西湖区湖底公园1号",
       },
     ];
+    const treeData = ref<TreeProps["treeData"]>([
+      {
+        title: "parent 1",
+        key: "0-0",
+        children: [
+          {
+            title: "parent 1-0",
+            key: "0-0-0",
+            children: [
+              { title: "leaf", key: "0-0-0-0" },
+              {
+                key: "0-0-0-1",
+              },
+              { title: "leaf", key: "0-0-0-2" },
+            ],
+          },
+          {
+            title: "parent 1-1",
+            key: "0-0-1",
+            children: [{ title: "leaf", key: "0-0-1-0" }],
+          },
+          {
+            title: "parent 1-2",
+            key: "0-0-2",
+            children: [
+              { title: "leaf 1", key: "0-0-2-0" },
+              {
+                title: "leaf 2",
+                key: "0-0-2-1",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: "parent 2",
+        key: "0-1",
+        children: [
+          {
+            title: "parent 2-0",
+            key: "0-1-0",
+            children: [
+              { title: "leaf", key: "0-1-0-0" },
+              { title: "leaf", key: "0-1-0-1" },
+            ],
+          },
+        ],
+      },
+    ]);
     const columns = [
       {
         title: "姓名",
@@ -434,6 +484,14 @@ export default defineComponent({
                 </a-sub-menu>
               </a-sub-menu>
             </a-menu>
+          </a-form-item>
+          <a-form-item label="树">
+            <a-tree
+              show-line={true}
+              show-icon={true}
+              default-expanded-keys={["0-0-0"]}
+              tree-data={treeData.value}
+            ></a-tree>
           </a-form-item>
         </a-form>
         <inl-about />
