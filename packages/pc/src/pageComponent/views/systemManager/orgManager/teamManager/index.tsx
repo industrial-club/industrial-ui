@@ -74,12 +74,15 @@ const TeamManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
-    urlPrefix: {
+    prefix: {
+      type: String,
+    },
+    serverName: {
       type: String,
     },
   },
   setup(prop, context) {
-    if (prop.urlPrefix) setInstance(prop.urlPrefix);
+    setInstance({ prefix: prop.prefix, serverName: prop.serverName });
     const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
 
