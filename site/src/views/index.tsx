@@ -3,6 +3,7 @@ import buttonDemo from "./button";
 import menuDemo from "./menu";
 import formDemo from "./form";
 import videoDemo from "./video";
+import baseDemo from "./base-demo";
 
 export default defineComponent({
   setup() {
@@ -12,6 +13,7 @@ export default defineComponent({
         <menuDemo></menuDemo>
         <formDemo></formDemo>
         {/* <videoDemo></videoDemo> */}
+        {/* <baseDemo></baseDemo> */}
       </div>
     );
   },
@@ -20,5 +22,6 @@ export default defineComponent({
     menuDemo,
     formDemo,
     videoDemo,
+    baseDemo,
   },
 });

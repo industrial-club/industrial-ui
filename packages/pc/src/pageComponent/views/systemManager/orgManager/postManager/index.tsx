@@ -1,7 +1,7 @@
 import { defineComponent, PropType, provide, ref } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
-import api from "@/pageComponent/api/org/postManager";
+import api, { setInstance } from "@/pageComponent/api/org/postManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";
@@ -22,15 +22,6 @@ export interface IUrlObj {
   // 切换岗位启用状态
   switchStatus: string;
 }
-
-const DEFAULT_URL: IUrlObj = {
-  list: "/comlite/v1/jobPost/all/page",
-  add: "/comlite/v1/jobPost/modify",
-  update: "/comlite/v1/jobPost/modify",
-  delete: "/comlite/v1/jobPost/remove/",
-  depList: "/comlite/v1/department/all",
-  switchStatus: "/comlite/v1/jobPost/modify",
-};
 
 const column = [
   {
@@ -75,9 +66,13 @@ const PostManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    urlPrefix: {
+      type: String,
+    },
   },
   setup(prop, context) {
-    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    if (prop.urlPrefix) setInstance(prop.urlPrefix);
+    const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
 
     const form = ref({
