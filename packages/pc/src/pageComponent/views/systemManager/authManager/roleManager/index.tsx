@@ -1,6 +1,6 @@
 import { defineComponent, PropType, provide, ref } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api from "@/pageComponent/api/auth/roleManager";
+import api, { setInstance } from "@/pageComponent/api/auth/roleManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";
@@ -21,15 +21,6 @@ export interface IUrlObj {
   // 获取角色权限树- 新建角色
   addPermission: string;
 }
-
-const DEFAULT_URL: IUrlObj = {
-  list: "/comlite/v1/role/all/page",
-  save: "/comlite/v1/role/insertRole",
-  addPermission: "/comlite/v1/role/getRoleTree",
-  delete: "/comlite/v1/role/deleteRoleType",
-  editPermission: "/comlite/v1/role/getRoleTreeEdit",
-  switchStatus: "/comlite/v1/role/roleEnabe",
-};
 
 const columns = [
   {
@@ -73,9 +64,16 @@ const RoleManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    urlPrefix: {
+      type: String,
+    },
   },
   setup(props) {
-    const urlMap = { ...DEFAULT_URL, ...props.url };
+    if (props.urlPrefix) {
+      setInstance(props.urlPrefix);
+    }
+
+    const urlMap = { ...props.url };
     provide("urlMap", urlMap);
 
     const filter = ref({

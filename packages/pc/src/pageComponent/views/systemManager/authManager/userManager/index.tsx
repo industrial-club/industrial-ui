@@ -1,6 +1,5 @@
 import {
   defineComponent,
-  reactive,
   h,
   resolveComponent,
   ref,
@@ -8,7 +7,7 @@ import {
   provide,
 } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api from "@/pageComponent/api/auth/userManager";
+import api, { setInstance } from "@/pageComponent/api/auth/userManager";
 import utils from "@/utils";
 
 import { Modal, message } from "ant-design-vue";
@@ -35,18 +34,6 @@ export interface IUrlObj {
   // 员工详情
   employeeDetail: string;
 }
-
-const DEFAULT_URL: IUrlObj = {
-  list: "/comlite/v1/user/managerList",
-  detail: "/comlite/v1/user/detail",
-  add: "/comlite/v1/user/create",
-  update: "/comlite/v1/user/updateUser",
-  delete: "/comlite/v1/user/delete/",
-  roleList: "/comlite/v1/role/list",
-  employeeDetail: "/comlite/v1/employee/detail/",
-  employeeList: "/comlite/v1/employee/all/summary",
-  resetPass: "/comlite/v1/user/resetPasswordForManager",
-};
 
 interface FormState {
   userName: string;
@@ -98,9 +85,16 @@ const UserManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    urlPrefix: {
+      type: String,
+    },
   },
   setup(props) {
-    const urlMap = { ...DEFAULT_URL, ...props.url };
+    if (props.urlPrefix) {
+      setInstance(props.urlPrefix);
+    }
+
+    const urlMap = { ...props.url };
     provide("urlMap", urlMap);
 
     const formState = ref<FormState>({

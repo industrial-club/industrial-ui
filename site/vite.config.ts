@@ -44,7 +44,9 @@ export default {
     preprocessorOptions: {
       less: {
         modifyVars: {
-          hack: `true;@import "${require.resolve("./src/theme/dark.less")}";`,
+          hack: `true;@import "${require.resolve(
+            "./src/theme/default.less"
+          )}";`,
           "root-entry-name": "default",
         },
         javascriptEnabled: true,

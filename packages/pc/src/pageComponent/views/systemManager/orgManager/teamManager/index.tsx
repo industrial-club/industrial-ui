@@ -1,7 +1,7 @@
 import { defineComponent, ref, provide, PropType } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
-import api from "@/pageComponent/api/org/teamManager";
+import api, { setInstance } from "@/pageComponent/api/org/teamManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";
@@ -26,17 +26,6 @@ export interface IUrlObj {
   // 获取人员列表 (下拉框)
   empList: string;
 }
-
-const DEFAULT_URL: IUrlObj = {
-  list: "/comlite/v1/workgroup/all/page",
-  add: "/comlite/v1/workgroup/add",
-  update: "/comlite/v1/workgroup/modify",
-  delete: "/comlite/v1/workgroup/remove/",
-  switchStatus: "/comlite/v1/workgroup/modify",
-  depList: "/comlite/v1/department/all",
-  postList: "/comlite/v1/jobPost/all/summary",
-  empList: "/comlite/v1/employee/all/summary",
-};
 
 const column = [
   {
@@ -85,9 +74,13 @@ const TeamManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    urlPrefix: {
+      type: String,
+    },
   },
   setup(prop, context) {
-    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    if (prop.urlPrefix) setInstance(prop.urlPrefix);
+    const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
 
     const form = ref({
