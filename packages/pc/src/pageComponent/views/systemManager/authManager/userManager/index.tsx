@@ -103,7 +103,7 @@ const UserManager = defineComponent({
     const urlMap = { ...DEFAULT_URL, ...props.url };
     provide("urlMap", urlMap);
 
-    const formState = reactive<FormState>({
+    const formState = ref<FormState>({
       userName: "",
     });
 
@@ -112,7 +112,7 @@ const UserManager = defineComponent({
       useTableList(
         () =>
           api.getUserList(urlMap.list)({
-            keyWord: formState.userName,
+            keyWord: formState.value.userName,
             pageNum: currPage.value,
             pageSize: 10,
           }),
@@ -182,7 +182,7 @@ const UserManager = defineComponent({
       <div class="userManager">
         <div class="table-search" style={{ marginBottom: "16px" }}>
           <a-form
-            model={formState}
+            model={formState.value}
             name="basic"
             layout="inline"
             class="searchLine"
@@ -192,7 +192,7 @@ const UserManager = defineComponent({
               <a-input
                 placeholder="请输入用户名称"
                 allowClear
-                v-model={[formState.userName, "value"]}
+                v-model={[formState.value.userName, "value"]}
               />
             </a-form-item>
 
