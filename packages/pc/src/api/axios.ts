@@ -9,9 +9,10 @@ import axios from "axios";
 import { omit, isPlainObject } from "lodash";
 import { message } from "ant-design-vue";
 
-const getInstance = (baseURL?: string) => {
+const getInstance = (opt: { serverName?: string; prefix?: string }) => {
+  const prefix = opt.prefix || "/api/";
   const instance = axios.create({
-    baseURL, // /api/
+    baseURL: prefix + (opt.serverName || ""),
     timeout: 5000,
     headers: {
       "X-Custom-Header": "foobar",
@@ -83,7 +84,7 @@ const getInstance = (baseURL?: string) => {
   return instance;
 };
 
-const instance = getInstance();
+const instance = getInstance({});
 
 export { instance, getInstance };
 

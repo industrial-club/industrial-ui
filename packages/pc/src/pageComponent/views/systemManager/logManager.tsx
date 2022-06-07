@@ -7,7 +7,7 @@ import {
   PropType,
 } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api from "@/pageComponent/api/logManager";
+import api, { setInstance } from "@/pageComponent/api/logManager";
 import { Moment } from "moment";
 import utils from "@/utils";
 
@@ -17,11 +17,6 @@ export interface IUrlObj {
   // 筛选列表
   searchList: string;
 }
-
-const DEFAULT_URL: IUrlObj = {
-  list: "/comlite/v1/log/list",
-  searchList: "/comlite/v1/log/head",
-};
 
 const column = [
   {
@@ -87,9 +82,16 @@ const LogManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    prefix: {
+      type: String,
+    },
+    serverName: {
+      type: String,
+    },
   },
   setup(prop, context) {
-    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    setInstance({ prefix: prop.prefix, serverName: prop.serverName });
+    const urlMap = { ...prop.url };
 
     const formRef = ref();
 
@@ -254,33 +256,35 @@ const LogManager = defineComponent({
             </a-col>
             <a-col span={12}>
               <a-form-item name="operateType" label="操作类型">
-                <a-select
-                  v-model={[formState.operateType, "value"]}
-                  allowClear
-                  style="width: 200px"
-                >
-                  {state.operateTypeList &&
-                    state.operateTypeList.map((item: any) => (
-                      <a-select-option value={item.id} key={item.id}>
-                        {item.headName}
-                      </a-select-option>
-                    ))}
-                </a-select>
-                <span style={{ margin: "0 16px" }}>-</span>
-                <a-form-item name="recordType">
+                <a-space>
                   <a-select
-                    v-model={[formState.recordType, "value"]}
+                    v-model={[formState.operateType, "value"]}
                     allowClear
                     style="width: 200px"
                   >
-                    {state.recordTypeList &&
-                      state.recordTypeList.map((item: any) => (
+                    {state.operateTypeList &&
+                      state.operateTypeList.map((item: any) => (
                         <a-select-option value={item.id} key={item.id}>
                           {item.headName}
                         </a-select-option>
                       ))}
                   </a-select>
-                </a-form-item>
+                  <span style={{ margin: "0 16px" }}>-</span>
+                  <a-form-item name="recordType">
+                    <a-select
+                      v-model={[formState.recordType, "value"]}
+                      allowClear
+                      style="width: 200px"
+                    >
+                      {state.recordTypeList &&
+                        state.recordTypeList.map((item: any) => (
+                          <a-select-option value={item.id} key={item.id}>
+                            {item.headName}
+                          </a-select-option>
+                        ))}
+                    </a-select>
+                  </a-form-item>
+                </a-space>
               </a-form-item>
             </a-col>
             <a-col span={12}>

@@ -9,7 +9,7 @@ import { defineComponent, PropType, provide, ref, watch } from "vue";
 import useBus from "@/pageComponent/hooks/useBus";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import { isEmpty } from "lodash";
-import api from "@/pageComponent/api/org/depManager";
+import api, { setInstance } from "@/pageComponent/api/org/depManager";
 import utils from "@/utils";
 
 import EmployeeTable from "./employeeTable";
@@ -46,31 +46,22 @@ export interface IUrlObj {
   postSelect: string;
 }
 
-const DEFAULT_URL: IUrlObj = {
-  tree: "/comlite/v1/department/all",
-  detail: "/comlite/v1/department/detail/",
-  add: "/comlite/v1/department/add",
-  update: "/comlite/v1/department/modify",
-  delete: "/comlite/v1/department/remove/",
-  sort: "/comlite/v1/department/sort/adjust",
-  empSelect: "/comlite/v1/employee/all/summary",
-  empList: "/comlite/v1/employee/all/page",
-  empDetail: "/comlite/v1/employee/detail/",
-  updateEmp: "/comlite/v1/employee/modify",
-  addEmp: "/comlite/v1/employee/add",
-  deleteEmp: "/comlite/v1/employee/remove/",
-  postSelect: "/comlite/v1/jobPost/all/summary",
-};
-
 const DepManager = defineComponent({
   props: {
     url: {
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    prefix: {
+      type: String,
+    },
+    serverName: {
+      type: String,
+    },
   },
   setup(prop, context) {
-    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    setInstance({ prefix: prop.prefix, serverName: prop.serverName });
+    const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
 
     const bus = useBus("system");

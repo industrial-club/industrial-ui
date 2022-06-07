@@ -3,15 +3,17 @@ import buttonDemo from "./button";
 import menuDemo from "./menu";
 import formDemo from "./form";
 import videoDemo from "./video";
+import baseDemo from "./base-demo";
 
 export default defineComponent({
   setup() {
     return () => (
       <div style={{ backgroundColor: "#fff", height: "100%" }}>
-        <buttonDemo></buttonDemo>
+        {/* <buttonDemo></buttonDemo>
         <menuDemo></menuDemo>
-        <formDemo></formDemo>
+        <formDemo></formDemo> */}
         {/* <videoDemo></videoDemo> */}
+        <baseDemo></baseDemo>
       </div>
     );
   },
@@ -20,5 +22,6 @@ export default defineComponent({
     menuDemo,
     formDemo,
     videoDemo,
+    baseDemo,
   },
 });

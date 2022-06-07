@@ -6,46 +6,52 @@
  * @LastEditTime: 2022-04-26 15:45:58
  */
 
-import { instance } from "../axios";
+import { getInstance } from "@/api/axios";
+
+let instance = getInstance({ prefix: "/api/", serverName: "comlite/v1" });
+
+export function setInstance({ serverName = "comlite/v1", prefix = "/api/" }) {
+  instance = getInstance({ prefix, serverName });
+}
 
 const api = {
   /**
    * 用户权限树- 以树状结构返回菜单项
    */
-  getMenuTreeList: (url: string) => (params: any) => {
-    return instance.get(url, { params });
+  getMenuTreeList: (url?: string) => (params: any) => {
+    return instance.get(url ?? "/menu/all", { params });
   },
   /**
    * 添加菜单
    */
-  insertMenuRecord: (url: string) => (data: any) => {
-    return instance.post(url, data);
+  insertMenuRecord: (url?: string) => (data: any) => {
+    return instance.post(url ?? "/menu/add", data);
   },
   /**
    * 修改菜单
    */
-  editMenuRecord: (url: string) => (data: any) => {
-    return instance.post(url, data);
+  editMenuRecord: (url?: string) => (data: any) => {
+    return instance.post(url ?? "/menu/modify", data);
   },
   /**
    * 删除菜单
    */
-  deleteMenuById: (url: string) => (menuId: number) => {
-    return instance.get(`${url}${menuId}`);
+  deleteMenuById: (url?: string) => (menuId: number) => {
+    return instance.get(`${url ?? "/menu/delete/"}${menuId}`);
   },
   /**
    * 菜单排序接口
    */
-  sortMenu: (url: string) => (data: any) => {
-    return instance.post(url, data);
+  sortMenu: (url?: string) => (data: any) => {
+    return instance.post(url ?? "/menu/sort/adjust", data);
   },
   /**
    * 上传JSON文件
    */
-  uploadJSONFile: (url: string) => (file: File) => {
+  uploadJSONFile: (url?: string) => (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    return instance.post(url, formData, {
+    return instance.post(url ?? "/menu/json/upload", formData, {
       headers: { ContentType: "multipart/form-data" },
     });
   },

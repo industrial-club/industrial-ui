@@ -7,6 +7,7 @@
  */
 import { defineComponent, ref, provide, PropType } from "vue";
 import utils from "@/utils";
+import { setInstance } from "@/pageComponent/api/auth/menuManager";
 
 import MenuSelectTree from "./menuSelectTree";
 import MenuDetail from "./menuDetail";
@@ -26,15 +27,6 @@ export interface IUrlObj {
   upload: string;
 }
 
-const DEFAULT_URL: IUrlObj = {
-  tree: "/comlite/v1/menu/all",
-  add: "/comlite/v1/menu/add'",
-  update: "/comlite/v1/menu/modify",
-  delete: "/comlite/v1/menu/delete/",
-  sort: "/comlite/v1/menu/sort/adjust",
-  upload: "/comlite/v1/menu/json/upload",
-};
-
 /**
  * 菜单管理
  */
@@ -44,9 +36,16 @@ const MenuManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    prefix: {
+      type: String,
+    },
+    serverName: {
+      type: String,
+    },
   },
   setup(props) {
-    const urlMap = { ...DEFAULT_URL, ...props.url };
+    setInstance({ prefix: props.prefix, serverName: props.serverName });
+    const urlMap = { ...props.url };
     provide("urlMap", urlMap);
 
     const detailRef = ref();

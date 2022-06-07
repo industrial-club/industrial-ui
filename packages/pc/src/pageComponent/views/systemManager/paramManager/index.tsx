@@ -13,7 +13,7 @@
  * @LastEditTime: 2022-03-29 15:03:27
  */
 import { defineComponent, PropType, provide, ref } from "vue";
-import { api } from "@/pageComponent/api/param";
+import { api, setInstance } from "@/pageComponent/api/param";
 import utils from "@/utils";
 
 import TabItem from "./tabItem";
@@ -27,21 +27,22 @@ export interface IUrlObj {
   save: string;
 }
 
-const DEFAULT_URL: IUrlObj = {
-  list: "/comlite/v1/param/group/list",
-  define: "/comlite/v1/param/group/getDefineAndValueListByGroupId",
-  save: "/comlite/v1/param/value/updateBatch",
-};
-
 const ParamManager = defineComponent({
   props: {
     url: {
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    prefix: {
+      type: String,
+    },
+    serverName: {
+      type: String,
+    },
   },
   setup(props) {
-    const urlMap = { ...DEFAULT_URL, ...props.url };
+    setInstance({ prefix: props.prefix, serverName: props.serverName });
+    const urlMap = { ...props.url };
     provide("urlMap", urlMap);
 
     const tabs = ref([]);

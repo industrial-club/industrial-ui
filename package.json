@@ -19,7 +19,8 @@
     "build:utilVideo": "yarn workspace inl-util run buildVideo",
     "build:lessVar": "yarn workspace inl-less run build",
     "site": "vite site",
-    "factory": "vite mtip-factory"
+    "factory": "vite mtip-factory",
+    "testLogin": "vite test-login"
   },
   "repository": "https://github.com/industrial-club/industrial-ui",
   "author": "bhabgs",
