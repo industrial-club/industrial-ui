@@ -36,14 +36,15 @@ const MenuManager = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
-    urlPrefix: {
+    prefix: {
+      type: String,
+    },
+    serverName: {
       type: String,
     },
   },
   setup(props) {
-    if (props.urlPrefix) {
-      setInstance(props.urlPrefix);
-    }
+    setInstance({ prefix: props.prefix, serverName: props.serverName });
     const urlMap = { ...props.url };
     provide("urlMap", urlMap);
 
