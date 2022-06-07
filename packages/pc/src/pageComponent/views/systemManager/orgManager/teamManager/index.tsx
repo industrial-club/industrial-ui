@@ -85,6 +85,10 @@ const TeamManager = defineComponent({
     setInstance({ prefix: prop.prefix, serverName: prop.serverName });
     const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
+    provide("urlPrefix", {
+      prefix: prop.prefix,
+      serverName: prop.serverName,
+    });
 
     const form = ref({
       keyWord: "",

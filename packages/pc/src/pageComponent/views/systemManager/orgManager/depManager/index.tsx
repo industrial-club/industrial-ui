@@ -63,6 +63,10 @@ const DepManager = defineComponent({
     setInstance({ prefix: prop.prefix, serverName: prop.serverName });
     const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
+    provide("urlPrefix", {
+      prefix: prop.prefix,
+      serverName: prop.serverName,
+    });
 
     const bus = useBus("system");
 
