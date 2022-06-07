@@ -58,6 +58,14 @@ const DepManager = defineComponent({
     serverName: {
       type: String,
     },
+    dividerGap: {
+      type: Number,
+      default: 24,
+    },
+    dividerColor: {
+      type: String,
+      default: "#EFF2F6",
+    },
   },
   setup(prop, context) {
     setInstance({ prefix: prop.prefix, serverName: prop.serverName });
@@ -100,7 +108,13 @@ const DepManager = defineComponent({
         <div class="left">
           <DepTree onSelect={handleSelectDep} />
         </div>
-        <div class="divider"></div>
+        <div
+          class="divider"
+          style={{
+            margin: `${-prop.dividerGap}px 20px ${-prop.dividerGap}px 0`,
+            background: prop.dividerColor,
+          }}
+        ></div>
         <div class="right">
           {/* 基本信息 */}
           <div class="basic-info">
