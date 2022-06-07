@@ -115,55 +115,42 @@ const LogManager = defineComponent({
 
     const showMore = ref(false);
 
-    const getList = async (val: string | number) => {
-      const resp = await api.getHead(urlMap.searchList)({ parent: val });
+    const getList = async () => {
+      const resp = await api.getHead(urlMap.searchList)();
       return resp.data;
     };
 
     onMounted(async () => {
-      state.systemTypeList = await getList(0);
+      const res = await getList();
+      state.systemTypeList = res.sysLogHeadList;
+      state.operateTypeList = res.recordLogHeadList;
     });
 
-    // 模块类型
-    watch(
-      () => formState.systemType,
-      async (val) => {
-        if (!val) {
-          state.moduleTypeList = [];
-          formState.moduleType = "";
-          return;
-        }
-        state.moduleTypeList = await getList(formState.systemType);
-        formState.moduleType = "";
+    // 选择系统 模块列表
+    const onSystemChange = () => {
+      formState.moduleType = "";
+      if (formState.systemType) {
+        const sys: any = state.systemTypeList.find(
+          (item: any) => item.id === formState.systemType
+        );
+        state.moduleTypeList = sys?.subList ?? [];
+      } else {
+        state.moduleTypeList = [];
       }
-    );
-    // 操作类型
-    watch(
-      () => formState.moduleType,
-      async (val) => {
-        if (!val) {
-          state.operateTypeList = [];
-          formState.operateType = "";
-          return;
-        }
-        state.operateTypeList = await getList(formState.moduleType);
-        formState.operateType = "";
-      }
-    );
+    };
 
-    // 记录类型
-    watch(
-      () => formState.operateType,
-      async (val) => {
-        if (!val) {
-          state.recordTypeList = [];
-          formState.recordType = "";
-          return;
-        }
-        state.recordTypeList = await getList(formState.operateType);
-        formState.recordType = "";
+    // 选择操作类型 日志类型列表
+    const onOperateTypeChange = () => {
+      formState.recordType = "";
+      if (formState.operateType) {
+        const operate: any = state.operateTypeList.find(
+          (item: any) => item.id === formState.operateType
+        );
+        state.recordTypeList = operate.subList;
+      } else {
+        state.recordTypeList = [];
       }
-    );
+    };
 
     // table
     const { currPage, isLoading, refresh, tableList, handlePageChange, total } =
@@ -228,6 +215,7 @@ const LogManager = defineComponent({
                   v-model={[formState.systemType, "value"]}
                   allowClear
                   style="width: 200px"
+                  onChange={onSystemChange}
                 >
                   {state.systemTypeList &&
                     state.systemTypeList.map((item: any) => (
@@ -261,6 +249,7 @@ const LogManager = defineComponent({
                     v-model={[formState.operateType, "value"]}
                     allowClear
                     style="width: 200px"
+                    onChange={onOperateTypeChange}
                   >
                     {state.operateTypeList &&
                       state.operateTypeList.map((item: any) => (
