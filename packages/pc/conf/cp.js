@@ -21,7 +21,7 @@ const cpFiles = (file1, file2) => {
 };
 
 const readDir = () => {
-  const pp = gitPath("../../../site/src/theme");
+  const pp = gitPath("../../../test-theme/style");
   const pp2 = gitPath("../dist/theme");
   fs.readdir(pp, (err, res) => {
     if (!err) {

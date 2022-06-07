@@ -4,7 +4,8 @@
   "description": "工业ui",
   "main": "index.js",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "mtip-factory"
   ],
   "scripts": {
     "ln": "lerna",
@@ -12,13 +13,15 @@
     "build:docs": "yarn workspace inl-docs run docs:build",
     "dev:app": "yarn workspace inl-app-ui run dev",
     "dev:pc": "yarn workspace inl-ui run dev",
-    "build:pc": "yarn workspace inl-ui run build",
+    "build:pc": "yarn workspace inl-ui run build & build:pcTheme",
+    "build:pcTheme": "yarn workspace inl-ui run cp:theme",
     "dev:util": "yarn workspace inl-util run dev",
     "build:util": "yarn workspace inl-util run build",
     "build:utilVideo": "yarn workspace inl-util run buildVideo",
     "build:lessVar": "yarn workspace inl-less run build",
     "site": "vite site",
-    "testLogin": "vite test-login"
+    "testLogin": "vite test-login",
+    "dev-theme": "vite test-theme"
   },
   "repository": "https://github.com/industrial-club/industrial-ui",
   "author": "bhabgs",

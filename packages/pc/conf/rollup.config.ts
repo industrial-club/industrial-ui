@@ -28,7 +28,7 @@ export default defineConfig({
     babel({ babelHelpers: "bundled", extensions }),
     postcss({
       plugins: [cssnano],
-      extract: "style.css", // 输出路径
+      extract: `style.css`,
     }),
   ],
   acornInjectPlugins: [jsx()],

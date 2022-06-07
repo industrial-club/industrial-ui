@@ -1,0 +1,99 @@
+.layout {
+  @navBg: #132041;
+
+  .LayoutHeader {
+    display: flex;
+    height: 60px;
+    padding: 0 20px 0 0;
+    line-height: 60px;
+    background: @navBg !important;
+
+    .logo {
+      // prettier-ignore
+      width: 200PX;
+      color: #fff;
+      background: url('../img/logo.png');
+      background-size: 100% 100%;
+    }
+
+    .nav-bar {
+      flex: 1;
+      &.ant-menu-topNav {
+        background-color: transparent;
+      }
+      .ant-menu-item-selected {
+        background: transparent url('@/assets/img/selected-menu.svg') no-repeat
+          0 50%/100% 70% !important;
+        color: #2c9ae8 !important;
+        transition: none !important;
+      }
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      .search {
+        width: 300px;
+        margin-right: 36px;
+        border: 0;
+        background: #444d65;
+        input {
+          color: #fff;
+        }
+        .btn-search {
+          font-size: 26px;
+        }
+      }
+      .avatarBox {
+        display: flex;
+        min-width: max-content;
+        .username {
+          margin-right: 8px;
+          color: #fff;
+        }
+        .avatar {
+          width: 36px;
+          height: 36px;
+          margin-right: 8px;
+        }
+        .btn-logout {
+          font-size: 30px;
+        }
+      }
+    }
+  }
+
+  .LayoutSider {
+    background: @navBg;
+
+    .ant-layout-sider-children {
+      display: flex;
+      flex-direction: column;
+
+      .folder {
+        padding: 8px 16px;
+        text-align: right;
+        .btn {
+          color: #fff;
+          font-size: 16px;
+          cursor: pointer;
+        }
+      }
+
+      .Sidebar {
+        width: 100%;
+        flex: 1;
+      }
+      .sidebar_bottom {
+        padding: 8px;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .ant-layout-content {
+    & > * {
+      height: 100%;
+    }
+  }
+}
