@@ -10,7 +10,7 @@ import { Modal, message } from "ant-design-vue";
 import { cloneDeep } from "lodash";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import { getRequiredRule, getMaxRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/userManager";
+import api, { setInstance } from "@/pageComponent/api/personalSetting";
 import utils from "@/utils";
 
 import EditPasswordForm, {
@@ -26,12 +26,6 @@ export interface IUrlObj {
   updatePass: string;
 }
 
-const DEFAULT_URL: IUrlObj = {
-  detail: "/comlite/v1/user/detail",
-  update: "/comlite/v1/user/updateUser",
-  updatePass: "/comlite/v1/user/resetPassword",
-};
-
 interface ModalFormState {
   oldPwd: string;
   newPwd: string;
@@ -44,9 +38,16 @@ const PersonalSetting = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    prefix: {
+      type: String,
+    },
+    serverName: {
+      type: String,
+    },
   },
   setup(prop, context) {
-    const urlMap = { ...DEFAULT_URL, ...prop.url };
+    setInstance({ prefix: prop.prefix, serverName: prop.serverName });
+    const urlMap = { ...prop.url };
 
     const formRef = ref();
     const passwordFormRef = ref();
