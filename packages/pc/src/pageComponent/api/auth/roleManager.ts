@@ -6,12 +6,12 @@
  * @LastEditTime: 2022-04-22 16:00:59
  */
 
-import { getInstance } from "../axios";
+import { getInstance } from "@/api/axios";
 
-let instance = getInstance("/api/");
+let instance = getInstance({ prefix: "/api/", serverName: "comlite/v1" });
 
-export function setInstance(baseURL: string) {
-  instance = getInstance(baseURL);
+export function setInstance({ serverName = "comlite/v1", prefix = "/api/" }) {
+  instance = getInstance({ prefix, serverName });
 }
 
 const api = {
@@ -19,37 +19,37 @@ const api = {
    * 获取角色列表
    */
   getRoleListByPager: (url?: string) => (params: any) => {
-    return instance.get(url ?? "/comlite/v1/role/all/page", { params });
+    return instance.get(url ?? "/role/all/page", { params });
   },
   /**
    * 切换角色启用状态
    */
   switchRoleEnableStatus: (url?: string) => (params: any) => {
-    return instance.get(url ?? "/comlite/v1/role/roleEnabe", { params });
+    return instance.get(url ?? "/role/roleEnabe", { params });
   },
   /**
    * 保存角色及权限树
    */
   insertRole: (url?: string) => (params: any) => {
-    return instance.post(url ?? "/comlite/v1/role/insertRole", params);
+    return instance.post(url ?? "/role/insertRole", params);
   },
   /**
    * 获取角色权限树- 编辑角色
    */
   getRoleTreeEdit: (url?: string) => (params: any) => {
-    return instance.get(url ?? "/comlite/v1/role/getRoleTreeEdit", { params });
+    return instance.get(url ?? "/role/getRoleTreeEdit", { params });
   },
   /**
    * 获取角色权限树- 新建角色
    */
   getRoleTree: (url?: string) => () => {
-    return instance.get(url ?? "/comlite/v1/role/getRoleTree");
+    return instance.get(url ?? "/role/getRoleTree");
   },
   /**
    * 删除角色
    */
   deleteRoleById: (url?: string) => (roleTypeId: number) => {
-    return instance.get(url ?? "/comlite/v1/role/deleteRoleType", {
+    return instance.get(url ?? "/role/deleteRoleType", {
       params: { roleTypeId },
     });
   },
