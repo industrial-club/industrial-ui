@@ -9,6 +9,7 @@ import LogManager from "@/pageComponent/views/systemManager/logManager";
 import ParamManager from "@/pageComponent/views/systemManager/paramManager";
 import PersonalSetting from "@/pageComponent/views/systemManager/personalSetting";
 import Login from "@/pageComponent/views/login";
+// import Preview from "@/pageComponent/views/video/preview/preview";
 
 export default [
   About,
@@ -22,4 +23,5 @@ export default [
   ParamManager,
   PersonalSetting,
   Login,
+  // Preview,
 ];
