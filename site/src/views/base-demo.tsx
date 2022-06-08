@@ -19,7 +19,7 @@ const BaseDemo = defineComponent({
         ></inl-about> */}
 
         {/* ====== 日志管理 ====== */}
-        {/* <inl-log-manager prefix="/user/" serverName="abc/bcd"></inl-log-manager> */}
+        <inl-log-manager></inl-log-manager>
 
         {/* ====== 参数管理 ====== */}
         {/* <inl-param-manager
@@ -35,31 +35,19 @@ const BaseDemo = defineComponent({
 
         {/* ====== 权限管理 ====== */}
         {/* 用户管理 */}
-        {/* <inl-user-manager
-          prefix="/user/"
-          serverName="abc/bcd"
-        ></inl-user-manager> */}
+        {/* <inl-user-manager></inl-user-manager> */}
         {/* 角色管理 */}
-        {/* <inl-role-manager
-          prefix="/user/"
-          serverName="abc/bcd"
-        ></inl-role-manager> */}
+        {/* <inl-role-manager></inl-role-manager> */}
         {/* 菜单管理 */}
-        {/* <inl-menu-manager prefix="/user/" serverName="abc/bcd"></inl-menu-manager> */}
+        {/* <inl-menu-manager></inl-menu-manager> */}
 
         {/* ====== 组织管理 ====== */}
         {/* 岗位管理 */}
-        {/* <inl-post-manager
-          prefix="/user/"
-          serverName="abc/bcd"
-        ></inl-post-manager> */}
+        {/* <inl-post-manager></inl-post-manager> */}
         {/* 班组管理 */}
-        {/* <inl-team-manager
-          prefix="/user/"
-          serverName="abc/bcd"
-        ></inl-team-manager> */}
+        {/* <inl-team-manager></inl-team-manager> */}
         {/* 部门管理 */}
-        {/* <inl-dep-manager prefix="/user/" serverName="abc/bcd"></inl-dep-manager> */}
+        {/* <inl-dep-manager></inl-dep-manager> */}
         {/* <inl-login-page
           loginMainImg={loginPicBig}
           titleLogo={logoBig}

@@ -9,6 +9,8 @@ import LogManager from "@/pageComponent/views/systemManager/logManager";
 import ParamManager from "@/pageComponent/views/systemManager/paramManager";
 import PersonalSetting from "@/pageComponent/views/systemManager/personalSetting";
 import Login from "@/pageComponent/views/login";
+import AlarmRecord from "@/pageComponent/views/alarms/warning-record";
+import AlarmConfigure from "@/pageComponent/views/alarms/warning-configure";
 
 export default [
   About,
@@ -22,4 +24,6 @@ export default [
   ParamManager,
   PersonalSetting,
   Login,
+  AlarmRecord,
+  AlarmConfigure,
 ];

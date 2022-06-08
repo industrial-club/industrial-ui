@@ -42,6 +42,14 @@ const MenuManager = defineComponent({
     serverName: {
       type: String,
     },
+    dividerGap: {
+      type: Number,
+      default: 24,
+    },
+    dividerColor: {
+      type: String,
+      default: "#EFF2F6",
+    },
   },
   setup(props) {
     setInstance({ prefix: props.prefix, serverName: props.serverName });
@@ -64,7 +72,13 @@ const MenuManager = defineComponent({
         <div class="tree">
           <MenuSelectTree onSelect={handleNodeSelect} onEdit={handleNodeEdit} />
         </div>
-        <div class="divider"></div>
+        <div
+          class="divider"
+          style={{
+            margin: `${-props.dividerGap}px 20px ${-props.dividerGap}px 0`,
+            background: props.dividerColor,
+          }}
+        ></div>
         {/* 右侧详情 */}
         <div class="right-detail">
           <MenuDetail ref={detailRef} node={currSelectNode.value} />
