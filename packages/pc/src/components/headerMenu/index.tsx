@@ -31,45 +31,26 @@ const props = {
     type: String as PropType<string>,
     default: "",
   },
+  menuList: {
+    type: Array as PropType<Array<any>>,
+    default: [],
+  },
 };
 
-const menuList = [
-  {
-    name: "智能监控",
-    key: "monitor",
-  },
-  {
-    name: "报警管理",
-    key: "alarm",
-  },
-  {
-    name: "辅助系统",
-    key: "assist",
-  },
-  {
-    name: "设备管理",
-    key: "device",
-  },
-  {
-    name: "在线监测",
-    key: "online",
-  },
-  {
-    name: "系统管理",
-    key: "system",
-  },
-];
 const HeaderMenu = defineComponent({
   props,
+  emits: ["change", "update:active"],
   setup(prop, { slots, emit }) {
     const active = useVModel(prop, "active", emit);
-    const menuLeft = menuList.slice(
+    const menuLeft = prop.menuList.slice(
       0,
-      menuList.length % 2 === 0 ? menuList.length / 2 : menuList.length
+      prop.menuList.length % 2 === 0
+        ? prop.menuList.length / 2
+        : prop.menuList.length
     );
-    const menuRight = menuList.slice(
-      menuList.length % 2 === 0 ? menuList.length / 2 : 0,
-      menuList.length
+    const menuRight = prop.menuList.slice(
+      prop.menuList.length % 2 === 0 ? prop.menuList.length / 2 : 0,
+      prop.menuList.length
     );
     return () => (
       <div class={["inl-header-menu", prop.className]}>
@@ -86,6 +67,7 @@ const HeaderMenu = defineComponent({
                     className={prop.itemClassName}
                     onActiveChange={(value) => {
                       emit("update:active", value);
+                      emit("change", value);
                     }}
                   >
                     {item.name}
@@ -106,6 +88,7 @@ const HeaderMenu = defineComponent({
                     className={prop.itemClassName}
                     onActiveChange={(value) => {
                       emit("update:active", value);
+                      emit("change", value);
                     }}
                   >
                     {item.name}
@@ -122,13 +105,14 @@ const HeaderMenu = defineComponent({
                 {prop.title}
               </inl-header-menu-title>
               <div class="inl-header-menu-content-right">
-                {menuList.map((item) => (
+                {prop.menuList.map((item) => (
                   <inl-header-menu-item
                     active={prop.active}
                     value={item.key}
                     className={prop.itemClassName}
                     onActiveChange={(value) => {
                       emit("update:active", value);
+                      emit("change", value);
                     }}
                   >
                     {item.name}

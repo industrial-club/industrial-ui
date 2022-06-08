@@ -23,7 +23,7 @@ const props = {
     type: String,
   },
   prefix: {
-    default: "",
+    default: "/api/",
     type: String,
   },
   loginTab: {
@@ -64,9 +64,11 @@ export default defineComponent({
       password: prop.password,
       username: prop.username,
     });
+    const serverName = inject<string>("serverName");
+    const prefix = inject<string>("prefix");
     const instance = getInstance({
-      serverName: prop.serverName,
-      prefix: prop.prefix,
+      serverName,
+      prefix,
     });
     const systemTitle = inject<string>("systemTitle");
     const platformLogo = inject<string>("platformLogo");
@@ -94,7 +96,16 @@ export default defineComponent({
     });
     const hkVal = ref<number>(0); // 滑块值
     const getImg = async () => {
-      const res = await instance.get("auth/code/get");
+      let res;
+      try {
+        res = await instance.get("auth/code/get");
+      } catch (error) {
+        message.error("服务端错误，请联系管理员处理.");
+        loginspinning.value = false;
+        spinning.value = false;
+        return;
+      }
+
       if (res.data.backImage) {
         imgSrc.value = `data:image/png;base64, ${res.data.backImage}`;
         slideImage.value = `data:image/png;base64, ${res.data.slideImage}`;
@@ -111,15 +122,26 @@ export default defineComponent({
     const checkImg = async () => {
       spinning.value = true;
       spinningText.value = "正在验证...";
-      const res = await instance.post("auth/code/check", {
-        imageToken,
-        sliderTrack: [
-          {
-            x: slideImagePosition.value.left.replace("px", ""),
-            y: slideImagePosition.value.top.replace("px", ""),
-          },
-        ],
-      });
+      let res;
+      try {
+        res = await instance.post("auth/code/check", {
+          imageToken,
+          sliderTrack: [
+            {
+              x: slideImagePosition.value.left.replace("px", ""),
+              y: slideImagePosition.value.top.replace("px", ""),
+            },
+          ],
+        });
+      } catch (error) {
+        slideImagePosition.value.left = "0px";
+        hkVal.value = 0;
+        spinning.value = true;
+        spinningText.value = "正在更新图片验证...";
+        message.error("服务端错误，请联系管理员处理.");
+        return;
+      }
+
       spinning.value = false;
       if (res && res.data === true) {
         toSunmit();

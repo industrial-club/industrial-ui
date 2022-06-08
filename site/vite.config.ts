@@ -50,10 +50,8 @@ export default defineConfig({
     preprocessorOptions: {
       less: {
         modifyVars: {
-          hack: `true;@import "${require.resolve(
-            "./src/theme/default.less"
-          )}";`,
-          "root-entry-name": "default",
+          hack: `true;@import "${require.resolve("./src/theme/dark.less")}";`,
+          "root-entry-name": "dark",
         },
         javascriptEnabled: true,
       },

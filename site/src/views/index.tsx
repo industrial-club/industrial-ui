@@ -10,12 +10,11 @@ export default defineComponent({
   setup() {
     return () => (
       <div style={{ backgroundColor: "#fff", height: "100%" }}>
-        {/* <buttonDemo></buttonDemo>
+        <buttonDemo></buttonDemo>
         <menuDemo></menuDemo>
-        <formDemo></formDemo> */}
+        <formDemo></formDemo>
         {/* <videoDemo></videoDemo> */}
         {/* <baseDemo></baseDemo> */}
-        <alarmDemo />
       </div>
     );
   },

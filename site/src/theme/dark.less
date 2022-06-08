@@ -24,7 +24,7 @@ body {
 @orange-3: fade(@orange, 0%);
 @orange-7: fade(@orange, 100%);
 @component-background: transparent;
-
+@input-placeholder-color: #a4aabf;
 @menu-dark-bg: #1b2c55;
 @menu-dark-arrow-color: @white;
 @menu-dark-inline-submenu-bg: @menu-dark-bg;
@@ -32,16 +32,15 @@ body {
 @menu-dark-item-active-bg: rgba(255, 255, 255, 0.1);
 @menu-dark-item-hover-bg: transparent;
 @border-color-base: #b9c2d5;
+@shadow-2: 0px 1px 12px 0px rgba(55, 63, 77, 0.08);
+@popover-border: 1px solid #f2f3f8;
 // 按钮
 @btn-default-bg: @white;
-@text-color: rgba(53, 64, 82, 1);
+@text-color: #5c667d;
 @btn-font-weight: 400;
-@btn-border-radius-base: 2px;
-@btn-border-radius-sm: 2px;
-@btn-border-width: 1px;
-@btn-border-style: @primary-color;
-@btn-primary-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+@btn-primary-shadow: none;
 @btn-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+@btn-text-hover-bg: rgba(31, 35, 41, 0.05);
 
 // form
 @label-color: #354052;
@@ -126,7 +125,18 @@ body {
 @modal-header-bg: @white;
 @modal-close-color: rgba(0, 0, 0, 0.45);
 @icon-color-hover: @modal-close-color;
-
+@modal-header-border-color-split: transparent;
+@modal-footer-border-color-split: transparent;
+.ant-modal .ant-table {
+  background: transparent;
+  thead > tr > th {
+    background-color: #f2f3f8;
+    border-bottom: 1px solid #f2f3f8;
+  }
+  tbody > tr > td {
+    border-bottom: 1px solid #f2f3f8;
+  }
+}
 // alert
 @alert-close-color: rgba(0, 0, 0, 0.45);
 @alert-close-hover-color: @alert-close-color;
@@ -215,4 +225,19 @@ body {
 }
 .ant-menu.ant-menu-inline .ant-menu-item-selected::after {
   border-right: 3px solid #3e7eff;
+}
+
+// empty
+.ant-empty-img-simple {
+  &-ellipse {
+    fill: #f5f5f5;
+    fill-opacity: 1;
+  }
+  &-path {
+    fill: #fafafa;
+    stroke: #d9d9d9;
+  }
+  &-g {
+    stroke: #d9d9d9;
+  }
 }
