@@ -1,9 +1,10 @@
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent, ref, watch, inject } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import { batchUploadConfigure } from "@/pageComponent/api/alarm/warningConfigure";
 
 import { message } from "ant-design-vue";
 import { InboxOutlined, FileExcelTwoTone } from "@ant-design/icons-vue";
+import { IUrlObj } from "./index";
 
 const BatchImportDialog = defineComponent({
   props: {
@@ -17,6 +18,7 @@ const BatchImportDialog = defineComponent({
   },
   emits: ["update:visible"],
   setup(props, { emit }) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
     const isVisible = useVModel(props, "visible", emit);
 
     const fileList = ref<any[]>([]);
@@ -26,7 +28,7 @@ const BatchImportDialog = defineComponent({
     const handleUpload = async () => {
       isLoding.value = true;
       try {
-        await batchUploadConfigure(fileList.value[0]);
+        await batchUploadConfigure(urlObj.updateRule)(fileList.value[0]);
         message.success("导入成功");
         props.onRefresh?.();
         isVisible.value = false;
