@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent, inject, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Modal, message } from "ant-design-vue";
 import { TransformCellTextProps } from "ant-design-vue/es/table/interface";
@@ -9,6 +9,7 @@ import {
 } from "@/pageComponent/api/alarm/warningConfigure";
 import TableTool from "./table-tool";
 import BatchImportDialog from "./batch-import-dialog";
+import { IUrlObj } from "./index";
 
 const columns = [
   // {
@@ -39,6 +40,8 @@ const WarningConfigure = defineComponent({
     },
   },
   setup(props) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
+
     const router = useRouter();
 
     const page = reactive({
@@ -57,7 +60,7 @@ const WarningConfigure = defineComponent({
     const getAllRuleList = async () => {
       isLoading.value = true;
       try {
-        const res = await getAllRule({
+        const res = await getAllRule(urlObj.ruleList)({
           pageNum: page.current,
           pageSize: page.size,
           sort: "desc",
@@ -84,7 +87,7 @@ const WarningConfigure = defineComponent({
         title: `确定${checked ? "启用" : "停用"}`,
         content: `确定${checked ? "启用" : "停用"}报警规则"${record.name}"？`,
         async onOk() {
-          await updateAvailable(record.id, checked);
+          await updateAvailable(urlObj.switchEnable)(record.id, checked);
           message.success(`${checked ? "启用" : "停用"}成功`);
           getAllRuleList();
         },
@@ -97,7 +100,7 @@ const WarningConfigure = defineComponent({
         title: "确认删除",
         content: `确认删除报警记录“${record.name}”？`,
         async onOk() {
-          await deleteAlarmRule(record.id);
+          await deleteAlarmRule(urlObj.deleteRule)(record.id);
           message.success("删除成功");
           getAllRuleList();
         },

@@ -68,7 +68,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
   instance.interceptors.response.use(
     (res) => {
       const resData = res.data;
-      const status = resData.code === "0" || resData.code === "M000";
+      const status = resData.code === 0 || resData.code === "M0000";
       if (status) {
         return Promise.resolve(resData);
       }

@@ -1,4 +1,4 @@
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, inject, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
 import { cloneDeep } from "lodash";
@@ -8,6 +8,7 @@ import {
   getVideo,
 } from "@/pageComponent/api/alarm/alarmRecord";
 import { getVideoBaseUrl } from "@/pageComponent/api/alarm/alarmRecord";
+import { IUrlObj } from "../warning-record";
 
 export default defineComponent({
   props: {
@@ -19,6 +20,8 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
+
     const route = useRoute();
     const router = useRouter();
     const back = () => {
@@ -31,12 +34,12 @@ export default defineComponent({
     // 获取视频
     const videoBaseUrl = ref("");
     const getVideoUrl = async () => {
-      videoBaseUrl.value = await getVideoBaseUrl();
+      videoBaseUrl.value = await getVideoBaseUrl(urlObj.videoBaseUrl)();
     };
     getVideoUrl();
     const videoList = ref<string[]>([]);
     const getAlarmVideo = async () => {
-      const { data } = await getVideo(
+      const { data } = await getVideo(urlObj.getVideo)(
         alarmDetail.value.id,
         alarmDetail.value.instanceCode
       );
@@ -126,7 +129,7 @@ export default defineComponent({
 
     // 报警类型
     const alarmTypeList = ref<any[]>([]);
-    getAlarmTypeMap().then(({ data }) => {
+    getAlarmTypeMap(urlObj.alarmTypeList)().then(({ data }) => {
       alarmTypeList.value = data;
     });
     const alarmType = computed(() => {

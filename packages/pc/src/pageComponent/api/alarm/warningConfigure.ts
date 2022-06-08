@@ -8,13 +8,8 @@ const instance = getInstance({ prefix: "/api/", serverName: "alarmlite/v1" });
  * @param obj {pageNum: 当前页, pageSize: 每页条数, name: 关键字}
  * @returns
  */
-export const getAllRule: (obj: {
-  pageNum: number;
-  pageSize: number;
-  name?: string;
-  sort?: "desc";
-}) => Promise<AxiosResponse<any>> = async (obj) => {
-  const res = await instance.post<any>("/rule/getAllRule", obj);
+export const getAllRule = (url: string) => async (obj) => {
+  const res = await instance.post<any>(url ?? "/rule/getAllRule", obj);
   return res;
 };
 
@@ -23,15 +18,15 @@ export const getAllRule: (obj: {
  * @param ruleId id
  * @returns
  */
-export const getRuleConfigureById = (ruleId: string) =>
-  instance.get(`/rule/getAlarmRule/${ruleId}`);
+export const getRuleConfigureById = (url: string) => (ruleId: string) =>
+  instance.get(`${url ?? "/rule/getAlarmRule/"}${ruleId}`);
 
 /**
  * 添加修改报警规则
  * @returns
  */
-export const insertAlarmRule = async (obj) => {
-  const res = await instance.post<boolean>("/rule/insertAlarmRule", obj);
+export const insertAlarmRule = (url: string) => async (obj) => {
+  const res = await instance.post<boolean>(url ?? "/rule/insertAlarmRule", obj);
   return res;
 };
 /**
@@ -39,12 +34,9 @@ export const insertAlarmRule = async (obj) => {
  * @param ruleId 报警规则id
  * @returns
  */
-export const updateAvailable: (
-  ruleId: number,
-  available: boolean
-) => Promise<AxiosResponse<boolean>> = async (ruleId, available) => {
+export const updateAvailable = (url: string) => async (ruleId, available) => {
   const res = await instance.get<boolean>(
-    `/rule/updateAvailable/${ruleId}?available=${available}`
+    `${url ?? "/rule/updateAvailable/"}${ruleId}?available=${available}`
   );
   return res;
 };
@@ -54,53 +46,54 @@ export const updateAvailable: (
  * @param ruleId id
  * @returns
  */
-export const deleteAlarmRule: (
-  ruleId: number
-) => Promise<AxiosResponse<boolean>> = async (ruleId) => {
-  const res = await instance.post<boolean>(`/rule/deleteAlarmRule/${ruleId}`);
+export const deleteAlarmRule = (url: string) => async (ruleId) => {
+  const res = await instance.post<boolean>(
+    `${url ?? "/rule/deleteAlarmRule/"}${ruleId}`
+  );
   return res;
 };
 
 /**
  * 批量上传报警
  */
-export const batchUploadConfigure = (file: File) => {
+export const batchUploadConfigure = (url: string) => (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
-  return instance.post("/rule/template/upload", formData);
+  return instance.post(url ?? "/rule/template/upload", formData);
 };
 
 // 获取系统列表
-export const baseAll: () => Promise<AxiosResponse<any>> = async () => {
-  const res = await instance.get<any>(
-    "/thingmodel/v1/modelSystem/base/findById/1"
-  );
+export const baseAll = (url: string) => async () => {
+  const res = await instance.get<any>(url ?? "/modelSystem/base/findById/1", {
+    baseURL: "/api/thingmodel/v1",
+  });
   return res;
 };
 
 // 获取系统下的设备列表
-export const getInstanceListBySystemId = (systemId: number) =>
-  instance.get("/thingmodel/v1/support/instance/findInstanceBySystemId", {
+export const getInstanceListBySystemId = (url: string) => (systemId: number) =>
+  instance.get(url ?? "/support/instance/findInstanceBySystemId", {
+    baseURL: "/api/thingmodel/v1",
     params: { systemId },
   });
 
 // 根据设备获取信号
-export const getPropertiesListByInstanceId = (instanceId: number) =>
-  instance.get(
-    "/thingmodel/v1/support/instanceProperties/findPropertiesByInstanceId",
-    { params: { instanceId } }
-  );
+export const getPropertiesListByInstanceId =
+  (url: string) => (instanceId: number) =>
+    instance.get(
+      url ?? "/support/instanceProperties/findPropertiesByInstanceId",
+      { baseURL: "/api/thingmodel/v1", params: { instanceId } }
+    );
 
 // 获取部门及人员树
-export const getDepPeopleTreeList = (keyword?: string) =>
-  instance.get("/department/all/tree/org/employee", {
+export const getDepPeopleTreeList = (url: string) => (keyword?: string) =>
+  instance.get(url ?? "/department/all/tree/org/employee", {
+    baseURL: "/api/comlite/v1",
     params: { keyword },
   });
 
 // 获取下拉框数据
-export const getEnum: (
-  enumName: string
-) => Promise<AxiosResponse<Array<any>>> = async (enumName) => {
-  const res = await instance.get<Array<any>>(`/enum/${enumName}`);
+export const getEnum = (url: string) => async (enumName) => {
+  const res = await instance.get<Array<any>>(`${url ?? "/enum/"}${enumName}`);
   return res;
 };

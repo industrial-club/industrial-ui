@@ -1,12 +1,11 @@
-import { defineComponent, ref, computed, watch } from "vue";
+import { defineComponent, ref, watch, inject } from "vue";
 import useWatchOnce from "@/pageComponent/hooks/useWatchOnce";
-import userVModel from "@/pageComponent/hooks/useVModel";
 import { debounce } from "lodash";
 import { fomatDepTree } from "@/pageComponent/utils/format";
 import { getDepPeopleTreeList } from "@/pageComponent/api/alarm/warningConfigure";
+import { IUrlObj } from "../views/alarms/warning-configure";
 
 import {
-  DeleteOutlined,
   UserOutlined,
   ApartmentOutlined,
   CloseOutlined,
@@ -24,12 +23,15 @@ const CheckPeople = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
     // 树结构数据
     const treeData = ref<any[]>([]);
     const keyword = ref("");
     const getTreeData = debounce(
       async () => {
-        const { data } = await getDepPeopleTreeList(keyword.value);
+        const { data } = await getDepPeopleTreeList(urlObj.depTree)(
+          keyword.value
+        );
         const res = fomatDepTree(data);
         treeData.value = res;
       },
