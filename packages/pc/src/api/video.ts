@@ -1,12 +1,12 @@
 import { getInstance } from "./axios";
 
-let instance = getInstance({ serverName: "/vms/v1" });
-
-const setInstance = (serverName: string, prefix?: string) => {
-  instance = getInstance({ serverName: serverName, prefix });
-};
+let instance = getInstance({ serverName: "vms/v1" });
 
 const api: { [key: string]: any } = {};
+
+api.setInstance = (serverName: string, prefix?: string) => {
+  instance = getInstance({ serverName: serverName, prefix });
+};
 
 api.setDirection = async ({ uuid, direction }: any) => {
   return instance.get("/control/hik/control", {

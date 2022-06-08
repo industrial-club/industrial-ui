@@ -9,7 +9,16 @@ import LogManager from "@/pageComponent/views/systemManager/logManager";
 import ParamManager from "@/pageComponent/views/systemManager/paramManager";
 import PersonalSetting from "@/pageComponent/views/systemManager/personalSetting";
 import Login from "@/pageComponent/views/login";
-// import Preview from "@/pageComponent/views/video/preview/preview";
+import Preview from "@/pageComponent/views/video/preview/preview";
+import Rotation from "@/pageComponent/views/video/rotation/rotation";
+import Linkage from "@/pageComponent/views/video/linkage/linkage";
+import Events from "@/pageComponent/views/video/event/events";
+import EventType from "@/pageComponent/views/video/event/eventType";
+import EventConfig from "@/pageComponent/views/video/event/eventConfig";
+import AlgorithmType from "@/pageComponent/views/video/event/algorithmType";
+import Photo from "@/pageComponent/views/video/sbgl/photo";
+import Group from "@/pageComponent/views/video/sbgl/group";
+import Nvr from "@/pageComponent/views/video/sbgl/nvr";
 
 export default [
   About,
@@ -23,5 +32,14 @@ export default [
   ParamManager,
   PersonalSetting,
   Login,
-  // Preview,
+  Preview,
+  Rotation,
+  Linkage,
+  Events,
+  EventType,
+  EventConfig,
+  AlgorithmType,
+  Photo,
+  Group,
+  Nvr,
 ];

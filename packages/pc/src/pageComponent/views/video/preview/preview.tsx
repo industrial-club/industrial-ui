@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons-vue";
 import videoApi from "@/api/video";
 import { WebRtcMt } from "../utils/video";
-import "@/assets/styles/video/preview.less";
+import "../assets/styles/video/preview.less";
 import socket from "../utils/webSocket";
 import { videoInfo } from "../components/videoPlayer/util/byUuid";
 import treeItem from "./components/treeItem";
@@ -25,9 +25,9 @@ import followItem from "./components/followItem";
 import alarmLinkageModal from "./components/alarmLinkageModal";
 import utils from "@/utils";
 
-const preview = defineComponent({
+const com = defineComponent({
   props: {
-    urlPrefix: {
+    serverName: {
       type: String,
       default: "",
     },
@@ -228,8 +228,8 @@ const preview = defineComponent({
     const fullScreenType = ref(false);
     const sizeDataRef: any = ref(null);
     onMounted(async () => {
-      if (props.urlPrefix) {
-        videoApi.setInstance(props.urlPrefix);
+      if (props.serverName) {
+        videoApi.setInstance(props.serverName);
       }
 
       await getVideoData();
@@ -755,4 +755,4 @@ const preview = defineComponent({
   },
 });
 
-export default utils.installComponent(preview, "video-preview");
+export default utils.installComponent(com, "video-preview");

@@ -9,10 +9,6 @@ import {
 } from "vue";
 import { useRoute } from "vue-router";
 import videoApi from "@/api/video";
-// import collectNo from "../../assets/img/operation/collectNo.png";
-// import collectYes from "../../assets/img/operation/collectYes.png";
-// import cameraYes from "../../assets/img/operation/cameraYes.png";
-// import cameraNo from "../../assets/img/operation/cameraNo.png";
 import "../../assets/styles/video/preview.less";
 
 const dataList: any[] = [];
