@@ -36,7 +36,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
     (conf) => {
       const corpId = sessionStorage.getItem("corpId");
       conf.headers.token = getToken();
-      conf.headers.userId = getUser()?.userId;
+      conf.headers.userId = getUser()?.userId || "-1";
       conf.headers.userName = getUser()?.userName;
       const { data = {} } = conf;
       if (isPlainObject(data)) {
@@ -68,7 +68,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
   instance.interceptors.response.use(
     (res) => {
       const resData = res.data;
-      const status = resData.code === "0" || resData.code === "M0000";
+      const status = resData.code === "M0000" || resData.code === "0";
       if (status) {
         return Promise.resolve(resData);
       }
