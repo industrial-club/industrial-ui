@@ -33,6 +33,7 @@ body {
 @menu-dark-item-hover-bg: transparent;
 @border-color-base: #b9c2d5;
 @shadow-2: 0px 1px 12px 0px rgba(55, 63, 77, 0.08);
+@popover-border: 1px solid #f2f3f8;
 // 按钮
 @btn-default-bg: @white;
 @text-color: #5c667d;
@@ -126,7 +127,16 @@ body {
 @icon-color-hover: @modal-close-color;
 @modal-header-border-color-split: transparent;
 @modal-footer-border-color-split: transparent;
-
+.ant-modal .ant-table {
+  background: transparent;
+  thead > tr > th {
+    background-color: #f2f3f8;
+    border-bottom: 1px solid #f2f3f8;
+  }
+  tbody > tr > td {
+    border-bottom: 1px solid #f2f3f8;
+  }
+}
 // alert
 @alert-close-color: rgba(0, 0, 0, 0.45);
 @alert-close-hover-color: @alert-close-color;

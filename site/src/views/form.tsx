@@ -11,7 +11,32 @@ import {
   AppstoreOutlined,
 } from "@ant-design/icons-vue";
 import { TreeProps } from "ant-design-vue";
-
+const menuList = [
+  {
+    name: "智能监控",
+    key: "monitor",
+  },
+  {
+    name: "报警管理",
+    key: "alarm",
+  },
+  {
+    name: "辅助系统",
+    key: "assist",
+  },
+  {
+    name: "设备管理",
+    key: "device",
+  },
+  {
+    name: "在线监测",
+    key: "online",
+  },
+  {
+    name: "系统管理",
+    key: "system",
+  },
+];
 export default defineComponent({
   setup() {
     const v = ref(false);
@@ -21,18 +46,18 @@ export default defineComponent({
     const selectedKeys = ref(["1"]);
     const name = ref("monitor");
     const dataSource = [
-      // {
-      //   key: "1",
-      //   name: "胡彦斌",
-      //   age: 32,
-      //   address: "西湖区湖底公园1号",
-      // },
-      // {
-      //   key: "2",
-      //   name: "胡彦祖",
-      //   age: 42,
-      //   address: "西湖区湖底公园1号",
-      // },
+      {
+        key: "1",
+        name: "胡彦斌",
+        age: 32,
+        address: "西湖区湖底公园1号",
+      },
+      {
+        key: "2",
+        name: "胡彦祖",
+        age: 42,
+        address: "西湖区湖底公园1号",
+      },
     ];
     const treeData = ref<TreeProps["treeData"]>([
       {
@@ -262,9 +287,19 @@ export default defineComponent({
                   visible.value = false;
                 }}
               >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                <a-table
+                  dataSource={dataSource}
+                  columns={columns}
+                  pagination={{ pageSize: 1 }}
+                >
+                  {{
+                    bodyCell: ({ column }: any) => {
+                      if (column.dataIndex === "operation") {
+                        return <a>设置</a>;
+                      }
+                    },
+                  }}
+                </a-table>
               </a-modal>
             </div>
           </a-form-item>
@@ -500,6 +535,10 @@ export default defineComponent({
           v-model={[name.value, "active"]}
           title={"数据可视化大屏标题"}
           mode="center"
+          menuList={menuList}
+          onChange={(e) => {
+            console.log(e);
+          }}
         ></inl-header-menu>
       </div>
     );
