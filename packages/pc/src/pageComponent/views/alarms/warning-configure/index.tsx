@@ -1,6 +1,7 @@
 import { defineComponent, PropType, provide, ref } from "vue";
 import ConfigureTable from "./configure-table";
 import AddWarningConfig from "@/pageComponent/views/alarms/add-warning-configure";
+import { setInstance } from "@/pageComponent/api/alarm/warningConfigure";
 import utils from "@/utils";
 
 export interface IUrlObj {
@@ -34,10 +35,13 @@ const WarningConfigure = defineComponent({
       type: Object as PropType<Partial<IUrlObj>>,
       default: () => ({}),
     },
+    prefix: String,
+    serverName: String,
   },
   setup(props) {
     const urlObj = { ...props.url };
     provide("urlObj", urlObj);
+    setInstance({ prefix: props.prefix, serverName: props.serverName });
 
     const isAddShow = ref(false);
     const detailId = ref();

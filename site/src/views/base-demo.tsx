@@ -28,10 +28,7 @@ const BaseDemo = defineComponent({
         ></inl-param-manager> */}
 
         {/* ====== 个人设置 ====== */}
-        {/* <inl-personal-setting
-          prefix="/user/"
-          serverName="abc/bcd"
-        ></inl-personal-setting> */}
+        {/* <inl-personal-setting></inl-personal-setting> */}
 
         {/* ====== 权限管理 ====== */}
         {/* 用户管理 */}
@@ -39,7 +36,7 @@ const BaseDemo = defineComponent({
         {/* 角色管理 */}
         {/* <inl-role-manager></inl-role-manager> */}
         {/* 菜单管理 */}
-        <inl-menu-manager></inl-menu-manager>
+        {/* <inl-menu-manager></inl-menu-manager> */}
 
         {/* ====== 组织管理 ====== */}
         {/* 岗位管理 */}

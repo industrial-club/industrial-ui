@@ -1,7 +1,11 @@
 import { AxiosResponse } from "axios";
 import { getInstance } from "@/api/axios";
 
-const instance = getInstance({ prefix: "/api/", serverName: "alarmlite/v1" });
+let instance = getInstance({ prefix: "/api/", serverName: "alarmlite/v1" });
+
+export function setInstance({ serverName = "alarmlite/v1", prefix = "/api/" }) {
+  instance = getInstance({ prefix, serverName });
+}
 
 /**
  * 获取报警规则列表
