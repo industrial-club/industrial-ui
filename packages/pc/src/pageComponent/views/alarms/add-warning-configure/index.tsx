@@ -1,5 +1,12 @@
-import { defineComponent, onMounted, reactive, ref, provide, watch } from "vue";
-import { useStore } from "vuex";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  provide,
+  watch,
+  inject,
+} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { message } from "ant-design-vue";
 import {
@@ -17,6 +24,7 @@ import {
 import BasicForm from "./form/basic-form";
 import RuleForm from "./form/rule-form";
 import LinkageForm from "./form/linkage-form";
+import { IUrlObj } from "../warning-configure";
 
 const AddWarningConfigure = defineComponent({
   props: {
@@ -28,6 +36,7 @@ const AddWarningConfigure = defineComponent({
     },
   },
   setup(props) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
     const router = useRouter();
     const route = useRoute();
 
@@ -35,7 +44,9 @@ const AddWarningConfigure = defineComponent({
 
     // 获取规则详情 回显表单
     const getDetail = async () => {
-      const { data } = await getRuleConfigureById(configureId.value);
+      const { data } = await getRuleConfigureById(urlObj.getDetail)(
+        configureId.value
+      );
       if (data) $store.commit("setDetail", data);
     };
 
@@ -73,7 +84,7 @@ const AddWarningConfigure = defineComponent({
      */
     const http = () => {
       for (const key in enumObj) {
-        getEnum(key).then((res) => {
+        getEnum(urlObj.getEnum)(key).then((res) => {
           enumObj[key] = res.data;
         });
       }
@@ -95,7 +106,7 @@ const AddWarningConfigure = defineComponent({
      * 获取所有系统
      */
     const getBaseAll = async () => {
-      const res = await baseAll();
+      const res = await baseAll(urlObj.baseAll)();
       baseAllList.value = [res.data];
     };
     /**
@@ -105,7 +116,7 @@ const AddWarningConfigure = defineComponent({
       () => $store.state.basicForm.systemCode,
       async (val) => {
         if (val) {
-          const res = await getInstanceListBySystemId(val);
+          const res = await getInstanceListBySystemId(urlObj.instanceList)(val);
 
           res.data = res.data.map((item: any) => {
             item.label = item.modelInstance.instanceName;
@@ -115,7 +126,9 @@ const AddWarningConfigure = defineComponent({
 
           const propertiesList = await Promise.all(
             res.data.map((item: any) => {
-              return getPropertiesListByInstanceId(item.id);
+              return getPropertiesListByInstanceId(urlObj.propertiesList)(
+                item.id
+              );
             })
           );
           propertiesList.forEach((item, index) => {
@@ -149,7 +162,7 @@ const AddWarningConfigure = defineComponent({
           })),
         id: configureId.value ?? null,
       };
-      const res = await insertAlarmRule(obj);
+      const res = await insertAlarmRule(urlObj.updateRule)(obj);
       if (res.data) {
         message.success("添加成功");
         props.onClose?.();

@@ -1,10 +1,11 @@
 import { defineComponent, ref, watch } from "vue";
-import { Menu } from "ant-design-vue";
+import { Menu, Switch } from "ant-design-vue";
 
 const item = Menu.Item;
 const SubMenu = Menu.SubMenu;
 export default defineComponent({
   setup() {
+    const checked = ref(false);
     return () => (
       <div>
         <inl-change-theme-select />
@@ -21,6 +22,7 @@ export default defineComponent({
             <item>sub-item1</item>
           </SubMenu>
         </Menu>
+        <Switch v-model={[checked.value, "checked"]}></Switch>
       </div>
     );
   },

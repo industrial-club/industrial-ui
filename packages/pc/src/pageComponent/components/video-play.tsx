@@ -1,5 +1,6 @@
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref, inject } from "vue";
 import { getVideoBaseUrl } from "@/pageComponent/api/alarm/alarmRecord";
+import { IUrlObj } from "../views/alarms/warning-record";
 
 import { LeftOutlined, RightOutlined } from "@ant-design/icons-vue";
 
@@ -22,11 +23,12 @@ const VideoPlay = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
     const CarouselRef = ref();
 
     const baseUrl = ref("");
     const getBaseUrl = async () => {
-      const ip = await getVideoBaseUrl();
+      const ip = await getVideoBaseUrl(urlObj.videoBaseUrl)();
       baseUrl.value = ip;
     };
     getBaseUrl();
