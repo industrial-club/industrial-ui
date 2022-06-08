@@ -4,6 +4,7 @@ import menuDemo from "./menu";
 import formDemo from "./form";
 import videoDemo from "./video";
 import baseDemo from "./base-demo";
+import alarmDemo from "./alarm-demo";
 
 export default defineComponent({
   setup() {
@@ -23,5 +24,6 @@ export default defineComponent({
     formDemo,
     videoDemo,
     baseDemo,
+    alarmDemo,
   },
 });

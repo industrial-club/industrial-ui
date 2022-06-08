@@ -1,10 +1,11 @@
 import vueJsx from "@vitejs/plugin-vue-jsx";
 // import viteThemeAnt from "../scripts/vite-less-ant-theme";
+import { defineConfig } from "vite";
 /**
  * @type {import('vite').UserConfig}
  */
 
-export default {
+export default defineConfig({
   resolve: {
     alias: {
       vue: "vue/dist/vue.esm-bundler.js",
@@ -14,6 +15,11 @@ export default {
   },
   server: {
     host: true,
+    proxy: {
+      "/api/": {
+        target: "http://192.168.5.234",
+      },
+    },
   },
   plugins: [
     vueJsx({
@@ -51,4 +57,4 @@ export default {
       },
     },
   },
-};
+});

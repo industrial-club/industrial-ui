@@ -94,6 +94,10 @@ const UserManager = defineComponent({
   },
   setup(props) {
     setInstance({ prefix: props.prefix, serverName: props.serverName });
+    provide("urlPrefix", {
+      prefix: props.prefix,
+      serverName: props.serverName,
+    });
 
     const urlMap = { ...props.url };
     provide("urlMap", urlMap);

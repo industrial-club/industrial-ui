@@ -164,7 +164,7 @@ const UpdateUserDialog = defineComponent({
                 <a-form-item
                   name="employeeName"
                   label="员工姓名"
-                  help="中英文均可，最长14个英文或者7个汉字"
+                  help={!isView.value && "中英文均可，最长14个英文或者7个汉字"}
                 >
                   {isView.value ? (
                     <a-button type="link" onClick={handleProfileClick}>

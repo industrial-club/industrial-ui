@@ -16,8 +16,8 @@ const api = {
   /**
    *查询日志标题
    */
-  getHead: (url?: string) => (params: any) => {
-    return instance.get(url ?? "/log/head", { params });
+  getHead: (url?: string) => () => {
+    return instance.get(url ?? "/log/head");
   },
 };
 

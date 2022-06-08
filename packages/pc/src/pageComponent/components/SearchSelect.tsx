@@ -6,9 +6,9 @@
  * @LastEditTime: 2022-04-24 13:58:53
  */
 
-import { PropType, defineComponent, ref, watch } from "vue";
+import { PropType, defineComponent, ref, watch, inject } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
-import { instance } from "@/pageComponent/api";
+import { getInstance } from "@/api/axios";
 import { isNil, debounce, isEqual } from "lodash";
 import { every } from "@/pageComponent/utils/is";
 
@@ -40,6 +40,11 @@ const SearchSelect = defineComponent({
     },
   },
   setup(props, { emit, attrs }) {
+    const urlPrefix: any = inject("urlPrefix")!;
+    const instance = getInstance({
+      prefix: urlPrefix.prefix,
+      serverName: urlPrefix.serverName ?? "comlite/v1",
+    });
     const modelValue = useVModel(props, "value", emit);
 
     /* 列表 */
