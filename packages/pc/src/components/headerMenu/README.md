@@ -53,12 +53,12 @@ export default defineComponent({
 
 ## 参数
 
-| 参数名称        | 类型   | 默认值 | 作用                                 |
-| --------------- | ------ | ------ | ------------------------------------ |
-| active(v-model) | String |        | 当前选中的菜单项 key                 |
-| title           | String |        | 标题名称                             |
-| mode            | String | center | 菜单类型，现在支持居中、左右模式两种 |
-| menuList        | Array  |        | 菜单数组                             |
+| 参数名称        | 类型         | 默认值 | 作用                                 |
+| --------------- | ------------ | ------ | ------------------------------------ |
+| active(v-model) | String       |        | 当前选中的菜单项 key                 |
+| title           | String       |        | 标题名称                             |
+| mode            | center\|left | center | 菜单类型，现在支持居中、左右模式两种 |
+| menuList        | Array        |        | 菜单数组                             |
 
 ## 方法
 
