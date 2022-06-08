@@ -1,8 +1,4 @@
-export default (theme: string) => {
-  const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-  theme = theme || window.localStorage.getItem("theme")! || systemTheme;
+const setTheme = (theme: string) => {
   if (theme === "dark") {
     document
       .getElementsByTagName("html")[0]
@@ -18,4 +14,19 @@ export default (theme: string) => {
       .setAttribute("data-theme", "light");
     document.getElementsByTagName("html")[0].style.colorScheme = "light";
   }
+};
+
+export default {
+  set(theme: string) {
+    window.localStorage.setItem("theme", theme);
+    setTheme(theme);
+  },
+  settingTheme(theme?: string) {
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+      .matches
+      ? "dark"
+      : "light";
+    theme = theme || window.localStorage.getItem("theme")! || systemTheme;
+    setTheme(theme);
+  },
 };
