@@ -1,5 +1,6 @@
 import { defineComponent, ref, watch } from "vue";
 import utils from "@/utils";
+import "./index.less";
 
 const changeThemeBtn = defineComponent({
   setup(prop, context) {
@@ -35,9 +36,18 @@ const changeThemeBtn = defineComponent({
         ref="select"
         v-models={[[theme.value, "value"]]}
         style="width: 120px"
+        class="theme-select"
+        mode="combobox"
+        vSlots={{
+          tagRender: () => <div class={["color", theme.value]}></div>,
+        }}
       >
-        <a-select-option value="default">默认主题</a-select-option>
-        <a-select-option value="dark">黑色主题</a-select-option>
+        <a-select-option value="default">
+          <div class={"color"}></div>浅蓝色
+        </a-select-option>
+        <a-select-option value="dark">
+          <div class={"color dark"}></div>深蓝色
+        </a-select-option>
       </a-select>
     );
   },
