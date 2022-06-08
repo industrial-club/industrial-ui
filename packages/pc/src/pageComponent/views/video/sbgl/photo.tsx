@@ -171,7 +171,7 @@ const com = defineComponent({
       releaseUrl = video.webrtcTemplateMergedDel;
       releaseUrl = releaseUrl.replaceAll("${channel}", channel);
       releaseUrl = releaseUrl.replaceAll("${streamType}", streamType);
-      let newmediaServerPo = null;
+      let newmediaServerPo: any = null;
       if (video.mediaServerPo.$ref) {
         // newmediaServerPo = eval(
         //   video.mediaServerPo.$ref.replaceAll('$.data.list', ''),
