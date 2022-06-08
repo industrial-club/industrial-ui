@@ -63,27 +63,27 @@ const com = defineComponent({
     const imgList = reactive([
       {
         id: 1,
-        img: "http://192.168.5.211/micro-assets/inl/video/number/num1.png",
+        img: "/micro-assets/inl/video/number/num1.png",
       },
       {
         id: 4,
-        img: "http://192.168.5.211/micro-assets/inl/video/number/num4.png",
+        img: "/micro-assets/inl/video/number/num4.png",
       },
       {
         id: 8,
-        img: "http://192.168.5.211/micro-assets/inl/video/number/num8.png",
+        img: "/micro-assets/inl/video/number/num8.png",
       },
       {
         id: 9,
-        img: "http://192.168.5.211/micro-assets/inl/video/number/num9.png",
+        img: "/micro-assets/inl/video/number/num9.png",
       },
       {
         id: 13,
-        img: "http://192.168.5.211/micro-assets/inl/video/number/num13.png",
+        img: "/micro-assets/inl/video/number/num13.png",
       },
       {
         id: 16,
-        img: "http://192.168.5.211/micro-assets/inl/video/number/num16.png",
+        img: "/micro-assets/inl/video/number/num16.png",
       },
     ]);
     const treeItemRef = ref();
@@ -659,11 +659,7 @@ const com = defineComponent({
                             </div>
                           }
                         >
-                          <img
-                            src={
-                              "http://192.168.5.211/micro-assets/inl/video/stream.png"
-                            }
-                          />
+                          <img src={"/micro-assets/inl/video/stream.png"} />
                         </a-popover>
                         <a-popover
                           title="控制器"
@@ -690,28 +686,20 @@ const com = defineComponent({
                             </div>
                           }
                         >
-                          <img
-                            src={
-                              "http://192.168.5.211/micro-assets/inl/video/control.png"
-                            }
-                          />
+                          <img src={"/micro-assets/inl/video/control.png"} />
                         </a-popover>
 
                         {rectData?.data?.onlineStatus === "ONLINE" ? (
                           <img
                             onClick={(e: any) => videoFull(e, item.id)}
-                            src={
-                              "http://192.168.5.211/micro-assets/inl/video/putUp.png"
-                            }
+                            src={"/micro-assets/inl/video/putUp.png"}
                           />
                         ) : (
                           ""
                         )}
                         <img
                           onClick={(e: any) => closeVideo(e, index)}
-                          src={
-                            "http://192.168.5.211/micro-assets/inl/video/close.png"
-                          }
+                          src={"/micro-assets/inl/video/close.png"}
                         />
                       </div>
                     </div>

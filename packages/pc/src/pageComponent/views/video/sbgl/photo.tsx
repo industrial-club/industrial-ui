@@ -187,7 +187,7 @@ const com = defineComponent({
           videoElm: "video0",
           mediaServerAddr: !video.mediaServerPo.$ref
             ? video.mediaServerPo.url
-            : newmediaServerPo.url,
+            : newmediaServerPo?.url,
           cameraUserName: video.user,
           cameraPwd: video.pass,
           cameraIp: video.ip,

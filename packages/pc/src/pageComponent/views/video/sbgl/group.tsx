@@ -368,9 +368,7 @@ const com = defineComponent({
                       <img
                         onClick={() => modifyName()}
                         v-show={item.nodeType === "G"}
-                        src={
-                          "http://192.168.5.211/micro-assets/inl/video/operation/edit.png"
-                        }
+                        src={"/micro-assets/inl/video/operation/edit.png"}
                         alt="编辑"
                       />
                       <a-popconfirm
@@ -380,9 +378,7 @@ const com = defineComponent({
                         title="确定删除？"
                       >
                         <img
-                          src={
-                            "http://192.168.5.211/micro-assets/inl/video/operation/dele.png"
-                          }
+                          src={"/micro-assets/inl/video/operation/dele.png"}
                           alt="删除"
                         />
                       </a-popconfirm>
@@ -390,9 +386,7 @@ const com = defineComponent({
                       <img
                         onClick={() => addName("item")}
                         v-show={item.nodeType === "G"}
-                        src={
-                          "http://192.168.5.211/micro-assets/inl/video/operation/add.png"
-                        }
+                        src={"/micro-assets/inl/video/operation/add.png"}
                         alt="添加"
                       />
                     </div>
