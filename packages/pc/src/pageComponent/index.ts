@@ -19,6 +19,8 @@ import AlgorithmType from "@/pageComponent/views/video/event/algorithmType";
 import Photo from "@/pageComponent/views/video/sbgl/photo";
 import Group from "@/pageComponent/views/video/sbgl/group";
 import Nvr from "@/pageComponent/views/video/sbgl/nvr";
+import AlarmRecord from "@/pageComponent/views/alarms/warning-record";
+import AlarmConfigure from "@/pageComponent/views/alarms/warning-configure";
 
 export default [
   About,
@@ -42,4 +44,6 @@ export default [
   Photo,
   Group,
   Nvr,
+  AlarmRecord,
+  AlarmConfigure,
 ];

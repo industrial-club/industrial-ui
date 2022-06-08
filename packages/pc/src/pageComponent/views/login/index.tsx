@@ -71,19 +71,19 @@ const Login = defineComponent({
      * 登录动作
      */
 
-    // 弹出图形验证码
-    const Verifymode = () => {};
-
-    //
-
     const handleSubmit = async (e: EventBySubmitParams) => {
-      const { data } = await instance.post("auth/login", {
-        userName: e.username,
-        passWord: encodeStr(e.password),
-      });
-      if (!data) {
-        message.error("用户名或密码错误，请重试");
-      } else {
+      let res;
+      try {
+        res = await instance.post("auth/login", {
+          userName: e.username,
+          passWord: encodeStr(e.password),
+        });
+      } catch (error) {
+        const msg = (error as any).msg || "服务端错误，请联系管理员.";
+        new Error(msg);
+      }
+      const { data } = res;
+      if (data) {
         // 保存登录信息
         const { sysUser, token } = data;
         sessionStorage.setItem("token", token);

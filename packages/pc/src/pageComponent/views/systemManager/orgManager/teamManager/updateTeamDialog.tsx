@@ -200,7 +200,7 @@ const UpdatePostDialog = defineComponent({
                     ) : (
                       <SearchSelect
                         {...{ mode: "multiple" }}
-                        getUrl={urlMap.empList}
+                        getUrl={urlMap.empList ?? "/employee/all/summary"}
                         extParams={{ departmentId: form.value.depId }}
                         excludeValues={[form.value.leaderId]}
                         v-model={[form.value.memberIds, "value"]}

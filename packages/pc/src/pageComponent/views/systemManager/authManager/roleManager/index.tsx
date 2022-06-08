@@ -52,6 +52,7 @@ const columns = [
     title: "操作",
     key: "operaton",
     slots: { customRender: "operation" },
+    width: 200,
   },
 ];
 

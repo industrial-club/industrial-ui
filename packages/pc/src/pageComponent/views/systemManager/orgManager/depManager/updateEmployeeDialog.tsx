@@ -262,7 +262,7 @@ const UpdateEmployeeDialog = defineComponent({
                         ) : (
                           <SearchSelect
                             {...{ allowClear: true }}
-                            getUrl={urlMap.empSelect}
+                            getUrl={urlMap.empSelect ?? "/employee/all/summary"}
                             extParams={{
                               departmentId: props.record?.depId ?? props.depId,
                               ruleType: 0,
@@ -284,7 +284,7 @@ const UpdateEmployeeDialog = defineComponent({
                         ) : (
                           <SearchSelect
                             {...{ mode: "multiple" }}
-                            getUrl={urlMap.postSelect}
+                            getUrl={urlMap.postSelect ?? "/jobPost/all/summary"}
                             extParams={{
                               depId: props.record?.depId ?? props.depId,
                             }}
