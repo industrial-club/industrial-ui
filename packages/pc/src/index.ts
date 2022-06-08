@@ -3,7 +3,7 @@ import "./styles/index.less";
 import { version } from "../package.json";
 import components from "./components";
 import pageComponents from "@/pageComponent";
-import changeTheme from "@/utils/changeTheme";
+import theme from "@/utils/changeTheme";
 
 const comps = [...pageComponents, ...components];
 export default {
@@ -13,7 +13,7 @@ export default {
     }
   },
   utils: {
-    changeTheme,
+    theme,
   },
   version,
 };
