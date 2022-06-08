@@ -9,6 +9,7 @@ import babel from "@rollup/plugin-babel";
 const extensions = [".ts", ".js", ".tsx", ".json", ".ttf", ".woff", ".woff2"];
 const globals = {
   vue: "Vue",
+  vuex: "vuex",
 };
 
 export default defineConfig({
@@ -32,5 +33,5 @@ export default defineConfig({
     }),
   ],
   acornInjectPlugins: [jsx()],
-  external: ["vue"],
+  external: ["vue", "vuex"],
 });

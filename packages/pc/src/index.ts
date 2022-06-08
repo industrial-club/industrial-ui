@@ -3,6 +3,7 @@ import "./styles/index.less";
 import { version } from "../package.json";
 import components from "./components";
 import pageComponents from "@/pageComponent";
+import theme from "@/utils/changeTheme";
 
 const comps = [...pageComponents, ...components];
 export default {
@@ -10,6 +11,9 @@ export default {
     for (let i of comps) {
       app.use(i);
     }
+  },
+  utils: {
+    theme,
   },
   version,
 };

@@ -4,13 +4,10 @@ import { getByUuid, videoInfo } from "./util/byUuid";
 import { WebRtcMt } from "./util/video";
 
 const props = {
-  // 视频信息
+  // 视频信息|视频源uuid
   camera: {
-    type: Object as PropType<videoInfo>,
+    type: [Object, String] as PropType<videoInfo | String>,
   },
-
-  // 视频uuid
-  cameraUuid: String,
 };
 
 const timer = new Date().getTime();
@@ -43,29 +40,17 @@ const VideoPlayer = defineComponent({
       });
     };
 
-    // 播放 uuid 变化, 获取播放信息, 初始化视频
-    watch(
-      () => _prop.cameraUuid,
-      async (e) => {
-        if (e) {
-          const res = await getByUuid(e);
-          if (res.data) {
-            init(res.data);
-          }
-        }
-      },
-      {
-        immediate: true,
-      }
-    );
-
     // 播放信息变化初始化视频
     watch(
       () => _prop.camera,
-      (e) => {
-        if (e) {
-          stopPlay();
-          init(e);
+      async (e) => {
+        if (e && typeof e === "object") {
+          init(e as videoInfo);
+        } else if (e && typeof e === "string") {
+          const res = await getByUuid(e as string);
+          if (res.data) {
+            init(res.data);
+          }
         }
       },
       {

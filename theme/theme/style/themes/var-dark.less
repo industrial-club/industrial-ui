@@ -1,5 +1,6 @@
-body, #app {
-    background-color: #132041;
+body,
+#app {
+  background-color: #132041;
 }
 
 @theme: dark;
@@ -35,10 +36,11 @@ body, #app {
 @shadow-2: 0px 1px 12px 0px rgba(55, 63, 77, 0.08);
 // 按钮
 @btn-default-bg: @white;
-@text-color: rgba(53, 64, 82, 1);
+@text-color: #5c667d;
 @btn-font-weight: 400;
 @btn-primary-shadow: none;
 @btn-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+@btn-text-hover-bg: rgba(31, 35, 41, 0.05);
 
 // form
 @label-color: #354052;
@@ -47,30 +49,30 @@ body, #app {
 
 @select-item-active-bg: #f2f3f8;
 @select-dropdown-bg: @white;
-@select-item-selected-bg: rgba (242, 243, 248, 1);
+@select-item-selected-bg: rgba(242, 243, 248, 1);
 @calendar-item-active-bg: rgba(242, 243, 248, 1);
 @calendar-bg: @white;
 
 .ant-picker-clear {
-    color: @primary-color;
-    background-color: none;
+  color: @primary-color;
+  background-color: none;
 }
 
 .ant-picker-suffix {
-    color: @primary-color;
+  color: @primary-color;
 }
 
 .ant-select-arrow {
-    color: @primary-color;
+  color: @primary-color;
 }
 
 // @input-bg: red;
 .ant-switch {
-    background-color: #a4aabf;
+  background-color: #a4aabf;
 }
 
 .ant-switch-checked {
-    background-color: @primary-color;
+  background-color: @primary-color;
 }
 
 // table
@@ -96,9 +98,9 @@ body, #app {
 // 选中
 .ant-pagination-item-active,
 .ant-pagination-item-active:hover {
-    a {
-        color: @white;
-    }
+  a {
+    color: @white;
+  }
 }
 
 // Avatar
@@ -106,8 +108,8 @@ body, #app {
 
 // 图标头像
 .ant-avatar.ant-avatar-icon {
-    background-color: #eff2f6;
-    color: #959cb9;
+  background-color: #eff2f6;
+  color: #959cb9;
 }
 
 // Tag
@@ -130,6 +132,29 @@ body, #app {
 @icon-color-hover: @modal-close-color;
 @modal-header-border-color-split: transparent;
 @modal-footer-border-color-split: transparent;
+.ant-modal .ant-table {
+  background: transparent;
+  thead > tr > th {
+    background-color: #f2f3f8;
+    border-bottom: 1px solid #f2f3f8;
+  }
+  tbody > tr > td {
+    border-bottom: 1px solid #f2f3f8;
+  }
+}
+
+.ant-modal .ant-table {
+  background: transparent;
+
+  thead > tr > th {
+    background-color: #f2f3f8;
+    border-bottom: 1px solid #f2f3f8;
+  }
+
+  tbody > tr > td {
+    border-bottom: 1px solid #f2f3f8;
+  }
+}
 
 // alert
 @alert-close-color: rgba(0, 0, 0, 0.45);
@@ -149,42 +174,38 @@ body, #app {
 
 // 成功
 .ant-alert-success {
-
-    .ant-alert-message,
-    .ant-alert-description,
-    .ant-alert-close-text {
-        color: @green;
-    }
+  .ant-alert-message,
+  .ant-alert-description,
+  .ant-alert-close-text {
+    color: @green;
+  }
 }
 
 // 提示
 .ant-alert-info {
-
-    .ant-alert-message,
-    .ant-alert-description,
-    .ant-alert-close-text {
-        color: @primary-color;
-    }
+  .ant-alert-message,
+  .ant-alert-description,
+  .ant-alert-close-text {
+    color: @primary-color;
+  }
 }
 
 // 警告
 .ant-alert-warning {
-
-    .ant-alert-message,
-    .ant-alert-description,
-    .ant-alert-close-text {
-        color: @orange;
-    }
+  .ant-alert-message,
+  .ant-alert-description,
+  .ant-alert-close-text {
+    color: @orange;
+  }
 }
 
 // 错误
 .ant-alert-error {
-
-    .ant-alert-message,
-    .ant-alert-description,
-    .ant-alert-close-text {
-        color: @red;
-    }
+  .ant-alert-message,
+  .ant-alert-description,
+  .ant-alert-close-text {
+    color: @red;
+  }
 }
 
 // breadcrumb
@@ -215,35 +236,35 @@ body, #app {
 
 //
 .ant-menu-inline .ant-menu-item::after {
-    left: 0;
-    right: initial;
+  left: 0;
+  right: initial;
 }
 
-.ant-menu.ant-menu-root>li>.ant-menu-title-content {
-    font-weight: 400;
+.ant-menu.ant-menu-root > li > .ant-menu-title-content {
+  font-weight: 400;
 }
 
 .ant-menu-dark.ant-menu-inline .ant-menu-item-selected::after {
-    border-right: 3px solid #3e7eff;
+  border-right: 3px solid #3e7eff;
 }
 
 .ant-menu.ant-menu-inline .ant-menu-item-selected::after {
-    border-right: 3px solid #3e7eff;
+  border-right: 3px solid #3e7eff;
 }
 
 // empty
 .ant-empty-img-simple {
-    &-ellipse {
-        fill: #f5f5f5;
-        fill-opacity: 1;
-    }
+  &-ellipse {
+    fill: #f5f5f5;
+    fill-opacity: 1;
+  }
 
-    &-path {
-        fill: #fafafa;
-        stroke: #d9d9d9;
-    }
+  &-path {
+    fill: #fafafa;
+    stroke: #d9d9d9;
+  }
 
-    &-g {
-        stroke: #d9d9d9;
-    }
+  &-g {
+    stroke: #d9d9d9;
+  }
 }
