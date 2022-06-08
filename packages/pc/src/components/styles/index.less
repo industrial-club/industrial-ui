@@ -1,5 +1,4 @@
-@headermenu-prefix-cls:~ 'inl-header-menu';
-.@{headerMenu-prefix-cls} {
+.inl-header-menu {
   width: 100%;
   background-color: #132041;
 
@@ -89,7 +88,7 @@
       background: url(/micro-assets/device/menuLeft.png) no-repeat;
       background-size: contain;
       background-position: 0 100%;
-      .@{headerMenu-prefix-cls}-item {
+      .inl-header-menu-item {
         clip-path: polygon(0% 0%, 80% 0%, 100% 100%, 20% 100%);
       }
     }
@@ -102,13 +101,13 @@
       background: url(/micro-assets/device/menuRight.png) no-repeat;
       background-size: contain;
       background-position: 0 100%;
-      .@{headerMenu-prefix-cls}-item {
+      .inl-header-menu-item {
         clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
       }
     }
   }
   &-left {
-    .@{headerMenu-prefix-cls}-content-right {
+    .inl-header-menu-content-right {
       background: none;
       justify-content: flex-end;
     }
