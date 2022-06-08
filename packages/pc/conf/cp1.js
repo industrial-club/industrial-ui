@@ -63,15 +63,23 @@ var copyFolder = function (srcDir, tarDir, cb) {
     files.length === 0 && cb && cb();
   });
 };
-
-copyFolder(
-  getPath("../../../theme/theme"),
-  getPath("../dist/theme"),
-  function (err) {
+const createDir = () => {
+  const path = getPath("../dist/theme");
+  fs.stat(path, async (err, res) => {
     if (err) {
-      return;
+      await fs.mkdirSync(path);
     }
+    copyFolder(
+      getPath("../../../theme/theme"),
+      getPath("../dist/theme"),
+      function (err) {
+        if (err) {
+          return;
+        }
 
-    //continue
-  }
-);
+        //continue
+      }
+    );
+  });
+};
+createDir();

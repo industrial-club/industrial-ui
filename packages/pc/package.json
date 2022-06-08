@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev rollup -c conf/rollup.config.ts  -w",
-    "build": "rollup -c conf/rollup.config.ts",
+    "build": "rollup -c conf/rollup.config.ts && node conf/cp1.js",
     "cp:theme": "node conf/cp1.js",
     "bb": "rollup -c conf/rollup.config.ts && "
   },

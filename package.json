@@ -13,7 +13,7 @@
     "build:docs": "yarn workspace inl-docs run docs:build",
     "dev:app": "yarn workspace inl-app-ui run dev",
     "dev:pc": "yarn workspace inl-ui run dev",
-    "build:pc": "yarn workspace inl-ui run build & build:pcTheme",
+    "build:pc": "yarn workspace inl-ui run build",
     "build:pcTheme": "yarn workspace inl-ui run cp:theme",
     "dev:util": "yarn workspace inl-util run dev",
     "build:util": "yarn workspace inl-util run build",
