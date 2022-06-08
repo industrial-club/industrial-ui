@@ -1,0 +1,80 @@
+@list: a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p;
+
+.linkage {
+  margin: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  .search {
+    .form {
+      width: 100%;
+    }
+  }
+  .operation {
+    margin: 16px 0;
+  }
+}
+
+.update-mode-modal {
+  .ant-form-inline .ant-form-item-with-help {
+    margin-bottom: 0;
+  }
+  .ant-form-inline .ant-form-item {
+    margin-bottom: 24px;
+    .ant-form-item-explain {
+      position: absolute;
+    }
+  }
+  .layout {
+    display: grid;
+    height: 400px;
+    .layout-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f0f0f0;
+      list-style: none;
+      border: 1px solid #ccc;
+    }
+    each(@list, {
+      .layout-item:nth-of-type(@{index}) {
+        grid-area: @value;
+      }
+    });
+    &.layout1 {
+      grid-template-areas: 'a';
+    }
+    &.layout4 {
+      grid-template-areas:
+        'a b'
+        'c d';
+    }
+    &.layout8 {
+      grid-template-areas:
+        'a a a b'
+        'a a a c'
+        'a a a d'
+        'e f g h';
+    }
+    &.layout9 {
+      grid-template-areas:
+        'a b c'
+        'd e f'
+        'g h i';
+    }
+    &.layout13 {
+      grid-template-areas:
+        'a a b c'
+        'a a d e'
+        'f g h i'
+        'j k l m';
+    }
+    &.layout16 {
+      grid-template-areas:
+        'a b c d'
+        'e f g h'
+        'i j k l'
+        'm n o p';
+    }
+  }
+}

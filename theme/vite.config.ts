@@ -3,11 +3,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 const additionalData = require("./theme").default;
 
 export default {
-  resolve: {
-    alias: {
-      vue: "vue/dist/vue.esm-bundler.js",
-    },
-  },
+  resolve: {},
   server: {
     host: true,
   },

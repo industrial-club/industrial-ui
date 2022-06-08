@@ -1,0 +1,85 @@
+.replay {
+  display: flex;
+  flex-direction: row;
+  .left {
+    width: 200px;
+    background-color: #ffffff;
+    padding: 16px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #354052;
+      margin-bottom: 16px;
+    }
+    .ant-select {
+      margin-bottom: 16px;
+    }
+  }
+  .right {
+    flex: 1;
+    padding: 8px 20px;
+    box-sizing: border-box;
+    .range {
+      display: flex;
+      flex-direction: row;
+      >div {
+        margin-right: 36px;
+        .label {
+          margin-right: 10px;
+        }
+      }
+      .rangeTime {
+        width: 120px;
+        height: 32px;
+        background: #FFFFFF;
+        border-radius: 2px;
+        border: 1px solid #C9CFD8;
+        display: flex;
+        flex-direction: row;
+        .value {
+          flex: 1;
+        }
+        .op {
+          display: flex;
+          flex-direction: column;
+          font-size: 12px;
+          align-items: center;
+          justify-content: center;
+          border-left: 1px solid #C9CFD8;
+          overflow: hidden;
+          span {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 400;
+            color: #8F959E;
+            cursor: pointer;
+            &.up {
+              border-bottom: 1px solid #C9CFD8;
+            }
+          }
+        }
+      }
+    }
+    .ant-btn-primary {
+      margin-right: 16px;
+    }
+
+  }
+}
+
+.timePicker-extra {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  span.today {
+    font-weight: 400;
+    color: #3E7EFF;
+    margin-right: 20px;
+  }
+}
