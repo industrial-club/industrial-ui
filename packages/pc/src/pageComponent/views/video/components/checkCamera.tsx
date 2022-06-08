@@ -1,5 +1,5 @@
 import { defineComponent, PropType, ref } from "vue";
-// import useVModel from "@/pageComponent/views/video/hooks/userVModel";
+import useVModel from "@/pageComponent/hooks/useVModel";
 import videoApi from "@/api/video";
 
 import { SearchOutlined } from "@ant-design/icons-vue";

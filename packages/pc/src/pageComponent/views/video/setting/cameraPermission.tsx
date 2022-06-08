@@ -1,7 +1,7 @@
-import { defineComponent, ref } from 'vue';
-import setApi from '@/api/setting';
-
-import CheckCamera from '@/components/checkCamera';
+import { defineComponent, ref } from "vue";
+import setApi from "@/api/setting";
+import CheckCamera from "../components/checkCamera";
+import utils from "@/utils";
 
 /**
  * 相机权限管理
@@ -9,20 +9,26 @@ import CheckCamera from '@/components/checkCamera';
 
 const columns = [
   {
-    title: '角色名称',
-    dataIndex: 'roleName',
+    title: "角色名称",
+    dataIndex: "roleName",
   },
   {
-    title: '视频权限',
-    key: 'permission',
+    title: "视频权限",
+    key: "permission",
   },
   {
-    title: '操作',
-    key: 'action',
+    title: "操作",
+    key: "action",
   },
 ];
 
-const CameraPermission = defineComponent({
+const com = defineComponent({
+  props: {
+    serverName: {
+      type: String,
+      default: "",
+    },
+  },
   setup() {
     // 角色列表
     const roleList = ref([]);
@@ -43,7 +49,7 @@ const CameraPermission = defineComponent({
       const { data } = await setApi.getRolePermission(record.roleId);
       if (Array.isArray(data[record.roleId])) {
         currConfigList.value = data[record.roleId].map(
-          (item: any) => item.cameraUuid,
+          (item: any) => item.cameraUuid
         );
       } else {
         currConfigList.value = [];
@@ -55,7 +61,7 @@ const CameraPermission = defineComponent({
     const handleCommit = async () => {
       await setApi.setRolePermission(
         currConfigRoleId.value,
-        currConfigList.value,
+        currConfigList.value
       );
       isConfigShow.value = false;
       getRoleList();
@@ -72,7 +78,7 @@ const CameraPermission = defineComponent({
   },
   render() {
     return (
-      <div class='camera-permission'>
+      <div class="camera-permission">
         <a-table
           columns={columns}
           dataSource={this.roleList}
@@ -80,19 +86,19 @@ const CameraPermission = defineComponent({
           pagination={false}
           v-slots={{
             bodyCell: ({ column, record }: any) => {
-              let resDom: any = '';
-              if (column.key === 'action') {
+              let resDom: any = "";
+              if (column.key === "action") {
                 resDom = (
                   <a onClick={() => this.handleShowConfig(record)}>
                     相机权限配置
                   </a>
                 );
               }
-              if (column.key === 'permission') {
+              if (column.key === "permission") {
                 resDom = (
                   <span>
                     已配置【
-                    <span style={{ color: '#3e7eff' }}>{record.cameraNum}</span>
+                    <span style={{ color: "#3e7eff" }}>{record.cameraNum}</span>
                     】台相机
                   </span>
                 );
@@ -103,8 +109,8 @@ const CameraPermission = defineComponent({
         ></a-table>
         <CheckCamera
           v-models={[
-            [this.currConfigList, 'checkedKeys'],
-            [this.isConfigShow, 'visible'],
+            [this.currConfigList, "checkedKeys"],
+            [this.isConfigShow, "visible"],
           ]}
           onOk={this.handleCommit}
           // v-model={[this.isConfigShow, 'visible']}
@@ -114,4 +120,4 @@ const CameraPermission = defineComponent({
   },
 });
 
-export default CameraPermission;
+export default utils.installComponent(com, "video-permission");

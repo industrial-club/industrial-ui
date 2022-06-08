@@ -395,37 +395,19 @@ const com = defineComponent({
                 data.dialog = true;
               }}
             >
-              <img
-                src={
-                  "http://192.168.5.211/micro-assets/inl/video/video/add.svg"
-                }
-              />
+              <img src={"/micro-assets/inl/video/video/add.svg"} />
             </span>
             <span onClick={() => editGroup()}>
-              <img
-                src={
-                  "http://192.168.5.211/micro-assets/inl/video/video/edit.svg"
-                }
-              />
+              <img src={"/micro-assets/inl/video/video/edit.svg"} />
             </span>
             <span onClick={() => deleteEvery()}>
-              <img
-                src={
-                  "http://192.168.5.211/micro-assets/inl/video/video/delete.svg"
-                }
-              />
+              <img src={"/micro-assets/inl/video/video/delete.svg"} />
             </span>
             <span onClick={() => groupSort(0)}>
-              <img
-                src={"http://192.168.5.211/micro-assets/inl/video/video/up.svg"}
-              />
+              <img src={"/micro-assets/inl/video/video/up.svg"} />
             </span>
             <span onClick={() => groupSort(1)}>
-              <img
-                src={
-                  "http://192.168.5.211/micro-assets/inl/video/video/down.svg"
-                }
-              />
+              <img src={"/micro-assets/inl/video/video/down.svg"} />
             </span>
           </div>
           <div class="teams">

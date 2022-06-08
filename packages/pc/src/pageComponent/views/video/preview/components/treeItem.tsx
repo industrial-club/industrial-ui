@@ -275,8 +275,8 @@ export default defineComponent({
                         v-show={item.nodeType === "C"}
                         src={
                           item.onlineStatus === "ONLINE"
-                            ? "http://192.168.5.211/micro-assets/inl/video/operation/cameraYes.png"
-                            : "http://192.168.5.211/micro-assets/inl/video/operation/cameraNo.png"
+                            ? "/micro-assets/inl/video/operation/cameraYes.png"
+                            : "/micro-assets/inl/video/operation/cameraNo.png"
                         }
                         alt="在线"
                       />
@@ -316,8 +316,8 @@ export default defineComponent({
                         onClick={(e: any) => collectShow(e, item)}
                         src={
                           checkAttention(item.uuid)
-                            ? "http://192.168.5.211/micro-assets/inl/video/operation/collectYes.png"
-                            : "http://192.168.5.211/micro-assets/inl/video/operation/collectNo.png"
+                            ? "/micro-assets/inl/video/operation/collectYes.png"
+                            : "/micro-assets/inl/video/operation/collectNo.png"
                         }
                         alt="收藏"
                       />
