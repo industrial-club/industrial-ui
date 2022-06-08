@@ -20,7 +20,6 @@
     "build:lessVar": "yarn workspace inl-less run build",
     "site": "vite site",
     "testLogin": "vite test-login",
-    "factory": "vite mtip-factory",
     "dev-theme": "vite theme"
   },
   "repository": "https://github.com/industrial-club/industrial-ui",
