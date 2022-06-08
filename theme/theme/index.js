@@ -11,8 +11,8 @@ const themeConfig = [
     htmlThemeAttr: "dark",
     modifyVars: {
       hack: `true;@import "${require.resolve(
-        varDark + "/themes/var-dark.less"
-      )}";`,
+        varDark + "/color/colorPalette.less"
+      )}";@import "${require.resolve(varDark + "/themes/var-dark.less")}";`,
       ...defaultVars,
       ...dark,
       "root-entry-name": "dark",

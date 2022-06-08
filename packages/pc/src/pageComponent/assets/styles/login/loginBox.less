@@ -80,11 +80,26 @@
     // #F4F6F8
   }
 }
+
+[data-theme="light"] body {
+  .login_box {
+    input {
+        color: black;
+      }
+    input:-internal-autofill-previewed,
+    input:-internal-autofill-selected {
+      -webkit-text-fill-color: black;
+      color: black !important;
+      transition: background-color 9999s ease-out 0.1s;
+    }
+  }
+}
 .login_box {
   display: flex;
   flex-direction: column;
   input{
     color: #fff;
+    height: 34px;
   }
   input:-internal-autofill-previewed,
   input:-internal-autofill-selected {
