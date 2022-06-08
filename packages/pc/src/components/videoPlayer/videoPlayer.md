@@ -1,1 +1,0 @@
-传入值: camera:视频信息/cameraUuid:视频uuid
