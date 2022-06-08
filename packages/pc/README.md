@@ -9,6 +9,7 @@
 
 #### 视频组件(video)
 #### 基座组件(base)
+1. [登录页面组件](./src/pageComponent/views/login/README.md)
 #### 报警组件(alarm)
 
 ### 功能组件
