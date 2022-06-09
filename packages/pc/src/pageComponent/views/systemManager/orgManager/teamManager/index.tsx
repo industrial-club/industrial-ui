@@ -94,16 +94,24 @@ const TeamManager = defineComponent({
       keyWord: "",
     });
 
-    const { currPage, total, handlePageChange, isLoading, refresh, tableList } =
-      useTableList(
-        () =>
-          api.getTeamListByPage(urlMap.list)({
-            pageNum: currPage.value,
-            pageSize: 10,
-            keyword: form.value.keyWord,
-          }),
-        "workgroupList"
-      );
+    const {
+      currPage,
+      total,
+      handlePageChange,
+      isLoading,
+      refresh,
+      tableList,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(
+      () =>
+        api.getTeamListByPage(urlMap.list)({
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+          keyword: form.value.keyWord,
+        }),
+      "workgroupList"
+    );
     refresh();
 
     /* 查看 */
@@ -165,7 +173,16 @@ const TeamManager = defineComponent({
           loading={isLoading.value}
           dataSource={tableList.value}
           columns={column}
-          pagination={{ total: total.value, onChange: handlePageChange }}
+          pagination={{
+            pageSize: pageSize.value,
+            current: currPage.value,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
+            total: total.value,
+            "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
+          }}
           v-slots={{
             valid: ({ record }: any) => {
               return (
