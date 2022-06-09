@@ -1,7 +1,11 @@
 import { AxiosResponse } from "axios";
 import { getInstance } from "@/api/axios";
 
-const instance = getInstance({ prefix: "/api/", serverName: "alarmlite/v1" });
+let instance = getInstance({ prefix: "/api/", serverName: "alarmlite/v1" });
+
+export function setInstance({ serverName = "alarmlite/v1", prefix = "/api/" }) {
+  instance = getInstance({ prefix, serverName });
+}
 
 export interface EnumItem {
   code: string;
@@ -45,10 +49,10 @@ export interface alarmRecordItem {
 }
 
 // 获取下拉框数据
-export const getEnum: (
-  enumName: string
-) => Promise<AxiosResponse<Array<EnumItem>>> = async (enumName) => {
-  const res = await instance.get<Array<EnumItem>>(`/enum/${enumName}`);
+export const getEnum = (url: string) => async (enumName) => {
+  const res = await instance.get<Array<EnumItem>>(
+    `${url ?? "/enum/"}${enumName}`
+  );
   return res;
 };
 
@@ -56,8 +60,8 @@ export const getEnum: (
  * 手动消警
  * @returns
  */
-export const forceClearAlarm = async (data: any) => {
-  const res = await instance.post<boolean>("/forceClearAlarm", data);
+export const forceClearAlarm = (url: string) => async (data: any) => {
+  const res = await instance.post<boolean>(url ?? "/forceClearAlarm", data);
   return res;
 };
 /**
@@ -75,51 +79,45 @@ export const forceClearAlarm = async (data: any) => {
  * }
  * @returns
  */
-export const alarmRecordList: (obj: {
-  pageNum: number;
-  pageSize: number;
-  level?: string;
-  status?: string;
-  startTime?: string;
-  endTime?: string;
-  type?: string;
-  keyword?: string;
-}) => Promise<AxiosResponse<alarmRecordItem>> = async (obj) => {
-  const res = await instance.post<alarmRecordItem>("/record/list", obj);
+export const alarmRecordList = (url: string) => async (obj) => {
+  const res = await instance.post<alarmRecordItem>(url ?? "/record/list", obj);
   return res;
 };
 
 /**
  * 获取所有报警播报列表
  */
-export const getWarningSpeechList = () => instance.get("/findAllVoiceAlarm");
+export const getWarningSpeechList = (url: string) => () =>
+  instance.get(url ?? "/findAllVoiceAlarm");
 
 /**
  * 切换是否静音报警
  */
-export const setVoiceEnable = (data: any) =>
-  instance.post("/updateVoiceState", data);
+export const setVoiceEnable = (url: string) => (data: any) =>
+  instance.post(url ?? "/updateVoiceState", data);
 
 /**
  * 获取视频
  */
-export const getVideo = (alarmUuid: string, instanceCode: string) =>
-  instance.get("/video", { params: { alarmUuid, instanceCode } });
+export const getVideo =
+  (url: string) => (alarmUuid: string, instanceCode: string) =>
+    instance.get(url ?? "/video", { params: { alarmUuid, instanceCode } });
 
 /**
  * 获取报警详情
  * @param record 记录对象
  */
-export const getAlarmDetail = (record: any) =>
-  instance.post("/alarm/detail", record);
+export const getAlarmDetail = (url: string) => (record: any) =>
+  instance.post(url ?? "/alarm/detail", record);
 
 /**
  * 获取报警类型 map
  */
-export const getAlarmTypeMap = () => instance.get("/enum/AlarmTypeEnum");
+export const getAlarmTypeMap = (url: string) => () =>
+  instance.get(url ?? "/enum/AlarmTypeEnum");
 
 // 获取视频的baseUrl
-export const getVideoBaseUrl = async () => {
-  const { data } = await instance.get("/vms/v1/camera/getByUuid");
+export const getVideoBaseUrl = (url: string) => async () => {
+  const { data } = await instance.get(url ?? "/vms/v1/camera/getByUuid");
   return data.mediaServerPo.url;
 };
