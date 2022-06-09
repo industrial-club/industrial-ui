@@ -107,16 +107,24 @@ const UserManager = defineComponent({
     });
 
     /* 调用hook 初始化查询一次 */
-    const { currPage, handlePageChange, isLoading, refresh, tableList, total } =
-      useTableList(
-        () =>
-          api.getUserList(urlMap.list)({
-            keyWord: formState.value.userName,
-            pageNum: currPage.value,
-            pageSize: 10,
-          }),
-        "userJsons"
-      );
+    const {
+      currPage,
+      handlePageChange,
+      isLoading,
+      refresh,
+      tableList,
+      total,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(
+      () =>
+        api.getUserList(urlMap.list)({
+          keyWord: formState.value.userName,
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+        }),
+      "userJsons"
+    );
     refresh();
 
     const handleSubmit = () => {
@@ -226,10 +234,14 @@ const UserManager = defineComponent({
           rowKey="userId"
           loading={isLoading.value}
           pagination={{
-            pageSize: 10,
+            pageSize: pageSize.value,
             current: currPage.value,
-            "onUpdate:current": handlePageChange,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
             total: total.value,
+            "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
           }}
           v-slots={{
             employeeName: ({ record }: any) => {

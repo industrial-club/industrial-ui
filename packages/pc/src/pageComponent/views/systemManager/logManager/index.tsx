@@ -21,18 +21,18 @@ export interface IUrlObj {
 const column = [
   {
     title: "日志时间",
-    dataIndex: "createTime",
-    key: "createTime",
+    dataIndex: "createDt",
+    key: "createDt",
   },
   {
     title: "系统名称",
-    dataIndex: "systemType",
-    key: "systemType",
+    dataIndex: "softSysName",
+    key: "softSysName",
   },
   {
     title: "模块名称",
-    dataIndex: "moduleType",
-    key: "moduleType",
+    dataIndex: "moduleName",
+    key: "moduleName",
   },
   {
     title: "日志类型",
@@ -46,13 +46,13 @@ const column = [
   },
   {
     title: "日志内容",
-    dataIndex: "contentText",
-    key: "contentText",
+    dataIndex: "content",
+    key: "content",
   },
   {
     title: "操作人",
-    dataIndex: "userName",
-    key: "userName",
+    dataIndex: "createUser",
+    key: "createUser",
   },
   {
     title: "操作",
@@ -153,16 +153,24 @@ const LogManager = defineComponent({
     };
 
     // table
-    const { currPage, isLoading, refresh, tableList, handlePageChange, total } =
-      useTableList(
-        () =>
-          api.getList(urlMap.list)({
-            ...formState,
-            pageNum: currPage.value - 1,
-            pageSize: 10,
-          }),
-        "logList"
-      );
+    const {
+      currPage,
+      isLoading,
+      refresh,
+      tableList,
+      handlePageChange,
+      total,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(
+      () =>
+        api.getList(urlMap.list)({
+          ...formState,
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+        }),
+      "logList"
+    );
     refresh();
 
     // 重置表单
@@ -186,15 +194,7 @@ const LogManager = defineComponent({
       refresh();
     };
 
-    const info = ref({
-      userName: null,
-      systemType: "",
-      moduleType: null,
-      recordType: "",
-      operateType: null,
-      contentText: "",
-      createTime: "",
-    });
+    const info = ref<any>({});
 
     return () => (
       <div class="logManager">
@@ -258,7 +258,7 @@ const LogManager = defineComponent({
                         </a-select-option>
                       ))}
                   </a-select>
-                  <span style={{lineHeight: '32px'}}>-</span>
+                  <span style={{ lineHeight: "32px" }}>-</span>
                   <a-form-item name="recordType">
                     <a-select
                       v-model={[formState.recordType, "value"]}
@@ -311,8 +311,14 @@ const LogManager = defineComponent({
           dataSource={tableList.value}
           columns={column}
           pagination={{
+            pageSize: pageSize.value,
+            current: currPage.value,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
             total: total.value,
-            onChange: handlePageChange,
+            "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
           }}
           loading={isLoading.value}
           v-slots={{
@@ -342,15 +348,15 @@ const LogManager = defineComponent({
           <a-row gutter={16}>
             <a-col span={span} class="col">
               <div class="label">日志时间:</div>
-              <div>{info.value.createTime}</div>
+              <div>{info.value.createDt}</div>
             </a-col>
             <a-col span={span} class="col">
               <div class="label">系统名称:</div>
-              <div>{info.value.systemType}</div>
+              <div>{info.value.softSysName}</div>
             </a-col>
             <a-col span={span} class="col">
               <div class="label">模块名称:</div>
-              <div>{info.value.moduleType}</div>
+              <div>{info.value.moduleName}</div>
             </a-col>
             <a-col span={span} class="col">
               <div class="label">日志类型:</div>
@@ -362,11 +368,11 @@ const LogManager = defineComponent({
             </a-col>
             <a-col span={span} class="col">
               <div class="label">操作人:</div>
-              <div>{info.value.userName}</div>
+              <div>{info.value.createUser}</div>
             </a-col>
             <a-col span={span} class="col">
               <div class="label">日志内容:</div>
-              <div>{info.value.contentText}</div>
+              <div>{info.value.content}</div>
             </a-col>
           </a-row>
         </a-modal>
