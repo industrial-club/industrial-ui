@@ -1,13 +1,14 @@
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, inject, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
 import { cloneDeep } from "lodash";
-// import { Chart } from '@antv/g2';
+import { Chart } from "@antv/g2";
 import {
   getAlarmTypeMap,
   getVideo,
 } from "@/pageComponent/api/alarm/alarmRecord";
 import { getVideoBaseUrl } from "@/pageComponent/api/alarm/alarmRecord";
+import { IUrlObj } from "../warning-record";
 
 export default defineComponent({
   props: {
@@ -19,6 +20,8 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
+
     const route = useRoute();
     const router = useRouter();
     const back = () => {
@@ -31,12 +34,12 @@ export default defineComponent({
     // 获取视频
     const videoBaseUrl = ref("");
     const getVideoUrl = async () => {
-      videoBaseUrl.value = await getVideoBaseUrl();
+      videoBaseUrl.value = await getVideoBaseUrl(urlObj.videoBaseUrl)();
     };
     getVideoUrl();
     const videoList = ref<string[]>([]);
     const getAlarmVideo = async () => {
-      const { data } = await getVideo(
+      const { data } = await getVideo(urlObj.getVideo)(
         alarmDetail.value.id,
         alarmDetail.value.instanceCode
       );
@@ -53,25 +56,25 @@ export default defineComponent({
       alarmDetail.value.imageUrlList.length
     ) {
       imageUrlList.value = alarmDetail.value.imageUrlList.map(
-        (item: string) => "/usr/local/zlm/www/vmsSnap" + item
+        (item: string) => "/vms" + item
       );
     }
 
     // 图表
     const chartRef = ref();
-    // const chartIns = ref<Chart>();
+    const chartIns = ref<Chart>();
     const renderChart = async () => {
-      /* chartIns.value = new Chart({
+      chartIns.value = new Chart({
         container: chartRef.value,
         width: 600,
         height: 300,
       });
       chartIns.value.coordinate().transpose().scale(1, -1);
-      chartIns.value.scale('range', {
-        type: 'time',
+      chartIns.value.scale("range", {
+        type: "time",
         nice: true,
-        mask: 'YYYY-MM-DD HH:mm:ss',
-        alias: '起始时间',
+        mask: "YYYY-MM-DD HH:mm:ss",
+        alias: "起始时间",
       });
       chartIns.value.tooltip({
         showMarkers: false,
@@ -79,10 +82,10 @@ export default defineComponent({
       chartIns.value.coordinate().transpose();
       chartIns.value
         .interval()
-        .position('level*range')
+        .position("level*range")
         .animate({
           appear: {
-            animation: 'scale-in-x',
+            animation: "scale-in-x",
           },
         });
       const chartData = alarmDetail.value.alarmLifecycleList.map(
@@ -90,16 +93,16 @@ export default defineComponent({
           let level;
           switch (item.alarmLevel) {
             case 1:
-              level = '一级报警';
+              level = "一级报警";
               break;
             case 2:
-              level = '二级报警';
+              level = "二级报警";
               break;
             case 3:
-              level = '三级报警';
+              level = "三级报警";
               break;
             case 4:
-              level = '四级报警';
+              level = "四级报警";
               break;
 
             default:
@@ -109,11 +112,11 @@ export default defineComponent({
             level,
             range: [item.startTime, item.endTime],
           };
-        },
+        }
       );
 
       chartIns.value.data(chartData);
-      chartIns.value.render(); */
+      chartIns.value.render();
     };
     onMounted(() => {
       if (
@@ -126,7 +129,7 @@ export default defineComponent({
 
     // 报警类型
     const alarmTypeList = ref<any[]>([]);
-    getAlarmTypeMap().then(({ data }) => {
+    getAlarmTypeMap(urlObj.alarmTypeList)().then(({ data }) => {
       alarmTypeList.value = data;
     });
     const alarmType = computed(() => {

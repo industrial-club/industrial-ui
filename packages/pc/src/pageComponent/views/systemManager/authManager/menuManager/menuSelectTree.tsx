@@ -61,7 +61,7 @@ const MenuSelectTree = defineComponent({
     // 复制节点
     const handleCopy = async (node: any) => {
       await api.insertMenuRecord(urlMap.add)(
-        omit(node, "id", "sort", "subList")
+        omit(node, "id", "sort", "subList", "code")
       );
       message.success("复制成功");
       refresh();

@@ -1,4 +1,11 @@
-import { defineComponent, onMounted, ref, reactive, onUnmounted } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  reactive,
+  onUnmounted,
+  inject,
+} from "vue";
 import { message, Modal } from "ant-design-vue";
 import moment, { Moment } from "moment";
 import { useRouter } from "vue-router";
@@ -16,6 +23,7 @@ import { EnumItem, getEnum } from "@/pageComponent/api/alarm/alarmRecord";
 // import voiceSvg from "@/assets/img/voice.png";
 import QueryFilter from "./query-filter";
 import VideoPlay from "@/pageComponent/components/video-play";
+import { IUrlObj } from "./index";
 
 interface Obj {
   level: string;
@@ -70,6 +78,7 @@ const WarningRecord = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const urlObj = inject<IUrlObj>("urlObj")!;
     const router = useRouter();
 
     const list = ref<any[]>([]);
@@ -89,14 +98,14 @@ const WarningRecord = defineComponent({
     // 获取字典
     const http = () => {
       for (const key in enumObj) {
-        getEnum(key).then((res) => {
+        getEnum(urlObj.getEnum)(key).then((res) => {
           enumObj[key] = res.data;
         });
       }
     };
     // 报警记录列表
     const getAlarmRecordList = async () => {
-      const res = await alarmRecordList({
+      const res = await alarmRecordList(urlObj.alarmList)({
         pageNum: page.current,
         pageSize: page.size,
         ...form.value,
@@ -111,7 +120,7 @@ const WarningRecord = defineComponent({
         title: "确定消警",
         content: `确定手动消警${record.name}？`,
         async onOk() {
-          const res = await forceClearAlarm({
+          const res = await forceClearAlarm(urlObj.clearAlarm)({
             id: record.id,
             instanceCode: record.instanceCode,
             propertyCode: record.propertyCode,
@@ -150,9 +159,7 @@ const WarningRecord = defineComponent({
       if (!record.imageUrlList) {
         imageList.value = [];
       } else {
-        imageList.value = record.imageUrlList.map(
-          (item: any) => "/usr/local/zlm/www/vmsSnap" + item
-        );
+        imageList.value = record.imageUrlList.map((item: any) => "/vms" + item);
       }
       isImageShow.value = true;
     };
@@ -161,7 +168,10 @@ const WarningRecord = defineComponent({
     const videoObj = ref({});
     const isVideoShow = ref(false);
     const handleVideo = async (record: any) => {
-      const { data } = await getVideo(record.id, record.instanceCode);
+      const { data } = await getVideo(urlObj.getVideo)(
+        record.id,
+        record.instanceCode
+      );
       videoObj.value = data;
       isVideoShow.value = true;
     };
@@ -175,7 +185,7 @@ const WarningRecord = defineComponent({
     };
     // 语音播报报警内容
     const startSpeech = async () => {
-      const { data } = await getWarningSpeechList();
+      const { data } = await getWarningSpeechList(urlObj.speechList)();
       window.speechSynthesis.cancel();
       speech.text = data
         .map((item: any) => item.name.replaceAll(/[0-9]/g, "$& "))
@@ -190,7 +200,7 @@ const WarningRecord = defineComponent({
 
     // 切换是否静音
     const toggleVoiceEnable = async (record: any, enable: boolean) => {
-      await setVoiceEnable({
+      await setVoiceEnable(urlObj.switchVoice)({
         id: record.id,
         instanceCode: record.instanceCode,
         propertyCode: record.propertyCode,
@@ -304,7 +314,7 @@ const WarningRecord = defineComponent({
         </a-table>
 
         {/* 视频 */}
-        <Modal
+        <a-modal
           title="查看视频"
           width={800}
           centered
@@ -313,10 +323,11 @@ const WarningRecord = defineComponent({
           v-model={[isVideoShow.value, "visible"]}
         >
           <VideoPlay videoList={videoObj.value} />
-        </Modal>
+        </a-modal>
 
         {/* 图片 */}
-        <Modal
+        <a-modal
+          wrapClassName="record-table-image-preview-modal"
           title="查看图片"
           width={800}
           centered
@@ -325,15 +336,17 @@ const WarningRecord = defineComponent({
           v-model={[isImageShow.value, "visible"]}
         >
           {imageList.value.length ? (
-            <a-carousel>
+            <a-carousel dots arrows>
               {imageList.value.map((item) => (
-                <a-image src={item}></a-image>
+                <div>
+                  <a-image height={400} preview={false} src={item}></a-image>
+                </div>
               ))}
             </a-carousel>
           ) : (
             <a-empty description="暂无图片" />
           )}
-        </Modal>
+        </a-modal>
       </div>
     );
   },

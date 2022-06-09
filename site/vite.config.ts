@@ -16,6 +16,8 @@ export default defineConfig({
   server: {
     host: true,
     proxy: {
+      "/api/thingmodel/": "http://192.168.5.234",
+      "/vms/": "http://192.168.5.234/",
       "/api/": {
         target: "http://192.168.5.234",
       },

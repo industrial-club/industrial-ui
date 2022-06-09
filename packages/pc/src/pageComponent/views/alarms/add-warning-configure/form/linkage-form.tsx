@@ -28,6 +28,7 @@ const LinkageForm = defineComponent({
     const linkageForm = ref<any>({
       videoAvailable: false, // 联动视频
       audioAvailable: true, // 语音播报
+      screenshotAvailable: false, // 抓拍
       notificationStageList: ["CREATE"], // 通知阶段
       notificationUserList: [], // 通知人员
     });
@@ -76,7 +77,7 @@ const LinkageForm = defineComponent({
               <a-col span={24}>
                 <a-form-item label="是否抓拍">
                   <a-switch
-                    v-model={[linkageForm.value.videoAvailable, "checked"]}
+                    v-model={[linkageForm.value.screenshotAvailable, "checked"]}
                     checkedChildren="启用"
                     unCheckedChildren="禁用"
                   />
