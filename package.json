@@ -19,7 +19,7 @@
     "build:utilVideo": "yarn workspace inl-util run buildVideo",
     "build:lessVar": "yarn workspace inl-less run build",
     "site": "vite site",
-    "testLogin": "vite test-login",
+    "test": "vite test-login",
     "dev-theme": "vite theme"
   },
   "repository": "https://github.com/industrial-club/industrial-ui",
