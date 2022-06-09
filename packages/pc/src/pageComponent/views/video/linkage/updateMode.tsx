@@ -5,7 +5,7 @@
 import { defineComponent, PropType, ref, watch, nextTick } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import linkApi from "@/api/linkage";
-
+import { message } from "ant-design-vue";
 import InputText from "@/components/inputText";
 
 const rules = {
@@ -68,7 +68,11 @@ const UpdateMode = defineComponent({
           (item) => item.id === form.value.splicingId
         ).splicingName,
       };
-
+      const strs = [...new Set(spiceGroupList.value)];
+      if (strs.length !== spiceGroupList.value.length) {
+        message.error("编码不能重复");
+        return;
+      }
       if (props.mode === "add") {
         await linkApi.insertMode(data);
       } else {

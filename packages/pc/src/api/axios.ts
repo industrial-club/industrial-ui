@@ -69,7 +69,6 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
     (res) => {
       const resData = res.data;
       const status = resData.code === "M0000" || resData.code === "0";
-      console.log(resData instanceof Blob);
       if (status || resData instanceof Blob) {
         return Promise.resolve(resData);
       }
