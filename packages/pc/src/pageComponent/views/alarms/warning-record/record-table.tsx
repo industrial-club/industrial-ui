@@ -260,15 +260,18 @@ const WarningRecord = defineComponent({
                 <a-button
                   size="small"
                   type="link"
+                  disabled={!record.screenshotAvailable}
                   onClick={() => handleImage(record)}
                 >
                   查看图片
                 </a-button>
                 <a-button
                   // 30天前不能查看视频
-                  disabled={moment(record.firstAlarmTime).isBefore(
-                    moment().add(-30, "days")
-                  )}
+                  disabled={
+                    moment(record.firstAlarmTime).isBefore(
+                      moment().add(-30, "days")
+                    ) || !record.videoAvailable
+                  }
                   size="small"
                   type="link"
                   onClick={() => handleVideo(record)}

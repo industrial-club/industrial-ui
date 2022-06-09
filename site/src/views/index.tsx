@@ -14,8 +14,8 @@ export default defineComponent({
         <menuDemo></menuDemo>
         <formDemo></formDemo> */}
         {/* <videoDemo></videoDemo> */}
-        <baseDemo></baseDemo>
-        {/* <alarm-demo></alarm-demo> */}
+        {/* <baseDemo></baseDemo> */}
+        <alarm-demo></alarm-demo>
       </div>
     );
   },
