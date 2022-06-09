@@ -253,7 +253,10 @@ const com = defineComponent({
       }
     };
     const filterOption = (input: string, option: any) => {
-      return option.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0;
+      const ele: any = videoData.list.find((type: any) => {
+        return option.value === type.uuid;
+      });
+      return ele?.name.indexOf(input) >= 0;
     };
     onMounted(() => {
       getGroup();

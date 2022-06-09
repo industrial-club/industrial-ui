@@ -158,12 +158,15 @@ const com = defineComponent({
                 if (column.key === "action") {
                   return (
                     <a-space>
-                      <router-link
-                        target="_blank"
-                        to={`/play?uuid=${record.cameraUuids}&modeCode=${record.modeCode}`}
+                      <a
+                        onClick={() => {
+                          window.open(
+                            `/#/intelligentCentralizedControl/videoManager/play?uuid=${record.cameraUuids}&modeCode=${record.modeCode}`
+                          );
+                        }}
                       >
                         播放
-                      </router-link>
+                      </a>
                       <a onClick={() => this.handleEditClick(record)}>编辑</a>
                       <a-popconfirm
                         title="确定删除？"
