@@ -72,7 +72,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
       if (status) {
         return Promise.resolve(resData);
       }
-      const msg = res.data?.msg ?? "请求失败";
+      const msg = res.data?.msg ?? res.data?.message ?? "请求失败";
       message.error(msg);
 
       return Promise.reject(resData);
