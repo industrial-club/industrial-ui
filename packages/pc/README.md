@@ -10,6 +10,8 @@
 
 #### 视频组件(video)
 
+[视频组件列表](./src/pageComponent/views/video/README.md)
+
 #### 基座组件(base)
 
 1. [登录页面组件](./src/pageComponent/views/login/README.md)
