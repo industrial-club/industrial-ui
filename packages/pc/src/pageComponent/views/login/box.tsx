@@ -66,6 +66,7 @@ export default defineComponent({
     });
     const serverName = inject<string>("serverName");
     const prefix = inject<string>("prefix");
+    const isClould = inject<string>("isClould");
     const instance = getInstance({
       serverName,
       prefix,
@@ -163,7 +164,7 @@ export default defineComponent({
           class="login_slider"
           closable={false}
           footer={null}
-          width="460px"
+          width="480px"
           v-models={[[visible.value, "visible"]]}
         >
           <a-spin tip={spinningText.value} spinning={spinning.value}>
@@ -235,8 +236,12 @@ export default defineComponent({
     // clicl submitBtn
     const loginspinning = ref<boolean>(false);
     const subminBtnClick = () => {
-      loginspinning.value = true;
-      getImg();
+      if (isClould) {
+        loginspinning.value = true;
+        getImg();
+      } else {
+        toSunmit();
+      }
     };
     const renderForm = () => {
       return (

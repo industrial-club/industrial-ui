@@ -20,6 +20,10 @@ const Login = defineComponent({
       default: "comlite/v1/",
       type: String,
     },
+    isClould: {
+      default: false,
+      type: Boolean,
+    },
     prefix: {
       default: "",
       type: String,
@@ -51,6 +55,7 @@ const Login = defineComponent({
 
     // 将相关数据注入到所有子组件中
     provide("status", prop.status);
+    provide("isClould", prop.isClould);
     provide("corpLogo", prop.titleLogo);
     provide("ms", prop.ms);
     provide("productLogo", prop.loginMainImg);
