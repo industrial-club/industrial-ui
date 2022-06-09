@@ -6,7 +6,6 @@ export default () => {
   const { proxy } = getCurrentInstance()! as any;
   return {
     store: proxy!.$store,
-    vitevuu: proxy!.$vitevuu,
     axios: proxy!.$axios,
   };
 };

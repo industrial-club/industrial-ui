@@ -68,9 +68,13 @@ export const batchUploadConfigure = (url: string) => (file: File) => {
 
 // 获取系统列表
 export const baseAll = (url: string) => async () => {
-  const res = await instance.get<any>(url ?? "/modelSystem/base/findById/1", {
-    baseURL: "/api/thingmodel/v1",
-  });
+  const res = await instance.post<any>(
+    url ?? "/modelSystem/base/findAll",
+    { pageSize: -1, pageNum: 1 },
+    {
+      baseURL: "/api/thingmodel/v1",
+    }
+  );
   return res;
 };
 

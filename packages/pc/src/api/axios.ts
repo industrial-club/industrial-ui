@@ -69,10 +69,10 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
     (res) => {
       const resData = res.data;
       const status = resData.code === "M0000" || resData.code === "0";
-      if (status) {
+      if (status || resData instanceof Blob) {
         return Promise.resolve(resData);
       }
-      const msg = res.data?.msg ?? "请求失败";
+      const msg = res.data?.msg ?? res.data?.message ?? "请求失败";
       message.error(msg);
 
       return Promise.reject(resData);

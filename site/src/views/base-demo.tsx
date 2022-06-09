@@ -36,7 +36,7 @@ const BaseDemo = defineComponent({
         {/* 角色管理 */}
         {/* <inl-role-manager></inl-role-manager> */}
         {/* 菜单管理 */}
-        {/* <inl-menu-manager></inl-menu-manager> */}
+        <inl-menu-manager></inl-menu-manager>
 
         {/* ====== 组织管理 ====== */}
         {/* 岗位管理 */}

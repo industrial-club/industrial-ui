@@ -21,6 +21,7 @@ import Group from "@/pageComponent/views/video/sbgl/group";
 import Nvr from "@/pageComponent/views/video/sbgl/nvr";
 import Permission from "@/pageComponent/views/video/setting/cameraPermission";
 import System from "@/pageComponent/views/video/setting/system";
+import Play from "@/pageComponent/views/video/play";
 import AlarmRecord from "@/pageComponent/views/alarms/warning-record";
 import AlarmConfigure from "@/pageComponent/views/alarms/warning-configure";
 
@@ -48,6 +49,7 @@ export default [
   Nvr,
   Permission,
   System,
+  Play,
   AlarmRecord,
   AlarmConfigure,
 ];

@@ -80,10 +80,7 @@ export default defineComponent({
     };
 
     const findShouldPlay = () => {
-      if (currentIndex + 1 >= props.teams.length) {
-        currentIndex = -1;
-      }
-      let resTeam;
+      let resTeam: any = props.teams[0];
       for (let index = 0; index < props.teams.length; index++) {
         const team: any = props.teams[index];
         if (team.enabled === "1" && index > currentIndex) {

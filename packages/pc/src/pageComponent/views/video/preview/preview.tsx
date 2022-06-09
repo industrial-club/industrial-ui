@@ -241,7 +241,7 @@ const com = defineComponent({
           sizeDataRef.value.sizeData.fullScreen = false;
         }
       };
-      setInterval(() => {
+      interval = setInterval(() => {
         updateVideoState();
       }, 10000);
     });
@@ -369,6 +369,8 @@ const com = defineComponent({
       imgType.videoActiveList = [];
     };
     onBeforeUnmount(() => {
+      clearInterval(interval);
+      socket.closeSocket();
       overVideo();
     });
 
@@ -635,7 +637,7 @@ const com = defineComponent({
                         )}
                       </div>
                       <div>
-                        <a-popover
+                        {/* <a-popover
                           title="切换码流"
                           content={
                             <div>
@@ -660,7 +662,7 @@ const com = defineComponent({
                           }
                         >
                           <img src={"/micro-assets/inl/video/stream.png"} />
-                        </a-popover>
+                        </a-popover> */}
                         <a-popover
                           title="控制器"
                           content={

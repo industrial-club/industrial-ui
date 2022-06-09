@@ -244,7 +244,7 @@ const LogManager = defineComponent({
             </a-col>
             <a-col span={12}>
               <a-form-item name="operateType" label="操作类型">
-                <a-space>
+                <a-space align="start">
                   <a-select
                     v-model={[formState.operateType, "value"]}
                     allowClear
@@ -258,7 +258,7 @@ const LogManager = defineComponent({
                         </a-select-option>
                       ))}
                   </a-select>
-                  <span style={{ margin: "0 16px" }}>-</span>
+                  <span style={{lineHeight: '32px'}}>-</span>
                   <a-form-item name="recordType">
                     <a-select
                       v-model={[formState.recordType, "value"]}

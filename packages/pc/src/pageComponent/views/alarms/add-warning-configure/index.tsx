@@ -107,7 +107,7 @@ const AddWarningConfigure = defineComponent({
      */
     const getBaseAll = async () => {
       const res = await baseAll(urlObj.baseAll)();
-      baseAllList.value = [res.data];
+      baseAllList.value = res.data.list;
     };
     /**
      * 获取所有设备
