@@ -1,34 +1,35 @@
-import { createStore } from 'vuex';
+import { createStore } from "vuex";
 
 export default createStore({
   state: () => ({
     basicForm: {
-      name: '', // 报警名称
-      alarmType: 'FAULT', // 报警类型
-      description: '', // 报警详情
-      releaseType: '0', // 是否手动消警
+      name: "", // 报警名称
+      alarmType: "FAULT", // 报警类型
+      description: "", // 报警详情
+      releaseType: "0", // 是否手动消警
       tagList: [], // 标签
       available: true, // 是否启用
       systemCode: undefined, // 系统编码
     },
     ruleForm: {
       propertyCode: [] as any[], // 设备信号
-      valueType: 'CURRENT', // 统计方式
+      valueType: "CURRENT", // 统计方式
       alarmConditionList: [
         {
           alarmLevel: 1, // 报警级别
           opValue: 0, // 报警值
-          operator: 'EQ', // 操作符
+          operator: "EQ", // 操作符
         },
       ], // 报警规则
-      conditionRelation: 'OR', // 规则间关系
-      triggerType: 'IMMEDIATELY', // 触发类型
+      conditionRelation: "OR", // 规则间关系
+      triggerType: "IMMEDIATELY", // 触发类型
       triggerTime: 0, // 触发时间
     },
     linkageForm: {
       videoAvailable: false, // 联动视频
       audioAvailable: true, // 语音播报
-      notificationStageList: ['CREATE'], // 通知阶段
+      screenshotAvailable: false, // 抓拍
+      notificationStageList: ["CREATE"], // 通知阶段
       notificationUserList: [], // 通知人员
     },
   }),
@@ -72,6 +73,7 @@ export default createStore({
       state.linkageForm = {
         audioAvailable: payload.audioAvailable,
         notificationStageList: payload.notificationStageList,
+        screenshotAvailable: payload.screenshotAvailable,
         notificationUserList: payload.notificationUserList.map((item: any) => ({
           id: item.userId,
           name: item.userName,
