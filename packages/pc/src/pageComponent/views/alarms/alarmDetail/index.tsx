@@ -2,7 +2,7 @@ import { computed, defineComponent, inject, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
 import { cloneDeep } from "lodash";
-// import { Chart } from '@antv/g2';
+import { Chart } from "@antv/g2";
 import {
   getAlarmTypeMap,
   getVideo,
@@ -56,25 +56,25 @@ export default defineComponent({
       alarmDetail.value.imageUrlList.length
     ) {
       imageUrlList.value = alarmDetail.value.imageUrlList.map(
-        (item: string) => "/usr/local/zlm/www/vmsSnap" + item
+        (item: string) => "/vms" + item
       );
     }
 
     // 图表
     const chartRef = ref();
-    // const chartIns = ref<Chart>();
+    const chartIns = ref<Chart>();
     const renderChart = async () => {
-      /* chartIns.value = new Chart({
+      chartIns.value = new Chart({
         container: chartRef.value,
         width: 600,
         height: 300,
       });
       chartIns.value.coordinate().transpose().scale(1, -1);
-      chartIns.value.scale('range', {
-        type: 'time',
+      chartIns.value.scale("range", {
+        type: "time",
         nice: true,
-        mask: 'YYYY-MM-DD HH:mm:ss',
-        alias: '起始时间',
+        mask: "YYYY-MM-DD HH:mm:ss",
+        alias: "起始时间",
       });
       chartIns.value.tooltip({
         showMarkers: false,
@@ -82,10 +82,10 @@ export default defineComponent({
       chartIns.value.coordinate().transpose();
       chartIns.value
         .interval()
-        .position('level*range')
+        .position("level*range")
         .animate({
           appear: {
-            animation: 'scale-in-x',
+            animation: "scale-in-x",
           },
         });
       const chartData = alarmDetail.value.alarmLifecycleList.map(
@@ -93,16 +93,16 @@ export default defineComponent({
           let level;
           switch (item.alarmLevel) {
             case 1:
-              level = '一级报警';
+              level = "一级报警";
               break;
             case 2:
-              level = '二级报警';
+              level = "二级报警";
               break;
             case 3:
-              level = '三级报警';
+              level = "三级报警";
               break;
             case 4:
-              level = '四级报警';
+              level = "四级报警";
               break;
 
             default:
@@ -112,11 +112,11 @@ export default defineComponent({
             level,
             range: [item.startTime, item.endTime],
           };
-        },
+        }
       );
 
       chartIns.value.data(chartData);
-      chartIns.value.render(); */
+      chartIns.value.render();
     };
     onMounted(() => {
       if (

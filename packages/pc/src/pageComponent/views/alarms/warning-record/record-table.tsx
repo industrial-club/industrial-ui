@@ -159,9 +159,7 @@ const WarningRecord = defineComponent({
       if (!record.imageUrlList) {
         imageList.value = [];
       } else {
-        imageList.value = record.imageUrlList.map(
-          (item: any) => "/usr/local/zlm/www/vmsSnap" + item
-        );
+        imageList.value = record.imageUrlList.map((item: any) => "/vms" + item);
       }
       isImageShow.value = true;
     };
@@ -262,15 +260,18 @@ const WarningRecord = defineComponent({
                 <a-button
                   size="small"
                   type="link"
+                  disabled={!record.screenshotAvailable}
                   onClick={() => handleImage(record)}
                 >
                   查看图片
                 </a-button>
                 <a-button
                   // 30天前不能查看视频
-                  disabled={moment(record.firstAlarmTime).isBefore(
-                    moment().add(-30, "days")
-                  )}
+                  disabled={
+                    moment(record.firstAlarmTime).isBefore(
+                      moment().add(-30, "days")
+                    ) || !record.videoAvailable
+                  }
                   size="small"
                   type="link"
                   onClick={() => handleVideo(record)}
@@ -316,7 +317,7 @@ const WarningRecord = defineComponent({
         </a-table>
 
         {/* 视频 */}
-        <Modal
+        <a-modal
           title="查看视频"
           width={800}
           centered
@@ -325,10 +326,11 @@ const WarningRecord = defineComponent({
           v-model={[isVideoShow.value, "visible"]}
         >
           <VideoPlay videoList={videoObj.value} />
-        </Modal>
+        </a-modal>
 
         {/* 图片 */}
-        <Modal
+        <a-modal
+          wrapClassName="record-table-image-preview-modal"
           title="查看图片"
           width={800}
           centered
@@ -337,15 +339,17 @@ const WarningRecord = defineComponent({
           v-model={[isImageShow.value, "visible"]}
         >
           {imageList.value.length ? (
-            <a-carousel>
+            <a-carousel dots arrows>
               {imageList.value.map((item) => (
-                <a-image src={item}></a-image>
+                <div>
+                  <a-image height={400} preview={false} src={item}></a-image>
+                </div>
               ))}
             </a-carousel>
           ) : (
             <a-empty description="暂无图片" />
           )}
-        </Modal>
+        </a-modal>
       </div>
     );
   },

@@ -19,7 +19,7 @@ const BaseDemo = defineComponent({
         ></inl-about> */}
 
         {/* ====== 日志管理 ====== */}
-        {/* <inl-log-manager></inl-log-manager> */}
+        <inl-log-manager></inl-log-manager>
 
         {/* ====== 参数管理 ====== */}
         {/* <inl-param-manager

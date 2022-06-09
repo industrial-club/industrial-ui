@@ -45,12 +45,23 @@ export default function useTableList(
     refresh();
   };
 
+  const pageSize = ref(10);
+  const hanldePageSizeChange = (size: number) => {
+    currPage.value = 1;
+    pageSize.value = size;
+    refresh();
+  };
+
   return {
     isLoading,
     tableList,
 
     currPage,
     handlePageChange,
+
+    pageSize,
+    hanldePageSizeChange,
+
     total,
     refresh,
   };

@@ -74,7 +74,7 @@ const UpdateUserDialog = defineComponent({
     const modalTitle = computed(() => {
       if (props.mode === "add") return "新建用户";
       else if (props.mode === "edit") return "编辑用户";
-      return "查看用户";
+      return "用户详情";
     });
 
     /* 是否查看模式 */
@@ -162,9 +162,12 @@ const UpdateUserDialog = defineComponent({
                   )}
                 </a-form-item>
                 <a-form-item
-                  name="employeeName"
+                  name="employeeId"
                   label="员工姓名"
-                  help={!isView.value && "中英文均可，最长14个英文或者7个汉字"}
+                  help={
+                    props.mode === "add" &&
+                    "中英文均可，最长14个英文或者7个汉字"
+                  }
                 >
                   {isView.value ? (
                     <a-button type="link" onClick={handleProfileClick}>
@@ -197,6 +200,7 @@ const UpdateUserDialog = defineComponent({
                       ]}
                     >
                       <a-input-password
+                        placeholder="输入密码"
                         v-model={[form.value.passWord, "value"]}
                       ></a-input-password>
                     </a-form-item>
@@ -216,7 +220,7 @@ const UpdateUserDialog = defineComponent({
                   </>
                 ) : (
                   // 查看和编辑用户 展示重置密码
-                  <a-form-item name="passWord" label="密码重置">
+                  <a-form-item required label="密码">
                     <span>●●●●●●●●</span>
                     {props.mode === "edit" && (
                       <a-button type="link" onClick={handleResetPassword}>

@@ -46,7 +46,7 @@ const api = {
    * 新增岗位信息
    */
   insertPostRecord: (url?: string) => (data: any) => {
-    return instance.post(url ?? "/jobPost/modify", data);
+    return instance.post(url ?? "/jobPost/add", data);
   },
   /**
    * 删除一条岗位信息

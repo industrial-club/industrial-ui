@@ -3,6 +3,7 @@ import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import utils from "@/utils";
 import { getInstance } from "@/api/axios";
+import { login } from "@/utils/publicUtil";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import loginBox, { EventBySubmitParams } from "./box";
 import leftImg from "./leftImg";
@@ -48,9 +49,6 @@ const Login = defineComponent({
   setup(prop) {
     const router = useRouter();
 
-    // 是否验证图片验证码
-    const imgVerifyStatus = ref<boolean>(false);
-
     // 将相关数据注入到所有子组件中
     provide("status", prop.status);
     provide("corpLogo", prop.titleLogo);
@@ -72,25 +70,13 @@ const Login = defineComponent({
      */
 
     const handleSubmit = async (e: EventBySubmitParams) => {
-      let res;
-      try {
-        res = await instance.post("auth/login", {
-          userName: e.username,
-          passWord: encodeStr(e.password),
-        });
-      } catch (error) {
-        const msg = (error as any).msg || "服务端错误，请联系管理员.";
-        new Error(msg);
-      }
-      const { data } = res;
-      if (data) {
-        // 保存登录信息
-        const { sysUser, token } = data;
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("userinfo", JSON.stringify(sysUser));
-        message.success("登录成功");
-        router.push("/");
-      }
+      const LoginFun = new login();
+      await LoginFun.getTokenByCode({
+        username: e.username,
+        password: e.password,
+      });
+
+      router.push("/");
     };
 
     return () => (
