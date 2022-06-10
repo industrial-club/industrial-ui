@@ -198,7 +198,6 @@ const com = defineComponent({
               查询
             </a-button>
             <a-button
-              type="primary"
               onClick={() => {
                 data.pagination.name = "";
                 data.pagination.code = "";
