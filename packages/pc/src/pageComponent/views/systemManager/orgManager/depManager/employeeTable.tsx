@@ -76,20 +76,28 @@ const EmployeeTable = defineComponent({
 
     const isTopLevel = computed(() => `${props.depId}`.startsWith("sys"));
 
-    const { isLoading, tableList, refresh, currPage, handlePageChange, total } =
-      useTableList(() => {
-        if (props.depId) {
-          // 选煤厂不加部门id  查全部
-          const depId = isTopLevel.value ? null : props.depId;
-          return api.getEmployeeList(urlMap.empList)({
-            departmentId: depId,
-            keyword: keyword.value,
-            pageNum: currPage.value,
-            pageSize: 10,
-          });
-        }
-        return Promise.resolve({ data: [] });
-      }, "employeeList");
+    const {
+      isLoading,
+      tableList,
+      refresh,
+      currPage,
+      handlePageChange,
+      total,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(() => {
+      if (props.depId) {
+        // 选煤厂不加部门id  查全部
+        const depId = isTopLevel.value ? null : props.depId;
+        return api.getEmployeeList(urlMap.empList)({
+          departmentId: depId,
+          keyword: keyword.value,
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+        });
+      }
+      return Promise.resolve({ data: [] });
+    }, "employeeList");
 
     /* 当前选中的部门变化 重新查询列表 */
     watch(
@@ -154,9 +162,13 @@ const EmployeeTable = defineComponent({
           columns={columns}
           dataSource={tableList.value}
           pagination={{
-            pageSize: 10,
+            pageSize: pageSize.value,
             current: currPage.value,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
             "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
             total: total.value,
           }}
         >

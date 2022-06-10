@@ -2,6 +2,7 @@ const less = require("less");
 const defaultVars = require("./scripts/default-vars");
 
 const dark = require("./scripts/dark-vars");
+const light = require("./scripts/light-vars");
 
 const path = require("path");
 const varDark = path.join(__dirname, ".", "style");
@@ -16,6 +17,19 @@ const themeConfig = [
       ...defaultVars,
       ...dark,
       "root-entry-name": "dark",
+    },
+  },
+  {
+    theme: "light",
+    htmlThemeAttr: "light",
+    modifyVars: {
+      // 引入除了变量外的其他内容
+      hack: `true;@import "${require.resolve(
+        varDark + "/color/colorPalette.less"
+      )}";@import "${require.resolve(varDark + "/themes/var-default.less")}";`,
+      ...defaultVars,
+      ...light,
+      "root-entry-name": "default",
     },
   },
 ];

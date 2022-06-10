@@ -1,0 +1,127 @@
+/* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */
+
+@theme: default;
+
+// The prefix to use on all css classes from ant.
+@ant-prefix: ant;
+
+// An override for the html selector for theme prefixes
+@html-selector: html;
+
+// [CSS-VARIABLE-REPLACE-BEGIN: html-variables]
+// [CSS-VARIABLE-REPLACE-END: html-variables]
+
+// -------- Colors -----------
+@component-background: #fff;
+
+// >>> Primary
+@primary-color: #3e7eff;
+
+// >>> Info
+@info-color: @primary-color;
+
+// >>> Success
+@success-color: #22cc83;
+
+// >>> Warning
+@warning-color: #ff9214;
+
+// >>> Error
+@error-color: #ea5858;
+
+@text-color: #5d616b;
+@text-color-secondary: #8f959e;
+
+@shadow-2: 0px 1px 12px 0px rgba(55, 63, 77, 0.08);
+
+@heading-color: #333333;
+
+@btn-primary-shadow: none;
+
+@input-placeholder-color: #8f959e;
+
+// Border color
+@border-color-split: #f0f3f5; // split border inside a component
+
+// background color
+@background-color-light: rgba(242,
+        243,
+        248,
+        1); // background of header and selected item
+
+// Disabled states
+@disabled-color: rgba(143, 149, 158, 0.5);
+
+// menu
+@menu-inline-submenu-bg: @component-background;
+
+// table
+@table-padding-vertical: 7.5px;
+@table-padding-horizontal: 7.5px;
+@table-header-sort-active-bg: #c9cdd4;
+@table-fixed-header-sort-active-bg: #c9cdd4;
+
+// avatar
+@avatar-bg: @primary-color;
+
+// 图标头像
+.ant-avatar.ant-avatar-icon {
+    background-color: #eff2f6;
+    color: #8f959e;
+}
+
+// pagination
+@pagination-item-bg-active: @primary-color;
+
+.ant-pagination-item-active,
+.ant-pagination-item-active:hover,
+.ant-pagination-item-active:focus-visible {
+    a {
+        color: #fff;
+    }
+}
+
+// Alert
+// 成功
+.ant-alert-success {
+
+    .ant-alert-message,
+    .ant-alert-description,
+    .ant-alert-close-text {
+        color: @success-color;
+    }
+}
+
+// 提示
+.ant-alert-info {
+
+    .ant-alert-message,
+    .ant-alert-description,
+    .ant-alert-close-text {
+        color: @info-color;
+    }
+}
+
+// 警告
+.ant-alert-warning {
+
+    .ant-alert-message,
+    .ant-alert-description,
+    .ant-alert-close-text {
+        color: @warning-color;
+    }
+}
+
+// 错误
+.ant-alert-error {
+
+    .ant-alert-message,
+    .ant-alert-description,
+    .ant-alert-close-text {
+        color: @error-color;
+    }
+}
+
+// modal
+@modal-header-border-color-split: transparent;
+@modal-footer-border-color-split: transparent;

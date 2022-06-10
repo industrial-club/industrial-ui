@@ -36,13 +36,13 @@ const BaseDemo = defineComponent({
         {/* 角色管理 */}
         {/* <inl-role-manager></inl-role-manager> */}
         {/* 菜单管理 */}
-        <inl-menu-manager></inl-menu-manager>
+        {/* <inl-menu-manager></inl-menu-manager> */}
 
         {/* ====== 组织管理 ====== */}
         {/* 岗位管理 */}
         {/* <inl-post-manager></inl-post-manager> */}
         {/* 班组管理 */}
-        {/* <inl-team-manager></inl-team-manager> */}
+        <inl-team-manager></inl-team-manager>
         {/* 部门管理 */}
         {/* <inl-dep-manager></inl-dep-manager> */}
         {/* <inl-login-page

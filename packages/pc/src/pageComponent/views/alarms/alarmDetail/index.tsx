@@ -29,7 +29,6 @@ export default defineComponent({
     };
 
     const alarmDetail = ref<any>(cloneDeep(props.record));
-    console.log(alarmDetail);
 
     // 获取视频
     const videoBaseUrl = ref("");
@@ -61,6 +60,7 @@ export default defineComponent({
     }
 
     // 图表
+    const chartData = ref([]);
     const chartRef = ref();
     const chartIns = ref<Chart>();
     const renderChart = async () => {
@@ -88,8 +88,9 @@ export default defineComponent({
             animation: "scale-in-x",
           },
         });
-      const chartData = alarmDetail.value.alarmLifecycleList.map(
-        (item: any) => {
+      chartData.value = alarmDetail.value.alarmLifecycleList
+        .filter((item) => item.endTime)
+        .map((item: any) => {
           let level;
           switch (item.alarmLevel) {
             case 1:
@@ -112,10 +113,9 @@ export default defineComponent({
             level,
             range: [item.startTime, item.endTime],
           };
-        }
-      );
+        });
 
-      chartIns.value.data(chartData);
+      chartIns.value.data(chartData.value);
       chartIns.value.render();
     };
     onMounted(() => {
@@ -145,12 +145,13 @@ export default defineComponent({
     return () => (
       <div class="alarmDetail">
         {/* 面包屑 */}
-        <a-breadcrumb>
+        {/* <a-breadcrumb>
           <a-breadcrumb-item>
             <a onClick={back}>报警记录</a>
           </a-breadcrumb-item>
           <a-breadcrumb-item>报警详情</a-breadcrumb-item>
-        </a-breadcrumb>
+        </a-breadcrumb> */}
+        <a-page-header style={{ padding: 0 }} title="报警详情" onBack={back} />
         {/* 详情  描述列表*/}
         <a-descriptions
           labelStyle={{ width: "100px", textAlign: "right" }}
@@ -213,8 +214,7 @@ export default defineComponent({
             )}
           </a-descriptions-item>
           <a-descriptions-item label="报警生命周期">
-            {alarmDetail.value.alarmLifecycleList &&
-            alarmDetail.value.alarmLifecycleList.length ? (
+            {chartData.value.length ? (
               <div ref={chartRef}></div>
             ) : (
               <a-empty description="暂无生命周期" />

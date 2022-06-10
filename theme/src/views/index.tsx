@@ -1,14 +1,24 @@
 import { defineComponent, ref, watch } from "vue";
-import { Menu, Switch, Radio, message } from "ant-design-vue";
+import {
+  Menu,
+  Switch,
+  Radio,
+  message,
+  Select,
+  Tabs,
+  TabPane,
+} from "ant-design-vue";
 
 const item = Menu.Item;
 const SubMenu = Menu.SubMenu;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const SelectOption = Select.Option;
 export default defineComponent({
   setup() {
     const checked = ref(false);
     const radio = ref("a");
+    const activeKey = ref("1");
     return () => (
       <div>
         <inl-change-theme-select />
@@ -45,6 +55,21 @@ export default defineComponent({
           <RadioButton value="c">Beijing</RadioButton>
           <RadioButton value="d">Chengdu</RadioButton>
         </RadioGroup>
+        <Select style={{ width: "200px" }}>
+          <SelectOption value="jack">Jack</SelectOption>
+          <SelectOption value="lucy">Lucy</SelectOption>
+        </Select>
+        <Tabs v-model={[activeKey.value, "activeKey"]}>
+          <TabPane key="1" tab="Tab 1">
+            Content of Tab Pane 1
+          </TabPane>
+          <TabPane key="2" tab="Tab 2" force-render>
+            Content of Tab Pane 2
+          </TabPane>
+          <TabPane key="3" tab="Tab 3">
+            Content of Tab Pane 3
+          </TabPane>
+        </Tabs>
       </div>
     );
   },
