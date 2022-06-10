@@ -180,7 +180,13 @@ const ProFormItem = defineComponent({
             {...inputProps.value}
             onChange={handleValueChange}
           >
-            <SelectOption key="你好">你好</SelectOption>
+            {paramDefine.value.listDataType === "json" &&
+              paramDefine.value.listDataValue &&
+              paramDefine.value.listDataValue.map((item: any) => (
+                <SelectOption key={item.value} value={item.value}>
+                  {item.name}
+                </SelectOption>
+              ))}
           </Filed>
         </FormItem>
       );

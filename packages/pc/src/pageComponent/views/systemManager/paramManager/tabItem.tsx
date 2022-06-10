@@ -9,7 +9,11 @@ import CollapseContainer from "./collapseContainer";
 const TabItem = defineComponent({
   props: {
     tabId: {
-      type: Number,
+      type: String,
+      required: true,
+    },
+    completeKey: {
+      type: String,
       required: true,
     },
   },
@@ -77,6 +81,7 @@ const TabItem = defineComponent({
               return {
                 ...item.valueDefine,
                 value: item.value,
+                completeKey: `${props.completeKey}.${item.key}`,
               };
             })
           );
@@ -145,7 +150,7 @@ const TabItem = defineComponent({
                 {/* 二级菜单 多个 */}
                 <div class="second-menu-container">
                   {(item._children ?? []).map((cell: any, index: number) => (
-                    <CollapseContainer key={item.id} title={item.name}>
+                    <CollapseContainer key={item.id} title={cell.name}>
                       <DynamicForm
                         ref={(ins: any) => (cellFormRef.value[index] = ins)}
                         id={cell.id}
