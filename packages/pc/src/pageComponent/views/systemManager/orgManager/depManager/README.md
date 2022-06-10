@@ -17,13 +17,13 @@ export default defineComponent({
 
 ## 参数
 
-| 参数名称     | 类型   | 默认值     | 作用                                                     |
-| ------------ | ------ | ---------- | -------------------------------------------------------- |
-| url          | 见下方 | {}         | 网络请求路径                                             |
-| prefix       | string | /api/      | 网络请求前缀                                             |
-| serverName   | string | comlite/v1 | 服务端名称                                               |
-| dividerGap   | number | 24         | 树结构和表格中间分割线的上下 margin(传入正数 渲染为负数) |
-| dividerColor | color  | \#EFF2F6   | 分割线的颜色                                             |
+| 参数名称     | 类型   | 默认值    | 作用                                                     |
+| ------------ | ------ | --------- | -------------------------------------------------------- |
+| url          | 见下方 | {}        | 网络请求路径                                             |
+| prefix       | string | /api/     | 网络请求前缀                                             |
+| serverName   | string | common/v1 | 服务端名称                                               |
+| dividerGap   | number | 24        | 树结构和表格中间分割线的上下 margin(传入正数 渲染为负数) |
+| dividerColor | color  | \#EFF2F6  | 分割线的颜色                                             |
 
 ### url
 
