@@ -259,11 +259,11 @@ export default defineComponent({
             expandedKeys={expandedKeys.value}
             autoExpandParent={autoExpandParent.value}
             tree-data={gData.value}
-            replaceFields={{
-              children: "children",
-              title: "title",
-              key: "uuid",
-            }}
+            // replaceFields={{
+            //   children: "children",
+            //   title: "title",
+            //   key: "uuid",
+            // }}
             onExpand={onExpand}
             v-slots={{
               title: (item: any) => {
