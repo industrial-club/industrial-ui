@@ -1,6 +1,7 @@
 import { defineComponent, reactive, ref, PropType, inject } from "vue";
 import { Form, message } from "ant-design-vue";
 import { getInstance } from "@/api/axios";
+import faceName from "@/api/faceName";
 
 type LoginType = 1 | 2;
 
@@ -19,7 +20,7 @@ const formItem = Form.Item;
 // props
 const props = {
   serverName: {
-    default: "comlite/v1/",
+    default: faceName.common,
     type: String,
   },
   prefix: {

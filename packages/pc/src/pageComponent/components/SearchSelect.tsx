@@ -11,8 +11,7 @@ import useVModel from "@/pageComponent/hooks/useVModel";
 import { getInstance } from "@/api/axios";
 import { isNil, debounce, isEqual } from "lodash";
 import { every } from "@/pageComponent/utils/is";
-
-import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons-vue";
+import faceName from "@/api/faceName";
 
 const SearchSelect = defineComponent({
   emits: ["update:value"],
@@ -43,7 +42,7 @@ const SearchSelect = defineComponent({
     const urlPrefix: any = inject("urlPrefix")!;
     const instance = getInstance({
       prefix: urlPrefix.prefix,
-      serverName: urlPrefix.serverName ?? "comlite/v1",
+      serverName: urlPrefix.serverName ?? faceName.common,
     });
     const modelValue = useVModel(props, "value", emit);
 

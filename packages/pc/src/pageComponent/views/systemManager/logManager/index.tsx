@@ -95,15 +95,15 @@ const LogManager = defineComponent({
 
     const formRef = ref();
 
-    const formState = reactive<FormState>({
-      systemType: "", // 系统类型
-      moduleType: "", // 模块类型
-      operateType: "", // 操作类型
-      recordType: "", // 记录类型
-      searchText: "", // 日志内容
+    const formState = reactive({
+      softSysId: "", // 系统类型
+      moduleId: "", // 模块类型
+      operateId: "", // 操作类型
+      recordId: "", // 记录类型
+      keyword: "", // 日志内容
       startTime: "", // 开始时间
       endTime: "", // 结束时间
-      time: [],
+      time: [] as any[],
     });
 
     const state = reactive({
@@ -128,10 +128,10 @@ const LogManager = defineComponent({
 
     // 选择系统 模块列表
     const onSystemChange = () => {
-      formState.moduleType = "";
-      if (formState.systemType) {
+      formState.moduleId = "";
+      if (formState.softSysId) {
         const sys: any = state.systemTypeList.find(
-          (item: any) => item.id === formState.systemType
+          (item: any) => item.id === formState.softSysId
         );
         state.moduleTypeList = sys?.subList ?? [];
       } else {
@@ -141,10 +141,10 @@ const LogManager = defineComponent({
 
     // 选择操作类型 日志类型列表
     const onOperateTypeChange = () => {
-      formState.recordType = "";
-      if (formState.operateType) {
+      formState.operateId = "";
+      if (formState.recordId) {
         const operate: any = state.operateTypeList.find(
-          (item: any) => item.id === formState.operateType
+          (item: any) => item.id === formState.recordId
         );
         state.recordTypeList = operate.subList;
       } else {
@@ -176,6 +176,8 @@ const LogManager = defineComponent({
     // 重置表单
     const handleReset = () => {
       formRef.value.resetFields();
+      state.recordTypeList = [];
+      state.moduleTypeList = [];
       refresh();
     };
 
@@ -210,9 +212,9 @@ const LogManager = defineComponent({
         >
           <a-row>
             <a-col span={6}>
-              <a-form-item name="systemType" label="系统名称">
+              <a-form-item name="softSysId" label="系统名称">
                 <a-select
-                  v-model={[formState.systemType, "value"]}
+                  v-model={[formState.softSysId, "value"]}
                   allowClear
                   style="width: 200px"
                   onChange={onSystemChange}
@@ -227,9 +229,9 @@ const LogManager = defineComponent({
               </a-form-item>
             </a-col>
             <a-col span={6}>
-              <a-form-item name="moduleType" label="模块名称">
+              <a-form-item name="moduleId" label="模块名称">
                 <a-select
-                  v-model={[formState.moduleType, "value"]}
+                  v-model={[formState.moduleId, "value"]}
                   allowClear
                   style="width: 200px"
                 >
@@ -243,10 +245,10 @@ const LogManager = defineComponent({
               </a-form-item>
             </a-col>
             <a-col span={12}>
-              <a-form-item name="operateType" label="操作类型">
+              <a-form-item name="recordId" label="操作类型">
                 <a-space align="start">
                   <a-select
-                    v-model={[formState.operateType, "value"]}
+                    v-model={[formState.recordId, "value"]}
                     allowClear
                     style="width: 200px"
                     onChange={onOperateTypeChange}
@@ -259,9 +261,9 @@ const LogManager = defineComponent({
                       ))}
                   </a-select>
                   <span style={{ lineHeight: "32px" }}>-</span>
-                  <a-form-item name="recordType">
+                  <a-form-item name="operateId">
                     <a-select
-                      v-model={[formState.recordType, "value"]}
+                      v-model={[formState.operateId, "value"]}
                       allowClear
                       style="width: 200px"
                     >
@@ -286,9 +288,9 @@ const LogManager = defineComponent({
               </a-form-item>
             </a-col>
             <a-col span={6}>
-              <a-form-item name="searchText" label="关键字">
+              <a-form-item name="keyword" label="关键字">
                 <a-input
-                  v-model={[formState.searchText, "value"]}
+                  v-model={[formState.keyword, "value"]}
                   allowClear
                   placeholder="请输入日志关键内容"
                 />

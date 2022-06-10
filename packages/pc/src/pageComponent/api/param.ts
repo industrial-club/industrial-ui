@@ -7,9 +7,9 @@
  */
 import { getInstance } from "@/api/axios";
 
-let instance = getInstance({ prefix: "/api/", serverName: "comlite/v1" });
+let instance = getInstance({ prefix: "/api/", serverName: "common/v1" });
 
-export function setInstance({ serverName = "comlite/v1", prefix = "/api/" }) {
+export function setInstance({ serverName = "common/v1", prefix = "/api/" }) {
   instance = getInstance({ prefix, serverName });
 }
 
@@ -23,7 +23,7 @@ export const api = {
   /**
    * 查询参数定义、参数值列表 (表单项描述列表)
    */
-  getParamDefineList: (url?: string) => (groupId: number) => {
+  getParamDefineList: (url?: string) => (groupId: string) => {
     return instance.get(url ?? "/param/group/getDefineAndValueListByGroupId", {
       params: { groupId },
     });

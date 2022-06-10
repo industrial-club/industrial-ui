@@ -2,6 +2,7 @@ import { getInstance } from "@/api/axios";
 import { AxiosInstance } from "axios";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import { message } from "ant-design-vue";
+import faceName from "@/api/faceName";
 
 class Login {
   constructor() {
@@ -39,7 +40,7 @@ class Login {
   protected config = {
     axios: {} as AxiosInstance,
     queryInfo: {} as Record<string, string>,
-    faceName: "/comlite/v1/",
+    faceName: faceName.common,
     api: "auth/login",
     env: "mtip-env",
   };
