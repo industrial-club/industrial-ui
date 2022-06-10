@@ -16,7 +16,8 @@ import { debounce } from "lodash";
  */
 export default function useTableList(
   getData: () => Promise<any>,
-  listProp?: string
+  listProp?: string,
+  totalName = 'totalCount',
 ) {
   const tableList = ref([]);
   const isLoading = ref(false);
@@ -30,7 +31,7 @@ export default function useTableList(
       const { data } = await getData();
       if (listProp) {
         tableList.value = data[listProp];
-        total.value = data.totalCount;
+        total.value = data[totalName];
       } else {
         tableList.value = data;
       }
