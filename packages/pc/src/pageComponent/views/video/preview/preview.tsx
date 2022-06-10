@@ -103,7 +103,7 @@ const com = defineComponent({
           cameraIp: video.ip,
           cameraRtspPort: video.rtspPort,
           cameraChannel: video.channel,
-          cameraStream: video.streamType,
+          cameraStream: stream,
           addRtspProxyUrl: url,
         },
       });
@@ -251,9 +251,15 @@ const com = defineComponent({
       imgType.acitveClass = index;
     };
 
-    const changeVideo = async (uuid: any, eventKey: any, index: number) => {
+    const changeVideo = async (
+      uuid: any,
+      eventKey: any,
+      index: number,
+      stream?: string
+    ) => {
       selectedKeys.value.push(uuid);
       if (
+        stream === undefined &&
         imgType.videoActiveList[index] &&
         imgType.videoActiveList[index].data.uuid === uuid
       ) {
@@ -294,7 +300,7 @@ const com = defineComponent({
       };
       localStorage.setItem("videoDataList", JSON.stringify(videoList));
 
-      videoPlay(item.data, item.data.streamType, item.id, index);
+      videoPlay(item.data, stream || item.data.streamType, item.id, index);
       playVideo.play[index].p_player
         .then((res: any) => {
           imgType.type = false;
@@ -637,7 +643,7 @@ const com = defineComponent({
                         )}
                       </div>
                       <div>
-                        {/* <a-popover
+                        <a-popover
                           title="切换码流"
                           content={
                             <div>
@@ -646,11 +652,11 @@ const com = defineComponent({
                                   <div
                                     class="btn"
                                     onClick={() => {
-                                      videoPlay(
-                                        rectData.data,
-                                        stream.code,
-                                        item,
-                                        index
+                                      changeVideo(
+                                        rectData.data.uuid,
+                                        rectData.eventKey,
+                                        index,
+                                        stream.code
                                       );
                                     }}
                                   >
@@ -662,7 +668,7 @@ const com = defineComponent({
                           }
                         >
                           <img src={"/micro-assets/inl/video/stream.png"} />
-                        </a-popover> */}
+                        </a-popover>
                         <a-popover
                           title="控制器"
                           content={
