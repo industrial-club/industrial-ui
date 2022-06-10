@@ -302,26 +302,29 @@ const com = defineComponent({
                 <div class="title-min">
                   <p class="name">{item.name}</p>
                 </div>
-
-                <div
-                  class={[
-                    "icons-min",
-                    data.titleType === index && data.move ? "" : "display",
-                  ]}
-                >
-                  <EditOutlined
-                    onClick={(e) => titleNameEdit(index, e)}
-                    class="icons"
-                  />
-                  <a-popconfirm
-                    onConfirm={() => {
-                      groupingDeleId(item.id);
-                    }}
-                    title="确定删除？"
+                {item.uuid === "gt01" || item.uuid === "gt02" ? (
+                  ""
+                ) : (
+                  <div
+                    class={[
+                      "icons-min",
+                      data.titleType === index && data.move ? "" : "display",
+                    ]}
                   >
-                    <DeleteOutlined class="icons" />
-                  </a-popconfirm>
-                </div>
+                    <EditOutlined
+                      onClick={(e) => titleNameEdit(index, e)}
+                      class="icons"
+                    />
+                    <a-popconfirm
+                      onConfirm={() => {
+                        groupingDeleId(item.id);
+                      }}
+                      title="确定删除？"
+                    >
+                      <DeleteOutlined class="icons" />
+                    </a-popconfirm>
+                  </div>
+                )}
               </div>
             );
           })}

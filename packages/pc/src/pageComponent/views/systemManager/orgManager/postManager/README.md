@@ -17,11 +17,11 @@ export default defineComponent({
 
 ## 参数
 
-| 参数名称   | 类型   | 默认值     | 作用         |
-| ---------- | ------ | ---------- | ------------ |
-| url        | 见下方 | {}         | 网络请求路径 |
-| prefix     | string | /api/      | 网络请求前缀 |
-| serverName | string | comlite/v1 | 服务端名称   |
+| 参数名称   | 类型   | 默认值    | 作用         |
+| ---------- | ------ | --------- | ------------ |
+| url        | 见下方 | {}        | 网络请求路径 |
+| prefix     | string | /api/     | 网络请求前缀 |
+| serverName | string | common/v1 | 服务端名称   |
 
 ### url
 
