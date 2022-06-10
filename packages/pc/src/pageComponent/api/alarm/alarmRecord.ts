@@ -118,6 +118,8 @@ export const getAlarmTypeMap = (url: string) => () =>
 
 // 获取视频的baseUrl
 export const getVideoBaseUrl = (url: string) => async () => {
-  const { data } = await instance.get(url ?? "/vms/v1/camera/getByUuid");
+  const { data } = await instance.get(url ?? "/vms/v1/camera/getByUuid", {
+    baseURL: "/api/",
+  });
   return data.mediaServerPo.url;
 };
