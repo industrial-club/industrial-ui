@@ -57,7 +57,7 @@ export default defineComponent({
           dataIndex: "uuid",
           key: "uuid",
           customRender: (param: any) => {
-            return (
+            return param.record.info.length ? (
               <a-button
                 onClick={() => {
                   repair(param.text);
@@ -65,6 +65,8 @@ export default defineComponent({
               >
                 远程修复
               </a-button>
+            ) : (
+              ""
             );
           },
         },

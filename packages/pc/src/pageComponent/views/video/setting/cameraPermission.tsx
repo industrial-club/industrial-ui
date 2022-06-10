@@ -85,8 +85,8 @@ const com = defineComponent({
           loading={this.isLoading}
           pagination={false}
           v-slots={{
-            bodyCell: ({ column, record }: any) => {
-              let resDom: any = "";
+            bodyCell: ({ text, column, record }: any) => {
+              let resDom: any = text;
               if (column.key === "action") {
                 resDom = (
                   <a onClick={() => this.handleShowConfig(record)}>
