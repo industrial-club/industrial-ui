@@ -7,9 +7,9 @@
  */
 import { getInstance } from "@/api/axios";
 
-let instance = getInstance({ prefix: "/api/", serverName: "comlite/v1" });
+let instance = getInstance({ prefix: "/api/", serverName: "common/v1" });
 
-export function setInstance({ serverName = "comlite/v1", prefix = "/api/" }) {
+export function setInstance({ serverName = "common/v1", prefix = "/api/" }) {
   instance = getInstance({ prefix, serverName });
 }
 
