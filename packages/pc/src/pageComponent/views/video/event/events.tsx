@@ -129,7 +129,7 @@ const com = defineComponent({
       eventTypeList: [],
       algorithmTypeList: [],
     });
-    const createTime = ref();
+    const createTime = ref(dayjs());
     const time = ref<any>([
       dayjs(new Date()).subtract(1, "week").format("YYYY-MM-DD"),
       dayjs(new Date()).format("YYYY-MM-DD"),
@@ -478,13 +478,15 @@ const com = defineComponent({
               </a-select>
             </a-form-item>
             <a-form-item label="报警类型" name="data">
-              <a-select v-model={[data.param.data, "value"]}>
+              <a-input v-model={[data.param.data, "value"]} />
+              {/* <a-select v-model={[data.param.data, 'value']}>
                 {data.alarmType.map((item: any) => (
                   <a-select-option value={item.value}>
                     {item.label}
                   </a-select-option>
                 ))}
-              </a-select>
+              </a-select> */}
+              0:消警 1:报警 2:预警
             </a-form-item>
             <a-form-item label="创建时间">
               <a-date-picker

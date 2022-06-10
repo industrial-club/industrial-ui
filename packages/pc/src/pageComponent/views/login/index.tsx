@@ -1,10 +1,9 @@
-import { Component, defineComponent, ref, PropType, provide } from "vue";
+import { Component, defineComponent, PropType, provide } from "vue";
 import { useRouter } from "vue-router";
-import { message } from "ant-design-vue";
 import utils from "@/utils";
 import { getInstance } from "@/api/axios";
 import { login } from "@/utils/publicUtil";
-import { encodeStr } from "@/pageComponent/utils/base64";
+import faceName from "@/api/faceName";
 import loginBox, { EventBySubmitParams } from "./box";
 import leftImg from "./leftImg";
 import topTitle from "./top-title";
@@ -17,7 +16,7 @@ const Login = defineComponent({
   components,
   props: {
     serverName: {
-      default: "comlite/v1/",
+      default: faceName.common,
       type: String,
     },
     isClould: {

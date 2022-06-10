@@ -1,5 +1,5 @@
-import { AxiosResponse } from "axios";
 import { getInstance } from "@/api/axios";
+import faceName from "@/api/faceName";
 
 let instance = getInstance({ prefix: "/api/", serverName: "alarmlite/v1" });
 
@@ -96,7 +96,7 @@ export const getPropertiesListByInstanceId =
 // 获取部门及人员树
 export const getDepPeopleTreeList = (url: string) => (keyword?: string) =>
   instance.get(url ?? "/department/all/tree/org/employee", {
-    baseURL: "/api/common/v1",
+    baseURL: `/api/${faceName.common}`,
     params: { keyword },
   });
 
