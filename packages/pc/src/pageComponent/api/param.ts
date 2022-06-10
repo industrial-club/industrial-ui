@@ -23,7 +23,7 @@ export const api = {
   /**
    * 查询参数定义、参数值列表 (表单项描述列表)
    */
-  getParamDefineList: (url?: string) => (groupId: number) => {
+  getParamDefineList: (url?: string) => (groupId: string) => {
     return instance.get(url ?? "/param/group/getDefineAndValueListByGroupId", {
       params: { groupId },
     });

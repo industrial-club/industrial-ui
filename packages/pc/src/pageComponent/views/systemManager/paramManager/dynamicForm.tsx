@@ -15,7 +15,7 @@ import ProFormItem from "@/pageComponent/components/ProFormItem";
 const DynamicForm = defineComponent({
   props: {
     id: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -28,7 +28,41 @@ const DynamicForm = defineComponent({
     const formDescList = ref([]);
     const getFormDescList = async () => {
       const { data } = await api.getParamDefineList(urmMap.define)(props.id);
-      formDescList.value = data.paramDefineValueVoList;
+      formDescList.value = data.paramDefineValueVoList.map((item: any) => {
+        if (!item.paramDefineValue || !("value" in item.paramDefineValue)) {
+          item.paramDefineValue = { value: null };
+        }
+
+        if (
+          item.paramDefine.type === "float" ||
+          item.paramDefine.type === "int"
+        ) {
+          item.paramDefineValue.value = item.paramDefineValue.value
+            ? Number(item.paramDefineValue.value)
+            : 0;
+        }
+
+        if (item.paramDefine.type === "boolean") {
+          item.paramDefineValue.value = item.paramDefineValue.value ?? "false";
+        }
+
+        if (item.paramDefine.type === "select") {
+          if (item.paramDefine.listDataType === "json") {
+            item.paramDefine.listDataValue = JSON.parse(
+              item.paramDefine.listDataValue
+            );
+
+            const selected = item.paramDefine.listDataValue.filter(
+              (item: any) => {
+                return item.default === "1";
+              }
+            );
+            item.paramDefineValue.value = selected[0].value;
+          }
+        }
+
+        return item;
+      });
     };
     getFormDescList();
 
@@ -40,7 +74,7 @@ const DynamicForm = defineComponent({
       valueDefineMap.value = new Map();
       // 设置表单的初始值
       form.value = val.reduce((prev: any, curr: any) => {
-        prev[curr.paramDefine.code] = curr.paramDefineValue.value;
+        prev[curr.paramDefine.code] = curr.paramDefineValue?.value;
         valueDefineMap.value.set(curr.paramDefine.code, curr.paramDefineValue);
         return prev;
       }, {});
