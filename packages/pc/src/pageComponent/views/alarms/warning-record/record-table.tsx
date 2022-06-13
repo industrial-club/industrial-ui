@@ -143,6 +143,7 @@ const WarningRecord = defineComponent({
             instanceCode: record.instanceCode,
             propertyCode: record.propertyCode,
             systemCode: record.systemCode,
+            corpId: record.corpId,
           });
           message.success("消警成功");
           getAlarmRecordList();
@@ -224,6 +225,7 @@ const WarningRecord = defineComponent({
         propertyCode: record.propertyCode,
         systemCode: record.systemCode,
         voiceAvailable: enable,
+        corpId: record.corpId,
       });
       getAlarmRecordList();
     };
