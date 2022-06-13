@@ -476,7 +476,7 @@ const com = defineComponent({
                 ))}
               </a-select>
             </a-form-item>
-            <a-form-item label="报警类型" name="data">
+            <a-form-item label="数据" name="data">
               <a-input v-model={[data.param.data, "value"]} />
               {/* <a-select v-model={[data.param.data, 'value']}>
                 {data.alarmType.map((item: any) => (
