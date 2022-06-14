@@ -104,7 +104,7 @@ const UpdateMenuDialog = defineComponent({
               <a-switch v-model={[form.value.valid, "checked"]}></a-switch>
             </a-form-item>
             <a-form-item label="ICON" name="icon">
-              <IconSelect v-model={[form.value.icon, "value"]} />
+              <a-input v-model={[form.value.icon, "value"]}></a-input>
             </a-form-item>
           </a-form>
         </Modal>

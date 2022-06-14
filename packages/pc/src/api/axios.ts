@@ -13,7 +13,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
   const prefix = opt.prefix || "/api/";
   const instance = axios.create({
     baseURL: prefix + (opt.serverName || ""),
-    timeout: 5000,
+    timeout: 1000 * 10,
     headers: {
       "X-Custom-Header": "foobar",
       clientType: "app",
