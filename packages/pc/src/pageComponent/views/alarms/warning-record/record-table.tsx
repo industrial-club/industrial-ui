@@ -18,9 +18,10 @@ import {
   getVideo,
   batchForceClearAlarm,
   batchVoiceDisable,
-} from "@/pageComponent/api/alarm/alarmRecord";
+  EnumItem,
+  getEnum,
+} from "@/api/alarm/alarmRecord";
 import { TransformCellTextProps } from "ant-design-vue/lib/table/interface";
-import { EnumItem, getEnum } from "@/pageComponent/api/alarm/alarmRecord";
 import QueryFilter from "./query-filter";
 import VideoPlay from "@/pageComponent/components/video-play";
 import { IUrlObj } from "./index";

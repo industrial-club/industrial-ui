@@ -12,7 +12,7 @@ import useVModel from "@/pageComponent/hooks/useVModel";
 import { cloneDeep, omit } from "lodash";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/userManager";
+import api from "@/api/auth/userManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";

@@ -9,7 +9,7 @@
 import { defineComponent, inject, ref, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/menuManager";
+import api from "@/api/auth/menuManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";
@@ -104,7 +104,7 @@ const UpdateMenuDialog = defineComponent({
               <a-switch v-model={[form.value.valid, "checked"]}></a-switch>
             </a-form-item>
             <a-form-item label="ICON" name="icon">
-              <IconSelect v-model={[form.value.icon, "value"]} />
+              <a-input v-model={[form.value.icon, "value"]}></a-input>
             </a-form-item>
           </a-form>
         </Modal>

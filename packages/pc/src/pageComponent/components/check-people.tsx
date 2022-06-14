@@ -2,7 +2,7 @@ import { defineComponent, ref, watch, inject } from "vue";
 import useWatchOnce from "@/pageComponent/hooks/useWatchOnce";
 import { debounce } from "lodash";
 import { fomatDepTree } from "@/pageComponent/utils/format";
-import { getDepPeopleTreeList } from "@/pageComponent/api/alarm/warningConfigure";
+import { getDepPeopleTreeList } from "@/api/alarm/warningConfigure";
 import { IUrlObj } from "../views/alarms/warning-configure";
 
 import {

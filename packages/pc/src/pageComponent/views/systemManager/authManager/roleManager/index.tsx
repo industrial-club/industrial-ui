@@ -1,6 +1,6 @@
 import { defineComponent, PropType, provide, ref } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api, { setInstance } from "@/pageComponent/api/auth/roleManager";
+import api, { setInstance } from "@/api/auth/roleManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";

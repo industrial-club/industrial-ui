@@ -9,7 +9,7 @@
 import { defineComponent, ref, onMounted, inject } from "vue";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import { removeDateProp } from "@/pageComponent/utils/tree";
-import api from "@/pageComponent/api/org/depManager";
+import api from "@/api/org/depManager";
 import { IUrlObj } from "./index";
 
 import CommonTree from "@/pageComponent/components/CommonTree";

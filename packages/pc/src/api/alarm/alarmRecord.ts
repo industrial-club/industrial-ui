@@ -64,6 +64,13 @@ export const forceClearAlarm = (url: string) => async (data: any) => {
   const res = await instance.post<boolean>(url ?? "/forceClearAlarm", data);
   return res;
 };
+
+/**
+ * 批量消警
+ */
+export const batchForceClearAlarm = (url: string) => async (data: any) =>
+  instance.post(url ?? "/forceClearAlarm/list", data);
+
 /**
  * 获取报警记录列表
  * @param obj
@@ -95,6 +102,12 @@ export const getWarningSpeechList = (url: string) => () =>
  */
 export const setVoiceEnable = (url: string) => (data: any) =>
   instance.post(url ?? "/updateVoiceState", data);
+
+/**
+ * 批量静音
+ */
+export const batchVoiceDisable = (url: string) => (data: any) =>
+  instance.post(url ?? "/updateVoiceState/list", data);
 
 /**
  * 获取视频

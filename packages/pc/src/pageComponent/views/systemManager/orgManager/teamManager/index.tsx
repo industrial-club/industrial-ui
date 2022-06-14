@@ -1,7 +1,7 @@
 import { defineComponent, ref, provide, PropType } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
-import api, { setInstance } from "@/pageComponent/api/org/teamManager";
+import api, { setInstance } from "@/api/org/teamManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";

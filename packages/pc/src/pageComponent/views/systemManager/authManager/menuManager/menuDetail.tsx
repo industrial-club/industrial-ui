@@ -10,7 +10,7 @@ import useProxy from "@/pageComponent/hooks/useProxy";
 import useBus from "@/pageComponent/hooks/useBus";
 import { cloneDeep, omit } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/menuManager";
+import api from "@/api/auth/menuManager";
 import { IUrlObj } from "./index";
 
 import { message } from "ant-design-vue";
@@ -149,11 +149,18 @@ const MenuDetail = defineComponent({
                     <span>{props.node.valid ? "启用" : "禁用"}</span>
                   )}
                 </a-form-item>
-                <a-form-item label="ICON" name="icon">
+                <a-form-item
+                  label="ICON"
+                  name="icon"
+                  extra="请输入iconfont中的名称"
+                >
                   {isEdit.value ? (
-                    <IconSelect v-model={[form.value.icon, "value"]} />
+                    <a-input v-model={[form.value.icon, "value"]}></a-input>
                   ) : (
-                    <Dynamicicon icon={props.node.icon} />
+                    <icon-font
+                      style={{ color: "#5c667d", fontSize: "20px" }}
+                      type={props.node.icon}
+                    ></icon-font>
                   )}
                 </a-form-item>
               </a-form>

@@ -14,13 +14,11 @@ import {
   getInstanceListBySystemId,
   getPropertiesListByInstanceId,
   getEnum,
-} from "@/pageComponent/api/alarm/warningConfigure";
-import { TreeDataItem } from "ant-design-vue/es/tree/Tree";
-import $store from "@/pageComponent/store";
-import {
   insertAlarmRule,
   getRuleConfigureById,
-} from "@/pageComponent/api/alarm/warningConfigure";
+} from "@/api/alarm/warningConfigure";
+import { TreeDataItem } from "ant-design-vue/es/tree/Tree";
+import $store from "@/pageComponent/store";
 import BasicForm from "./form/basic-form";
 import RuleForm from "./form/rule-form";
 import LinkageForm from "./form/linkage-form";

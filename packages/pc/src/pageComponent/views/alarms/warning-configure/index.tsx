@@ -1,7 +1,7 @@
 import { defineComponent, PropType, provide, ref } from "vue";
 import ConfigureTable from "./configure-table";
 import AddWarningConfig from "@/pageComponent/views/alarms/add-warning-configure";
-import { setInstance } from "@/pageComponent/api/alarm/warningConfigure";
+import { setInstance } from "@/api/alarm/warningConfigure";
 import utils from "@/utils";
 
 export interface IUrlObj {
