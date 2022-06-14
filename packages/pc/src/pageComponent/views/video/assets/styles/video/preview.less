@@ -1,3 +1,74 @@
+.videoControls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .videoControl {
+    width: 126px;
+    height: 126px;
+    position: relative;
+    .bg {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    img {
+      position: absolute;
+      cursor: pointer;
+    }
+    .up {
+      top: 14px;
+      left: 52px;
+    }
+    .lup {
+      top: 26px;
+      left: 26px;
+      transform: rotate(-45deg);
+    }
+    .rup {
+      top: 27px;
+      left: 78px;
+      transform: rotate(45deg);
+    }
+    .left {
+      top: 52px;
+      left: 14px;
+      transform: rotate(-90deg);
+    }
+    .right {
+      top: 52px;
+      left: 90px;
+      transform: rotate(90deg);
+    }
+    .ldown {
+      top: 78px;
+      left: 26px;
+      transform: rotate(215deg);
+    }
+    .down {
+      top: 90px;
+      left: 52px;
+      transform: rotate(180deg);
+    }
+    .rdown {
+      top: 78px;
+      left: 78px;
+      transform: rotate(135deg);
+    }
+  }
+  .btns {
+    width: 56px;
+    height: 28px;
+    border-radius: 19px;
+    background: #e0e7f2;
+    margin: 8px 8px 0 8px;
+    padding: 3px;
+    img {
+      margin-right: 1px;
+      cursor: pointer;
+    }
+  }
+}
 .preview {
   position: relative;
   height: 100%;
