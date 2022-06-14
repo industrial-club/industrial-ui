@@ -19,7 +19,7 @@ import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import dayjs from "dayjs";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/org/depManager";
+import api from "@/api/org/depManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";

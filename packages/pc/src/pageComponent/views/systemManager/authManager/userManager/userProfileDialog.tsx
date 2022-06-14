@@ -8,7 +8,7 @@
 
 import { defineComponent, watch, nextTick, ref, inject } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
-import api from "@/pageComponent/api/auth/userManager";
+import api from "@/api/auth/userManager";
 import { IUrlObj } from "./index";
 
 import { Modal } from "ant-design-vue";

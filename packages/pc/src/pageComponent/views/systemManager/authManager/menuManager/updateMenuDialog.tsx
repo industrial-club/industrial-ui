@@ -9,7 +9,7 @@
 import { defineComponent, inject, ref, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/menuManager";
+import api from "@/api/auth/menuManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";

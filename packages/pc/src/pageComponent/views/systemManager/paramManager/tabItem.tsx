@@ -1,5 +1,5 @@
 import { defineComponent, ref, provide, onBeforeUpdate, inject } from "vue";
-import { api } from "@/pageComponent/api/param";
+import { api } from "@/api/param";
 import { IUrlObj } from "./index";
 
 import { message } from "ant-design-vue";

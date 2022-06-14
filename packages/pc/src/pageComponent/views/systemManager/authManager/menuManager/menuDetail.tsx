@@ -10,7 +10,7 @@ import useProxy from "@/pageComponent/hooks/useProxy";
 import useBus from "@/pageComponent/hooks/useBus";
 import { cloneDeep, omit } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/menuManager";
+import api from "@/api/auth/menuManager";
 import { IUrlObj } from "./index";
 
 import { message } from "ant-design-vue";

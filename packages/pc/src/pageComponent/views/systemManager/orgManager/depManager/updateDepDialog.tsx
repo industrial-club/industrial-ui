@@ -12,7 +12,7 @@ import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import useModalForm from "@/pageComponent/hooks/manage-module/useModalForm";
 import { omit } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/org/depManager";
+import api from "@/api/org/depManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";

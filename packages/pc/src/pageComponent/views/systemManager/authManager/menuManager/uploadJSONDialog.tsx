@@ -11,7 +11,7 @@ import useVModel from "@/pageComponent/hooks/useVModel";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";
-import api from "@/pageComponent/api/auth/menuManager";
+import api from "@/api/auth/menuManager";
 
 const UploadJSONDialog = defineComponent({
   emits: ["update:visible"],

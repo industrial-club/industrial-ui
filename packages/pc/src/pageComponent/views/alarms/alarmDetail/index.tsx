@@ -3,11 +3,8 @@ import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
 import { cloneDeep } from "lodash";
 import { Chart } from "@antv/g2";
-import {
-  getAlarmTypeMap,
-  getVideo,
-} from "@/pageComponent/api/alarm/alarmRecord";
-import { getVideoBaseUrl } from "@/pageComponent/api/alarm/alarmRecord";
+import { getAlarmTypeMap, getVideo } from "@/api/alarm/alarmRecord";
+import { getVideoBaseUrl } from "@/api/alarm/alarmRecord";
 import { IUrlObj } from "../warning-record";
 
 export default defineComponent({

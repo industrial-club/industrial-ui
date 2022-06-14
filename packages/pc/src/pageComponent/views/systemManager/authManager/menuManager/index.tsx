@@ -7,7 +7,7 @@
  */
 import { defineComponent, ref, provide, PropType } from "vue";
 import utils from "@/utils";
-import { setInstance } from "@/pageComponent/api/auth/menuManager";
+import { setInstance } from "@/api/auth/menuManager";
 
 import MenuSelectTree from "./menuSelectTree";
 import MenuDetail from "./menuDetail";

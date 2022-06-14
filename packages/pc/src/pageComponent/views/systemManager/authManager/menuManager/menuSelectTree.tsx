@@ -9,7 +9,7 @@ import { defineComponent, onMounted, ref, inject } from "vue";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import useBus from "@/pageComponent/hooks/useBus";
 import { omit } from "lodash";
-import api from "@/pageComponent/api/auth/menuManager";
+import api from "@/api/auth/menuManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";

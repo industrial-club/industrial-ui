@@ -7,7 +7,7 @@
  */
 import { computed, defineComponent, inject, ref, unref, watch } from "vue";
 import useProxy from "@/pageComponent/hooks/useProxy";
-import { api } from "@/pageComponent/api/param";
+import { api } from "@/api/param";
 import { IUrlObj } from "./index";
 
 import ProFormItem from "@/pageComponent/components/ProFormItem";

@@ -10,7 +10,7 @@ import { Modal, message } from "ant-design-vue";
 import { cloneDeep } from "lodash";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import { getRequiredRule, getMaxRule } from "@/pageComponent/utils/validation";
-import api, { setInstance } from "@/pageComponent/api/personalSetting";
+import api, { setInstance } from "@/api/personalSetting";
 import utils from "@/utils";
 
 import EditPasswordForm, {
