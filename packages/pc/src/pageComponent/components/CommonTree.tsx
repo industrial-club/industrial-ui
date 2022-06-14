@@ -87,10 +87,9 @@ const CommonTree = defineComponent({
       callback?.();
     }, 300);
     onMounted(async () => {
-      await getTreeData();
-      setTimeout(() => {
+      await getTreeData(() => {
         expandedKeys.value = [treeData.value?.[0].id];
-      }, 500);
+      });
     });
     // 暴露刷新数据方法
     proxy._refresh = getTreeData;
