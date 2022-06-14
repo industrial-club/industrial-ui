@@ -10,7 +10,7 @@ import { computed, defineComponent, inject, PropType, ref, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import useModalForm from "@/pageComponent/hooks/manage-module/useModalForm";
-import api from "@/pageComponent/api/org/teamManager";
+import api from "@/api/org/teamManager";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import { IUrlObj } from "./index";
 

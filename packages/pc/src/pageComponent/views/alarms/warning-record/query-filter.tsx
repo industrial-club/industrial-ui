@@ -1,5 +1,5 @@
 import { defineComponent, onMounted, PropType, reactive, ref } from "vue";
-import { EnumItem, getEnum } from "@/pageComponent/api/alarm/alarmRecord";
+import { EnumItem, getEnum } from "@/api/alarm/alarmRecord";
 
 const QueryFilter = defineComponent({
   props: {

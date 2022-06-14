@@ -9,7 +9,7 @@
 import { computed, defineComponent, inject, ref, watch } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
-import api from "@/pageComponent/api/org/depManager";
+import api from "@/api/org/depManager";
 import { IUrlObj } from "./index";
 
 import { Modal } from "ant-design-vue";

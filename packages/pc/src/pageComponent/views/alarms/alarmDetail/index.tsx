@@ -3,11 +3,8 @@ import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
 import { cloneDeep } from "lodash";
 import { Chart } from "@antv/g2";
-import {
-  getAlarmTypeMap,
-  getVideo,
-} from "@/pageComponent/api/alarm/alarmRecord";
-import { getVideoBaseUrl } from "@/pageComponent/api/alarm/alarmRecord";
+import { getAlarmTypeMap, getVideo } from "@/api/alarm/alarmRecord";
+import { getVideoBaseUrl } from "@/api/alarm/alarmRecord";
 import { IUrlObj } from "../warning-record";
 
 export default defineComponent({
@@ -88,9 +85,11 @@ export default defineComponent({
             animation: "scale-in-x",
           },
         });
-      chartData.value = alarmDetail.value.alarmLifecycleList
-        .filter((item) => item.endTime)
-        .map((item: any) => {
+      chartData.value = alarmDetail.value.alarmLifecycleList.map(
+        (item: any) => {
+          if (!item.endTime) {
+            item.endTime = Date.now();
+          }
           let level;
           switch (item.alarmLevel) {
             case 1:
@@ -113,7 +112,8 @@ export default defineComponent({
             level,
             range: [item.startTime, item.endTime],
           };
-        });
+        }
+      );
 
       chartIns.value.data(chartData.value);
       chartIns.value.render();
@@ -170,6 +170,13 @@ export default defineComponent({
                 )
               : "-"}
           </a-descriptions-item>
+          <a-descriptions-item label="消警时间">
+            {alarmDetail.value.lastAlarmTime
+              ? moment(alarmDetail.value.lastAlarmTime).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )
+              : "-"}
+          </a-descriptions-item>
           <a-descriptions-item label="报警类型">
             {alarmType.value}
           </a-descriptions-item>
@@ -195,7 +202,7 @@ export default defineComponent({
             </a-image-preview-group>
           </a-descriptions-item>
           <a-descriptions-item label="报警视频" span={2}>
-            {videoList.value.length || videoBaseUrl.value ? (
+            {videoList.value.length && videoBaseUrl.value ? (
               <a-space size={16}>
                 {videoList.value.map((item) => (
                   <video
@@ -214,7 +221,7 @@ export default defineComponent({
             )}
           </a-descriptions-item>
           <a-descriptions-item label="报警生命周期">
-            {chartData.value.length ? (
+            {alarmDetail.value?.alarmLifecycleList?.length ? (
               <div ref={chartRef}></div>
             ) : (
               <a-empty description="暂无生命周期" />

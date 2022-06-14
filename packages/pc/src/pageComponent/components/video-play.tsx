@@ -1,5 +1,5 @@
 import { computed, defineComponent, PropType, ref, inject } from "vue";
-import { getVideoBaseUrl } from "@/pageComponent/api/alarm/alarmRecord";
+import { getVideoBaseUrl } from "@/api/alarm/alarmRecord";
 import { IUrlObj } from "../views/alarms/warning-record";
 
 import { LeftOutlined, RightOutlined } from "@ant-design/icons-vue";
