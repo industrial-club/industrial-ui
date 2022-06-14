@@ -273,8 +273,11 @@ export default defineComponent({
     const renderTitleBox = () => {
       return (
         <div class="titleBox flex-center">
-          <img src={platformLogo} alt="" />
-          <div class="title">{systemTitle}</div>
+          {status === "system" ? (
+            <img src={platformLogo} alt="" />
+          ) : (
+            <div class="title">{systemTitle}</div>
+          )}
         </div>
       );
     };

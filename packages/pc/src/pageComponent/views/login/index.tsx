@@ -42,7 +42,7 @@ const Login = defineComponent({
       default: "天津美腾科技股份有限公司 Tianjin Meiteng Technology Co.,Itd",
     },
     projectName: {
-      default: "工业物联平台",
+      default: "系统登录",
     },
     bg: {
       default: "",
