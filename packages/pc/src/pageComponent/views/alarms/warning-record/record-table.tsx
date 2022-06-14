@@ -16,6 +16,8 @@ import {
   getWarningSpeechList,
   setVoiceEnable,
   getVideo,
+  batchForceClearAlarm,
+  batchVoiceDisable,
 } from "@/pageComponent/api/alarm/alarmRecord";
 import { TransformCellTextProps } from "ant-design-vue/lib/table/interface";
 import { EnumItem, getEnum } from "@/pageComponent/api/alarm/alarmRecord";
@@ -143,6 +145,7 @@ const WarningRecord = defineComponent({
             instanceCode: record.instanceCode,
             propertyCode: record.propertyCode,
             systemCode: record.systemCode,
+            corpId: record.corpId,
           });
           message.success("消警成功");
           getAlarmRecordList();
@@ -162,6 +165,47 @@ const WarningRecord = defineComponent({
       } else {
         form.value = {};
       }
+      getAlarmRecordList();
+    };
+
+    // 批量消警/静音
+    const selectedRows = ref<any[]>([]);
+    const onSelectChange = (keys: string[], rows: any[]) => {
+      selectedRows.value = rows;
+    };
+    // 批量消警
+    const handleBatchClear = async () => {
+      if (!selectedRows.value.length) {
+        return message.warning("请选择记录");
+      }
+      await batchForceClearAlarm(urlObj.batchClear)(
+        selectedRows.value.map((item) => ({
+          id: item.id,
+          instanceCode: item.instanceCode,
+          propertyCode: item.propertyCode,
+          systemCode: item.systemCode,
+          corpId: item.corpId,
+        }))
+      );
+      message.success("消警成功");
+      getAlarmRecordList();
+    };
+    // 批量静音
+    const hanldeBatchMute = async () => {
+      if (!selectedRows.value.length) {
+        return message.warning("请选择记录");
+      }
+      await batchVoiceDisable(urlObj.batchMute)(
+        selectedRows.value.map((item) => ({
+          id: item.id,
+          instanceCode: item.instanceCode,
+          propertyCode: item.propertyCode,
+          systemCode: item.systemCode,
+          voiceAvailable: false,
+          corpId: item.corpId,
+        }))
+      );
+      message.success("静音成功");
       getAlarmRecordList();
     };
 
@@ -224,6 +268,7 @@ const WarningRecord = defineComponent({
         propertyCode: record.propertyCode,
         systemCode: record.systemCode,
         voiceAvailable: enable,
+        corpId: record.corpId,
       });
       getAlarmRecordList();
     };
@@ -242,10 +287,25 @@ const WarningRecord = defineComponent({
     return () => (
       <div class="warning-record">
         <QueryFilter onSubmit={search} enumObj={enumObj} />
+        <div class="operation">
+          <a-space>
+            <span class="checked">已选中{selectedRows.value.length}项</span>
+            <a-button type="link" onClick={handleBatchClear}>
+              批量消警
+            </a-button>
+            <a-button type="link" onClick={hanldeBatchMute}>
+              批量消音
+            </a-button>
+          </a-space>
+        </div>
         <a-table
           dataSource={list.value}
           columns={columns}
           rowKey="id"
+          rowSelection={{
+            selectedRowKeys: selectedRows.value.map((item) => item.id),
+            onChange: onSelectChange,
+          }}
           pagination={{
             showTotal: (total: number) => `共${total}条`,
             showQuickJumper: true,

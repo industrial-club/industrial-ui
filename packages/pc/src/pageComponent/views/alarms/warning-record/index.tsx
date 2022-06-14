@@ -23,6 +23,10 @@ export interface IUrlObj {
   alarmTypeList: string;
   // 视频的baseUrl
   videoBaseUrl: string;
+  // 批量消警
+  batchClear: string;
+  // 批量静音
+  batchMute: string;
 }
 
 const WarningRecord = defineComponent({

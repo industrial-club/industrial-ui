@@ -66,8 +66,9 @@ const CommonTree = defineComponent({
 
     const searchText = ref("");
 
-    const treeData = ref([]);
+    const treeData = ref<any[]>([]);
     const originData = ref([]);
+    const expandedKeys = ref<string[]>([]);
 
     const isLoading = ref(false);
 
@@ -85,7 +86,11 @@ const CommonTree = defineComponent({
       }
       callback?.();
     }, 300);
-    getTreeData();
+    onMounted(async () => {
+      await getTreeData(() => {
+        expandedKeys.value = [treeData.value?.[0].id];
+      });
+    });
     // 暴露刷新数据方法
     proxy._refresh = getTreeData;
 
@@ -281,10 +286,12 @@ const CommonTree = defineComponent({
                 showLine={{ showLeafIcon: true }}
                 blockNode
                 draggable={isDraggable.value}
-                defaultExpandAll
                 fieldNames={{ children: "subList", key: "id", title: "name" }}
                 treeData={treeData.value}
-                v-model={[selectedKeys.value, "selectedKeys"]}
+                v-models={[
+                  [selectedKeys.value, "selectedKeys"],
+                  [expandedKeys.value, "expandedKeys"],
+                ]}
                 onSelect={handleSelectNode}
                 onDrop={handleDrop}
               >
