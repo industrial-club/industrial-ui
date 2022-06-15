@@ -275,8 +275,12 @@ const com = defineComponent({
       formRef.value
         .validate()
         .then(async () => {
-          data.formState.nvrBo = undefined;
           const res = await videoApi.saveVideo(data.formState);
+          if (res.data === "repeat") {
+            message.error("数据重复，保存失败");
+            return;
+          }
+          data.formState.nvrBo = undefined;
           getData();
           formRef.value.resetFields();
 

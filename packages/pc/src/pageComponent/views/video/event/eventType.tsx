@@ -2,6 +2,7 @@ import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import eventApi from "@/api/event";
 import "../assets/styles/video/event.less";
 import utils from "@/utils";
+import { message } from "ant-design-vue";
 
 const com = defineComponent({
   props: {
@@ -149,7 +150,11 @@ const com = defineComponent({
       formRef.value
         .validate()
         .then(async () => {
-          await eventApi.saveEventType(data.param);
+          const res = await eventApi.saveEventType(data.param);
+          if (res.data === "repeat") {
+            message.error("数据重复，保存失败");
+            return;
+          }
           getData();
           data.dialog = false;
           formRef.value.resetFields();
