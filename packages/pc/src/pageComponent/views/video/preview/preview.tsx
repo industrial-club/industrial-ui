@@ -434,62 +434,40 @@ const com = defineComponent({
     const videoBtns = [
       [
         {
-          text: "↖",
+          text: "lup",
           signal: 25,
         },
         {
-          text: "↑",
+          text: "up",
           signal: 21,
         },
         {
-          text: "↗",
+          text: "rup",
           signal: 26,
         },
       ],
       [
         {
-          text: "←",
+          text: "left",
           signal: 23,
         },
         {
-          text: "",
-          signal: 0,
-        },
-        {
-          text: "→",
+          text: "right",
           signal: 24,
         },
       ],
       [
         {
-          text: "↙",
+          text: "ldown",
           signal: 27,
         },
         {
-          text: "↓",
+          text: "down",
           signal: 22,
         },
         {
-          text: "↘",
+          text: "rdown",
           signal: 28,
-        },
-      ],
-      [
-        {
-          text: "缩小",
-          signal: 16,
-        },
-        {
-          text: "放大",
-          signal: 15,
-        },
-        {
-          text: "拉远",
-          signal: 14,
-        },
-        {
-          text: "拉近",
-          signal: 13,
         },
       ],
     ];
@@ -672,25 +650,76 @@ const com = defineComponent({
                         <a-popover
                           title="控制器"
                           content={
-                            <div>
-                              {videoBtns.map((ele: any) => {
-                                return (
-                                  <div class="flex">
-                                    {ele.map((btn: any) => {
-                                      return (
-                                        <div
-                                          class="flex1 btn"
-                                          onClick={(e: any) =>
-                                            videoMove(e, index, btn.signal)
-                                          }
-                                        >
-                                          {btn.text}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                );
-                              })}
+                            <div class="videoControls">
+                              <div class="videoControl">
+                                <img
+                                  class="bg"
+                                  src={
+                                    "/micro-assets/inl/video/controls/circle.png"
+                                  }
+                                />
+                                {videoBtns.map((ele: any) => {
+                                  return (
+                                    <div>
+                                      {ele.map((btn: any) => {
+                                        return (
+                                          <img
+                                            class={btn.text}
+                                            src={
+                                              "/micro-assets/inl/video/controls/up.svg"
+                                            }
+                                            onClick={(e: any) =>
+                                              videoMove(e, index, btn.signal)
+                                            }
+                                          />
+                                        );
+                                      })}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              <div class="flex">
+                                <div class="flex1 btns">
+                                  <img
+                                    src="/micro-assets/inl/video/controls/smaller.svg"
+                                    onClick={(e: any) =>
+                                      videoMove(e, index, 16)
+                                    }
+                                  />
+                                  <img
+                                    src="/micro-assets/inl/video/controls/bigger.svg"
+                                    onClick={(e: any) =>
+                                      videoMove(e, index, 15)
+                                    }
+                                  />
+                                </div>
+                                <div class="flex1 btns">
+                                  <img
+                                    src="/micro-assets/inl/video/controls/go.svg"
+                                    onClick={(e: any) =>
+                                      videoMove(e, index, 14)
+                                    }
+                                  />
+                                  <img
+                                    src="/micro-assets/inl/video/controls/back.svg"
+                                    onClick={(e: any) =>
+                                      videoMove(e, index, 13)
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <div class="flex">
+                                <div class="flex1 btns">
+                                  <img
+                                    src="/micro-assets/inl/video/controls/light.svg"
+                                    onClick={(e: any) => videoMove(e, index, 2)}
+                                  />
+                                  <img
+                                    src="/micro-assets/inl/video/controls/rain.svg"
+                                    onClick={(e: any) => videoMove(e, index, 3)}
+                                  />
+                                </div>
+                              </div>
                             </div>
                           }
                         >
