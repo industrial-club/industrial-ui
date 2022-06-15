@@ -161,7 +161,7 @@ const com = defineComponent({
                       <a
                         onClick={() => {
                           window.open(
-                            `/#/intelligentCentralizedControl/videoManager/play?uuid=${record.cameraUuids}&modeCode=${record.modeCode}`
+                            `/mtip-factory/#/intelligentCentralizedControl/videoManager/play?uuid=${record.itemCodeGroup}&modeCode=${record.modeCode}`
                           );
                         }}
                       >
