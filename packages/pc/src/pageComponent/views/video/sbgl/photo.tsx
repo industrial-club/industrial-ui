@@ -220,29 +220,27 @@ const com = defineComponent({
         if (param.column.dataIndex === "operation") {
           return (
             <div class="flex tableOpera">
-              <div
-                class="text"
+              <a
                 onClick={() => {
                   videoPlay(param);
                 }}
               >
                 预览
-              </div>
-              <div
-                class="text"
+              </a>
+              <a
                 onClick={() => {
                   editAlarm(param);
                 }}
               >
                 编辑
-              </div>
+              </a>
               <a-popconfirm
                 title="确定删除？"
                 onConfirm={() => {
                   deleteAlarm(param);
                 }}
               >
-                <div class="text">删除</div>
+                <a>删除</a>
               </a-popconfirm>
             </div>
           );

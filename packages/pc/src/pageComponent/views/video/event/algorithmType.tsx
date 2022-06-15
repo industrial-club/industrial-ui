@@ -99,15 +99,14 @@ const com = defineComponent({
         if (param.column.dataIndex === "operation") {
           return (
             <div class="flex tableOpera">
-              <div
-                class="text"
+              <a
                 onClick={() => {
                   data.param.id = param.record.id;
                   open();
                 }}
               >
                 编辑
-              </div>
+              </a>
               <a-popconfirm
                 title="确定删除？"
                 onConfirm={() => {
@@ -115,7 +114,7 @@ const com = defineComponent({
                   handledelete(param.record.id);
                 }}
               >
-                <div class="text">删除</div>
+                <a>删除</a>
               </a-popconfirm>
             </div>
           );
@@ -169,6 +168,7 @@ const com = defineComponent({
               查询
             </a-button>
             <a-button
+              class="reset"
               onClick={() => {
                 data.pagination.name = "";
                 data.pagination.code = "";
