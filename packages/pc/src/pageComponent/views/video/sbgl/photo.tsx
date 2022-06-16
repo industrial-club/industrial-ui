@@ -357,12 +357,14 @@ const com = defineComponent({
       message.success("下发成功");
     };
     const advancedShow = ref(false);
+    let userInfo: any;
     onMounted(() => {
       getData();
       getVideoBrand();
       getMediaAll();
       getNvrAll();
       getHaiKang();
+      userInfo = JSON.parse(localStorage.getItem("userinfo") || "");
     });
     return () => (
       <div class="photoPage">
@@ -395,6 +397,10 @@ const com = defineComponent({
                 onChange={fileChange}
                 name="file"
                 action="/api/vms/v1/camera/import"
+                headers={{
+                  token: localStorage.getItem("token"),
+                  userId: userInfo.userId,
+                }}
               >
                 <p class="ant-upload-drag-icon">
                   <InboxOutlined />
