@@ -274,10 +274,7 @@ export default defineComponent({
       return (
         <div class="titleBox flex-center">
           {status === "system" ? (
-            <div style={{ display: "flex" }}>
-              <img src={platformLogo} alt="" />
-              <div class="title">{systemTitle}</div>
-            </div>
+            <img src={platformLogo} alt="" />
           ) : (
             <div class="title">{systemTitle}</div>
           )}
