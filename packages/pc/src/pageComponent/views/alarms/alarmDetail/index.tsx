@@ -76,10 +76,18 @@ export default defineComponent({
       chartIns.value.tooltip({
         showMarkers: false,
       });
-      chartIns.value.coordinate().transpose();
+      chartIns.value.coordinate().transpose().scale(1, -1);
+      chartIns.value.legend(false);
       chartIns.value
         .interval()
         .position("level*range")
+        .color("level*levelColor", (level: string, levelColor: number) => {
+          console.log(levelColor);
+
+          const colorList = ["#EA5858", "#FF9214", "#FFC414", "#3E7EFF"];
+
+          return colorList[levelColor];
+        })
         .animate({
           appear: {
             animation: "scale-in-x",
@@ -110,10 +118,13 @@ export default defineComponent({
           }
           return {
             level,
+            levelColor: item.alarmLevel - 1,
             range: [item.startTime, item.endTime],
           };
         }
       );
+
+      console.log(chartData.value);
 
       chartIns.value.data(chartData.value);
       chartIns.value.render();
@@ -171,8 +182,8 @@ export default defineComponent({
               : "-"}
           </a-descriptions-item>
           <a-descriptions-item label="消警时间">
-            {alarmDetail.value.lastAlarmTime
-              ? moment(alarmDetail.value.lastAlarmTime).format(
+            {alarmDetail.value.releaseTime
+              ? moment(alarmDetail.value.releaseTime).format(
                   "YYYY-MM-DD HH:mm:ss"
                 )
               : "-"}
