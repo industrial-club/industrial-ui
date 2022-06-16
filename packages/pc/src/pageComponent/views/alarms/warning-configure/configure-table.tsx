@@ -21,6 +21,7 @@ const columns = [
   },
   {
     title: "报警设备",
+    dataIndex: "instanceName",
   },
   {
     title: "报警状态",

@@ -29,7 +29,7 @@ const api = {
    * 切换是否启用班组
    */
   switchEnableTeam: (url?: string) => (data: { id: number; valid: 0 | 1 }) => {
-    return instance.post(url ?? "/workgroup/modify", data);
+    return instance.post(url ?? "/workgroup/valid", data);
   },
   /**
    * 获取部门列表(添加、编辑 部门下拉框)

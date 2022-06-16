@@ -1,6 +1,3 @@
-import { AxiosResponse } from "axios";
-import { instance } from "./axios";
-
 export interface videoInfo {
   pass: string;
   rtspPort: number;
@@ -64,14 +61,3 @@ export interface videoInfo {
   user: string;
   mediaServerUuid: string;
 }
-
-const getByUuid: (uuid: string) => Promise<AxiosResponse<videoInfo>> = async (
-  uuid
-) => {
-  const res = await instance.get<videoInfo>(
-    `vms/v1/camera/getByUuid?uuid=${uuid}`
-  );
-  return res;
-};
-
-export { getByUuid };
