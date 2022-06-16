@@ -1,0 +1,31 @@
+.layout-sidebar {
+  overflow: hidden auto;
+  border-right: 0 !important;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+  .ant-menu-sub {
+    background: #0001;
+  }
+  .ant-menu-submenu,
+  .ant-menu-item {
+    font-size: 16px;
+  }
+}
+
+body[data-theme="light"] {
+  .ant-menu-sub {
+    background: transparent !important;
+  }
+  .ant-menu-vertical .ant-menu-item::after,
+  .ant-menu-vertical-left .ant-menu-item::after,
+  .ant-menu-vertical-right .ant-menu-item::after,
+  .ant-menu-inline .ant-menu-item::after {
+    left: 0;
+    right: unset;
+    background: #3e7eff;
+  }
+  .ant-menu-item-selected {
+    background: #eff4ff;
+  }
+}
