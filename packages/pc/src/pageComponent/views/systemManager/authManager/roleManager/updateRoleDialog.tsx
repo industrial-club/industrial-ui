@@ -102,6 +102,11 @@ const UpdateRoleDialog = defineComponent({
 
     const handleCommit = async () => {
       await formRef.value.validate();
+      checkedPermissionList.value = checkedPermissionList.value.filter(
+        (item: string) => {
+          return !`${item}`.startsWith("sys");
+        }
+      );
       const res = {
         ...form.value,
         checkedMenuIds: checkedPermissionList.value,
