@@ -9,7 +9,7 @@ import { defineComponent, PropType, provide, ref, watch } from "vue";
 import useBus from "@/pageComponent/hooks/useBus";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import { isEmpty } from "lodash";
-import api, { setInstance } from "@/pageComponent/api/org/depManager";
+import api, { setInstance } from "@/api/org/depManager";
 import utils from "@/utils";
 
 import EmployeeTable from "./employeeTable";

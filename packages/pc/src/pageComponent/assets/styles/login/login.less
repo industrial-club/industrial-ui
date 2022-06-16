@@ -1,5 +1,7 @@
 @import url("./loginBox.less");
 
+
+
 .login {
   width: 100vw;
   height: 100vh;
@@ -10,9 +12,8 @@
   background-image: url(../img/loginBackground.png);
   background-size: cover;
   .topTitle {
-    width: 500px;
     height: 48px;
-    margin: 76px 0 66px 200px;
+    margin: 4.29rem;
     img {
       width: 323px;
     }
@@ -74,44 +75,76 @@
       align-items: center;
     }
     .left {
-      width: 910px;
+      width: 65.17rem;
+      height: 50rem;
     }
 
     .login_box {
-      width: 440px;
-      height: 540px;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.07) 0%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      border: 2px solid;
-      border-image: linear-gradient(
-          180deg,
-          rgba(229, 235, 255, 0.09),
-          rgba(199, 210, 255, 0)
-        )
-        2 2;
-      background-size: 100% 100%;
-    }
-    .login_box {
+      width: 31.43rem;
+      height: 38.57rem;
+      border: 0.21rem solid;
+      border-image: linear-gradient(rgba(229, 235, 255, 0.09), rgba(255,255,255,0)) 80 30;
       flex-shrink: 0;
       position: relative;
       right: 0;
+      display: flex;
+      flex-direction: column;
+      .ant-form{
+        flex: 1;
+        // display: flex;
+        // flex-direction: column;
+        // justify-content: space-around;
+        .ant-form-item{
+          flex: 1;
+          margin-bottom: 55px;
+          .ant-form-item-label{
+            padding-bottom: 25px;
+          }
+        }
+      }
     }
   }
   .copyright-information {
-    height: 20px;
+    position: absolute;
+    bottom: 20px;
+    margin: 0;
+    left: 0;
+    right: 0;
     font-size: 14px;
     font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;
-    color: rgba(120, 140, 239, 0.38);
+    color: #7B8492;
     line-height: 20px;
     text-align: center;
-    margin-bottom: 60px;
     a {
       color: #666;
       text-decoration: none;
+    }
+  }
+}
+@media screen and (max-width: 1920px) {
+  .login {
+    background: red;
+
+    .content_login {
+      padding:0 100px;
+      .left {
+        width: 52rem;
+        height: 40rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1500px) {
+  .login {
+    background: red;
+    .content_login {
+      padding: 0 60px;
+      .left {
+        width: 52rem;
+        height: 40rem;
+      }
     }
   }
 }

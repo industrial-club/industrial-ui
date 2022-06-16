@@ -2,7 +2,7 @@ import { defineComponent, ref, provide, PropType } from "vue";
 import RecordTable from "./record-table";
 import AlarmDetail from "@/pageComponent/views/alarms/alarmDetail";
 import utils from "@/utils";
-import { setInstance } from "@/pageComponent/api/alarm/alarmRecord";
+import { setInstance } from "@/api/alarm/alarmRecord";
 
 export interface IUrlObj {
   // 获取参数
@@ -23,6 +23,10 @@ export interface IUrlObj {
   alarmTypeList: string;
   // 视频的baseUrl
   videoBaseUrl: string;
+  // 批量消警
+  batchClear: string;
+  // 批量静音
+  batchMute: string;
 }
 
 const WarningRecord = defineComponent({

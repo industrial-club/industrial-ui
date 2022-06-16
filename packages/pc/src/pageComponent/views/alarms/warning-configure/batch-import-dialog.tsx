@@ -1,6 +1,6 @@
 import { computed, defineComponent, ref, watch, inject } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
-import { batchUploadConfigure } from "@/pageComponent/api/alarm/warningConfigure";
+import { batchUploadConfigure } from "@/api/alarm/warningConfigure";
 
 import { message } from "ant-design-vue";
 import { InboxOutlined, FileExcelTwoTone } from "@ant-design/icons-vue";

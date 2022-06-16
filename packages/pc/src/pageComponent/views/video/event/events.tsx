@@ -212,8 +212,7 @@ const com = defineComponent({
         if (param.column.dataIndex === "operation") {
           return (
             <div class="flex tableOpera">
-              <div
-                class="text"
+              <a
                 onClick={() => {
                   data.param.id = param.record.id;
                   data.showDialog = true;
@@ -221,7 +220,7 @@ const com = defineComponent({
                 }}
               >
                 详情
-              </div>
+              </a>
             </div>
           );
         }
@@ -385,6 +384,7 @@ const com = defineComponent({
               查询
             </a-button>
             <a-button
+              class="reset"
               onClick={() => {
                 reset();
                 getData();

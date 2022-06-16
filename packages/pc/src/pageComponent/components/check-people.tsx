@@ -1,8 +1,8 @@
-import { defineComponent, ref, watch, inject } from "vue";
+import { defineComponent, ref, watch, inject, onMounted } from "vue";
 import useWatchOnce from "@/pageComponent/hooks/useWatchOnce";
 import { debounce } from "lodash";
 import { fomatDepTree } from "@/pageComponent/utils/format";
-import { getDepPeopleTreeList } from "@/pageComponent/api/alarm/warningConfigure";
+import { getDepPeopleTreeList } from "@/api/alarm/warningConfigure";
 import { IUrlObj } from "../views/alarms/warning-configure";
 
 import {
@@ -27,18 +27,28 @@ const CheckPeople = defineComponent({
     // 树结构数据
     const treeData = ref<any[]>([]);
     const keyword = ref("");
+    const expandedKeys = ref<string[] | undefined>([]);
     const getTreeData = debounce(
-      async () => {
+      async (callback?: any) => {
+        treeData.value = [];
         const { data } = await getDepPeopleTreeList(urlObj.depTree)(
           keyword.value
         );
         const res = fomatDepTree(data);
         treeData.value = res;
+        if (typeof callback === "function") {
+          callback();
+        }
+        if (keyword.value) {
+          expandedKeys.value = undefined;
+        } else if (treeData.value.length) {
+          expandedKeys.value = [treeData.value[0].id];
+        }
       },
       300,
       { leading: true, trailing: true }
     );
-    getTreeData();
+    onMounted(getTreeData);
 
     const isModalShow = ref(false);
 
@@ -114,6 +124,7 @@ const CheckPeople = defineComponent({
       isModalShow,
       checkedList,
       checkedKeys,
+      expandedKeys,
       handleEdit,
       handleRemove,
       handleCheck,
@@ -169,27 +180,38 @@ const CheckPeople = defineComponent({
                 v-model={[this.keyword, "value"]}
                 onInput={this.getTreeData}
               />
-              <a-tree
-                checkable
-                replaceFields={{
-                  key: "id",
-                  title: "name",
-                  children: "subList",
-                }}
-                defaultExpandAll
-                checkedKeys={this.checkedKeys}
-                treeData={this.treeData}
-                onCheck={this.handleCheck}
-              >
-                {{
-                  title: ({ dataRef }: any) => (
-                    <span>
-                      {dataRef.isDep ? <ApartmentOutlined /> : <UserOutlined />}
-                      <span style={{ marginLeft: "8px" }}>{dataRef.name}</span>
-                    </span>
-                  ),
-                }}
-              </a-tree>
+              {this.treeData.length ? (
+                <a-tree
+                  checkable
+                  fieldNames={{
+                    key: "id",
+                    title: "name",
+                    children: "subList",
+                  }}
+                  v-models={[[this.expandedKeys, "expandedKeys"]]}
+                  defaultExpandAll={!!this.keyword}
+                  checkedKeys={this.checkedKeys}
+                  treeData={this.treeData}
+                  onCheck={this.handleCheck}
+                >
+                  {{
+                    title: ({ dataRef }: any) => (
+                      <span>
+                        {dataRef.isDep ? (
+                          <ApartmentOutlined />
+                        ) : (
+                          <UserOutlined />
+                        )}
+                        <span style={{ marginLeft: "8px" }}>
+                          {dataRef.name}
+                        </span>
+                      </span>
+                    ),
+                  }}
+                </a-tree>
+              ) : (
+                <a-empty description="暂无数据"></a-empty>
+              )}
             </div>
             <a-divider style={{ height: "100%" }} type="vertical" />
             {/* 右侧展示已选择的列表 */}

@@ -6,7 +6,7 @@ import {
   deleteAlarmRule,
   getAllRule,
   updateAvailable,
-} from "@/pageComponent/api/alarm/warningConfigure";
+} from "@/api/alarm/warningConfigure";
 import TableTool from "./table-tool";
 import BatchImportDialog from "./batch-import-dialog";
 import { IUrlObj } from "./index";
@@ -21,6 +21,7 @@ const columns = [
   },
   {
     title: "报警设备",
+    dataIndex: "instanceName",
   },
   {
     title: "报警状态",

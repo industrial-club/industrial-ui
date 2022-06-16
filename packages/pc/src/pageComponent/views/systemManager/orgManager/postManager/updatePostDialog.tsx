@@ -11,7 +11,7 @@ import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import useModalForm from "@/pageComponent/hooks/manage-module/useModalForm";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/org/postManager";
+import api from "@/api/org/postManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";

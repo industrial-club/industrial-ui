@@ -7,7 +7,7 @@ import {
   provide,
 } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api, { setInstance } from "@/pageComponent/api/auth/userManager";
+import api, { setInstance } from "@/api/auth/userManager";
 import utils from "@/utils";
 
 import { Modal, message } from "ant-design-vue";

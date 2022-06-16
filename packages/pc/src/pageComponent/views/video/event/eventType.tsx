@@ -2,6 +2,7 @@ import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import eventApi from "@/api/event";
 import "../assets/styles/video/event.less";
 import utils from "@/utils";
+import { message } from "ant-design-vue";
 
 const com = defineComponent({
   props: {
@@ -118,15 +119,14 @@ const com = defineComponent({
         if (param.column.dataIndex === "operation") {
           return (
             <div class="flex tableOpera">
-              <div
-                class="text"
+              <a
                 onClick={() => {
                   data.param.id = param.record.id;
                   open();
                 }}
               >
                 编辑
-              </div>
+              </a>
               <a-popconfirm
                 title="确定删除？"
                 onConfirm={() => {
@@ -134,7 +134,7 @@ const com = defineComponent({
                   handledelete(param.record.id);
                 }}
               >
-                <div class="text">删除</div>
+                <a>删除</a>
               </a-popconfirm>
             </div>
           );
@@ -150,7 +150,11 @@ const com = defineComponent({
       formRef.value
         .validate()
         .then(async () => {
-          await eventApi.saveEventType(data.param);
+          const res = await eventApi.saveEventType(data.param);
+          if (res.data === "repeat") {
+            message.error("数据重复，保存失败");
+            return;
+          }
           getData();
           data.dialog = false;
           formRef.value.resetFields();
@@ -198,6 +202,7 @@ const com = defineComponent({
               查询
             </a-button>
             <a-button
+              class="reset"
               onClick={() => {
                 data.pagination.name = "";
                 data.pagination.code = "";

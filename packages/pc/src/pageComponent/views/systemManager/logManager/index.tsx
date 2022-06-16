@@ -7,7 +7,7 @@ import {
   PropType,
 } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api, { setInstance } from "@/pageComponent/api/logManager";
+import api, { setInstance } from "@/api/logManager";
 import { Moment } from "moment";
 import utils from "@/utils";
 

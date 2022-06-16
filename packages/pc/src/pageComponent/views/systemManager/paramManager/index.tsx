@@ -13,7 +13,7 @@
  * @LastEditTime: 2022-03-29 15:03:27
  */
 import { defineComponent, PropType, provide, ref, watch } from "vue";
-import { api, setInstance } from "@/pageComponent/api/param";
+import { api, setInstance } from "@/api/param";
 import utils from "@/utils";
 
 import TabItem from "./tabItem";

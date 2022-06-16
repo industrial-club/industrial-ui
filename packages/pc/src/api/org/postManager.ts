@@ -29,7 +29,7 @@ const api = {
    * 切换岗位启用状态
    */
   switchPostEnable: (url?: string) => (data: { id: number; valid: 0 | 1 }) => {
-    return instance.post(url ?? "/jobPost/modify", data);
+    return instance.post(url ?? "/jobPost/valid", data);
   },
   /**
    * 获取部门列表(添加、编辑 部门下拉框)
