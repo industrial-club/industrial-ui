@@ -21,7 +21,7 @@ export default {
    * 个人设置 修改密码
    */
   changePassword: (url?: string) => (data: any) => {
-    return instance.post(url ?? `/${faceName.common}/user/resetPassword`, data);
+    return instance.post(url ?? `/user/resetPassword`, data);
   },
   /**
    * 查询用户详情|个人设置页
