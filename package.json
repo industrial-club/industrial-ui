@@ -22,10 +22,10 @@
     "test": "vite test-login",
     "dev-theme": "vite theme"
   },
+  "private": true,
   "repository": "https://github.com/industrial-club/industrial-ui",
   "author": "bhabgs",
   "license": "MIT",
-  "private": true,
   "devDependencies": {
     "eslint": "^8.5.0",
     "ant-design-vue": "^3.2.0",
