@@ -3,6 +3,8 @@ import utils from "@/utils";
 import { centerColumns } from "@/pageComponent/config/systemConfig";
 import addChannel from "@/pageComponent/components/noticeManager/addChannel";
 import maintainModal from "@/pageComponent/components/noticeManager/noticeMaintain";
+import useClipboard from "vue-clipboard3";
+import { message } from "ant-design-vue";
 
 const noticeCenter = defineComponent({
   components: {
@@ -17,6 +19,7 @@ const noticeCenter = defineComponent({
         state: "启用",
       },
     ]);
+    const { toClipboard } = useClipboard();
     const channelVisible = ref(false);
     const title = ref("");
     const maintainVisible = ref(false);
@@ -27,7 +30,15 @@ const noticeCenter = defineComponent({
       channelVisible.value = true;
     };
     const handleOk = () => {};
-
+    const copy = async (val) => {
+      try {
+        await toClipboard(val);
+        message.success("复制成功");
+      } catch (error) {
+        console.log(error);
+        message.error("复制失败");
+      }
+    };
     return () => (
       <div class="noticeCenter">
         <div class="noticeCenter-top">
@@ -56,6 +67,9 @@ const noticeCenter = defineComponent({
                       <p>{record.secretKey}</p>
                       <a-button
                         type="text"
+                        onClick={() => {
+                          copy(record.secretKey);
+                        }}
                         v-slots={{
                           icon: () => <copy-outlined />,
                         }}
