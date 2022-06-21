@@ -115,7 +115,7 @@ const UpdateDepDialog = defineComponent({
       const data = { ...form.value };
       const isTopLevel = `${props.parent.id}`.startsWith("sys");
       if (props.mode === "add") {
-        await api.insertDepRecord({
+        await api.insertDepRecord(urlMap.add)({
           ...data,
           parentId: isTopLevel ? null : props.parent.id,
           level: isTopLevel ? 1 : props.parent.level + 1,

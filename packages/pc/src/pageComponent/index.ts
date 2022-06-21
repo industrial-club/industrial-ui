@@ -24,8 +24,8 @@ import System from "@/pageComponent/views/video/setting/system";
 import Play from "@/pageComponent/views/video/play";
 import AlarmRecord from "@/pageComponent/views/alarms/warning-record";
 import AlarmConfigure from "@/pageComponent/views/alarms/warning-configure";
-// import noticeCenter from "@/pageComponent/views/systemManager/noticeManager/noticeCenter";
-// import noticeManager from "@/pageComponent/views/systemManager/noticeManager/noticeManager";
+import noticeCenter from "@/pageComponent/views/systemManager/noticeManager/noticeCenter";
+import noticeManager from "@/pageComponent/views/systemManager/noticeManager/noticeManager";
 
 export default [
   About,
@@ -54,6 +54,6 @@ export default [
   Play,
   AlarmRecord,
   AlarmConfigure,
-  // noticeCenter,
-  // noticeManager,
+  noticeCenter,
+  noticeManager,
 ];
