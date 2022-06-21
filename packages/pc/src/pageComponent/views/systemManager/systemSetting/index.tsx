@@ -2,7 +2,6 @@ import { defineComponent, reactive, CSSProperties, ref, onMounted } from "vue";
 import { message, Select, Input } from "ant-design-vue";
 import type { UploadChangeParam, UploadProps } from "ant-design-vue";
 import utils from "@/utils";
-import "./index.less";
 import {
   saveSysConfig,
   cancelEditing,
@@ -14,9 +13,8 @@ import {
   getSystemList,
 } from "@/api/systemSetting";
 import { systemConfig, picList } from "./data";
-// import inl from "inl-ui";
+import "@/pageComponent/assets/styles/systemManager/systemSetting.less";
 
-// const { theme } = inl.utils;
 const aInput = Input;
 const aSelect = Select;
 interface OptionItem {

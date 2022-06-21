@@ -6,7 +6,7 @@ import changeTheme from "@/components/changeTheme";
 import layoutNav from "@/components/layoutNav";
 import layoutSidebar from "@/components/layoutSidebar";
 import layoutContent from "@/components/layoutContent";
-import systemSetting from "@/components/systemSetting";
+import systemSetting from "@/pageComponent/views/systemManager/systemSetting";
 
 export default [
   headerMenu,
