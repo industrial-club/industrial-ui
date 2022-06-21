@@ -19,7 +19,7 @@
     "build:utilVideo": "yarn workspace inl-util run buildVideo",
     "build:lessVar": "yarn workspace inl-less run build",
     "site": "vite site",
-    "test": "vite test-login",
+    "test": "vite testXflow",
     "dev-theme": "vite theme"
   },
   "private": true,
