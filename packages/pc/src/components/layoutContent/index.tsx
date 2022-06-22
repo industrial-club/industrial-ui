@@ -25,6 +25,10 @@ const LayoutContent = defineComponent({
       type: Array as PropType<any[]>,
       default: () => [],
     },
+    showTabs: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -100,87 +104,96 @@ const LayoutContent = defineComponent({
     return () => (
       <a-layout-content class="layout-content" style={{ overflow: "auto" }}>
         <div class="layout-container">
-          <div class="tabs-container">
-            {isTabsOverflow.value && (
-              <a-button
-                onClick={() =>
-                  tabsRef.value!.scroll({
-                    left: tabsRef.value!.scrollLeft - 400,
-                    behavior: "smooth",
-                  })
-                }
-              >
-                <left-outlined />
-              </a-button>
-            )}
-            <div class="tabs-list" ref={tabsRef}>
-              {tabs.value.map((item, index) => (
-                <router-link
-                  key={item.code}
-                  class={[
-                    "tab-item",
-                    item.code === activeCode.value ? "active" : "",
-                  ]}
-                  to={`/?menuCode=${item.code}`}
+          {props.showTabs && (
+            <div class="tabs-container">
+              {isTabsOverflow.value && (
+                <a-button
+                  onClick={() =>
+                    tabsRef.value!.scroll({
+                      left: tabsRef.value!.scrollLeft - 400,
+                      behavior: "smooth",
+                    })
+                  }
                 >
-                  <a-dropdown
-                    trigger={["contextmenu"]}
-                    v-slots={{
-                      overlay: () => (
-                        <a-menu>
-                          <a-menu-item>
-                            <a onClick={() => closeToRight(index)}>关闭右侧</a>
-                          </a-menu-item>
-                          <a-menu-item>
-                            <a onClick={() => closeToLeft(index)}>关闭左侧</a>
-                          </a-menu-item>
-                          <a-menu-item>
-                            <a onClick={() => closeOthers(index)}>关闭其他</a>
-                          </a-menu-item>
-                          <a-menu-item>
-                            <a onClick={() => refreshCpn(index)}>刷新</a>
-                          </a-menu-item>
-                        </a-menu>
-                      ),
-                    }}
+                  <left-outlined />
+                </a-button>
+              )}
+              <div class="tabs-list" ref={tabsRef}>
+                {tabs.value.map((item, index) => (
+                  <router-link
+                    key={item.code}
+                    class={[
+                      "tab-item",
+                      item.code === activeCode.value ? "active" : "",
+                    ]}
+                    to={`/?menuCode=${item.code}`}
                   >
-                    <span class="tab-item-text">
-                      {item.icon && <icon-font class="icon" type={item.icon} />}
-                      <span class="tab-name">{item.name}</span>
-                      {tabs.value.length > 1 && (
-                        <span
-                          class="btn-close"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleCloseTag(index);
-                          }}
-                        >
-                          {item.code === activeCode.value ? (
-                            <close-circle-filled />
-                          ) : (
-                            <close-outlined />
-                          )}
-                        </span>
-                      )}
-                    </span>
-                  </a-dropdown>
-                </router-link>
-              ))}
+                    <a-dropdown
+                      trigger={["contextmenu"]}
+                      v-slots={{
+                        overlay: () => (
+                          <a-menu>
+                            <a-menu-item>
+                              <a onClick={() => closeToRight(index)}>
+                                关闭右侧
+                              </a>
+                            </a-menu-item>
+                            <a-menu-item>
+                              <a onClick={() => closeToLeft(index)}>关闭左侧</a>
+                            </a-menu-item>
+                            <a-menu-item>
+                              <a onClick={() => closeOthers(index)}>关闭其他</a>
+                            </a-menu-item>
+                            <a-menu-item>
+                              <a onClick={() => refreshCpn(index)}>刷新</a>
+                            </a-menu-item>
+                          </a-menu>
+                        ),
+                      }}
+                    >
+                      <span class="tab-item-text">
+                        {item.icon && (
+                          <icon-font class="icon" type={item.icon} />
+                        )}
+                        <span class="tab-name">{item.name}</span>
+                        {tabs.value.length > 1 && (
+                          <span
+                            class="btn-close"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleCloseTag(index);
+                            }}
+                          >
+                            {item.code === activeCode.value ? (
+                              <close-circle-filled />
+                            ) : (
+                              <close-outlined />
+                            )}
+                          </span>
+                        )}
+                      </span>
+                    </a-dropdown>
+                  </router-link>
+                ))}
+              </div>
+              {isTabsOverflow.value && (
+                <a-button
+                  onClick={() =>
+                    tabsRef.value!.scroll({
+                      left: tabsRef.value!.scrollLeft + 400,
+                      behavior: "smooth",
+                    })
+                  }
+                >
+                  <right-outlined />
+                </a-button>
+              )}
             </div>
-            {isTabsOverflow.value && (
-              <a-button
-                onClick={() =>
-                  tabsRef.value!.scroll({
-                    left: tabsRef.value!.scrollLeft + 400,
-                    behavior: "smooth",
-                  })
-                }
-              >
-                <right-outlined />
-              </a-button>
-            )}
-          </div>
-          <div class="main-content">
+          )}
+          <div
+            class="main-content"
+            style={{ marginTop: props.showTabs ? "" : "0" }}
+          >
             {cacheComponents.value.map(
               (cpn: any, index) =>
                 cpn && (
