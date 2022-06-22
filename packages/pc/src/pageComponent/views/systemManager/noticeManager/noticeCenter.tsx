@@ -29,7 +29,18 @@ const noticeCenter = defineComponent({
       title.value = "修改通道";
       channelVisible.value = true;
     };
-    const handleOk = () => {};
+    const channelOk = () => {
+      channelVisible.value = false;
+    };
+    const channelCancel = () => {
+      channelVisible.value = false;
+    };
+    const maintainOk = () => {
+      maintainVisible.value = false;
+    };
+    const maintainCancel = () => {
+      maintainVisible.value = false;
+    };
     const copy = async (val) => {
       try {
         await toClipboard(val);
@@ -108,7 +119,8 @@ const noticeCenter = defineComponent({
         <a-modal
           v-model={[channelVisible.value, "visible"]}
           title={title.value}
-          onOk={handleOk}
+          onOk={channelOk}
+          onCancel={channelCancel}
           centered={true}
         >
           <addChannel></addChannel>
@@ -116,7 +128,8 @@ const noticeCenter = defineComponent({
         <a-modal
           v-model={[maintainVisible.value, "visible"]}
           title={maintainTitle.value}
-          onOk={handleOk}
+          onOk={maintainOk}
+          onCancel={maintainCancel}
           centered={true}
           width={1200}
         >
