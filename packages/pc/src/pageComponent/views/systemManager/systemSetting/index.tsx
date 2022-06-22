@@ -13,7 +13,6 @@ import {
   getSystemList,
 } from "@/api/systemSetting";
 import { systemConfig, picList } from "./data";
-import "@/pageComponent/assets/styles/systemManager/systemSetting.less";
 
 const aInput = Input;
 const aSelect = Select;
