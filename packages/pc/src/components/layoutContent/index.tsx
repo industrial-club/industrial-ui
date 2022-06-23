@@ -14,11 +14,19 @@ import { RouterView, useRoute, useRouter } from "vue-router";
 import { flatMenuList } from "@/utils/route";
 import utils from "@/utils";
 
+export interface IRouteItem {
+  code: string;
+  component: Component;
+  isExtend?: boolean; // 是否为扩展的路由 - 不在菜单中展示
+  name?: string;
+  icon?: string;
+}
+
 const LayoutContent = defineComponent({
   props: {
     // 所有组件的一维数组
     allRoutes: {
-      type: Array as PropType<{ code: string; component: Component }[]>,
+      type: Array as PropType<IRouteItem[]>,
       default: () => [],
     },
     userMenuTree: {
@@ -40,34 +48,21 @@ const LayoutContent = defineComponent({
 
     const tabsRef = ref<HTMLElement>();
 
-    const isTabsOverflow = computed(() => {
-      if (tabsRef.value) {
-        const containerWidth = getComputedStyle(
-          tabsRef.value.parentElement!
-        ).width;
-        if (getComputedStyle(tabsRef.value).width > containerWidth) {
-          return true;
-        }
-      }
-      return true;
-    });
-
     // query的code变化 存入tabs中
     watch(
       route,
       () => {
         const { menuCode: code } = route.query as any;
         if (code && !tabs.value.find((tab) => tab.code === code)) {
-          const cpn = props.allRoutes.find(
-            (item) => item.code === code
-          )?.component;
-          if (cpn && cpn !== RouterView) {
-            const tab = userNavList.value.find(
-              (item: any) => item.code === code
-            );
-
-            tab && tabs.value.push({ ...tab, key: Date.now });
+          const route = props.allRoutes.find((item) => item.code === code);
+          if (!route || !route.component || route.component === RouterView) {
+            return;
           }
+          const tab = route.isExtend
+            ? route
+            : userNavList.value.find((item: any) => item.code === code);
+
+          tab && tabs.value.push({ ...tab, key: Date.now });
         }
         activeCode.value = code;
       },
@@ -106,18 +101,16 @@ const LayoutContent = defineComponent({
         <div class="layout-container">
           {props.showTabs && (
             <div class="tabs-container">
-              {isTabsOverflow.value && (
-                <a-button
-                  onClick={() =>
-                    tabsRef.value!.scroll({
-                      left: tabsRef.value!.scrollLeft - 400,
-                      behavior: "smooth",
-                    })
-                  }
-                >
-                  <left-outlined />
-                </a-button>
-              )}
+              <a-button
+                onClick={() =>
+                  tabsRef.value!.scroll({
+                    left: tabsRef.value!.scrollLeft - 400,
+                    behavior: "smooth",
+                  })
+                }
+              >
+                <left-outlined />
+              </a-button>
               <div class="tabs-list" ref={tabsRef}>
                 {tabs.value.map((item, index) => (
                   <router-link
@@ -176,18 +169,16 @@ const LayoutContent = defineComponent({
                   </router-link>
                 ))}
               </div>
-              {isTabsOverflow.value && (
-                <a-button
-                  onClick={() =>
-                    tabsRef.value!.scroll({
-                      left: tabsRef.value!.scrollLeft + 400,
-                      behavior: "smooth",
-                    })
-                  }
-                >
-                  <right-outlined />
-                </a-button>
-              )}
+              <a-button
+                onClick={() =>
+                  tabsRef.value!.scroll({
+                    left: tabsRef.value!.scrollLeft + 400,
+                    behavior: "smooth",
+                  })
+                }
+              >
+                <right-outlined />
+              </a-button>
             </div>
           )}
           <div
