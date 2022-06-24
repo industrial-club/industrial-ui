@@ -14,16 +14,28 @@ import { RouterView, useRoute, useRouter } from "vue-router";
 import { flatMenuList } from "@/utils/route";
 import utils from "@/utils";
 
+export interface IRouteItem {
+  code: string;
+  component: Component;
+  isExtend?: boolean; // 是否为扩展的路由 - 不在菜单中展示
+  name?: string;
+  icon?: string;
+}
+
 const LayoutContent = defineComponent({
   props: {
     // 所有组件的一维数组
     allRoutes: {
-      type: Array as PropType<{ code: string; component: Component }[]>,
+      type: Array as PropType<IRouteItem[]>,
       default: () => [],
     },
     userMenuTree: {
       type: Array as PropType<any[]>,
       default: () => [],
+    },
+    showTabs: {
+      type: Boolean,
+      default: true,
     },
   },
   setup(props) {
@@ -36,34 +48,21 @@ const LayoutContent = defineComponent({
 
     const tabsRef = ref<HTMLElement>();
 
-    const isTabsOverflow = computed(() => {
-      if (tabsRef.value) {
-        const containerWidth = getComputedStyle(
-          tabsRef.value.parentElement!
-        ).width;
-        if (getComputedStyle(tabsRef.value).width > containerWidth) {
-          return true;
-        }
-      }
-      return true;
-    });
-
     // query的code变化 存入tabs中
     watch(
       route,
       () => {
         const { menuCode: code } = route.query as any;
         if (code && !tabs.value.find((tab) => tab.code === code)) {
-          const cpn = props.allRoutes.find(
-            (item) => item.code === code
-          )?.component;
-          if (cpn && cpn !== RouterView) {
-            const tab = userNavList.value.find(
-              (item: any) => item.code === code
-            );
-
-            tab && tabs.value.push({ ...tab, key: Date.now });
+          const route = props.allRoutes.find((item) => item.code === code);
+          if (!route || !route.component || route.component === RouterView) {
+            return;
           }
+          const tab = route.isExtend
+            ? route
+            : userNavList.value.find((item: any) => item.code === code);
+
+          tab && tabs.value.push({ ...tab, key: Date.now });
         }
         activeCode.value = code;
       },
@@ -100,8 +99,8 @@ const LayoutContent = defineComponent({
     return () => (
       <a-layout-content class="layout-content" style={{ overflow: "auto" }}>
         <div class="layout-container">
-          <div class="tabs-container">
-            {isTabsOverflow.value && (
+          {props.showTabs && (
+            <div class="tabs-container">
               <a-button
                 onClick={() =>
                   tabsRef.value!.scroll({
@@ -112,62 +111,64 @@ const LayoutContent = defineComponent({
               >
                 <left-outlined />
               </a-button>
-            )}
-            <div class="tabs-list" ref={tabsRef}>
-              {tabs.value.map((item, index) => (
-                <router-link
-                  key={item.code}
-                  class={[
-                    "tab-item",
-                    item.code === activeCode.value ? "active" : "",
-                  ]}
-                  to={`/?menuCode=${item.code}`}
-                >
-                  <a-dropdown
-                    trigger={["contextmenu"]}
-                    v-slots={{
-                      overlay: () => (
-                        <a-menu>
-                          <a-menu-item>
-                            <a onClick={() => closeToRight(index)}>关闭右侧</a>
-                          </a-menu-item>
-                          <a-menu-item>
-                            <a onClick={() => closeToLeft(index)}>关闭左侧</a>
-                          </a-menu-item>
-                          <a-menu-item>
-                            <a onClick={() => closeOthers(index)}>关闭其他</a>
-                          </a-menu-item>
-                          <a-menu-item>
-                            <a onClick={() => refreshCpn(index)}>刷新</a>
-                          </a-menu-item>
-                        </a-menu>
-                      ),
-                    }}
+              <div class="tabs-list" ref={tabsRef}>
+                {tabs.value.map((item, index) => (
+                  <router-link
+                    key={item.code}
+                    class={[
+                      "tab-item",
+                      item.code === activeCode.value ? "active" : "",
+                    ]}
+                    to={`/?menuCode=${item.code}`}
                   >
-                    <span class="tab-item-text">
-                      {item.icon && <icon-font class="icon" type={item.icon} />}
-                      <span class="tab-name">{item.name}</span>
-                      {tabs.value.length > 1 && (
-                        <span
-                          class="btn-close"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleCloseTag(index);
-                          }}
-                        >
-                          {item.code === activeCode.value ? (
-                            <close-circle-filled />
-                          ) : (
-                            <close-outlined />
-                          )}
-                        </span>
-                      )}
-                    </span>
-                  </a-dropdown>
-                </router-link>
-              ))}
-            </div>
-            {isTabsOverflow.value && (
+                    <a-dropdown
+                      trigger={["contextmenu"]}
+                      v-slots={{
+                        overlay: () => (
+                          <a-menu>
+                            <a-menu-item>
+                              <a onClick={() => closeToRight(index)}>
+                                关闭右侧
+                              </a>
+                            </a-menu-item>
+                            <a-menu-item>
+                              <a onClick={() => closeToLeft(index)}>关闭左侧</a>
+                            </a-menu-item>
+                            <a-menu-item>
+                              <a onClick={() => closeOthers(index)}>关闭其他</a>
+                            </a-menu-item>
+                            <a-menu-item>
+                              <a onClick={() => refreshCpn(index)}>刷新</a>
+                            </a-menu-item>
+                          </a-menu>
+                        ),
+                      }}
+                    >
+                      <span class="tab-item-text">
+                        {item.icon && (
+                          <icon-font class="icon" type={item.icon} />
+                        )}
+                        <span class="tab-name">{item.name}</span>
+                        {tabs.value.length > 1 && (
+                          <span
+                            class="btn-close"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleCloseTag(index);
+                            }}
+                          >
+                            {item.code === activeCode.value ? (
+                              <close-circle-filled />
+                            ) : (
+                              <close-outlined />
+                            )}
+                          </span>
+                        )}
+                      </span>
+                    </a-dropdown>
+                  </router-link>
+                ))}
+              </div>
               <a-button
                 onClick={() =>
                   tabsRef.value!.scroll({
@@ -178,9 +179,12 @@ const LayoutContent = defineComponent({
               >
                 <right-outlined />
               </a-button>
-            )}
-          </div>
-          <div class="main-content">
+            </div>
+          )}
+          <div
+            class="main-content"
+            style={{ marginTop: props.showTabs ? "" : "0" }}
+          >
             {cacheComponents.value.map(
               (cpn: any, index) =>
                 cpn && (

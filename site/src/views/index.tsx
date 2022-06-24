@@ -5,6 +5,7 @@ import formDemo from "./form";
 import videoDemo from "./video";
 import baseDemo from "./base-demo";
 import alarmDemo from "./alarm-demo";
+import systemSetting from "./ststemSetting-demo";
 
 export default defineComponent({
   setup() {
@@ -15,7 +16,9 @@ export default defineComponent({
         <formDemo></formDemo> */}
         {/* <videoDemo></videoDemo> */}
         {/* <baseDemo></baseDemo> */}
-        <alarm-demo></alarm-demo>
+        {/* <alarm-demo></alarm-demo> */}
+
+        <systemSetting></systemSetting>
       </div>
     );
   },
@@ -26,5 +29,6 @@ export default defineComponent({
     videoDemo,
     baseDemo,
     alarmDemo,
+    systemSetting,
   },
 });
