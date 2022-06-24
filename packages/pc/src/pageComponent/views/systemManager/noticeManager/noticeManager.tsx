@@ -67,7 +67,7 @@ const noticeManager = defineComponent({
           </a-form>
         </div>
         <div class="noticeManager-content">
-          <div>
+          <div style={"margin-bottom: 20px;"}>
             <a-button
               type="primary"
               onClick={() => {

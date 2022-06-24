@@ -12,6 +12,7 @@ const centerColumns = [
   {
     title: "通道密钥",
     dataIndex: "secretKey",
+    width: 250,
     key: "secretKey",
   },
   {

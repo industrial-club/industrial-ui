@@ -1,22 +1,28 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, PropType, watch, onMounted } from "vue";
+import useClipboard from "vue-clipboard3";
+import { message } from "ant-design-vue";
 import utils from "@/utils";
 import { centerColumns } from "@/pageComponent/config/systemConfig";
 import addChannel from "@/pageComponent/components/noticeManager/addChannel";
 import maintainModal from "@/pageComponent/components/noticeManager/noticeMaintain";
-import useClipboard from "vue-clipboard3";
-import { message } from "ant-design-vue";
 
 const noticeCenter = defineComponent({
+  name: "NoticeCenter",
   components: {
     addChannel,
     maintainModal,
   },
-  setup() {
+  setup(_props) {
     const noticeList = ref([
       {
         name: "通知通道",
-        secretKey: "",
-        state: "启用",
+        secretKey: "MY543532343",
+        state: true,
+      },
+      {
+        name: "通知通道",
+        secretKey: "MY543532344",
+        state: false,
       },
     ]);
     const { toClipboard } = useClipboard();
@@ -24,6 +30,7 @@ const noticeCenter = defineComponent({
     const title = ref("");
     const maintainVisible = ref(false);
     const maintainTitle = ref("");
+    const api = ref({});
 
     const edit = async () => {
       title.value = "修改通道";
@@ -50,6 +57,7 @@ const noticeCenter = defineComponent({
         message.error("复制失败");
       }
     };
+
     return () => (
       <div class="noticeCenter">
         <div class="noticeCenter-top">
@@ -67,17 +75,21 @@ const noticeCenter = defineComponent({
           <a-table
             dataSource={noticeList.value}
             columns={centerColumns}
+            bordered
             v-slots={{
               bodyCell: ({ column, record, index }: any) => {
                 if (column.dataIndex === "index") {
                   return index + 1;
                 }
+                if (column.dataIndex === "state") {
+                  return record.state ? "启用" : "禁用";
+                }
                 if (column.dataIndex === "secretKey") {
                   return (
                     <div class="secretKey">
-                      <p>{record.secretKey}</p>
+                      <div>{record.secretKey}</div>
                       <a-button
-                        type="text"
+                        type="link"
                         onClick={() => {
                           copy(record.secretKey);
                         }}
@@ -92,7 +104,7 @@ const noticeCenter = defineComponent({
                   return (
                     <div>
                       <a-button
-                        type="text"
+                        type="link"
                         onClick={() => {
                           maintainVisible.value = true;
                         }}
@@ -101,7 +113,7 @@ const noticeCenter = defineComponent({
                       </a-button>
                       {index != 0 ? (
                         <a-button
-                          type="text"
+                          type="link"
                           onClick={() => {
                             edit();
                           }}
