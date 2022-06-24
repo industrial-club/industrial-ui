@@ -1,16 +1,17 @@
-import { computed } from 'vue';
+import { computed } from "vue";
 
 export default function useVModel<
-  P extends object,
+  P extends Record<string, any>,
   K extends keyof P,
-  Name extends string,
+  Name extends string
 >(props: P, key: K, emit: (name: Name, ...args: any[]) => void) {
   return computed<P[K]>({
     get() {
       return props[key!];
     },
     set(value) {
-      emit(`update:${key}` as any, value);
+      const keyName = `update:${String(key)}` as Name;
+      emit(keyName, value);
     },
   });
 }
