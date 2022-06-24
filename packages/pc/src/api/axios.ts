@@ -36,7 +36,8 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
     (conf) => {
       const corpId = sessionStorage.getItem("corpId");
       conf.headers.token = getToken();
-      conf.headers.userId = getUser()?.userId || "-1";
+      conf.headers.userId =
+        getUser()?.userId || localStorage.getItem("userId") || "-1";
       conf.headers.userName = getUser()?.userName;
       const { data = {} } = conf;
       if (isPlainObject(data)) {
@@ -69,6 +70,13 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
     (res) => {
       const resData = res.data;
       const status = resData.code === "M0000" || resData.code === "0";
+      if (resData.code === "M4003") {
+        message.error("登陆已过期，请重新登陆");
+        window.location.hash = "login";
+        localStorage.clear();
+        sessionStorage.clear();
+        return Promise.reject(resData);
+      }
       if (status || resData instanceof Blob) {
         return Promise.resolve(resData);
       }

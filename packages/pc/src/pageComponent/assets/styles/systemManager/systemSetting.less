@@ -1,0 +1,126 @@
+.systemConfig {
+  width: 100%;
+  position: relative;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  .systemConfig_left {
+    width: 48%;
+  }
+  .systemConfig_info {
+    .ant-select {
+      width: 240px;
+      font-size: 14px;
+    }
+    .ant-btn {
+      width: 94px;
+      font-size: 14px;
+    }
+    .systemConfig_title {
+      font-weight: 600;
+      color: #31363c;
+      margin-bottom: 24px;
+      font-size: 16px;
+    }
+    .systemConfig_body {
+      padding-left: 24px;
+      .systemConfig_form {
+        margin-bottom: 20px;
+        .label {
+          display: inline-block;
+          width: 80px;
+        }
+      }
+      .systemConfig_vertical {
+        .item {
+          padding: 20px 10px 29px 0;
+          .input {
+            width: 449px;
+          }
+          .btn {
+            margin: 0 15px;
+          }
+          .annotation {
+            color: #8f959e;
+          }
+        }
+      }
+    }
+    .systemConfig_btm {
+      margin-top: 20px;
+      .save {
+        margin-right: 16px;
+      }
+    }
+  }
+  .systemConfig_right {
+    overflow-x: scroll;
+    width: 45%;
+    height: 560px;
+    margin-top: 45px;
+    .box {
+      position: relative;
+      background: #f7f9fd;
+      width: 960px;
+      height: 540px;
+      border: 2px dashed #8f959e;
+      padding: 125px 100px 10px 100px;
+      display: flex;
+      justify-content: space-between;
+      .left {
+        width: 270px;
+        margin-right: 165px;
+      }
+      .right {
+        position: relative;
+        width: 280px;
+        background: #fff;
+        height: 250px;
+        border: 1px solid #e7ecf2;
+        border-radius: 4px;
+        .top {
+          padding: 10px 20px;
+          display: flex;
+          justify-content: space-between;
+        }
+        .name {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #ced3df;
+        }
+      }
+    }
+    .green {
+      background: #dbf2ee;
+      color: #67dcaf;
+      border: 1px dashed #67dcaf;
+    }
+    .blue {
+      background: #deeafc;
+      color: #6899f9;
+      border: 1px dashed #6899f9;
+    }
+    .darkBlue {
+      background: #dbe0f0;
+      color: #1a2a94;
+      border: 1px dashed #1a2a94;
+    }
+  }
+  .bot {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #1a2a94;
+    border-radius: 8px;
+    background: #fff;
+    border: 2px dashed #dce4ed;
+    width: 720px;
+    height: 20px;
+    line-height: 15px;
+  }
+}
