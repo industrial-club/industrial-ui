@@ -1,14 +1,14 @@
-import { defineComponent, reactive, watch } from 'vue';
+import { defineComponent, reactive, watch } from "vue";
 
 const props = {
   formData: Object,
 };
 export default defineComponent({
-  name: 'AddChannel',
+  name: "AddChannel",
   props,
   setup(_props, _context) {
     const formState = reactive({
-      name: '',
+      name: "",
       state: true,
     });
     watch(
@@ -22,7 +22,7 @@ export default defineComponent({
       {
         immediate: true,
         deep: true,
-      },
+      }
     );
     return () => (
       <a-form
@@ -30,14 +30,22 @@ export default defineComponent({
         label-col={{ span: 8 }}
         wrapper-col={{ span: 16 }}
       >
-        <a-form-item label='通道名称'>
+        <a-form-item label="通道名称">
           <a-input
-            v-model={[formState.name, 'value']}
-            placeholder='请输入通道名称'
+            v-model={[formState.name, "value"]}
+            placeholder="请输入通道名称"
           />
         </a-form-item>
-        <a-form-item label='通道状态'>
-          <a-switch v-model={[formState.state, 'checked']} />
+        <a-form-item label="通道状态">
+          <a-switch v-model={[formState.state, "checked"]} />
+        </a-form-item>
+        <a-form-item
+          label
+          colon={false}
+          style={{ textAlign: "right", marginBottom: "0" }}
+        >
+          <a-button style={{ marginRight: "20px" }}>取消</a-button>
+          <a-button type="primary">确定</a-button>
         </a-form-item>
       </a-form>
     );

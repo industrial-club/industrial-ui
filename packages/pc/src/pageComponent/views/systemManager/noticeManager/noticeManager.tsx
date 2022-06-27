@@ -4,12 +4,14 @@ import utils from "@/utils";
 import { managerColumns } from "@/pageComponent/config/systemConfig";
 import addNotice from "@/pageComponent/components/noticeManager/addNotice";
 import sendDetails from "@/pageComponent/components/noticeManager/sendDetails";
+import notificationDetails from "@/pageComponent/components/noticeManager/notificationDetails";
 import "../../../assets/styles/systemManager/noticeManager/noticeManager.less";
 
 const noticeManager = defineComponent({
   components: {
     addNotice,
     sendDetails,
+    notificationDetails,
   },
   setup() {
     const form = reactive({
@@ -25,12 +27,14 @@ const noticeManager = defineComponent({
         sendType: "立即发送",
         creationTime: "2022-3-4 12:23:23",
         recordStatus: "已发送",
-        volumeSent: "9(2)",
+        totalSent: 9,
+        sendFailureAmount: 2,
       },
     ]);
     const managerVisible = ref(false);
     const managerTitle = ref("");
     const sendDetailsVisible = ref(false);
+    const detailsVisible = ref(false);
     return () => (
       <div class="noticeManager">
         <div class="noticeManager-top">
@@ -85,42 +89,38 @@ const noticeManager = defineComponent({
               bodyCell: ({ column, record, index }: any) => {
                 if (column.dataIndex === "volumeSent") {
                   return (
-                    <div>
-                      <span
-                        class="volumeSent"
-                        onClick={() => {
-                          sendDetailsVisible.value = true;
-                        }}
-                      >
-                        {record.volumeSent}
-                      </span>
-                    </div>
-                  );
-                }
-                if (column.dataIndex === "secretKey") {
-                  return (
-                    <div class="secretKey">
-                      <p>{record.secretKey}</p>
-                      <a-button
-                        type="text"
-                        v-slots={{
-                          icon: () => <copy-outlined />,
-                        }}
-                      ></a-button>
-                    </div>
+                    <a-button
+                      type="link"
+                      onClick={() => {
+                        sendDetailsVisible.value = true;
+                      }}
+                    >
+                      {record.totalSent}({record.sendFailureAmount})
+                    </a-button>
                   );
                 }
                 if (column.dataIndex === "action") {
                   return (
                     <div>
-                      <a-button type="text" onClick={() => {}}>
+                      <a-button
+                        type="link"
+                        onClick={() => {
+                          detailsVisible.value = true;
+                        }}
+                      >
                         详情
                       </a-button>
-                      <a-button type="text" onClick={() => {}}>
+                      <a-button
+                        type="link"
+                        onClick={() => {
+                          managerTitle.value = "修改通知";
+                          managerVisible.value = true;
+                        }}
+                      >
                         编辑
                       </a-button>
                       <a-button
-                        type="text"
+                        type="link"
                         onClick={() => {
                           Modal.confirm({
                             title: "系统提示",
@@ -162,6 +162,8 @@ const noticeManager = defineComponent({
           title={managerTitle.value}
           centered={true}
           footer={false}
+          keyboard={false}
+          maskClosable={false}
         >
           <addNotice></addNotice>
         </a-modal>
@@ -171,8 +173,20 @@ const noticeManager = defineComponent({
           centered={true}
           footer={false}
           width={1200}
+          keyboard={false}
+          maskClosable={false}
         >
           <sendDetails></sendDetails>
+        </a-modal>
+        <a-modal
+          v-model={[detailsVisible.value, "visible"]}
+          title="通知详情"
+          centered={true}
+          footer={false}
+          keyboard={false}
+          maskClosable={false}
+        >
+          <notificationDetails></notificationDetails>
         </a-modal>
       </div>
     );

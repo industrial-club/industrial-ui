@@ -30,7 +30,19 @@ export default defineComponent({
       title.value = "修改模板";
       templateVisible.value = true;
     };
-
+    const pagination = reactive({
+      current: 1,
+      pageSize: 10,
+      pageSizeOptions: ["10", "20", "30", "50", "100"],
+      total: 0,
+    });
+    const tableChange = (page) => {
+      const { current, pageSize, total } = page;
+      pagination.current = current;
+      pagination.pageSize = pageSize;
+      pagination.total = total;
+      console.log(page);
+    };
     return () => (
       <div class="noticeTemplate">
         <div class="noticeTemplate-top">
@@ -89,13 +101,16 @@ export default defineComponent({
           <a-table
             dataSource={dataSource.value}
             columns={templateColumns}
+            scroll={{ y: 500 }}
+            pagination={pagination}
+            onChange={tableChange}
             v-slots={{
               bodyCell: ({ column, record, index }: any) => {
                 if (column.dataIndex === "action") {
                   return (
                     <div>
                       <a-button
-                        type="text"
+                        type="link"
                         onClick={() => {
                           edit();
                         }}
@@ -130,6 +145,9 @@ export default defineComponent({
           title={title.value}
           onOk={handleOk}
           centered={true}
+          footer={false}
+          keyboard={false}
+          maskClosable={false}
         >
           <addTemplate></addTemplate>
         </a-modal>

@@ -30,7 +30,6 @@ const noticeCenter = defineComponent({
     const title = ref("");
     const maintainVisible = ref(false);
     const maintainTitle = ref("");
-    const api = ref({});
 
     const edit = async () => {
       title.value = "修改通道";
@@ -88,15 +87,17 @@ const noticeCenter = defineComponent({
                   return (
                     <div class="secretKey">
                       <div>{record.secretKey}</div>
-                      <a-button
-                        type="link"
-                        onClick={() => {
-                          copy(record.secretKey);
-                        }}
-                        v-slots={{
-                          icon: () => <copy-outlined />,
-                        }}
-                      ></a-button>
+                      {record.secretKey ? (
+                        <a-button
+                          type="link"
+                          onClick={() => {
+                            copy(record.secretKey);
+                          }}
+                          v-slots={{
+                            icon: () => <copy-outlined />,
+                          }}
+                        ></a-button>
+                      ) : null}
                     </div>
                   );
                 }
@@ -134,6 +135,9 @@ const noticeCenter = defineComponent({
           onOk={channelOk}
           onCancel={channelCancel}
           centered={true}
+          footer={false}
+          keyboard={false}
+          maskClosable={false}
         >
           <addChannel></addChannel>
         </a-modal>
@@ -144,6 +148,9 @@ const noticeCenter = defineComponent({
           onCancel={maintainCancel}
           centered={true}
           width={1200}
+          footer={false}
+          keyboard={false}
+          maskClosable={false}
         >
           <maintainModal></maintainModal>
         </a-modal>

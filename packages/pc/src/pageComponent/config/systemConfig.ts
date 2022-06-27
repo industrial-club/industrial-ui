@@ -149,6 +149,7 @@ const sendDetailsColumns = [
     key: "action",
   },
 ];
+
 export {
   centerColumns,
   gradeColumns,
