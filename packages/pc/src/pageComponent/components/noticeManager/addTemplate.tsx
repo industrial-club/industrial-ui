@@ -2,11 +2,19 @@ import { defineComponent, reactive } from "vue";
 
 export default defineComponent({
   name: "AddTemplate",
-  setup() {
+  emits: ["close"],
+  setup(_props, _context) {
+    // 模板表单
     const form = reactive({
       input: "",
       textarea: "",
     });
+
+    // 提交表单
+    const submit = async () => {
+      _context.emit("close");
+    };
+
     return () => (
       <div class="addTemplate">
         <a-form
@@ -30,8 +38,17 @@ export default defineComponent({
             colon={false}
             style={{ textAlign: "right", marginBottom: "0" }}
           >
-            <a-button style={{ marginRight: "20px" }}>取消</a-button>
-            <a-button type="primary">确定</a-button>
+            <a-button
+              style={{ marginRight: "20px" }}
+              onClick={() => {
+                _context.emit("close");
+              }}
+            >
+              取消
+            </a-button>
+            <a-button type="primary" onClick={submit}>
+              确定
+            </a-button>
           </a-form-item>
         </a-form>
       </div>

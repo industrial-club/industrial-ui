@@ -5,6 +5,7 @@ import utils from "@/utils";
 import { centerColumns } from "@/pageComponent/config/systemConfig";
 import addChannel from "@/pageComponent/components/noticeManager/addChannel";
 import maintainModal from "@/pageComponent/components/noticeManager/noticeMaintain";
+import noticeCenterApi from "@/api/noticeCenter";
 
 const noticeCenter = defineComponent({
   name: "NoticeCenter",
@@ -13,6 +14,7 @@ const noticeCenter = defineComponent({
     maintainModal,
   },
   setup(_props) {
+    // 列表数据
     const noticeList = ref([
       {
         name: "通知通道",
@@ -25,28 +27,36 @@ const noticeCenter = defineComponent({
         state: false,
       },
     ]);
-    const { toClipboard } = useClipboard();
-    const channelVisible = ref(false);
-    const title = ref("");
-    const maintainVisible = ref(false);
-    const maintainTitle = ref("");
 
+    // 一键复制
+    const { toClipboard } = useClipboard();
+
+    // 新增/修改通道弹窗显示
+    const channelVisible = ref(false);
+
+    // 新增/修改通道弹窗title
+    const title = ref("");
+
+    // 通道维护弹窗显示
+    const maintainVisible = ref(false);
+
+    // 获取数据
+    const http = async () => {
+      const res = await noticeCenterApi;
+    };
+
+    // 编辑
     const edit = async () => {
       title.value = "修改通道";
       channelVisible.value = true;
     };
-    const channelOk = () => {
-      channelVisible.value = false;
-    };
-    const channelCancel = () => {
-      channelVisible.value = false;
-    };
-    const maintainOk = () => {
-      maintainVisible.value = false;
-    };
+
+    // 通道维护
     const maintainCancel = () => {
       maintainVisible.value = false;
     };
+
+    // 复制
     const copy = async (val) => {
       try {
         await toClipboard(val);
@@ -57,6 +67,9 @@ const noticeCenter = defineComponent({
       }
     };
 
+    onMounted(() => {
+      // http();
+    });
     return () => (
       <div class="noticeCenter">
         <div class="noticeCenter-top">
@@ -132,19 +145,19 @@ const noticeCenter = defineComponent({
         <a-modal
           v-model={[channelVisible.value, "visible"]}
           title={title.value}
-          onOk={channelOk}
-          onCancel={channelCancel}
           centered={true}
           footer={false}
           keyboard={false}
           maskClosable={false}
         >
-          <addChannel></addChannel>
+          <addChannel
+            onClose={() => {
+              channelVisible.value = false;
+            }}
+          ></addChannel>
         </a-modal>
         <a-modal
           v-model={[maintainVisible.value, "visible"]}
-          title={maintainTitle.value}
-          onOk={maintainOk}
           onCancel={maintainCancel}
           centered={true}
           width={1200}

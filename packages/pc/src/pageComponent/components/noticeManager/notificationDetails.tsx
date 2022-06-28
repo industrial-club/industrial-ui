@@ -3,6 +3,7 @@ import { defineComponent, reactive } from "vue";
 export default defineComponent({
   name: "NotificationDetails",
   setup() {
+    // 表单数据
     const formState = reactive({
       title: "通知标题",
       addressee: "收件人",
@@ -12,12 +13,13 @@ export default defineComponent({
       content: "",
       text: "全体厂矿人员, 生产系统计划定于6月23日15:00-15:30进行系统升级, 请相关人员做好准备。",
     });
+
     return () => (
       <div class="notificationDetails">
         <a-form
           model={formState}
-          label-col={{ span: 8 }}
-          wrapper-col={{ span: 16 }}
+          label-col={{ span: 4 }}
+          wrapper-col={{ span: 20 }}
         >
           <a-form-item label="通知标题">
             <div>{formState.title}</div>
@@ -41,7 +43,14 @@ export default defineComponent({
             <div>{formState.level}</div>
           </a-form-item>
           <a-form-item label="通知内容">
-            <div>{formState.text}</div>
+            <a-textarea
+              v-model={[formState.text, "value"]}
+              bordered={false}
+              rows={4}
+              readonly
+              autosize
+              style={{ resize: "none" }}
+            />
           </a-form-item>
         </a-form>
       </div>

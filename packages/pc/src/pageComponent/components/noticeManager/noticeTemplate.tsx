@@ -9,11 +9,14 @@ export default defineComponent({
     addTemplate,
   },
   setup() {
+    // 查询表单
     const form = reactive({
       templateClassification: "",
       templateNo: "",
       templateName: "",
     });
+
+    // 列表数据
     const dataSource = ref([
       {
         number: "SYS3324324",
@@ -22,27 +25,35 @@ export default defineComponent({
         modifiedTime: "2022-3-4 12:23:23",
       },
     ]);
+
+    // 新增/修改模板弹窗显示
     const templateVisible = ref(false);
+
+    // 新增/修改模板弹窗title
     const title = ref("");
 
-    const handleOk = () => {};
+    // 编辑
     const edit = async () => {
       title.value = "修改模板";
       templateVisible.value = true;
     };
+
+    // 分页配置
     const pagination = reactive({
       current: 1,
       pageSize: 10,
       pageSizeOptions: ["10", "20", "30", "50", "100"],
       total: 0,
     });
+
+    // 分页变化
     const tableChange = (page) => {
       const { current, pageSize, total } = page;
       pagination.current = current;
       pagination.pageSize = pageSize;
       pagination.total = total;
-      console.log(page);
     };
+
     return () => (
       <div class="noticeTemplate">
         <div class="noticeTemplate-top">
@@ -143,13 +154,16 @@ export default defineComponent({
         <a-modal
           v-model={[templateVisible.value, "visible"]}
           title={title.value}
-          onOk={handleOk}
           centered={true}
           footer={false}
           keyboard={false}
           maskClosable={false}
         >
-          <addTemplate></addTemplate>
+          <addTemplate
+            onClose={() => {
+              templateVisible.value = false;
+            }}
+          ></addTemplate>
         </a-modal>
       </div>
     );

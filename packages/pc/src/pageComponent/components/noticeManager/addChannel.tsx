@@ -6,11 +6,19 @@ const props = {
 export default defineComponent({
   name: "AddChannel",
   props,
+  emits: ["close"],
   setup(_props, _context) {
+    // 表单数据
     const formState = reactive({
       name: "",
       state: true,
     });
+
+    // 提交表单
+    const submit = async () => {
+      _context.emit("close");
+    };
+
     watch(
       () => _props.formData,
       (e) => {
@@ -44,8 +52,17 @@ export default defineComponent({
           colon={false}
           style={{ textAlign: "right", marginBottom: "0" }}
         >
-          <a-button style={{ marginRight: "20px" }}>取消</a-button>
-          <a-button type="primary">确定</a-button>
+          <a-button
+            style={{ marginRight: "20px" }}
+            onClick={() => {
+              _context.emit("close");
+            }}
+          >
+            取消
+          </a-button>
+          <a-button type="primary" onClick={submit}>
+            确定
+          </a-button>
         </a-form-item>
       </a-form>
     );

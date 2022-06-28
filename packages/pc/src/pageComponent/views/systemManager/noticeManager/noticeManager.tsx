@@ -1,10 +1,11 @@
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import { Modal } from "ant-design-vue";
 import utils from "@/utils";
 import { managerColumns } from "@/pageComponent/config/systemConfig";
 import addNotice from "@/pageComponent/components/noticeManager/addNotice";
 import sendDetails from "@/pageComponent/components/noticeManager/sendDetails";
 import notificationDetails from "@/pageComponent/components/noticeManager/notificationDetails";
+import noticeManagerApi from "@/api/noticeManager";
 import "../../../assets/styles/systemManager/noticeManager/noticeManager.less";
 
 const noticeManager = defineComponent({
@@ -14,10 +15,13 @@ const noticeManager = defineComponent({
     notificationDetails,
   },
   setup() {
+    // 查询表单
     const form = reactive({
       selectChannel: "",
       notificationTitle: "",
     });
+
+    // 列表数据
     const noticeList = ref([
       {
         passageway: "通知",
@@ -31,10 +35,27 @@ const noticeManager = defineComponent({
         sendFailureAmount: 2,
       },
     ]);
+
+    // 新增/修改通知弹窗显示
     const managerVisible = ref(false);
+
+    // 新增/修改通知弹窗title
     const managerTitle = ref("");
+
+    // 发送明细弹窗显示
     const sendDetailsVisible = ref(false);
+
+    // 详情弹窗
     const detailsVisible = ref(false);
+
+    // 获取数据
+    const http = async () => {
+      const res = await noticeManagerApi;
+    };
+
+    onMounted(() => {
+      // http()
+    });
     return () => (
       <div class="noticeManager">
         <div class="noticeManager-top">
@@ -183,6 +204,7 @@ const noticeManager = defineComponent({
           title="通知详情"
           centered={true}
           footer={false}
+          width={800}
           keyboard={false}
           maskClosable={false}
         >
