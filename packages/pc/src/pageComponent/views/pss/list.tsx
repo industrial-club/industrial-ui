@@ -4,8 +4,8 @@ import { setRem } from "@/pageComponent/utils";
 import utils from "@/utils";
 import { TabPane, Tabs } from "ant-design-vue";
 import Tables from "./components/table";
-
-const com = defineComponent({
+import './assets/less/index.less';
+export default defineComponent({
   components: {
     Tables,
   },
@@ -64,5 +64,4 @@ const com = defineComponent({
     );
   },
 });
-export default utils.installComponent(com, "pss-list");
 

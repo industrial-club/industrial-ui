@@ -26,7 +26,10 @@ import AlarmRecord from "@/pageComponent/views/alarms/warning-record";
 import AlarmConfigure from "@/pageComponent/views/alarms/warning-configure";
 import noticeCenter from "@/pageComponent/views/systemManager/noticeManager/noticeCenter";
 import noticeManager from "@/pageComponent/views/systemManager/noticeManager/noticeManager";
-import PssList from "@/pageComponent/views/pss/list";
+import PssList from "@/pageComponent/views/pss";
+
+import PssRecord from "@/pageComponent/views/pssRecord";
+
 
 
 export default [
@@ -58,5 +61,6 @@ export default [
   AlarmConfigure,
   noticeCenter,
   noticeManager,
-  PssList
+  PssList,
+  PssRecord
 ];
