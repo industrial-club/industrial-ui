@@ -1,34 +1,86 @@
-import { defineComponent, reactive } from "vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  watch,
+  PropType,
+  onMounted,
+} from "vue";
+import noticeCenterApi from "@/api/noticeCenter";
+import { message } from "ant-design-vue";
+
+const props = {
+  formData: {
+    type: Object as PropType<{ [key: string]: string }>,
+  },
+};
+
+// 表单校验
+const rules = {
+  templateName: [
+    { required: true, message: "请输入模板名称", trigger: "blur" },
+  ],
+  templateContent: [
+    { required: true, message: "请输入模板内容", trigger: "blur" },
+  ],
+};
 
 export default defineComponent({
   name: "AddTemplate",
   emits: ["close"],
+  props,
   setup(_props, _context) {
+    const formRef = ref();
     // 模板表单
-    const form = reactive({
-      input: "",
-      textarea: "",
+    const form = ref<{
+      [key: string]: string;
+    }>({
+      templateName: "",
+      templateContent: "",
     });
 
     // 提交表单
     const submit = async () => {
-      _context.emit("close");
+      const res = await noticeCenterApi.getChannelTemplateAdd(form.value);
+      if (res.data) {
+        message.success("保存成功");
+        _context.emit("close");
+      }
     };
-
+    watch(
+      () => _props.formData,
+      (e) => {
+        if (e && e.id) {
+          for (const key in _props.formData) {
+            form.value[key] = _props.formData[key];
+          }
+        } else {
+          form.value = {};
+        }
+      },
+      {
+        immediate: true,
+        deep: true,
+      }
+    );
     return () => (
       <div class="addTemplate">
         <a-form
-          model={form}
-          name="basic"
+          model={form.value}
+          ref={formRef}
+          rules={rules}
           label-col={{ span: 8 }}
           wrapper-col={{ span: 16 }}
         >
-          <a-form-item label="模板名称">
-            <a-input v-model={[form.input, "value"]} placeholder="模板名称" />
+          <a-form-item label="模板名称" name="templateName">
+            <a-input
+              v-model={[form.value.templateName, "value"]}
+              placeholder="模板名称"
+            />
           </a-form-item>
-          <a-form-item label="模板内容">
+          <a-form-item label="模板内容" name="templateContent">
             <a-textarea
-              v-model={[form.textarea, "value"]}
+              v-model={[form.value.templateContent, "value"]}
               placeholder="模板内容"
               rows={8}
             />

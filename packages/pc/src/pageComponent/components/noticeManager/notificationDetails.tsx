@@ -1,54 +1,103 @@
-import { defineComponent, reactive } from "vue";
+import noticeCenterApi from "@/api/noticeCenter";
+import { channelFilter, resendTypeFilter } from "@/pageComponent/utils/filter";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+
+const props = {
+  formData: Object,
+};
 
 export default defineComponent({
   name: "NotificationDetails",
-  setup() {
+  props,
+  setup(_props, _context) {
     // 表单数据
-    const formState = reactive({
-      title: "通知标题",
-      addressee: "收件人",
-      date: "lucy",
-      time: "2022-6-27",
-      level: "1",
-      content: "",
-      text: "全体厂矿人员, 生产系统计划定于6月23日15:00-15:30进行系统升级, 请相关人员做好准备。",
-    });
+    const formState = ref<{
+      messageTitle?: string;
+      receiverInfos?: [];
+      receiverId?: Array<string | number>;
+      receiverName?: Array<string>;
+      sendType?: string | number;
+      expectSendTime?: string | number;
+      channelId?: string | number;
+      level?: string | number;
+      content?: string | number;
+      messageContent?: string;
+    }>({});
 
+    // 通道数据
+    const channelList = ref<Array<{ [key: string]: string | number }>>([]);
+
+    // 获取通道数据
+    const getChannelList = async () => {
+      const res = await noticeCenterApi.getChannelList();
+      channelList.value = res.data;
+    };
+
+    watch(
+      () => _props.formData,
+      (e) => {
+        formState.value = {};
+        if (e) {
+          if (e.id) {
+            formState.value.receiverId = [];
+            for (const key in e) {
+              formState.value[key] = e[key];
+            }
+            formState.value.receiverInfos?.forEach((item: any) => {
+              formState.value.receiverId?.push(item.receiverId);
+            });
+            formState.value.content = "";
+          }
+        }
+      },
+      {
+        immediate: true,
+        deep: true,
+      }
+    );
+    onMounted(() => {
+      getChannelList();
+    });
     return () => (
       <div class="notificationDetails">
         <a-form
-          model={formState}
+          model={formState.value}
           label-col={{ span: 4 }}
           wrapper-col={{ span: 20 }}
         >
           <a-form-item label="通知标题">
-            <div>{formState.title}</div>
+            <div>{formState.value.messageTitle}</div>
           </a-form-item>
           <a-form-item label="收件人">
-            <div>{formState.addressee}</div>
+            <div>{formState.value.receiverName}</div>
           </a-form-item>
           <a-form-item label="发送时间">
             <a-row grade={24}>
-              <a-col span={formState.date === "lucy" ? 10 : 24}>
-                <div>{formState.date}</div>
+              <a-col span={formState.value.sendType === "TIMING" ? 10 : 24}>
+                <div>{resendTypeFilter(formState.value.sendType)}</div>
               </a-col>
-              {formState.date === "lucy" ? (
+              {formState.value.sendType === "TIMING" ? (
                 <a-col span={12} offset="2">
-                  <div>{formState.time}</div>
+                  <div>{formState.value.expectSendTime}</div>
                 </a-col>
               ) : null}
             </a-row>
           </a-form-item>
+          <a-form-item label="通道">
+            <div>
+              {channelFilter(formState.value.channelId, channelList.value)}
+            </div>
+          </a-form-item>
           <a-form-item label="发送等级">
-            <div>{formState.level}</div>
+            <div>{formState.value.level}</div>
           </a-form-item>
           <a-form-item label="通知内容">
             <a-textarea
-              v-model={[formState.text, "value"]}
+              v-model={[formState.value.messageContent, "value"]}
               bordered={false}
               rows={4}
               readonly
-              autosize
+              autoSize
               style={{ resize: "none" }}
             />
           </a-form-item>

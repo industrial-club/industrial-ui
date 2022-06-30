@@ -15,18 +15,10 @@ const noticeCenter = defineComponent({
   },
   setup(_props) {
     // 列表数据
-    const noticeList = ref([
-      {
-        name: "通知通道",
-        secretKey: "MY543532343",
-        state: true,
-      },
-      {
-        name: "通知通道",
-        secretKey: "MY543532344",
-        state: false,
-      },
-    ]);
+    const noticeList = ref([]);
+
+    // 通道数据
+    const data = ref({});
 
     // 一键复制
     const { toClipboard } = useClipboard();
@@ -42,12 +34,14 @@ const noticeCenter = defineComponent({
 
     // 获取数据
     const http = async () => {
-      const res = await noticeCenterApi;
+      const res = await noticeCenterApi.getChannelList();
+      noticeList.value = res.data;
     };
 
     // 编辑
-    const edit = async () => {
+    const edit = async (val) => {
       title.value = "修改通道";
+      data.value = val;
       channelVisible.value = true;
     };
 
@@ -68,7 +62,7 @@ const noticeCenter = defineComponent({
     };
 
     onMounted(() => {
-      // http();
+      http();
     });
     return () => (
       <div class="noticeCenter">
@@ -77,6 +71,7 @@ const noticeCenter = defineComponent({
             type="primary"
             onClick={() => {
               title.value = "新增通道";
+              data.value = {};
               channelVisible.value = true;
             }}
           >
@@ -88,23 +83,24 @@ const noticeCenter = defineComponent({
             dataSource={noticeList.value}
             columns={centerColumns}
             bordered
+            pagination={false}
             v-slots={{
               bodyCell: ({ column, record, index }: any) => {
-                if (column.dataIndex === "index") {
+                if (column.key === "index") {
                   return index + 1;
                 }
-                if (column.dataIndex === "state") {
-                  return record.state ? "启用" : "禁用";
+                if (column.key === "state") {
+                  return record.available ? "启用" : "禁用";
                 }
-                if (column.dataIndex === "secretKey") {
+                if (column.key === "secretKey") {
                   return (
                     <div class="secretKey">
-                      <div>{record.secretKey}</div>
-                      {record.secretKey ? (
+                      <div>{record.corpId}</div>
+                      {record.corpId ? (
                         <a-button
                           type="link"
                           onClick={() => {
-                            copy(record.secretKey);
+                            copy(record.corpId);
                           }}
                           v-slots={{
                             icon: () => <copy-outlined />,
@@ -114,27 +110,26 @@ const noticeCenter = defineComponent({
                     </div>
                   );
                 }
-                if (column.dataIndex === "action") {
+                if (column.key === "action") {
                   return (
                     <div>
                       <a-button
                         type="link"
                         onClick={() => {
+                          data.value = record;
                           maintainVisible.value = true;
                         }}
                       >
                         通道维护
                       </a-button>
-                      {index != 0 ? (
-                        <a-button
-                          type="link"
-                          onClick={() => {
-                            edit();
-                          }}
-                        >
-                          编辑
-                        </a-button>
-                      ) : null}
+                      <a-button
+                        type="link"
+                        onClick={() => {
+                          edit(record);
+                        }}
+                      >
+                        编辑
+                      </a-button>
                     </div>
                   );
                 }
@@ -153,7 +148,9 @@ const noticeCenter = defineComponent({
           <addChannel
             onClose={() => {
               channelVisible.value = false;
+              http();
             }}
+            formData={data.value}
           ></addChannel>
         </a-modal>
         <a-modal
@@ -165,7 +162,7 @@ const noticeCenter = defineComponent({
           keyboard={false}
           maskClosable={false}
         >
-          <maintainModal></maintainModal>
+          <maintainModal formData={data.value}></maintainModal>
         </a-modal>
       </div>
     );
