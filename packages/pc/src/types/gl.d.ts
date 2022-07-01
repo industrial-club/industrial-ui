@@ -20,3 +20,5 @@ declare global {
     img: (opt: any) => void;
   }
 }
+
+declare module "vue-clipboard3";

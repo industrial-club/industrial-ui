@@ -62,6 +62,11 @@ const UpdateEmployeeDialog = defineComponent({
     watch(isVisible, async (val) => {
       if (!val) {
         formRef.value.resetFields();
+        for (const key in form.value) {
+          if (Array.isArray(form.value[key])) {
+            form.value[key] = [];
+          }
+        }
         return;
       }
       await nextTick();

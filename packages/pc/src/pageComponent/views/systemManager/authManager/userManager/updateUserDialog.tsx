@@ -61,6 +61,11 @@ const UpdateUserDialog = defineComponent({
       } else {
         // 清空表单
         formRef.value.resetFields();
+        for (const key in form.value) {
+          if (Array.isArray(form.value[key])) {
+            form.value[key] = [];
+          }
+        }
       }
     });
 
