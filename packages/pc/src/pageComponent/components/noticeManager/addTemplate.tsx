@@ -13,6 +13,7 @@ const props = {
   formData: {
     type: Object as PropType<{ [key: string]: string }>,
   },
+  channelId: String,
 };
 
 // 表单校验
@@ -40,12 +41,14 @@ export default defineComponent({
     });
 
     // 提交表单
-    const submit = async () => {
-      const res = await noticeCenterApi.getChannelTemplateAdd(form.value);
-      if (res.data) {
-        message.success("保存成功");
-        _context.emit("close");
-      }
+    const submit = () => {
+      formRef.value.validateFields().then(async () => {
+        const res = await noticeCenterApi.getChannelTemplateAdd(form.value);
+        if (res.data) {
+          message.success("保存成功");
+          _context.emit("close");
+        }
+      });
     };
     watch(
       () => _props.formData,
@@ -55,7 +58,9 @@ export default defineComponent({
             form.value[key] = _props.formData[key];
           }
         } else {
-          form.value = {};
+          form.value = {
+            channelId: _props.channelId || "",
+          };
         }
       },
       {

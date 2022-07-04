@@ -254,6 +254,7 @@ export default defineComponent({
         >
           <addTemplate
             formData={templateData.value}
+            channelId={data.id}
             onClose={() => {
               http();
               templateVisible.value = false;

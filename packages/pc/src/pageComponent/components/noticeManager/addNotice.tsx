@@ -9,11 +9,23 @@ const props = {
   formData: Object,
 };
 
+const rules = {
+  messageTitle: [
+    { required: true, message: "请输入通知标题", trigger: "blur" },
+  ],
+  receiverId: [{ required: true, message: "请选择收件人", trigger: "change" }],
+  sendType: [{ required: true, message: "请选择发送时间", trigger: "change" }],
+  channelId: [{ required: true, message: "请选择通道", trigger: "change" }],
+  level: [{ required: true, message: "请选择等级", trigger: "change" }],
+  messageContent: [{ required: true, message: "请输入内容", trigger: "blur" }],
+};
+
 export default defineComponent({
   name: "AddNotice",
   props,
   emits: ["close"],
   setup(_props, _context) {
+    const formRef = ref();
     // 表单数据
     const formState = ref<{
       messageTitle?: string;
@@ -57,7 +69,7 @@ export default defineComponent({
       const res = await noticeCenterApi.getChannelDetail(id);
       if (res.data && res.data.length > 0) {
         channelDetailList.value = res.data;
-        formState.value.level = channelDetailList.value[0].id;
+        formState.value.level = channelDetailList.value[0].level;
       } else {
         channelDetailList.value = [];
       }
@@ -80,26 +92,27 @@ export default defineComponent({
         pageSize: 9999,
         channelId: id,
       });
-      if (res.data && res.data.length > 0) {
+      if (res.data && res.data.records.length > 0) {
         channelTemplateList.value = res.data.records;
-        formState.value.content = "";
       } else {
         channelTemplateList.value = [];
       }
     };
 
     // 提交
-    const submit = async () => {
-      const res = await noticeManagerApi.sendMessage(formState.value);
-      if (res.data) {
-        const codes = [-1, -2, -3];
-        if (codes.indexOf(res.data) > -1) {
-          message.error("通道不可用");
-        } else {
-          message.success("保存成功");
-          _context.emit("close");
+    const submit = () => {
+      formRef.value.validateFields().then(async () => {
+        const res = await noticeManagerApi.sendMessage(formState.value);
+        if (res.data) {
+          const codes = [-1, -2, -3];
+          if (codes.indexOf(res.data) > -1) {
+            message.error("通道不可用");
+          } else {
+            message.success("保存成功");
+            _context.emit("close");
+          }
         }
-      }
+      });
     };
 
     watch(
@@ -131,17 +144,19 @@ export default defineComponent({
     });
     return () => (
       <a-form
+        ref={formRef}
         model={formState.value}
         label-col={{ span: 8 }}
         wrapper-col={{ span: 16 }}
+        rules={rules}
       >
-        <a-form-item label="通知标题">
+        <a-form-item label="通知标题" name="messageTitle">
           <a-input
             v-model={[formState.value.messageTitle, "value"]}
             placeholder="请输入通知标题"
           />
         </a-form-item>
-        <a-form-item label="收件人">
+        <a-form-item label="收件人" name="receiverId">
           <a-tree-select
             v-model={[formState.value.receiverId, "value"]}
             show-search
@@ -152,7 +167,7 @@ export default defineComponent({
             placeholder="请选择收件人"
           />
         </a-form-item>
-        <a-form-item label="发送时间">
+        <a-form-item label="发送时间" name="sendType">
           <a-row grade={24}>
             <a-col span={formState.value.sendType === "TIMING" ? 10 : 24}>
               <a-select
@@ -174,7 +189,7 @@ export default defineComponent({
             ) : null}
           </a-row>
         </a-form-item>
-        <a-form-item label="通道">
+        <a-form-item label="通道" name="channelId">
           <a-select
             v-model={[formState.value.channelId, "value"]}
             placeholder="请选择通道"
@@ -190,20 +205,23 @@ export default defineComponent({
             ))}
           </a-select>
         </a-form-item>
-        <a-form-item label="发送等级">
+        <a-form-item label="发送等级" name="level">
           <a-select
             v-model={[formState.value.level, "value"]}
             placeholder="请先选择通道"
+            disabled={!formState.value.channelId}
           >
             {channelDetailList.value.map((item) => (
-              <a-select-option value={item.id}>{item.level}</a-select-option>
+              <a-select-option value={item.level}>{item.level}</a-select-option>
             ))}
           </a-select>
         </a-form-item>
-        <a-form-item label="通知内容">
+        <a-form-item label="通知内容" name="messageContent">
           <a-select
             v-model={[formState.value.content, "value"]}
-            placeholder="请先选择通道"
+            placeholder="导入模板内容"
+            disabled={!formState.value.channelId}
+            style={{ marginBottom: "10px" }}
             onChange={(e) => {
               const messageContent = channelTemplateList.value.find(
                 (n) => n.id === e
@@ -212,20 +230,18 @@ export default defineComponent({
                 messageContent?.templateContent || "";
             }}
           >
-            <a-select-option value="">导入模板内容</a-select-option>
             {channelTemplateList.value.map((item) => (
               <a-select-option value={item.id}>
                 {item.templateName}
               </a-select-option>
             ))}
           </a-select>
-        </a-form-item>
-        <a-form-item label colon={false}>
           <a-textarea
             v-model={[formState.value.messageContent, "value"]}
             rows={4}
           />
         </a-form-item>
+        <a-form-item label colon={false}></a-form-item>
         <a-form-item
           label
           colon={false}
