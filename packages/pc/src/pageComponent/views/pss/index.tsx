@@ -13,7 +13,7 @@ const com = defineComponent({
   },
   setup() {
     onMounted(() => {});
-    const isList: Boolean = false;
+    const isList: Boolean = true;
     return () => <div class="pssIndex">{isList ? <List /> : <Info />}</div>;
   },
 });

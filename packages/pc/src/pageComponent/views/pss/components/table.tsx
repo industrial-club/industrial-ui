@@ -1,4 +1,4 @@
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, ref } from "vue";
 import {
   Button,
   Table,
@@ -7,6 +7,7 @@ import {
   Form,
   FormItem,
   Select,
+  SelectOption,
   DatePicker,
   Input,
   Row,
@@ -18,6 +19,8 @@ import {
   SearchOutlined,
 } from "@ant-design/icons-vue";
 import { randomKey } from "../utils";
+
+import pssApi from "@/api/pss";
 
 export default defineComponent({
   setup(prop, context) {
@@ -104,8 +107,12 @@ export default defineComponent({
       selectedRows: [],
     });
     const modal: any = reactive({
-      visible: false
+      visible: false,
+      formData: {
+        busId: '',
+      },
     });
+    const selectRows: any = ref([]);
     const eqModal: any = reactive({
       visible: false,
       dataSource: [],
@@ -115,17 +122,21 @@ export default defineComponent({
           title: "设备编号/名称",
           width: "15%",
           align: "center",
+          customRender: (rowCell: any) => {
+            const { record } = rowCell;
+            const { id, name } = record;
+            return <div>{id}-{name}</div>;
+          },
         },
         {
-          dataIndex: "column1",
+          dataIndex: "location",
           title: "设备位置",
           width: "15%",
           align: "center",
         },
         {
-          dataIndex: "column1",
+          dataIndex: "loop",
           title: "控制回路",
-          
           align: "center",
         },
       ],
@@ -134,6 +145,40 @@ export default defineComponent({
 
     const addModal = () => {
       modal.visible = true;
+    }
+
+    const addEq = async () => {
+      try {
+        const res: any = await pssApi.deivceList();
+        eqModal.dataSource = res.data.map((item: any) => {
+          item.loop = item.loops.join(",");
+          return item;
+        });
+        eqModal.visible = true;
+        console.log(eqModal, "location");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const onSelectEq = (val: any) => {
+      debugger;
+      selectRows.value = val;
+    };
+
+    const sureAddEq = async() => {
+      console.log(selectRows.value, '2222');
+      if (selectRows.value.length > 0) {
+        const postList: Promise<any>[] = [];
+        selectRows.value.forEach((item: any) => {
+          postList.push(pssApi.getloopByEq(item));
+        })
+        const resList = await Promise.all(postList);
+        console.log(resList, '9090');
+      } 
+     
+
+      // eqModal.visible = false;
     }
     
     return () => (
@@ -223,10 +268,20 @@ export default defineComponent({
               labelAlign="right"
             >
               <FormItem label="申请类型">
-                <Select></Select>
+                <Select>
+                  <SelectOption value="stopSupplyPower">
+                    低压停送电
+                  </SelectOption>
+                  <SelectOption value="stopPower">低压停电</SelectOption>
+                  <SelectOption value="supplyPower">低压送电</SelectOption>
+                </Select>
               </FormItem>
               <FormItem label="停送电设备">
-                <Button onClick={() => (eqModal.visible = true)}>
+                <Button
+                  onClick={() => {
+                    addEq();
+                  }}
+                >
                   <PlusOutlined />
                   添加设备
                 </Button>
@@ -253,7 +308,9 @@ export default defineComponent({
               <div class="modal_footer">
                 <Button
                   type="primary"
-                  onClick={() => (eqModal.visible = false)}
+                  onClick={() => {
+                    sureAddEq();
+                  }}
                 >
                   确定
                 </Button>
@@ -267,6 +324,7 @@ export default defineComponent({
               class="serach"
               prefix={<SearchOutlined />}
               placeholder="设备编号/名称"
+              style="margin-bottom: 24px; width: 307px"
             />
             <Form
               labelCol={{ span: 8 }}
@@ -294,17 +352,16 @@ export default defineComponent({
             <Table
               pagination={false}
               rowKey={(record: any) => {
-                if (!record.rowKey) {
-                  record.rowKey = randomKey();
-                }
-                return record.rowKey;
+                return record.id;
               }}
               columns={eqModal.columns}
-              
               scroll={{ y: "100%" }}
               dataSource={eqModal.dataSource}
               class="cus-table"
-              
+              rowSelection={{
+                onChange: onSelectEq,
+                selectedRowKeys: selectRows.value,
+              }}
             ></Table>
           </div>
         </Modal>

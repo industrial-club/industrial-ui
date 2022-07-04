@@ -5,6 +5,8 @@ import utils from "@/utils";
 import { TabPane, Tabs } from "ant-design-vue";
 import Tables from "./components/table";
 import './assets/less/index.less';
+import pssApi from "@/api/pss";
+
 export default defineComponent({
   components: {
     Tables,
@@ -37,7 +39,13 @@ export default defineComponent({
         },
       ],
     });
-    onMounted(() => {});
+    onMounted(() => {
+      initList();
+    });
+
+    const initList = async() => {
+        // const res = await pssApi.todoPage();
+    }
 
     return () => (
       <div class="pssList">
