@@ -15,5 +15,10 @@ declare module "@vue/runtime-core" {
 declare global {
   interface Window {
     sid: string;
+    select: (opt: any) => void;
+    input: (opt: any) => void;
+    img: (opt: any) => void;
   }
 }
+
+declare module "vue-clipboard3";

@@ -1,36 +1,129 @@
-import { defineComponent, reactive, ref } from "vue";
+import {
+  defineComponent,
+  nextTick,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 import { Modal } from "ant-design-vue";
-import { templateColumns } from "../../config/systemConfig";
+import noticeCenterApi from "@/api/noticeCenter";
 import addTemplate from "@/pageComponent/components/noticeManager/addTemplate";
+import { templateColumns } from "../../config/systemConfig";
+import moment from "moment";
+
+const props = {
+  formData: Object,
+};
 
 export default defineComponent({
   name: "NoticeTemplate",
   components: {
     addTemplate,
   },
-  setup() {
-    const form = reactive({
-      templateClassification: "",
-      templateNo: "",
-      templateName: "",
+  props,
+  setup(_props, _context) {
+    // 查询表单
+    const form = reactive<{
+      [key: string]: string;
+    }>({});
+
+    // 模板数据
+    const templateData = ref({});
+
+    // 通道数据
+    const data = reactive<{
+      id?: number;
+      corpId?: string;
+      channelName?: string;
+      available?: boolean;
+      notificationChannelConfigList?: null;
+    }>({});
+
+    // 分页配置
+    const pagination = reactive({
+      current: 1,
+      pageSize: 10,
+      pageSizeOptions: ["10", "20", "30", "50", "100"],
+      total: 0,
     });
-    const dataSource = ref([
-      {
-        number: "SYS3324324",
-        name: "验证码",
-        modifiedBy: "李师傅",
-        modifiedTime: "2022-3-4 12:23:23",
-      },
-    ]);
+
+    // 列表数据
+    const dataSource = ref([]);
+
+    // 通道列表
+    const channelList = ref<
+      Array<{
+        id?: number;
+        corpId?: string;
+        channelName?: string;
+        available?: boolean;
+        notificationChannelConfigList?: null;
+      }>
+    >([]);
+
+    // 新增/修改模板弹窗显示
     const templateVisible = ref(false);
+
+    // 新增/修改模板弹窗title
     const title = ref("");
 
-    const handleOk = () => {};
-    const edit = async () => {
+    const http = async () => {
+      const res = await noticeCenterApi.getChannelTemplateList({
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+        channelId: data.id,
+        ...form,
+      });
+      if (res.data) {
+        pagination.current = res.data.current;
+        pagination.total = res.data.total;
+        dataSource.value = res.data.records;
+      }
+    };
+
+    // 获取通道列表
+    const getChannelList = async () => {
+      const res = await noticeCenterApi.getChannelList();
+      channelList.value = res.data;
+    };
+
+    // 编辑
+    const edit = async (val) => {
       title.value = "修改模板";
+      templateData.value = val;
       templateVisible.value = true;
     };
 
+    // 分页变化
+    const tableChange = (page) => {
+      const { current, pageSize, total } = page;
+      pagination.current = current;
+      pagination.pageSize = pageSize;
+      pagination.total = total;
+      http();
+    };
+
+    watch(
+      () => _props.formData,
+      (e) => {
+        if (e) {
+          for (const key in e) {
+            data[key] = e[key];
+          }
+          nextTick(() => {
+            http();
+          });
+        }
+      },
+      {
+        immediate: true,
+        deep: true,
+      }
+    );
+    onMounted(() => {
+      getChannelList();
+    });
     return () => (
       <div class="noticeTemplate">
         <div class="noticeTemplate-top">
@@ -40,22 +133,25 @@ export default defineComponent({
             model={form}
           >
             <a-row grade={24}>
-              <a-col span={6}>
+              {/* <a-col span={6}>
                 <a-form-item label="模板分类">
                   <a-select
                     ref="select"
-                    v-model={[form.templateClassification, "value"]}
+                    allowClear
+                    v-model={[form.channelId, "value"]}
                   >
-                    <a-select-option value="jack">Jack</a-select-option>
-                    <a-select-option value="lucy">Lucy</a-select-option>
-                    <a-select-option value="Yiminghe">yiminghe</a-select-option>
+                    {channelList.value.map((item) => (
+                      <a-select-option value={item.id}>
+                        {item.channelName}
+                      </a-select-option>
+                    ))}
                   </a-select>
                 </a-form-item>
-              </a-col>
+              </a-col> */}
               <a-col span={6}>
                 <a-form-item label="模板编号">
                   <a-input
-                    v-model={[form.templateNo, "value"]}
+                    v-model={[form.templateCode, "value"]}
                     placeholder="模板编号搜索"
                   />
                 </a-form-item>
@@ -68,8 +164,15 @@ export default defineComponent({
                   />
                 </a-form-item>
               </a-col>
-              <a-col span={6} style={{ textAlign: "right" }}>
-                <a-button type="primary">查询</a-button>
+              <a-col span={12} style={{ textAlign: "right" }}>
+                <a-button
+                  type="primary"
+                  onClick={() => {
+                    http();
+                  }}
+                >
+                  查询
+                </a-button>
               </a-col>
             </a-row>
           </a-form>
@@ -80,6 +183,7 @@ export default defineComponent({
               type="primary"
               onClick={() => {
                 templateVisible.value = true;
+                templateData.value = {};
                 title.value = "新增模板";
               }}
             >
@@ -89,15 +193,21 @@ export default defineComponent({
           <a-table
             dataSource={dataSource.value}
             columns={templateColumns}
+            scroll={{ y: 500 }}
+            pagination={pagination}
+            onChange={tableChange}
             v-slots={{
               bodyCell: ({ column, record, index }: any) => {
+                if (column.key === "modifiedTime") {
+                  return moment(record.updateDt).format("YYYY-MM-DD HH:mm:ss");
+                }
                 if (column.dataIndex === "action") {
                   return (
                     <div>
                       <a-button
-                        type="text"
+                        type="link"
                         onClick={() => {
-                          edit();
+                          edit(record);
                         }}
                       >
                         编辑
@@ -109,8 +219,17 @@ export default defineComponent({
                           Modal.confirm({
                             title: "系统提示",
                             content: "请确定是否删除此模板？",
-                            onOk() {
-                              return false;
+                            async onOk() {
+                              const res =
+                                await noticeCenterApi.getChannelTemplateDelete(
+                                  record.id
+                                );
+                              if (res.data) {
+                                http();
+                                return true;
+                              } else {
+                                return false;
+                              }
                             },
                             onCancel() {},
                           });
@@ -128,10 +247,18 @@ export default defineComponent({
         <a-modal
           v-model={[templateVisible.value, "visible"]}
           title={title.value}
-          onOk={handleOk}
           centered={true}
+          footer={false}
+          keyboard={false}
+          maskClosable={false}
         >
-          <addTemplate></addTemplate>
+          <addTemplate
+            formData={templateData.value}
+            onClose={() => {
+              http();
+              templateVisible.value = false;
+            }}
+          ></addTemplate>
         </a-modal>
       </div>
     );

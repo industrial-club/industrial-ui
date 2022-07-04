@@ -94,9 +94,10 @@ const LayoutSidebar = defineComponent({
             <a-sub-menu
               title={item.name}
               v-slots={{
-                icon: item.icon && (
-                  <icon-font sytle={{ fontSize: "20px" }} type={item.icon} />
-                ),
+                icon: () =>
+                  item.icon && (
+                    <icon-font sytle={{ fontSize: "20px" }} type={item.icon} />
+                  ),
               }}
             >
               {getSubMenu(item.subList, item.code)}
