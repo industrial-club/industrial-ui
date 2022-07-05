@@ -34,6 +34,7 @@ const noticeManager = defineComponent({
       pageSize: 10,
       pageSizeOptions: ["10", "20", "30", "50", "100"],
       total: 0,
+      showQuickJumper: true,
     });
 
     // 通道列表
@@ -127,7 +128,7 @@ const noticeManager = defineComponent({
                 <a-form-item label="通知标题">
                   <a-input
                     v-model={[form.messageTitle, "value"]}
-                    placeholder="模板编号搜索"
+                    placeholder="通知标题搜索"
                   />
                 </a-form-item>
               </a-col>

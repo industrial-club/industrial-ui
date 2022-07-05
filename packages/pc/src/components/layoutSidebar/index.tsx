@@ -1,7 +1,7 @@
 /**
  * 布局组件 - 侧边菜单
  */
-import { defineComponent, reactive, ref, watch, PropType } from "vue";
+import { defineComponent, reactive, ref, watch, PropType, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import utils from "@/utils";
 
@@ -39,15 +39,27 @@ const LayoutSidebar = defineComponent({
 
     watch(
       route,
-      () => {
+      async () => {
+        await nextTick();
         const { menuCode: code } = route.query as any;
-        state.selectedKeys = [code];
+        if (code?.startsWith("http")) {
+          const menuItem = prop.menu.find((item) => item.url === code);
+          state.selectedKeys = [menuItem?.code || ""];
+        } else {
+          state.selectedKeys = [code];
+        }
       },
       { immediate: true }
     );
 
-    const toPath = (code: string) => {
-      router.push(`/?menuCode=${code}`);
+    const toPath = (menu: any) => {
+      if (menu.mode === 0) {
+        router.push(`/?menuCode=${menu.code}`);
+      } else if (menu.mode === 2) {
+        router.push(`/?menuCode=${menu.url}`);
+      } else {
+        window.open(menu.url);
+      }
     };
 
     watch(
@@ -59,7 +71,7 @@ const LayoutSidebar = defineComponent({
             (item: any) => item.code === route.query.menuCode
           )
         ) {
-          toPath(prop.menu[0].code);
+          toPath(prop.menu[0]);
         }
       },
       { immediate: true, deep: true }
@@ -71,7 +83,7 @@ const LayoutSidebar = defineComponent({
           key={item.code}
           title={item.name}
           onClick={() => {
-            toPath(item.code);
+            toPath(item);
           }}
           v-slots={{
             icon: () =>

@@ -16,20 +16,25 @@ export function flatMenuList(menuList: any[]): any[] {
 }
 
 /**
- * 获取code对应菜单的最顶层菜单
- * @param code 菜单编码
+ * 获取propValue对应菜单的最顶层菜单
+ * @param propName 菜单的属性名
+ * @param propValue 需要查找的属性值
  * @param menuTree 菜单树结构
  */
-export function getActiveNavByCode(code: string, menuTree: any[]) {
-  function isChildCode(menu: any): boolean {
+export function getActiveNavByProp(
+  propName: string,
+  propValue: string,
+  menuTree: any[]
+) {
+  function isChildpropValue(menu: any): boolean {
     let flag = false;
 
-    if (menu.code === code) {
+    if (menu[propName] === propValue) {
       flag = true;
     }
     if (Array.isArray(menu.subList)) {
       for (const item of menu.subList) {
-        if (isChildCode(item)) {
+        if (isChildpropValue(item)) {
           flag = true;
           break;
         }
@@ -39,7 +44,7 @@ export function getActiveNavByCode(code: string, menuTree: any[]) {
   }
 
   const res = menuTree.find((nav: any) => {
-    return isChildCode(nav);
+    return isChildpropValue(nav);
   });
   return res;
 }
