@@ -111,14 +111,14 @@ const AddWarningConfigure = defineComponent({
      * 获取所有设备
      */
     watch(
-      () => $store.state.basicForm.systemCode,
+      () => $store.state.basicForm.systemUuid,
       async (val) => {
         if (val) {
           const res = await getInstanceListBySystemId(urlObj.instanceList)(val);
 
           res.data = res.data.map((item: any) => {
             item.label = item.modelInstance.instanceName;
-            item.value = item.modelInstance.instanceCode;
+            item.value = item.modelInstance.instanceUuid;
             return item;
           });
 
@@ -152,7 +152,7 @@ const AddWarningConfigure = defineComponent({
         ...$store.getters.linkageForm,
         ruleType: "COMPARE_TYPE",
         propertyCode: $store.getters.ruleForm.propertyCode[1],
-        instanceCode: $store.getters.ruleForm.propertyCode[0],
+        instanceUuid: $store.getters.ruleForm.propertyCode[0],
         notificationUserList:
           $store.getters.linkageForm.notificationUserList.map((item: any) => ({
             userId: item.id,
