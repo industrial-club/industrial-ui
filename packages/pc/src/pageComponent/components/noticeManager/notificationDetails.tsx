@@ -5,7 +5,18 @@ import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 const props = {
   formData: Object,
 };
-
+interface reactiverInfoItem {
+  deleted: boolean;
+  failReason: null;
+  id: string;
+  platform: string;
+  readState: string;
+  receiverId: string;
+  receiverName: string;
+  recordId: string;
+  sendState: null;
+  sendTime: null;
+}
 export default defineComponent({
   name: "NotificationDetails",
   props,
@@ -13,9 +24,9 @@ export default defineComponent({
     // 表单数据
     const formState = ref<{
       messageTitle?: string;
-      receiverInfos?: [];
+      receiverInfos?: Array<reactiverInfoItem>;
       receiverId?: Array<string | number>;
-      receiverName?: Array<string>;
+      receiverName?: string;
       sendType?: string | number;
       expectSendTime?: string | number;
       channelId?: string | number;
@@ -43,9 +54,18 @@ export default defineComponent({
             for (const key in e) {
               formState.value[key] = e[key];
             }
-            formState.value.receiverInfos?.forEach((item: any) => {
-              formState.value.receiverId?.push(item.receiverId);
-            });
+            const map = new Map();
+            const qc = formState.value.receiverInfos?.filter(
+              (key) =>
+                !map.has(key.receiverName) && map.set(key.receiverName, 1)
+            );
+            formState.value.receiverName = qc
+              ?.map((item: any) => {
+                if (item.receiverName && item.receiverName !== null) {
+                  return item.receiverName;
+                }
+              })
+              .join(",");
             formState.value.content = "";
           }
         }

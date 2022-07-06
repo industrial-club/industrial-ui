@@ -110,7 +110,6 @@ const LayoutContent = defineComponent({
       const tabRoutes = props.allRoutes.filter((item) => {
         return tabs.value.find((tab) => tab.code === item.code);
       });
-      console.log(tabRoutes);
 
       return [...tabRoutes, ...iframeRoutes];
     });

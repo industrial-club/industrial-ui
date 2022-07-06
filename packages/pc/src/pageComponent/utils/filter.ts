@@ -89,3 +89,14 @@ export const channelFilter = (val, data) => {
     return channelName;
   }
 };
+
+export const receiverNameFilter = (val, data) => {
+  // const receiverNames = data.filter()
+};
+
+export const sendStateFilter = (val, data) => {
+  if (val && data.length > 0) {
+    const sendState = data.find((n) => n.code === val).name;
+    return sendState;
+  }
+};

@@ -8,7 +8,18 @@ import { message } from "ant-design-vue";
 const props = {
   formData: Object,
 };
-
+interface reactiverInfoItem {
+  deleted: boolean;
+  failReason: null;
+  id: string;
+  platform: string;
+  readState: string;
+  receiverId: string;
+  receiverName: string;
+  recordId: string;
+  sendState: null;
+  sendTime: null;
+}
 const rules = {
   messageTitle: [
     { required: true, message: "请输入通知标题", trigger: "blur" },
@@ -28,9 +39,12 @@ export default defineComponent({
     const formRef = ref();
     // 表单数据
     const formState = ref<{
+      id?: string;
       messageTitle?: string;
-      receiverInfos?: [];
+      receiverInfos?: Array<reactiverInfoItem>;
+      receiverName?: string;
       receiverId?: Array<string | number>;
+      receiverIds?: Array<string | number>;
       sendType?: string | number;
       expectSendTime?: string | number;
       channelId?: string | number;
@@ -115,6 +129,28 @@ export default defineComponent({
       });
     };
 
+    const reactiverChange = (value, selectedOptions) => {
+      let list: any = [];
+      formState.value.receiverId = [];
+      selectedOptions.forEach((item) => {
+        if (item.children) {
+          list = [...list, ...item[item.length - 1]];
+        } else {
+          list.push(item[item.length - 1]);
+        }
+      });
+      reactiver(list);
+    };
+    // receiverId
+    const reactiver = (val) => {
+      val.forEach((item) => {
+        if (item.children) {
+          reactiver(item.children);
+        } else {
+          formState.value.receiverId?.push(item.value);
+        }
+      });
+    };
     watch(
       () => _props.formData,
       (e) => {
@@ -125,8 +161,22 @@ export default defineComponent({
             for (const key in e) {
               formState.value[key] = e[key];
             }
-            formState.value.receiverInfos?.forEach((item: any) => {
-              formState.value.receiverId?.push(item.receiverId);
+            const map = new Map();
+            const qc = formState.value.receiverInfos?.filter(
+              (key) =>
+                !map.has(key.receiverName) && map.set(key.receiverName, 1)
+            );
+            formState.value.receiverName = qc
+              ?.map((item: any) => {
+                if (item.receiverName && item.receiverName !== null) {
+                  return item.receiverName;
+                }
+              })
+              .join(",");
+            formState.value.receiverId = qc?.map((item: any) => {
+              if (item.receiverId && item.receiverId !== null) {
+                return item.receiverId;
+              }
             });
             formState.value.content = "";
           }
@@ -157,29 +207,31 @@ export default defineComponent({
           />
         </a-form-item>
         <a-form-item label="收件人" name="receiverId">
-          <a-tree-select
-            v-model={[formState.value.receiverId, "value"]}
-            show-search
-            dropdown-style={{ maxHeight: "400px", overflow: "auto" }}
-            tree-data={options.value}
-            allow-clear
-            multiple
-            placeholder="请选择收件人"
-          />
+          {formState.value.id ? (
+            <div>{formState.value.receiverName}</div>
+          ) : (
+            <a-cascader
+              v-model={[formState.value.receiverIds, "value"]}
+              options={options.value}
+              multiple
+              placeholder="请选择收件人"
+              onChange={reactiverChange}
+            />
+          )}
         </a-form-item>
         <a-form-item label="发送时间" name="sendType">
           <a-row grade={24}>
-            <a-col span={formState.value.sendType === "TIMING" ? 10 : 24}>
+            <a-col span={formState.value.sendType === "DELAY" ? 10 : 24}>
               <a-select
                 v-model={[formState.value.sendType, "value"]}
                 placeholder="请选择发送时间"
               >
                 <a-select-option value="IMMEDIATELY">立即发送</a-select-option>
                 <a-select-option value="DELAY">延迟发送</a-select-option>
-                <a-select-option value="TIMING">定时发送</a-select-option>
+                {/* <a-select-option value="TIMING">定时发送</a-select-option> */}
               </a-select>
             </a-col>
-            {formState.value.sendType === "TIMING" ? (
+            {formState.value.sendType === "DELAY" ? (
               <a-col span={12} offset="2">
                 <a-date-picker
                   show-time
