@@ -51,18 +51,17 @@ export function fomatDepPeopleTree(res: any) {
   function formatSubList(list: any[]) {
     return list.map((item) => ({
       value: `dep${item.id}`,
-      title: item.name,
-      selectable: false,
+      label: item.name,
       children:
         item.subList.length > 0
           ? formatSubList(item.subList)
-          : formatemployeeSummaryList(item.employeeSummaryList),
+          : formatemployeeSummaryList(item.userSummaryList),
     }));
   }
   function formatemployeeSummaryList(list: any[]) {
     return list.map((item) => ({
-      value: item.employeeId,
-      title: item.employeeName,
+      value: item.userId,
+      label: item.userName,
     }));
   }
   return formatSubList(res);

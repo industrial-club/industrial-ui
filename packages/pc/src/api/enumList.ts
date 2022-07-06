@@ -13,7 +13,7 @@ api.setInstance = (serverName: string, prefix?: string) => {
 };
 
 const getDepPeopleTreeList = async () => {
-  return await instance.get(`/department/all/tree/org/employee`);
+  return await instance.get(`/department/all/tree/org/user`);
 };
 
 export default getDepPeopleTreeList;

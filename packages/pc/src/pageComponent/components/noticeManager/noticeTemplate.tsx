@@ -168,6 +168,7 @@ export default defineComponent({
                 <a-button
                   type="primary"
                   onClick={() => {
+                    pagination.current = 1;
                     http();
                   }}
                 >

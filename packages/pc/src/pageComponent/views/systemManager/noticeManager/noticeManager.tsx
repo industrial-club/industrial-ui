@@ -10,7 +10,10 @@ import noticeManagerApi from "@/api/noticeManager";
 import noticeCenterApi from "@/api/noticeCenter";
 import "../../../assets/styles/systemManager/noticeManager/noticeManager.less";
 import { Data } from "ht";
-import { resendTypeFilter } from "@/pageComponent/utils/filter";
+import {
+  resendTypeFilter,
+  sendStateFilter,
+} from "@/pageComponent/utils/filter";
 
 const noticeManager = defineComponent({
   components: {
@@ -51,8 +54,16 @@ const noticeManager = defineComponent({
     // 列表数据
     const noticeList = ref([]);
 
+    const options = ref([]);
+
     // 消息详情
     const data = ref({});
+
+    // 获取通知方式
+    const enumList = async () => {
+      const res = await noticeCenterApi.getEnumList("SendStateEnum");
+      options.value = res.data;
+    };
 
     // 获取通道列表
     const getChannelList = async () => {
@@ -98,6 +109,7 @@ const noticeManager = defineComponent({
     onMounted(() => {
       http();
       getChannelList();
+      enumList();
     });
     return () => (
       <div class="noticeManager">
@@ -136,6 +148,7 @@ const noticeManager = defineComponent({
                 <a-button
                   type="primary"
                   onClick={() => {
+                    pagination.current = 1;
                     http();
                   }}
                 >
@@ -168,6 +181,9 @@ const noticeManager = defineComponent({
                 if (column.key === "sendType") {
                   return resendTypeFilter(record.sendType);
                 }
+                if (column.key === "recordStatus") {
+                  return sendStateFilter(record.sendState, options.value);
+                }
                 if (column.key === "volumeSent") {
                   return (
                     <a-button
@@ -189,79 +205,83 @@ const noticeManager = defineComponent({
                 if (column.key === "action") {
                   return (
                     <div>
-                      <a-button
-                        type="link"
-                        onClick={async () => {
-                          const res = await noticeManagerApi.recordId(
-                            record.id
-                          );
-                          data.value = res.data;
-                          detailsVisible.value = true;
-                        }}
-                      >
-                        详情
-                      </a-button>
-                      <a-button
-                        type="link"
-                        onClick={async () => {
-                          managerTitle.value = "修改通知";
-                          const res = await noticeManagerApi.recordId(
-                            record.id
-                          );
-                          data.value = res.data;
-                          managerVisible.value = true;
-                        }}
-                      >
-                        编辑
-                      </a-button>
-                      <a-button
-                        type="link"
-                        onClick={() => {
-                          Modal.confirm({
-                            title: "系统提示",
-                            content: "请确定是否重新发送此消息？",
-                            async onOk() {
-                              const res = await noticeManagerApi.resend(record);
-                              if (res.data) {
-                                message.success("发送成功");
-                                return true;
-                              } else {
-                                message.error("发送失败");
-                                return false;
-                              }
-                            },
-                            onCancel() {},
-                          });
-                        }}
-                      >
-                        重新发送
-                      </a-button>
-                      <a-button
-                        type="text"
-                        danger
-                        onClick={() => {
-                          Modal.confirm({
-                            title: "系统提示",
-                            content: "请确定是否删除此任务？",
-                            async onOk() {
-                              const res = await noticeManagerApi.recordDelete(
-                                record.id
-                              );
-                              if (res.data) {
-                                message.success("删除成功");
-                                http();
-                                return true;
-                              } else {
-                                message.success("删除失败");
-                                return false;
-                              }
-                            },
-                            onCancel() {},
-                          });
-                        }}
-                      >
-                        删除
-                      </a-button>
+                      {record.sendState === "PENDING" ? (
+                        <>
+                          <a-button
+                            type="link"
+                            onClick={() => {
+                              managerTitle.value = "修改通知";
+                              data.value = record;
+                              managerVisible.value = true;
+                            }}
+                          >
+                            编辑
+                          </a-button>
+                          <a-button
+                            type="text"
+                            danger
+                            onClick={() => {
+                              Modal.confirm({
+                                title: "系统提示",
+                                content: "请确定是否删除此任务？",
+                                async onOk() {
+                                  const res =
+                                    await noticeManagerApi.recordDelete(
+                                      record.id
+                                    );
+                                  if (res.data) {
+                                    message.success("删除成功");
+                                    http();
+                                    return true;
+                                  } else {
+                                    message.success("删除失败");
+                                    return false;
+                                  }
+                                },
+                                onCancel() {},
+                              });
+                            }}
+                          >
+                            删除
+                          </a-button>
+                        </>
+                      ) : (
+                        <>
+                          <a-button
+                            type="link"
+                            onClick={() => {
+                              data.value = record;
+                              detailsVisible.value = true;
+                            }}
+                          >
+                            详情
+                          </a-button>
+                          <a-button
+                            type="link"
+                            onClick={() => {
+                              Modal.confirm({
+                                title: "系统提示",
+                                content: "请确定是否重新发送此消息？",
+                                async onOk() {
+                                  const res = await noticeManagerApi.resend(
+                                    record
+                                  );
+                                  if (res.data) {
+                                    message.success("发送成功");
+                                    return true;
+                                  } else {
+                                    message.error("发送失败");
+                                    return false;
+                                  }
+                                },
+                                onCancel() {},
+                              });
+                            }}
+                          >
+                            重新发送
+                          </a-button>
+                        </>
+                      )}
                     </div>
                   );
                 }
