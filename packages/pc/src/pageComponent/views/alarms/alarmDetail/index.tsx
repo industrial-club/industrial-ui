@@ -37,7 +37,7 @@ export default defineComponent({
     const getAlarmVideo = async () => {
       const { data } = await getVideo(urlObj.getVideo)(
         alarmDetail.value.id,
-        alarmDetail.value.instanceCode
+        alarmDetail.value.instanceUuid
       );
       videoList.value = Object.values(data).map(
         (item: any) => item.relatedPath
