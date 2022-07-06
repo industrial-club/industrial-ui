@@ -27,11 +27,6 @@ class Login {
       this.config.env = "mtip-app-env";
     }
 
-    // 平台单独访问环境 该方法可以不调用 默认为平台单独访问
-    // if (!userCode && !token) {
-    //   this.config.env = "mtip-env";
-    // }
-
     this.systemServerInfo = this.config.env;
   }
 
@@ -83,7 +78,16 @@ class Login {
     }
 
     if (!token) {
-      const res = (await this.config.axios.post(this.config.api, data)) as any;
+      const headers = {
+        isMtip: true,
+      };
+
+      if (userCode) {
+        headers.isMtip = false;
+      }
+      const res = (await this.config.axios.post(this.config.api, data, {
+        headers,
+      })) as any;
       const { sysUser, token } = res.data;
       this.saveInfo("token", token);
       this.saveInfo("userinfo", JSON.stringify(sysUser));
