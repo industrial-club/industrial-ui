@@ -149,7 +149,7 @@ const RuleForm = defineComponent({
                         v-model={[ruleForm.value.propertyCode, "value"]}
                         // @ts-ignore
                         onClick={() => {
-                          if (!$store.state.basicForm.systemCode) {
+                          if (!$store.state.basicForm.systemUuid) {
                             message.warning("请先选择报警系统");
                           }
                         }}

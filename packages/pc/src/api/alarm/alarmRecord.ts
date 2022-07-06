@@ -19,7 +19,7 @@ export interface recordsItem {
   firstAlarmTime: number | string;
   id: number;
   imageUrl: string;
-  instanceCode: string;
+  instanceUuid: string;
   instanceName: string;
   lastAlarmTime: number | string;
   level: number;
@@ -30,7 +30,7 @@ export interface recordsItem {
   releaseUser: string;
   ruleId: number;
   status: string;
-  systemCode: string;
+  systemUuid: string;
   type: string;
   videoUrl: string;
 }
@@ -113,8 +113,8 @@ export const batchVoiceDisable = (url: string) => (data: any) =>
  * 获取视频
  */
 export const getVideo =
-  (url: string) => (alarmUuid: string, instanceCode: string) =>
-    instance.get(url ?? "/video", { params: { alarmUuid, instanceCode } });
+  (url: string) => (alarmUuid: string, instanceUuid: string) =>
+    instance.get(url ?? "/video", { params: { alarmUuid, instanceUuid } });
 
 /**
  * 获取报警详情

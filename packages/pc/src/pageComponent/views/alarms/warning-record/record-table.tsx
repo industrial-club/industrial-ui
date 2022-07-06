@@ -143,9 +143,9 @@ const WarningRecord = defineComponent({
         async onOk() {
           const res = await forceClearAlarm(urlObj.clearAlarm)({
             id: record.id,
-            instanceCode: record.instanceCode,
+            instanceUuid: record.instanceUuid,
             propertyCode: record.propertyCode,
-            systemCode: record.systemCode,
+            systemUuid: record.systemUuid,
             corpId: record.corpId,
           });
           message.success("消警成功");
@@ -182,9 +182,9 @@ const WarningRecord = defineComponent({
       await batchForceClearAlarm(urlObj.batchClear)(
         selectedRows.value.map((item) => ({
           id: item.id,
-          instanceCode: item.instanceCode,
+          instanceUuid: item.instanceUuid,
           propertyCode: item.propertyCode,
-          systemCode: item.systemCode,
+          systemUuid: item.systemUuid,
           corpId: item.corpId,
         }))
       );
@@ -199,9 +199,9 @@ const WarningRecord = defineComponent({
       await batchVoiceDisable(urlObj.batchMute)(
         selectedRows.value.map((item) => ({
           id: item.id,
-          instanceCode: item.instanceCode,
+          instanceUuid: item.instanceUuid,
           propertyCode: item.propertyCode,
-          systemCode: item.systemCode,
+          systemUuid: item.systemUuid,
           voiceAvailable: false,
           corpId: item.corpId,
         }))
@@ -233,7 +233,7 @@ const WarningRecord = defineComponent({
     const handleVideo = async (record: any) => {
       const { data } = await getVideo(urlObj.getVideo)(
         record.id,
-        record.instanceCode
+        record.instanceUuid
       );
       videoObj.value = data;
       isVideoShow.value = true;
@@ -265,9 +265,9 @@ const WarningRecord = defineComponent({
     const toggleVoiceEnable = async (record: any, enable: boolean) => {
       await setVoiceEnable(urlObj.switchVoice)({
         id: record.id,
-        instanceCode: record.instanceCode,
+        instanceUuid: record.instanceUuid,
         propertyCode: record.propertyCode,
-        systemCode: record.systemCode,
+        systemUuid: record.systemUuid,
         voiceAvailable: enable,
         corpId: record.corpId,
       });

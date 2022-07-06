@@ -42,7 +42,7 @@ const BasicForm = defineComponent({
       releaseType: "AUTO", // 是否手动消警
       tagList: [], // 标签
       available: true, // 是否启用
-      systemCode: undefined, // 系统编码
+      systemUuid: undefined, // 系统编码
     });
 
     // 表单回显
@@ -153,7 +153,7 @@ const BasicForm = defineComponent({
               </a-col> */}
               <a-col span={12}>
                 <a-form-item
-                  name="systemCode"
+                  name="systemUuid"
                   label="报警系统"
                   rules={{ required: true, message: "请选择报警系统" }}
                 >
@@ -161,7 +161,7 @@ const BasicForm = defineComponent({
                     tree-default-expand-all
                     tree-data={_props.baseAllList}
                     replaceFields={{ value: "id", label: "systemName" }}
-                    v-model={[basicForm.value.systemCode, "value"]}
+                    v-model={[basicForm.value.systemUuid, "value"]}
                   ></a-tree-select>
                 </a-form-item>
               </a-col>
