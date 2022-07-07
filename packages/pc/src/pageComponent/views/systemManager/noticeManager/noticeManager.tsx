@@ -105,76 +105,35 @@ const noticeManager = defineComponent({
       pagination.total = total;
       http();
     };
-    const recordItem = (data) => {
-      switch (data.sendState) {
-        case "PENDING":
-          return (
-            <>
-              <a-button
-                type="link"
-                onClick={() => {
-                  managerTitle.value = "修改通知";
-                  data.value = data;
-                  managerVisible.value = true;
-                }}
-              >
-                编辑
-              </a-button>
-              <a-button
-                type="text"
-                danger
-                onClick={() => {
-                  Modal.confirm({
-                    title: "系统提示",
-                    content: "请确定是否删除此任务？",
-                    async onOk() {
-                      const res = await noticeManagerApi.recordDelete(data.id);
-                      if (res.data) {
-                        message.success("删除成功");
-                        http();
-                        return true;
-                      } else {
-                        message.success("删除失败");
-                        return false;
-                      }
-                    },
-                    onCancel() {},
-                  });
-                }}
-              >
-                删除
-              </a-button>
-            </>
-          );
-          break;
-        case "PROCESSED":
-          return (
-            <a-button
+    const recordItem = (val) => {
+      if (val.sendState === "PENDING") {
+        return (
+          <>
+            {/* <a-button
               type="link"
               onClick={() => {
-                data.value = data;
-                detailsVisible.value = true;
+                managerTitle.value = "修改通知";
+                data.value = val;
+                managerVisible.value = true;
               }}
             >
-              详情
-            </a-button>
-          );
-          break;
-        case "FAILURE":
-          return (
+              编辑
+            </a-button> */}
             <a-button
-              type="link"
+              type="text"
+              danger
               onClick={() => {
                 Modal.confirm({
                   title: "系统提示",
-                  content: "请确定是否重新发送此消息？",
+                  content: "请确定是否删除此任务？",
                   async onOk() {
-                    const res = await noticeManagerApi.resend(data);
+                    const res = await noticeManagerApi.recordDelete(val.id);
                     if (res.data) {
-                      message.success("发送成功");
+                      message.success("删除成功");
+                      http();
                       return true;
                     } else {
-                      message.error("发送失败");
+                      message.success("删除失败");
                       return false;
                     }
                   },
@@ -182,12 +141,49 @@ const noticeManager = defineComponent({
                 });
               }}
             >
-              重新发送
+              删除
             </a-button>
-          );
-          break;
-        default:
-          break;
+          </>
+        );
+      }
+      if (val.sendState === "PROCESSED") {
+        return (
+          <a-button
+            type="link"
+            onClick={() => {
+              data.value = val;
+              detailsVisible.value = true;
+            }}
+          >
+            详情
+          </a-button>
+        );
+      }
+      if (val.sendState === "FAILURE") {
+        return (
+          <a-button
+            type="link"
+            onClick={() => {
+              Modal.confirm({
+                title: "系统提示",
+                content: "请确定是否重新发送此消息？",
+                async onOk() {
+                  const res = await noticeManagerApi.resend(val);
+                  if (res.data) {
+                    message.success("发送成功");
+                    return true;
+                  } else {
+                    message.error("发送失败");
+                    return false;
+                  }
+                },
+                onCancel() {},
+              });
+            }}
+          >
+            重新发送
+          </a-button>
+        );
       }
     };
     onMounted(() => {
@@ -300,6 +296,7 @@ const noticeManager = defineComponent({
           width={600}
           maskClosable={false}
         >
+          {console.log(data.value)}
           <addNotice
             formData={data.value}
             onClose={() => {
