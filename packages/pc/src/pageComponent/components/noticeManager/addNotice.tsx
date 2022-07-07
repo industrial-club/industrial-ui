@@ -261,6 +261,7 @@ export default defineComponent({
               <a-col span={12} offset="2">
                 <a-date-picker
                   show-time
+                  showNow={false}
                   onChange={(date, dateString) => {
                     if (dayjs(dateString).valueOf() < dayjs().valueOf()) {
                       message.error("请正确选择时间");
