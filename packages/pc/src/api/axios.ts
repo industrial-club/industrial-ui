@@ -69,7 +69,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
   instance.interceptors.response.use(
     (res) => {
       const resData = res.data;
-      const status = resData.code === "M0000" || resData.code === "0";
+      const status = resData.code === "M0000" || resData.code === "0"  || resData.code === "ok";
       if (resData.code === "M4003") {
         message.error("登陆已过期，请重新登陆");
         window.location.hash = "login";
