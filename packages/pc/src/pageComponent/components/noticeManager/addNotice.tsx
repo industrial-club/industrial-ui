@@ -248,6 +248,8 @@ export default defineComponent({
             onChange={(e) => {
               getChannelDetail(e);
               getChannelTemplateList(e);
+              formState.value.level = undefined;
+              formState.value.content = undefined;
             }}
           >
             {channelList.value.map((item) => (
