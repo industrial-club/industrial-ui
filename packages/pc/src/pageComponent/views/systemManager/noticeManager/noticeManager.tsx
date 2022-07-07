@@ -198,9 +198,7 @@ const noticeManager = defineComponent({
                   );
                 }
                 if (column.key === "creationTime") {
-                  return moment(record.realSendTime).format(
-                    "YYYY-MM-DD HH:mm:ss"
-                  );
+                  return moment(record.createDt).format("YYYY-MM-DD HH:mm:ss");
                 }
                 if (column.key === "action") {
                   return (
@@ -295,6 +293,7 @@ const noticeManager = defineComponent({
           centered={true}
           footer={false}
           keyboard={false}
+          width={600}
           maskClosable={false}
         >
           <addNotice
