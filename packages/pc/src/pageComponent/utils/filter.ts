@@ -43,6 +43,7 @@ export const sendStatusFilter = (val) => {
       return "失败";
       break;
     default:
+      return "--";
       break;
   }
 };
@@ -56,6 +57,7 @@ export const readStateFilter = (val) => {
       return "未读";
       break;
     default:
+      return "--";
       break;
   }
 };
@@ -72,6 +74,7 @@ export const resendTypeFilter = (val) => {
       return "定时发送";
       break;
     default:
+      return "--";
       break;
   }
 };

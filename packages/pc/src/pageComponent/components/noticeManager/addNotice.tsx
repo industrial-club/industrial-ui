@@ -4,6 +4,8 @@ import { fomatDepPeopleTree } from "@/pageComponent/utils/format";
 import noticeCenterApi from "@/api/noticeCenter";
 import noticeManagerApi from "@/api/noticeManager";
 import { message } from "ant-design-vue";
+import dayjs, { Dayjs } from "dayjs";
+import moment from "moment";
 
 const props = {
   formData: Object,
@@ -37,6 +39,7 @@ export default defineComponent({
   emits: ["close"],
   setup(_props, _context) {
     const formRef = ref();
+    const loading = ref(false);
     // 表单数据
     const formState = ref<{
       id?: string;
@@ -82,7 +85,7 @@ export default defineComponent({
     const getChannelDetail = async (id) => {
       const res = await noticeCenterApi.getChannelDetail(id);
       if (res.data && res.data.length > 0) {
-        channelDetailList.value = res.data;
+        channelDetailList.value = res.data.filter((n) => n.available);
         formState.value.level = channelDetailList.value[0].level;
       } else {
         channelDetailList.value = [];
@@ -93,7 +96,7 @@ export default defineComponent({
     const getChannelList = async () => {
       const res = await noticeCenterApi.getChannelList();
       if (res.data && res.data.length > 0) {
-        channelList.value = res.data;
+        channelList.value = res.data.filter((n) => n.available);
       } else {
         channelList.value = [];
       }
@@ -116,15 +119,36 @@ export default defineComponent({
     // 提交
     const submit = () => {
       formRef.value.validateFields().then(async () => {
+        console.log(formState.value.expectSendTime);
+        if (
+          formState.value.sendType === "DELAY" &&
+          !formState.value.expectSendTime
+        ) {
+          message.error("请选择时间");
+          return false;
+        }
+        if (
+          formState.value.sendType === "DELAY" &&
+          dayjs(formState.value.expectSendTime).valueOf() < dayjs().valueOf()
+        ) {
+          message.error("请正确选择时间");
+          return false;
+        }
+        loading.value = true;
         const res = await noticeManagerApi.sendMessage(formState.value);
         if (res.data) {
           const codes = [-1, -2, -3];
           if (codes.indexOf(res.data) > -1) {
             message.error("通道不可用");
+            loading.value = false;
           } else {
             message.success("保存成功");
             _context.emit("close");
+            loading.value = false;
           }
+        } else {
+          message.error("系统异常");
+          loading.value = false;
         }
       });
     };
@@ -187,7 +211,24 @@ export default defineComponent({
         deep: true,
       }
     );
+    const range = (start: number, end: number) => {
+      const result: Array<number> = [];
 
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+      return result;
+    };
+    const disabledDate = (current) => {
+      return current < dayjs().subtract(1, "days");
+    };
+    const disabledDateTime = (date) => {
+      if (dayjs(date).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")) {
+        return {
+          disabledHours: () => range(0, dayjs().hour() + 1),
+        };
+      }
+    };
     onMounted(() => {
       depPeopleTreeList();
       getChannelList();
@@ -196,8 +237,8 @@ export default defineComponent({
       <a-form
         ref={formRef}
         model={formState.value}
-        label-col={{ span: 8 }}
-        wrapper-col={{ span: 16 }}
+        label-col={{ span: 4 }}
+        wrapper-col={{ span: 20 }}
         rules={rules}
       >
         <a-form-item label="通知标题" name="messageTitle">
@@ -235,6 +276,14 @@ export default defineComponent({
               <a-col span={12} offset="2">
                 <a-date-picker
                   show-time
+                  showNow={false}
+                  onChange={(date, dateString) => {
+                    if (dayjs(dateString).valueOf() < dayjs().valueOf()) {
+                      message.error("请正确选择时间");
+                    }
+                  }}
+                  disabled-date={disabledDate}
+                  disabled-time={disabledDateTime}
                   v-model={[formState.value.expectSendTime, "value"]}
                 />
               </a-col>
@@ -248,6 +297,8 @@ export default defineComponent({
             onChange={(e) => {
               getChannelDetail(e);
               getChannelTemplateList(e);
+              formState.value.level = undefined;
+              formState.value.content = undefined;
             }}
           >
             {channelList.value.map((item) => (
@@ -307,7 +358,7 @@ export default defineComponent({
           >
             取消
           </a-button>
-          <a-button type="primary" onClick={submit}>
+          <a-button type="primary" loading={loading.value} onClick={submit}>
             确定
           </a-button>
         </a-form-item>
