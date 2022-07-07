@@ -5,7 +5,6 @@ import noticeCenterApi from "@/api/noticeCenter";
 import noticeManagerApi from "@/api/noticeManager";
 import { message } from "ant-design-vue";
 import dayjs, { Dayjs } from "dayjs";
-import moment from "moment";
 
 const props = {
   formData: Object,
@@ -119,7 +118,6 @@ export default defineComponent({
     // 提交
     const submit = () => {
       formRef.value.validateFields().then(async () => {
-        console.log(formState.value.expectSendTime);
         if (
           formState.value.sendType === "DELAY" &&
           !formState.value.expectSendTime
@@ -203,6 +201,8 @@ export default defineComponent({
               }
             });
             formState.value.content = "";
+            getChannelDetail(formState.value.channelId);
+            getChannelTemplateList(formState.value.channelId);
           }
         }
       },
@@ -268,13 +268,13 @@ export default defineComponent({
                 placeholder="请选择发送时间"
               >
                 <a-select-option value="IMMEDIATELY">立即发送</a-select-option>
-                <a-select-option value="DELAY">延迟发送</a-select-option>
+                {/* <a-select-option value="DELAY">延迟发送</a-select-option> */}
                 {/* <a-select-option value="TIMING">定时发送</a-select-option> */}
               </a-select>
             </a-col>
             {formState.value.sendType === "DELAY" ? (
               <a-col span={12} offset="2">
-                <a-date-picker
+                {/* <a-date-picker
                   show-time
                   showNow={false}
                   onChange={(date, dateString) => {
@@ -285,7 +285,7 @@ export default defineComponent({
                   disabled-date={disabledDate}
                   disabled-time={disabledDateTime}
                   v-model={[formState.value.expectSendTime, "value"]}
-                />
+                /> */}
               </a-col>
             ) : null}
           </a-row>
