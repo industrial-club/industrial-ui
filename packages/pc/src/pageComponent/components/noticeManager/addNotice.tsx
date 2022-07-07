@@ -146,6 +146,9 @@ export default defineComponent({
             _context.emit("close");
             loading.value = false;
           }
+        } else {
+          message.error("系统异常");
+          loading.value = false;
         }
       });
     };
