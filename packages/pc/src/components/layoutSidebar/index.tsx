@@ -62,20 +62,21 @@ const LayoutSidebar = defineComponent({
       }
     };
 
-    watch(
-      [() => prop.menu, route],
-      () => {
-        if (
-          prop.menu.length &&
-          prop.userMenuTree.find(
-            (item: any) => item.code === route.query.menuCode
-          )
-        ) {
-          toPath(prop.menu[0]);
-        }
-      },
-      { immediate: true, deep: true }
-    );
+    // 取消 默认跳转第一个菜单
+    // watch(
+    //   [() => prop.menu, route],
+    //   () => {
+    //     if (
+    //       prop.menu.length &&
+    //       prop.userMenuTree.find(
+    //         (item: any) => item.code === route.query.menuCode
+    //       )
+    //     ) {
+    //       toPath(prop.menu[0]);
+    //     }
+    //   },
+    //   { immediate: true, deep: true }
+    // );
 
     const getMenuItem = (item: any, fPath?: string) => {
       return (

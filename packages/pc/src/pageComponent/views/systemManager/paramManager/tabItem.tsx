@@ -145,6 +145,7 @@ const TabItem = defineComponent({
                   key={item.id}
                   ref={(ins: any) => (groupFormRef.value[index] = ins)}
                   id={item.id}
+                  code={item.code}
                 />
 
                 {/* 二级菜单 多个 */}
@@ -154,6 +155,7 @@ const TabItem = defineComponent({
                       <DynamicForm
                         ref={(ins: any) => (cellFormRef.value[index] = ins)}
                         id={cell.id}
+                        code={item.code}
                       />
                     </CollapseContainer>
                   ))}
