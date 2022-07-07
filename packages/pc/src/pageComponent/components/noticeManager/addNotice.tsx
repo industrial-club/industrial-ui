@@ -39,6 +39,7 @@ export default defineComponent({
   emits: ["close"],
   setup(_props, _context) {
     const formRef = ref();
+    const loading = ref(false);
     // 表单数据
     const formState = ref<{
       id?: string;
@@ -118,6 +119,14 @@ export default defineComponent({
     // 提交
     const submit = () => {
       formRef.value.validateFields().then(async () => {
+        console.log(formState.value.expectSendTime);
+        if (
+          formState.value.sendType === "DELAY" &&
+          !formState.value.expectSendTime
+        ) {
+          message.error("请选择时间");
+          return false;
+        }
         if (
           formState.value.sendType === "DELAY" &&
           dayjs(formState.value.expectSendTime).valueOf() < dayjs().valueOf()
@@ -125,14 +134,17 @@ export default defineComponent({
           message.error("请正确选择时间");
           return false;
         }
+        loading.value = true;
         const res = await noticeManagerApi.sendMessage(formState.value);
         if (res.data) {
           const codes = [-1, -2, -3];
           if (codes.indexOf(res.data) > -1) {
             message.error("通道不可用");
+            loading.value = false;
           } else {
             message.success("保存成功");
             _context.emit("close");
+            loading.value = false;
           }
         }
       });
@@ -343,7 +355,7 @@ export default defineComponent({
           >
             取消
           </a-button>
-          <a-button type="primary" onClick={submit}>
+          <a-button type="primary" loading={loading.value} onClick={submit}>
             确定
           </a-button>
         </a-form-item>
