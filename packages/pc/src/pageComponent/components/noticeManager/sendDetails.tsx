@@ -161,7 +161,9 @@ export default defineComponent({
                   return readStateFilter(record.readState);
                 }
                 if (column.key === "date") {
-                  return moment(record.sendTime).format("YYYY-MM-DD HH:mm:ss");
+                  return record.sendTime
+                    ? moment(record.sendTime).format("YYYY-MM-DD HH:mm:ss")
+                    : "--";
                 }
                 if (column.key === "action") {
                   return (

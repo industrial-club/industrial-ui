@@ -98,7 +98,7 @@ const managerColumns = [
   },
   {
     title: "创建时间",
-    dataIndex: "realSendTime",
+    dataIndex: "createDt",
     key: "creationTime",
   },
   {
