@@ -9,7 +9,6 @@ import notificationDetails from "@/pageComponent/components/noticeManager/notifi
 import noticeManagerApi from "@/api/noticeManager";
 import noticeCenterApi from "@/api/noticeCenter";
 import "../../../assets/styles/systemManager/noticeManager/noticeManager.less";
-import { Data } from "ht";
 import {
   resendTypeFilter,
   sendStateFilter,
@@ -109,7 +108,7 @@ const noticeManager = defineComponent({
       if (val.sendState === "PENDING") {
         return (
           <>
-            {/* <a-button
+            <a-button
               type="link"
               onClick={() => {
                 managerTitle.value = "修改通知";
@@ -118,7 +117,7 @@ const noticeManager = defineComponent({
               }}
             >
               编辑
-            </a-button> */}
+            </a-button>
             <a-button
               type="text"
               danger
@@ -296,7 +295,6 @@ const noticeManager = defineComponent({
           width={600}
           maskClosable={false}
         >
-          {console.log(data.value)}
           <addNotice
             formData={data.value}
             onClose={() => {
