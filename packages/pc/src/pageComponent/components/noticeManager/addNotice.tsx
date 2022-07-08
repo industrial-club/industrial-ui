@@ -1,10 +1,10 @@
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { message } from "ant-design-vue";
+import dayjs, { Dayjs } from "dayjs";
 import getDepPeopleTreeList from "@/api/enumList";
 import { fomatDepPeopleTree } from "@/pageComponent/utils/format";
 import noticeCenterApi from "@/api/noticeCenter";
 import noticeManagerApi from "@/api/noticeManager";
-import { message } from "ant-design-vue";
-import dayjs, { Dayjs } from "dayjs";
 
 const props = {
   formData: Object,

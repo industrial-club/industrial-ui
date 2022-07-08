@@ -1,6 +1,7 @@
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import dayjs, { Dayjs } from "dayjs";
 import noticeCenterApi from "@/api/noticeCenter";
 import { channelFilter, resendTypeFilter } from "@/pageComponent/utils/filter";
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 
 const props = {
   formData: Object,
@@ -28,7 +29,7 @@ export default defineComponent({
       receiverId?: Array<string | number>;
       receiverName?: string;
       sendType?: string | number;
-      expectSendTime?: string | number;
+      expectSendTime?: string | number | Dayjs;
       channelId?: string | number;
       level?: string | number;
       content?: string | number;
@@ -52,7 +53,13 @@ export default defineComponent({
           if (e.id) {
             formState.value.receiverId = [];
             for (const key in e) {
-              formState.value[key] = e[key];
+              if (key === "expectSendTime") {
+                formState.value.expectSendTime = dayjs(e.expectSendTime).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                );
+              } else {
+                formState.value[key] = e[key];
+              }
             }
             const map = new Map();
             const qc = formState.value.receiverInfos?.filter(
