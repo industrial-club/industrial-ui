@@ -1,10 +1,10 @@
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { message } from "ant-design-vue";
+import dayjs, { Dayjs } from "dayjs";
 import getDepPeopleTreeList from "@/api/enumList";
 import { fomatDepPeopleTree } from "@/pageComponent/utils/format";
 import noticeCenterApi from "@/api/noticeCenter";
 import noticeManagerApi from "@/api/noticeManager";
-import { message } from "ant-design-vue";
-import dayjs, { Dayjs } from "dayjs";
 
 const props = {
   formData: Object,
@@ -48,7 +48,7 @@ export default defineComponent({
       receiverId?: Array<string | number>;
       receiverIds?: Array<string | number>;
       sendType?: string | number;
-      expectSendTime?: string | number;
+      expectSendTime?: string | number | Dayjs;
       channelId?: string | number;
       level?: string | number;
       content?: string | number;
@@ -181,7 +181,11 @@ export default defineComponent({
           if (e.id) {
             formState.value.receiverId = [];
             for (const key in e) {
-              formState.value[key] = e[key];
+              if (key === "expectSendTime") {
+                formState.value.expectSendTime = dayjs(e.expectSendTime);
+              } else {
+                formState.value[key] = e[key];
+              }
             }
             const map = new Map();
             const qc = formState.value.receiverInfos?.filter(
@@ -268,13 +272,13 @@ export default defineComponent({
                 placeholder="请选择发送时间"
               >
                 <a-select-option value="IMMEDIATELY">立即发送</a-select-option>
-                {/* <a-select-option value="DELAY">延迟发送</a-select-option> */}
+                <a-select-option value="DELAY">延迟发送</a-select-option>
                 {/* <a-select-option value="TIMING">定时发送</a-select-option> */}
               </a-select>
             </a-col>
             {formState.value.sendType === "DELAY" ? (
               <a-col span={12} offset="2">
-                {/* <a-date-picker
+                <a-date-picker
                   show-time
                   showNow={false}
                   onChange={(date, dateString) => {
@@ -285,7 +289,7 @@ export default defineComponent({
                   disabled-date={disabledDate}
                   disabled-time={disabledDateTime}
                   v-model={[formState.value.expectSendTime, "value"]}
-                /> */}
+                />
               </a-col>
             ) : null}
           </a-row>

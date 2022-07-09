@@ -158,7 +158,13 @@ const UpdateUserDialog = defineComponent({
                   name="userName"
                   label="用户名"
                   required
-                  rules={getRequiredRule("用户名")}
+                  rules={[
+                    getRequiredRule("用户名"),
+                    {
+                      pattern: /^[0-9a-zA-Z]*$/g,
+                      message: "只能数字数字和字母",
+                    },
+                  ]}
                 >
                   {isView.value ? (
                     <span>{form.value.userName}</span>
