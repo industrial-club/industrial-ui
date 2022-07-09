@@ -53,6 +53,7 @@ export default defineComponent({
       level?: string | number;
       content?: string | number;
       messageContent?: string;
+      recordId?: string;
     }>({});
 
     // 收件人数据
@@ -133,20 +134,38 @@ export default defineComponent({
           return false;
         }
         loading.value = true;
-        const res = await noticeManagerApi.sendMessage(formState.value);
-        if (res.data) {
-          const codes = [-1, -2, -3];
-          if (codes.indexOf(res.data) > -1) {
-            message.error("通道不可用");
-            loading.value = false;
+        if (formState.value.recordId) {
+          const res = await noticeManagerApi.recordUpdate(formState.value);
+          if (res.data) {
+            const codes = [-1, -2, -3];
+            if (codes.indexOf(res.data) > -1) {
+              message.error("通道不可用");
+              loading.value = false;
+            } else {
+              message.success("保存成功");
+              _context.emit("close");
+              loading.value = false;
+            }
           } else {
-            message.success("保存成功");
-            _context.emit("close");
+            message.error("系统异常");
             loading.value = false;
           }
         } else {
-          message.error("系统异常");
-          loading.value = false;
+          const res = await noticeManagerApi.sendMessage(formState.value);
+          if (res.data) {
+            const codes = [-1, -2, -3];
+            if (codes.indexOf(res.data) > -1) {
+              message.error("通道不可用");
+              loading.value = false;
+            } else {
+              message.success("保存成功");
+              _context.emit("close");
+              loading.value = false;
+            }
+          } else {
+            message.error("系统异常");
+            loading.value = false;
+          }
         }
       });
     };
@@ -183,6 +202,8 @@ export default defineComponent({
             for (const key in e) {
               if (key === "expectSendTime") {
                 formState.value.expectSendTime = dayjs(e.expectSendTime);
+              } else if (key === "id") {
+                formState.value.recordId = e.id;
               } else {
                 formState.value[key] = e[key];
               }
@@ -252,7 +273,7 @@ export default defineComponent({
           />
         </a-form-item>
         <a-form-item label="收件人" name="receiverId">
-          {formState.value.id ? (
+          {formState.value.recordId ? (
             <div>{formState.value.receiverName}</div>
           ) : (
             <a-cascader
