@@ -5,6 +5,8 @@
   box-sizing: border-box;
   background-color: #fff;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
   .header {
     display: flex;
     justify-content: flex-end;
@@ -72,7 +74,12 @@
   .btns-add {
     margin-bottom: 10px;
   }
+  .photoTree {
+    flex: 1;
+    overflow: auto;
+  }
   .tree-min {
+    height: 100%;
     .ant-tree-switcher-noop {
       display: none;
     }
