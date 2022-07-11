@@ -256,33 +256,39 @@ const SystemSetting = defineComponent({
     };
     window.img = (item: { [key: string]: string }) => {
       return (
-        <div class="systemConfig_vertical">
-          <div class="label">{item.label}</div>
-          <div class="item">
-            <a-upload
-              disabled={!edit.value}
-              class="avatar-uploader"
-              v-model={[data[`${item.name}fileList`], "file-list"]}
-              customRequest={(e: any) => customRequest(e, item)}
-              show-upload-list={false}
-              onChange={(e: UploadChangeParam) => {
-                handleLoginPageSystemTitle(e, item);
-              }}
-              before-upload={(e: any) => beforeUpload(e, item)}
-            >
-              <a-image
-                width={`${item.width}px`}
-                height={`${item.height}px`}
-                src={data[`${item.name}`]}
-                preview={false}
-              />
-              <a-button type="primary" class="btn" disabled={!edit.value}>
-                {item.btn}
-              </a-button>
-            </a-upload>
-            <span class="annotation">{item.annotation}</span>
-          </div>
-        </div>
+        <>
+          {_props[`${item.name}`] ? (
+            <div class="systemConfig_vertical">
+              <div class="label">{item.label}</div>
+              <div class="item">
+                <a-upload
+                  disabled={!edit.value}
+                  class="avatar-uploader"
+                  v-model={[data[`${item.name}fileList`], "file-list"]}
+                  customRequest={(e: any) => customRequest(e, item)}
+                  show-upload-list={false}
+                  onChange={(e: UploadChangeParam) => {
+                    handleLoginPageSystemTitle(e, item);
+                  }}
+                  before-upload={(e: any) => beforeUpload(e, item)}
+                >
+                  <a-image
+                    width={`${item.width}px`}
+                    height={`${item.height}px`}
+                    src={data[`${item.name}`]}
+                    preview={false}
+                  />
+                  <a-button type="primary" class="btn" disabled={!edit.value}>
+                    {item.btn}
+                  </a-button>
+                </a-upload>
+                <span class="annotation">{item.annotation}</span>
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
+        </>
       );
     };
 
