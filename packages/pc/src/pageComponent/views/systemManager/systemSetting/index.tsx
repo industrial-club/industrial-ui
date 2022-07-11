@@ -1,4 +1,11 @@
-import { defineComponent, reactive, CSSProperties, ref, onMounted } from "vue";
+import {
+  defineComponent,
+  reactive,
+  CSSProperties,
+  ref,
+  onMounted,
+  watch,
+} from "vue";
 import { message, Select, Input } from "ant-design-vue";
 import type { UploadChangeParam, UploadProps } from "ant-design-vue";
 import utils from "@/utils";
@@ -63,22 +70,31 @@ const props: any = {
   },
   versions: {
     type: String,
-    default: "A", // A复杂 AB
+    default: "platform", //platform system
   },
 };
+
 const SystemSetting = defineComponent({
   props,
   emits: ["setTheme"],
   setup(_props, _context) {
+    const versions = ref("A");
+    watch(
+      () => _props.versions,
+      (e) => {
+        versions.value = e === "platform" ? "AB" : "A";
+      },
+      { immediate: true }
+    );
     const renderClass = (item: any) => {
       const width =
-        _props.versions == "A"
+        versions.value == "A"
           ? item.width
           : item.name === "loginMainPic"
           ? "370px"
           : item.width;
       const height =
-        _props.versions == "A"
+        versions.value == "A"
           ? item.height
           : item.name === "loginMainPic"
           ? "250px"
@@ -92,8 +108,8 @@ const SystemSetting = defineComponent({
         borderRadius: "4px",
         textAlign: "center",
         position: item.position,
-        top: _props.versions == "A" ? "80px" : "20px",
-        left: _props.versions == "A" ? "100px" : "30px",
+        top: versions.value == "A" ? "80px" : "20px",
+        left: versions.value == "A" ? "100px" : "30px",
       };
       return styleBox;
     };
@@ -122,6 +138,7 @@ const SystemSetting = defineComponent({
       productOption: [],
     });
     const themes = ref("dark");
+    const themescopy = ref("");
     const edit = ref(false);
     // 转base64
     const getBase64 = (img: any, callback: (base64Url: string) => void) => {
@@ -159,8 +176,8 @@ const SystemSetting = defineComponent({
     };
     // 上传图片尺寸限制
     const checkImageWH = (file: any, initwidth: number, initheight: number) => {
-      const width = initwidth;
-      const height = initheight;
+      const width = Number(initwidth);
+      const height = Number(initheight);
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -169,7 +186,11 @@ const SystemSetting = defineComponent({
           img.src = reader.result as string;
           img.onload = () => {
             if (img.naturalWidth > width || img.naturalHeight > height) {
-              message.error(`上传尺寸最大${initwidth}px * ${initheight}px!`);
+              message.error(
+                initwidth
+                  ? `上传尺寸最大${initwidth}px * ${initheight}px!`
+                  : `上传尺寸最大高度 ${initheight}px!`
+              );
               reject();
             } else {
               resolve("上传失败");
@@ -198,7 +219,6 @@ const SystemSetting = defineComponent({
             <div class="systemConfig_form">
               <span class="label">{item.label}</span>
               <a-select
-                size="small"
                 v-model={[data.form[`${item.name}Id`], "value"]}
                 disabled={!edit.value}
               >
@@ -221,7 +241,6 @@ const SystemSetting = defineComponent({
               <div class="label">{item.label}</div>
               <div class="item">
                 <aInput
-                  size="small"
                   placeholder=""
                   v-model={[data.form[`${item.name}`], "value"]}
                   class="input"
@@ -237,43 +256,33 @@ const SystemSetting = defineComponent({
     };
     window.img = (item: { [key: string]: string }) => {
       return (
-        <>
-          {_props[`${item.name}`] ? (
-            <div class="systemConfig_vertical">
-              <div class="label">{item.label}</div>
-              <div class="item">
-                <a-upload
-                  class="avatar-uploader"
-                  v-model={[data[`${item.name}fileList`], "file-list"]}
-                  customRequest={(e: any) => customRequest(e, item)}
-                  show-upload-list={false}
-                  onChange={(e: UploadChangeParam) => {
-                    handleLoginPageSystemTitle(e, item);
-                  }}
-                  before-upload={(e: any) => beforeUpload(e, item)}
-                  disabled={!edit.value}
-                >
-                  <a-image
-                    width={`${item.width}px`}
-                    height={`${item.height}px`}
-                    src={data[`${item.name}`]}
-                  />
-                  <a-button
-                    size="small"
-                    type="primary"
-                    class="btn"
-                    disabled={!edit.value}
-                  >
-                    {item.btn}
-                  </a-button>
-                </a-upload>
-                <span class="annotation">{item.annotation}</span>
-              </div>
-            </div>
-          ) : (
-            ""
-          )}
-        </>
+        <div class="systemConfig_vertical">
+          <div class="label">{item.label}</div>
+          <div class="item">
+            <a-upload
+              disabled={!edit.value}
+              class="avatar-uploader"
+              v-model={[data[`${item.name}fileList`], "file-list"]}
+              customRequest={(e: any) => customRequest(e, item)}
+              show-upload-list={false}
+              onChange={(e: UploadChangeParam) => {
+                handleLoginPageSystemTitle(e, item);
+              }}
+              before-upload={(e: any) => beforeUpload(e, item)}
+            >
+              <a-image
+                width={`${item.width}px`}
+                height={`${item.height}px`}
+                src={data[`${item.name}`]}
+                preview={false}
+              />
+              <a-button type="primary" class="btn" disabled={!edit.value}>
+                {item.btn}
+              </a-button>
+            </a-upload>
+            <span class="annotation">{item.annotation}</span>
+          </div>
+        </div>
       );
     };
 
@@ -294,6 +303,7 @@ const SystemSetting = defineComponent({
       const res = await getSystemList();
       data.systemOption = res.data ? res.data : [];
     };
+
     const http = async () => {
       // 获取系统配置信息
       const res = await getSysConfig();
@@ -304,7 +314,6 @@ const SystemSetting = defineComponent({
         ? (themes.value = "dark")
         : (themes.value = "default");
       _context.emit("setTheme", themes.value);
-
       // 获取图片
       const arr: any = {
         loginPageSystemTitle: "",
@@ -313,14 +322,16 @@ const SystemSetting = defineComponent({
         mainPageLogo: "",
       };
       Object.keys(arr).forEach(async (item, index) => {
-        arr[`${item}`] = await searchImage(index + 1, 1);
+        const res = (arr[`${item}`] = await searchImage(index + 1, 1));
         data[`${item}`] = window.URL.createObjectURL(arr[`${item}`]);
       });
+      sessionStorage.setItem("homepageCopyright", data.form.homepageCopyright);
       getCustomer();
       getProject();
       getSystem();
     };
     const handleSave = async () => {
+      themes.value = themescopy.value;
       const list = {
         ...data.form,
         style: themes.value === "dark" ? 1 : 2, // 风格：1-深色系，2-浅色系
@@ -361,15 +372,15 @@ const SystemSetting = defineComponent({
                   <>
                     {renderItem(item)}
                     {item.label === "主页版权信息" ? (
-                      <>
+                      <div>
                         <span style="margin-right:10px">风格</span>
                         <inl-change-theme-select
-                          size="small"
+                          disabled={!edit.value}
                           onChange={(e: any) => {
-                            themes.value = e;
+                            themescopy.value = e;
                           }}
                         />
-                      </>
+                      </div>
                     ) : (
                       ""
                     )}
@@ -379,23 +390,15 @@ const SystemSetting = defineComponent({
               <div class="systemConfig_btm">
                 {edit.value ? (
                   <>
-                    <a-button
-                      type="primary"
-                      class="save"
-                      size="small"
-                      onClick={handleSave}
-                    >
+                    <a-button type="primary" class="save" onClick={handleSave}>
                       保存
                     </a-button>
-                    <a-button size="small" onClick={handleCancle}>
-                      取消
-                    </a-button>
+                    <a-button onClick={handleCancle}>取消</a-button>
                   </>
                 ) : (
                   <a-button
                     type="primary"
                     class="save"
-                    size="small"
                     onClick={() => {
                       edit.value = !edit.value;
                     }}
@@ -412,7 +415,7 @@ const SystemSetting = defineComponent({
             <div class="left">
               {picList.left.map((item) => (
                 <>
-                  {item.versions.includes(_props.versions) ? (
+                  {item.versions.includes(versions.value) ? (
                     <>
                       {item.type === "img" ? (
                         <>
@@ -459,7 +462,7 @@ const SystemSetting = defineComponent({
             </div>
             <div class="right">
               <div class="loginBox">
-                {_props.versions === "A" ? (
+                {versions.value === "A" ? (
                   <div class="top">
                     {picList.right.map((item) => (
                       <>
