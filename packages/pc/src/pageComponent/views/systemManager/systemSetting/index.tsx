@@ -411,7 +411,7 @@ const SystemSetting = defineComponent({
           </div>
         </div>
         <div class="systemConfig_right">
-          <div class="box" style="zoom:0.85">
+          <div class="box" style="zoom:0.75">
             <div class="left">
               {picList.left.map((item) => (
                 <>
