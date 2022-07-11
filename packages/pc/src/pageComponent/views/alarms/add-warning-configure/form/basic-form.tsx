@@ -10,13 +10,11 @@ import {
 import $store from "@/pageComponent/store";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import { TreeDataItem } from "ant-design-vue/lib/tree/Tree";
+import { getRootSystem, getChildrenSystem } from "@/api/alarm/warningConfigure";
 
 const props = {
   enumObj: {
     type: Object as PropType<{ [key: string]: Array<any> }>,
-  },
-  baseAllList: {
-    type: Array as PropType<Array<TreeDataItem>>,
   },
 };
 const rules = {
@@ -52,6 +50,26 @@ const BasicForm = defineComponent({
         basicForm.value = val;
       }
     );
+
+    // 系统列表
+    const systemList = ref<any[]>([]);
+    const getRoot = async () => {
+      const { data } = await getRootSystem();
+      systemList.value = data.map((item: any) => ({
+        ...item.thingInst,
+        pId: 0,
+      }));
+    };
+    getRoot();
+    const loadSystemList = async (treeNode: any) => {
+      const { data } = await getChildrenSystem(treeNode.dataRef.id);
+      systemList.value.push([
+        ...data.map((item: any) => ({
+          ...item.thingInst,
+          pId: treeNode.dataRef.id,
+        })),
+      ]);
+    };
 
     const state = reactive<{
       tags: Array<string>;
@@ -159,8 +177,10 @@ const BasicForm = defineComponent({
                 >
                   <a-tree-select
                     tree-default-expand-all
-                    tree-data={_props.baseAllList}
-                    replaceFields={{ value: "id", label: "systemName" }}
+                    tree-data={systemList.value}
+                    treeDataSimpleMode
+                    replaceFields={{ value: "id", label: "name" }}
+                    loadData={loadSystemList}
                     v-model={[basicForm.value.systemUuid, "value"]}
                   ></a-tree-select>
                 </a-form-item>
