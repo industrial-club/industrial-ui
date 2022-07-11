@@ -37,6 +37,13 @@ const DynamicForm = defineComponent({
           item.paramDefineValue = { value: null };
         }
 
+        // 给paramDefineValue加上defineId 和 defineCode
+        item.paramDefineValue = {
+          ...item.paramDefineValue,
+          defineId: item.paramDefine.id,
+          defineCode: item.paramDefine.code,
+        };
+
         if (
           item.paramDefine.type === "float" ||
           item.paramDefine.type === "int"

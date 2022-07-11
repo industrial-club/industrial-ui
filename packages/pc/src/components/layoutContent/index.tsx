@@ -131,39 +131,39 @@ const LayoutContent = defineComponent({
               </a-button>
               <div class="tabs-list" ref={tabsRef}>
                 {tabs.value.map((item, index) => (
-                  <router-link
-                    key={item.code}
-                    class={[
-                      "tab-item",
-                      item.code === activeCode.value ||
-                      item.url === activeCode.value
-                        ? "active"
-                        : "",
-                    ]}
-                    to={`/?menuCode=${item.mode === 2 ? item.url : item.code}`}
+                  <a-dropdown
+                    trigger={["contextmenu"]}
+                    v-slots={{
+                      overlay: () => (
+                        <a-menu>
+                          <a-menu-item>
+                            <a onClick={() => closeToRight(index)}>关闭右侧</a>
+                          </a-menu-item>
+                          <a-menu-item>
+                            <a onClick={() => closeToLeft(index)}>关闭左侧</a>
+                          </a-menu-item>
+                          <a-menu-item>
+                            <a onClick={() => closeOthers(index)}>关闭其他</a>
+                          </a-menu-item>
+                          {/* <a-menu-item>
+                            <a onClick={() => refreshCpn(index)}>刷新</a>
+                          </a-menu-item> */}
+                        </a-menu>
+                      ),
+                    }}
                   >
-                    <a-dropdown
-                      trigger={["contextmenu"]}
-                      v-slots={{
-                        overlay: () => (
-                          <a-menu>
-                            <a-menu-item>
-                              <a onClick={() => closeToRight(index)}>
-                                关闭右侧
-                              </a>
-                            </a-menu-item>
-                            <a-menu-item>
-                              <a onClick={() => closeToLeft(index)}>关闭左侧</a>
-                            </a-menu-item>
-                            <a-menu-item>
-                              <a onClick={() => closeOthers(index)}>关闭其他</a>
-                            </a-menu-item>
-                            {/* <a-menu-item>
-                              <a onClick={() => refreshCpn(index)}>刷新</a>
-                            </a-menu-item> */}
-                          </a-menu>
-                        ),
-                      }}
+                    <router-link
+                      key={item.code}
+                      class={[
+                        "tab-item",
+                        item.code === activeCode.value ||
+                        item.url === activeCode.value
+                          ? "active"
+                          : "",
+                      ]}
+                      to={`/?menuCode=${
+                        item.mode === 2 ? item.url : item.code
+                      }`}
                     >
                       <span class="tab-item-text">
                         {item.icon && (
@@ -186,8 +186,8 @@ const LayoutContent = defineComponent({
                           </span>
                         )}
                       </span>
-                    </a-dropdown>
-                  </router-link>
+                    </router-link>
+                  </a-dropdown>
                 ))}
               </div>
               <a-button

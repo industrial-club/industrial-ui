@@ -8,7 +8,7 @@ const SystemSetting = defineComponent({
     };
     return () => (
       <div class="alarm-demo">
-        <inl-system-setting versions="AB" onSetTheme={setTheme} />
+        <inl-system-setting versions="platform" onSetTheme={setTheme} />
         {/* <inl-alarm-configure /> */}
       </div>
     );

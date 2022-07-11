@@ -30,7 +30,7 @@ const setTheme = (theme: string) => {
 | loginMainPic         | boolean | true   | 登录页主图                                   |
 | loginSystemLogo      | boolean | true   | 登陆页系统 logo                              |
 | mainPageLogo         | boolean | true   | 主页 logo                                    |
-| versions             | string  | "A"    | 右侧图片是简版还是复杂版 复杂版 A，简化版 AB |
+| versions             | string  | "platform"    | 右侧图片是简版还是复杂版 平台版 platform，系统版 system  |
 
 ### 事件
 
