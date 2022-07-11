@@ -1,11 +1,10 @@
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { message } from "ant-design-vue";
+import dayjs, { Dayjs } from "dayjs";
 import getDepPeopleTreeList from "@/api/enumList";
 import { fomatDepPeopleTree } from "@/pageComponent/utils/format";
 import noticeCenterApi from "@/api/noticeCenter";
 import noticeManagerApi from "@/api/noticeManager";
-import { message } from "ant-design-vue";
-import dayjs, { Dayjs } from "dayjs";
-import moment from "moment";
 
 const props = {
   formData: Object,
@@ -49,11 +48,12 @@ export default defineComponent({
       receiverId?: Array<string | number>;
       receiverIds?: Array<string | number>;
       sendType?: string | number;
-      expectSendTime?: string | number;
+      expectSendTime?: string | number | Dayjs;
       channelId?: string | number;
       level?: string | number;
       content?: string | number;
       messageContent?: string;
+      recordId?: string;
     }>({});
 
     // 收件人数据
@@ -119,7 +119,6 @@ export default defineComponent({
     // 提交
     const submit = () => {
       formRef.value.validateFields().then(async () => {
-        console.log(formState.value.expectSendTime);
         if (
           formState.value.sendType === "DELAY" &&
           !formState.value.expectSendTime
@@ -135,20 +134,38 @@ export default defineComponent({
           return false;
         }
         loading.value = true;
-        const res = await noticeManagerApi.sendMessage(formState.value);
-        if (res.data) {
-          const codes = [-1, -2, -3];
-          if (codes.indexOf(res.data) > -1) {
-            message.error("通道不可用");
-            loading.value = false;
+        if (formState.value.recordId) {
+          const res = await noticeManagerApi.recordUpdate(formState.value);
+          if (res.data) {
+            const codes = [-1, -2, -3];
+            if (codes.indexOf(res.data) > -1) {
+              message.error("通道不可用");
+              loading.value = false;
+            } else {
+              message.success("保存成功");
+              _context.emit("close");
+              loading.value = false;
+            }
           } else {
-            message.success("保存成功");
-            _context.emit("close");
+            message.error("系统异常");
             loading.value = false;
           }
         } else {
-          message.error("系统异常");
-          loading.value = false;
+          const res = await noticeManagerApi.sendMessage(formState.value);
+          if (res.data) {
+            const codes = [-1, -2, -3];
+            if (codes.indexOf(res.data) > -1) {
+              message.error("通道不可用");
+              loading.value = false;
+            } else {
+              message.success("保存成功");
+              _context.emit("close");
+              loading.value = false;
+            }
+          } else {
+            message.error("系统异常");
+            loading.value = false;
+          }
         }
       });
     };
@@ -183,7 +200,13 @@ export default defineComponent({
           if (e.id) {
             formState.value.receiverId = [];
             for (const key in e) {
-              formState.value[key] = e[key];
+              if (key === "expectSendTime") {
+                formState.value.expectSendTime = dayjs(e.expectSendTime);
+              } else if (key === "id") {
+                formState.value.recordId = e.id;
+              } else {
+                formState.value[key] = e[key];
+              }
             }
             const map = new Map();
             const qc = formState.value.receiverInfos?.filter(
@@ -203,6 +226,8 @@ export default defineComponent({
               }
             });
             formState.value.content = "";
+            getChannelDetail(formState.value.channelId);
+            getChannelTemplateList(formState.value.channelId);
           }
         }
       },
@@ -248,7 +273,7 @@ export default defineComponent({
           />
         </a-form-item>
         <a-form-item label="收件人" name="receiverId">
-          {formState.value.id ? (
+          {formState.value.recordId ? (
             <div>{formState.value.receiverName}</div>
           ) : (
             <a-cascader
