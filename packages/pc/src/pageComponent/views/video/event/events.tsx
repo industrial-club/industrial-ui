@@ -54,8 +54,11 @@ const com = defineComponent({
         pageSize: 8,
         current: 1,
         total: 0,
-        startTime: dayjs(new Date()).subtract(1, "week").valueOf(),
-        endTime: dayjs(new Date()).valueOf(),
+        startTime: dayjs(new Date())
+          .startOf("day")
+          .subtract(1, "week")
+          .valueOf(),
+        endTime: dayjs(new Date()).endOf("day").valueOf(),
         time: [
           dayjs(new Date()).subtract(1, "week").format("YYYY-MM-DD"),
           dayjs(new Date()).format("YYYY-MM-DD"),
@@ -177,7 +180,7 @@ const com = defineComponent({
       if (!obj) {
         data.param = {
           id: "",
-          create_dt: dayjs(),
+          create_dt: dayjs(new Date()),
           name: "",
           eventType: "",
           algoType: "", // 算法类型code
@@ -188,6 +191,7 @@ const com = defineComponent({
           data: null,
           body: "",
         };
+        createTime.value = dayjs(new Date());
         getCameraGroup();
       } else {
         // const res = await eventApi.getEventData({
