@@ -54,10 +54,12 @@ const UpdateUserDialog = defineComponent({
       await nextTick();
       // 打开对话框时复制表单 新建用户时不用
       if (val) {
+        getEmployeeList();
         if (props.mode === "add") return;
         form.value = cloneDeep(props.record);
         // 转换角色列表
         form.value.roleIds = form.value.roleIds.split(",");
+        // 获取员工列表
       } else {
         // 清空表单
         formRef.value.resetFields();
@@ -71,9 +73,11 @@ const UpdateUserDialog = defineComponent({
 
     // 获取员工列表
     const employeeList = ref([]);
-    api
-      .getEmployeeList(urlMap.employeeList)()
-      .then(({ data }) => (employeeList.value = data));
+    const getEmployeeList = async () => {
+      api
+        .getEmployeeList(urlMap.employeeList)()
+        .then(({ data }) => (employeeList.value = data));
+    };
 
     /* 对话框标题 */
     const modalTitle = computed(() => {
