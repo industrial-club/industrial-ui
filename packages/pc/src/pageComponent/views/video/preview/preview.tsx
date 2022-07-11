@@ -525,6 +525,7 @@ const com = defineComponent({
               onStopVideo={(uuid: string, key: string) => {
                 changeVideo(uuid, key, imgType.acitveClass);
               }}
+              class="photoTree"
               domType={imgType.type}
             />
           ) : (
