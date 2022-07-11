@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import {
   Button,
   Table,
@@ -11,7 +11,7 @@ import {
   DatePicker,
   Input,
   Row,
-  Col
+  Col,
 } from "ant-design-vue";
 import {
   CaretDownOutlined,
@@ -19,14 +19,174 @@ import {
   SearchOutlined,
 } from "@ant-design/icons-vue";
 import { randomKey } from "../utils";
+import useTableList from "@/pageComponent/hooks/useTableList";
 
 import pssApi from "@/api/pss";
 
 export default defineComponent({
-  setup(prop, context) {
+  props: {
+    type: { type: String, default: "do" },
+  },
+
+  setup(props, context) {
+    // 列表
+    const list = ref([]);
+
+    const state = reactive({
+      typeOptions: [
+        // { text: '全部类型', value: 0 },
+        // { text: '低压停送电', value: 1 },
+        // { text: '低压送电', value: 2 },
+      ],
+      statusOptions: [
+        // { text: '全部状态', value: 'a' },
+        // { text: '停电审批', value: 'b' },
+        // { text: '停电执行', value: 'c' },
+      ],
+    });
+
+    // // table
+    // const {
+    //   currPage,
+    //   isLoading,
+    //   refresh,
+    //   tableList,
+    //   handlePageChange,
+    //   total,
+    //   hanldePageSizeChange,
+    //   pageSize,
+    //   pagination,
+    // } = useTableList(
+    //   async () => {
+    //     if (props.type === "do") {
+    //       getTodo();
+    //     }
+    //     if (props.type === "done") {
+    //       getDone();
+    //     }
+    //     if (props.type === "self") {
+    //       getStartByMe();
+    //     }
+    //   },
+    //   "list",
+    //   "total"
+    // );
+
+    // 待办
+    const getTodo = async () => {
+      const { data } = await pssApi.todoPage({
+        pageDTO: {
+          pageNo: 1,
+          pageSize: 9999999,
+        },
+        busId: "spms",
+        processId: null,
+        taskDefKey: null,
+      });
+
+      list.value = data.pageInfo?.list;
+
+      // 筛选条件 typeOptions
+      state.typeOptions = data.processIdMapCountVOs.map((vo: any) => ({
+        text: `${vo.name} ${vo.count}`,
+        value: vo.code,
+        count: vo.count,
+      }));
+
+      if (data.processIdMapCountVOs.length > 0) {
+        const typeCount =
+          data.processIdMapCountVOs.length === 1
+            ? data.processIdMapCountVOs[0].count
+            : data.processIdMapCountVOs.reduce((prev: any, curr: any) => {
+                return prev.count + curr.count;
+              });
+
+        state.typeOptions.unshift({
+          text: `全部类型 ${typeCount}`,
+          value: "all",
+          count: typeCount,
+        });
+      }
+
+      // 筛选条件 statusOptions
+      state.statusOptions = data.taskDefKeyMapCountVOs.map((vo: any) => ({
+        text: `${vo.name} ${vo.count}`,
+        value: vo.code,
+        count: vo.count,
+      }));
+
+      if (data.taskDefKeyMapCountVOs.length) {
+        const stateCount =
+          data.taskDefKeyMapCountVOs.length === 1
+            ? data.taskDefKeyMapCountVOs[0].count
+            : data.taskDefKeyMapCountVOs.reduce((prev: any, curr: any) => {
+                return prev.count + curr.count;
+              });
+
+        state.statusOptions.unshift({
+          text: `全部状态 ${stateCount}`,
+          value: "all",
+          count: stateCount,
+        });
+      }
+
+      return data.pageInfo;
+    };
+
+    // 已办
+    const getDone = async () => {
+      const { data } = await pssApi.donePage({
+        pageDTO: {
+          pageNo: 1,
+          pageSize: 9999999,
+        },
+        busId: "spms",
+        processId: null,
+        taskDefKey: null,
+      });
+
+      list.value = data.pageInfo?.list;
+
+      return data.pageInfo;
+    };
+
+    // 我发起的
+    const getStartByMe = async () => {
+      const { data } = await pssApi.startByMePage({
+        pageDTO: {
+          pageNo: 1,
+          pageSize: 9999999,
+        },
+        busId: "spms",
+        processId: null,
+        taskDefKey: null,
+      });
+
+      list.value = data.pageInfo?.list;
+
+      return data.pageInfo;
+    };
+
+    watch(
+      () => props.type,
+      async (nVal, oVal) => {
+        console.info(1231, nVal);
+        if (nVal === "do") {
+          getTodo();
+        }
+        if (nVal === "done") {
+          getDone();
+        }
+        if (nVal === "self") {
+          getStartByMe();
+        }
+      },
+      { deep: true, immediate: true }
+    );
+
     const tableConfig: any = reactive({
       loading: false,
-      dataSource: [],
+      dataSource: [{}],
       columns: [
         {
           dataIndex: "column1",
@@ -109,7 +269,7 @@ export default defineComponent({
     const modal: any = reactive({
       visible: false,
       formData: {
-        busId: '',
+        busId: "",
       },
     });
     const selectRows: any = ref([]);
@@ -125,7 +285,11 @@ export default defineComponent({
           customRender: (rowCell: any) => {
             const { record } = rowCell;
             const { id, name } = record;
-            return <div>{id}-{name}</div>;
+            return (
+              <div>
+                {id}-{name}
+              </div>
+            );
           },
         },
         {
@@ -141,15 +305,14 @@ export default defineComponent({
         },
       ],
     });
-    
 
     const addModal = () => {
       modal.visible = true;
-    }
+    };
 
     const addEq = async () => {
       try {
-        const res: any = await pssApi.deivceList();
+        const res: any = await pssApi.getDeviceList();
         eqModal.dataSource = res.data.map((item: any) => {
           item.loop = item.loops.join(",");
           return item;
@@ -166,21 +329,20 @@ export default defineComponent({
       selectRows.value = val;
     };
 
-    const sureAddEq = async() => {
-      console.log(selectRows.value, '2222');
+    const sureAddEq = async () => {
+      console.log(selectRows.value, "2222");
       if (selectRows.value.length > 0) {
         const postList: Promise<any>[] = [];
         selectRows.value.forEach((item: any) => {
           postList.push(pssApi.getloopByEq(item));
-        })
+        });
         const resList = await Promise.all(postList);
-        console.log(resList, '9090');
-      } 
-     
+        console.log(resList, "9090");
+      }
 
       // eqModal.visible = false;
-    }
-    
+    };
+
     return () => (
       <div class="pssList_content">
         <div class="dropSelect">
@@ -219,7 +381,6 @@ export default defineComponent({
         </div>
         <div class="table">
           <Table
-            pagination={false}
             rowKey={(record: any) => {
               if (!record.rowKey) {
                 record.rowKey = randomKey();
@@ -237,14 +398,14 @@ export default defineComponent({
             }}
           ></Table>
         </div>
-        <div class="pages">
+        {/* <div class="pages">
           <Pagination
             showSizeChanger
             showQuickJumper
             defaultCurrent={3}
             total={500}
           />
-        </div>
+        </div> */}
         <Modal
           v-model={[modal.visible, "visible"]}
           title="新建工单"
@@ -355,7 +516,7 @@ export default defineComponent({
                 return record.id;
               }}
               columns={eqModal.columns}
-              scroll={{ y: "100%" }}
+              scroll={{ y: "400px" }}
               dataSource={eqModal.dataSource}
               class="cus-table"
               rowSelection={{
