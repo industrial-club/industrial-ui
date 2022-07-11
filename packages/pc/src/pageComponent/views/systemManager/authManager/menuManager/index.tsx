@@ -27,6 +27,21 @@ export interface IUrlObj {
   upload: string;
 }
 
+export const openMode = [
+  {
+    value: 0,
+    label: "打开新标签",
+  },
+  {
+    value: 1,
+    label: "打开新窗口",
+  },
+  {
+    value: 2,
+    label: "打开iframe",
+  },
+];
+
 /**
  * 菜单管理
  */

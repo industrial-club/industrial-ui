@@ -33,7 +33,7 @@ export function fomatDepTree(treeData: any) {
             emp.name = emp.employeeName;
 
             return emp;
-          }),
+          })
         );
       }
     });
@@ -43,5 +43,27 @@ export function fomatDepTree(treeData: any) {
 
   return res;
 }
-
+/**
+ * 转换部门、人员 树结构
+ * @param treeData 源数据
+ */
+export function fomatDepPeopleTree(res: any) {
+  function formatSubList(list: any[]) {
+    return list.map((item) => ({
+      value: `dep${item.id}`,
+      label: item.name,
+      children:
+        item.subList.length > 0
+          ? formatSubList(item.subList)
+          : formatemployeeSummaryList(item.userSummaryList),
+    }));
+  }
+  function formatemployeeSummaryList(list: any[]) {
+    return list.map((item) => ({
+      value: item.userId,
+      label: item.userName,
+    }));
+  }
+  return formatSubList(res);
+}
 export default {};

@@ -6,6 +6,4 @@ test-*
 *.local
 lib
 mtip-*
-*noticeManager
 quick-start-cra
-mtip-*

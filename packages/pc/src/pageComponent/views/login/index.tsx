@@ -88,6 +88,7 @@ const Login = defineComponent({
         class="login"
         style={{
           background: `url(${prop.bg})`,
+          backgroundSize: "100% 100%",
         }}
       >
         <topTitle corpLogo={prop.titleLogo} />

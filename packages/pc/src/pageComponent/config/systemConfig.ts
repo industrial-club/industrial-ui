@@ -6,17 +6,18 @@ const centerColumns = [
   },
   {
     title: "通道名称",
-    dataIndex: "name",
+    dataIndex: "channelName",
     key: "name",
   },
   {
     title: "通道密钥",
-    dataIndex: "secretKey",
+    dataIndex: "id",
+    width: 250,
     key: "secretKey",
   },
   {
     title: "通道状态",
-    dataIndex: "state",
+    dataIndex: "available",
     key: "state",
   },
   {
@@ -28,39 +29,39 @@ const centerColumns = [
 const gradeColumns = [
   {
     title: "通知等级",
-    dataIndex: "grade",
+    dataIndex: "level",
     key: "grade",
   },
   {
     title: "是否投用",
-    dataIndex: "isUse",
+    dataIndex: "available",
     key: "isUse",
   },
   {
     title: "选择通知方式",
-    dataIndex: "mode",
+    dataIndex: "platformList",
     key: "mode",
   },
 ];
 const templateColumns = [
   {
     title: "模板编号",
-    dataIndex: "number",
+    dataIndex: "id",
     key: "number",
   },
   {
     title: "模板名称",
-    dataIndex: "name",
+    dataIndex: "templateName",
     key: "name",
   },
   {
     title: "最后修改人",
-    dataIndex: "modifiedBy",
+    dataIndex: "updateUserName",
     key: "modifiedBy",
   },
   {
     title: "最后修改时间",
-    dataIndex: "modifiedTime",
+    dataIndex: "updateDt",
     key: "modifiedTime",
   },
   {
@@ -72,22 +73,22 @@ const templateColumns = [
 const managerColumns = [
   {
     title: "通道",
-    dataIndex: "passageway",
+    dataIndex: "channelName",
     key: "passageway",
   },
   {
     title: "通知标题",
-    dataIndex: "notificationTitle",
+    dataIndex: "messageTitle",
     key: "notificationTitle",
   },
   {
     title: "通知等级",
-    dataIndex: "notificationLevel",
+    dataIndex: "level",
     key: "notificationLevel",
   },
   {
     title: "发送人",
-    dataIndex: "sender",
+    dataIndex: "senderName",
     key: "sender",
   },
   {
@@ -97,17 +98,17 @@ const managerColumns = [
   },
   {
     title: "创建时间",
-    dataIndex: "creationTime",
+    dataIndex: "createDt",
     key: "creationTime",
   },
   {
     title: "记录状态",
-    dataIndex: "recordStatus",
+    dataIndex: "sendState",
     key: "recordStatus",
   },
   {
     title: "发送量（失败）",
-    dataIndex: "volumeSent",
+    dataIndex: "totalReceiverCount",
     key: "volumeSent",
   },
   {
@@ -119,27 +120,27 @@ const managerColumns = [
 const sendDetailsColumns = [
   {
     title: "收件人",
-    dataIndex: "addressee",
+    dataIndex: "receiverName",
     key: "addressee",
   },
   {
     title: "发送时间",
-    dataIndex: "date",
+    dataIndex: "sendTime",
     key: "date",
   },
   {
     title: "发送方式",
-    dataIndex: "sendMethod",
+    dataIndex: "platform",
     key: "sendMethod",
   },
   {
     title: "发送状态",
-    dataIndex: "sendStatus",
+    dataIndex: "sendState",
     key: "sendStatus",
   },
   {
     title: "已读状态",
-    dataIndex: "readStatus",
+    dataIndex: "readState",
     key: "readStatus",
   },
   {
@@ -148,6 +149,7 @@ const sendDetailsColumns = [
     key: "action",
   },
 ];
+
 export {
   centerColumns,
   gradeColumns,

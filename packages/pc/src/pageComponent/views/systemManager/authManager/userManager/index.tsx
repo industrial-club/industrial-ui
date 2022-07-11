@@ -1,16 +1,10 @@
-import {
-  defineComponent,
-  h,
-  resolveComponent,
-  ref,
-  PropType,
-  provide,
-} from "vue";
+import { defineComponent, ref, PropType, provide } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import api, { setInstance } from "@/api/auth/userManager";
 import utils from "@/utils";
 
 import { Modal, message } from "ant-design-vue";
+import { SearchOutlined, PlusOutlined } from "@ant-design/icons-vue";
 import UpdateUserDialog from "./updateUserDialog";
 import UserProfileDialog from "./userProfileDialog";
 
@@ -208,7 +202,7 @@ const UserManager = defineComponent({
               type="primary"
               html-type="submit"
               v-slots={{
-                icon: () => h(resolveComponent("SearchOutlined")),
+                icon: () => <SearchOutlined />,
               }}
             >
               搜索
@@ -219,7 +213,7 @@ const UserManager = defineComponent({
             <a-button
               type="primary"
               v-slots={{
-                icon: () => h(resolveComponent("PlusOutlined")),
+                icon: () => <PlusOutlined />,
               }}
               onClick={handleAddClick}
             >
