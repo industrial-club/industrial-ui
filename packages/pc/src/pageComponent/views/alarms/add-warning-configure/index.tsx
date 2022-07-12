@@ -112,7 +112,7 @@ const AddWarningConfigure = defineComponent({
           res.data = res.data.map((item: any) => {
             item.id = item.thingInst.id;
             item.label = item.thingInst.name;
-            item.value = item.thingInst.code;
+            item.value = item.thingInst.id;
             return item;
           });
 
