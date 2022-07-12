@@ -54,5 +54,64 @@ const systemConfig = {
     },
   ],
 };
-
-export { systemConfig };
+const picList = {
+  left: [
+    {
+      label: "登陆页系统标题",
+      name: "loginPageSystemTitle",
+      width: "140px",
+      height: "30px",
+      color: "darkBlue",
+      type: "img",
+      versions: "AB",
+      position: "absolute",
+    },
+    {
+      label: "登陆页主图",
+      name: "loginMainPic",
+      width: "280px",
+      height: "205px",
+      color: "blue",
+      type: "img",
+      versions: "AB",
+    },
+    {
+      label: "系统名称",
+      width: "280px",
+      height: "30px",
+      color: "green",
+      name: "productName",
+      type: "text",
+      versions: "A",
+    },
+    {
+      label: "登陆页系统描述",
+      width: "280px",
+      height: "50px",
+      color: "blue",
+      name: "loginSysDesc",
+      type: "text",
+      versions: "A",
+    },
+  ],
+  right: [
+    {
+      label: "登陆页系统logo",
+      width: "70px",
+      height: "45px",
+      color: "blue",
+      wrap: true,
+      name: "loginSystemLogo",
+      type: "img",
+    },
+    {
+      label: "项目名称",
+      width: "150px",
+      height: "45px",
+      color: "blue",
+      name: "projectName",
+      type: "text",
+    },
+  ],
+};
+export { systemConfig, picList };
