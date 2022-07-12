@@ -1,6 +1,6 @@
 {
   "name": "inl-ui",
-  "version": "0.0.9-rc.4",
+  "version": "0.0.9-rc.5",
   "description": "工业 pc ui库",
   "main": "dist/index.js",
   "types": "./dist/types/src/index.d.ts",
