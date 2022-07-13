@@ -6,7 +6,7 @@ import {
   onMounted,
   watch,
 } from "vue";
-import { message, Select, Input } from "ant-design-vue";
+import { message } from "ant-design-vue";
 import type { UploadChangeParam, UploadProps } from "ant-design-vue";
 import utils from "@/utils";
 import {
@@ -21,8 +21,6 @@ import {
 } from "@/api/systemSetting";
 import { systemConfig, picList } from "./data";
 
-const aInput = Input;
-const aSelect = Select;
 interface OptionItem {
   name: string;
   id: string;
@@ -240,12 +238,12 @@ const SystemSetting = defineComponent({
             <div class="systemConfig_vertical">
               <div class="label">{item.label}</div>
               <div class="item">
-                <aInput
+                <a-input
                   placeholder=""
                   v-model={[data.form[`${item.name}`], "value"]}
                   class="input"
                   disabled={!edit.value}
-                ></aInput>
+                ></a-input>
               </div>
             </div>
           ) : (
