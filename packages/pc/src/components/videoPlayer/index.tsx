@@ -45,6 +45,7 @@ const VideoPlayer = defineComponent({
     watch(
       () => _prop.camera,
       async (e) => {
+        stopPlay();
         if (e && typeof e === "object") {
           init(e as videoInfo);
         } else if (e && typeof e === "string") {

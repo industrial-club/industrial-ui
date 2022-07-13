@@ -14,9 +14,9 @@ export default defineComponent({
       <div class="pressureFiltrationHome-right-parameter">
         <div class="title">
           <span>板数统计</span>
-          <a-button type="link" v-slots={{ icon: () => <delete-outlined /> }}>
+          {/* <a-button type="link" v-slots={{ icon: () => <delete-outlined /> }}>
             板数清零
-          </a-button>
+          </a-button> */}
         </div>
         <ul class="list">
           {_props.data.map((item) => (
