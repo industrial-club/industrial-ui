@@ -314,8 +314,6 @@ const SystemSetting = defineComponent({
       Object.keys(data.form).forEach((item) => {
         data.form[item] = res.data[item];
       });
-      console.log(res.data.style === 1 ? "dark" : "default", " res.data.style");
-
       res.data.style === 1
         ? (themes.value = "dark")
         : (themes.value = "default");
