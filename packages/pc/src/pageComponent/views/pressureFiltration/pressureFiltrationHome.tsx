@@ -44,6 +44,12 @@ const pressureFiltrationHome = defineComponent({
     // 通知数据
     const infoList = ref<Array<info>>([]);
 
+    // 生产状态
+    const currentState = ref("");
+
+    // 报警信息
+    const filterAlarmList = ref([]);
+
     // 带料弹窗显示隐藏
     const visible = ref(false);
 
@@ -60,6 +66,18 @@ const pressureFiltrationHome = defineComponent({
     const getFilterFeedingStatusList = async () => {
       const res = await pressureFiltrationHomeApi.getFilterFeedingStatusList();
       shiftChangeData.value = res.data;
+    };
+
+    // 获取生产状态
+    const getCurrentState = async () => {
+      const res = await pressureFiltrationHomeApi.getCurrentState();
+      currentState.value = res.data;
+    };
+
+    // 获取报警信息
+    const getFilterAlarmList = async () => {
+      const res = await pressureFiltrationHomeApi.getFilterAlarmList();
+      filterAlarmList.value = res.data;
     };
 
     // 处理通知弹窗数据
@@ -128,12 +146,15 @@ const pressureFiltrationHome = defineComponent({
     const timer = setInterval(() => {
       http();
       getQuery();
+      getCurrentState();
+      getFilterAlarmList();
     }, 3000);
 
     onMounted(() => {
       http();
       getQuery();
-      getFilterFeedingStatusList();
+      getCurrentState();
+      getFilterAlarmList();
     });
 
     // 卸载页面清除定时器
@@ -153,7 +174,7 @@ const pressureFiltrationHome = defineComponent({
         </div>
         <div class="pressureFiltrationHome-right">
           <div class="pressureFiltrationHome-right-control">
-            <div class="state">生产中</div>
+            <div class="state">{currentState.value}</div>
             <a-button
               block
               class="but"
@@ -177,14 +198,14 @@ const pressureFiltrationHome = defineComponent({
               block
               class="but"
               onClick={() => {
-                _context.emit("goRoute", "/pressureFiltrationRecord");
+                _context.emit("goRoute", "/pressureFiltrationJournal");
               }}
             >
               压滤记录
             </a-button>
           </div>
           <parameter data={parameterData.value}></parameter>
-          <alarmList></alarmList>
+          <alarmList data={filterAlarmList.value}></alarmList>
         </div>
         <a-modal
           v-model={[visible.value, "visible"]}

@@ -43,6 +43,20 @@ const pressureFiltrationHomeApi = {
   queryCancelPopNotificationListAll() {
     return instance.get(`/notification/queryCancelPopNotificationListAll`);
   },
+
+  /**
+   * getCurrentState
+   */
+  getCurrentState() {
+    return instance.get(`/business/production/getCurrentState`);
+  },
+
+  /**
+   * getFilterAlarmList
+   */
+  getFilterAlarmList() {
+    return instance.get(`/business/alarm/getFilterAlarmList`);
+  },
 };
 
 export default pressureFiltrationHomeApi;
