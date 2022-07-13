@@ -314,10 +314,13 @@ const SystemSetting = defineComponent({
       Object.keys(data.form).forEach((item) => {
         data.form[item] = res.data[item];
       });
+      console.log(res.data.style === 1 ? "dark" : "default", " res.data.style");
+
       res.data.style === 1
         ? (themes.value = "dark")
         : (themes.value = "default");
       _context.emit("setTheme", themes.value);
+      window.localStorage.setItem("theme", themes.value);
       // 获取图片
       const arr: any = {
         loginPageSystemTitle: "",
@@ -344,6 +347,7 @@ const SystemSetting = defineComponent({
       if ((res as any).code === "M0000") {
         message.success("保存成功");
         edit.value = !edit.value;
+        http();
       } else {
         message.error("保存失败");
       }
