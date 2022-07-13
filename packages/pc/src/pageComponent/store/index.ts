@@ -64,7 +64,7 @@ export default createStore({
       state.ruleForm = {
         alarmConditionList: payload.alarmConditionList,
         conditionRelation: payload.conditionRelation,
-        propertyCode: [payload.instanceUuid, payload.propertyCode],
+        propertyCode: [Number(payload.instanceUuid), payload.propertyCode],
         triggerTime: payload.triggerTime,
         triggerType: payload.triggerType,
         valueType: payload.valueType,

@@ -173,7 +173,9 @@ const AddWarningConfigure = defineComponent({
       <div class="add-warning-configure">
         {/* 面包屑 */}
         <a-breadcrumb>
-          <a-breadcrumb-item>报警配置</a-breadcrumb-item>
+          <a-breadcrumb-item>
+            <a onClick={goBack}>报警配置</a>
+          </a-breadcrumb-item>
           <a-breadcrumb-item>添加报警</a-breadcrumb-item>
         </a-breadcrumb>
         {/* 表单 */}

@@ -53,24 +53,46 @@ const BasicForm = defineComponent({
 
     // 系统列表
     const systemList = ref<any[]>([]);
-    const getRoot = async () => {
-      const { data } = await getRootSystem();
-      systemList.value = data.map((item: any) => ({
-        ...item.thingInst,
-        pId: 0,
-      }));
-    };
-    getRoot();
-    const loadSystemList = async (treeNode: any) => {
-      const { data } = await getChildrenSystem(treeNode.dataRef.id);
-      systemList.value.push(
-        ...data.map((item: any) => ({
+
+    // 递归获取所有系统列表
+    async function getSystemList(pId: string | 0) {
+      let data: any[] = [];
+      if (pId === 0) {
+        data = (await getRootSystem()).data.map((item: any) => ({
           ...item.thingInst,
-          pId: treeNode.dataRef.id,
-        }))
-      );
-      return true;
-    };
+          pId: 0,
+        }));
+      } else {
+        const { data: list } = await getChildrenSystem(pId);
+        data = list.map((item: any) => ({ ...item.thingInst, pId }));
+      }
+      if (data.length > 0) {
+        data.forEach((item: any) => {
+          getSystemList(item.id);
+        });
+      }
+
+      systemList.value.push(...data);
+    }
+    // const getRoot = async () => {
+    //   const { data } = await getRootSystem();
+    //   systemList.value = data.map((item: any) => ({
+    //     ...item.thingInst,
+    //     pId: 0,
+    //   }));
+    // };
+    // getRoot();
+    // const loadSystemList = async (treeNode: any) => {
+    //   const { data } = await getChildrenSystem(treeNode.dataRef.id);
+    //   systemList.value.push(
+    //     ...data.map((item: any) => ({
+    //       ...item.thingInst,
+    //       pId: treeNode.dataRef.id,
+    //     }))
+    //   );
+    //   return true;
+    // };
+    getSystemList(0);
 
     const state = reactive<{
       tags: Array<string>;
@@ -181,7 +203,7 @@ const BasicForm = defineComponent({
                     tree-data={systemList.value}
                     treeDataSimpleMode
                     replaceFields={{ value: "id", label: "name" }}
-                    loadData={loadSystemList}
+                    // loadData={loadSystemList}
                     v-model={[basicForm.value.systemUuid, "value"]}
                   ></a-tree-select>
                 </a-form-item>
