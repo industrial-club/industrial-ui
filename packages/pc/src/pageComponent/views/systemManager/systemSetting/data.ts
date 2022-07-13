@@ -32,9 +32,30 @@ const systemConfig = {
       imgType: 2,
     },
     {
+      label: "系统名称",
+      type: "select",
+      name: "product",
+    },
+    {
+      label: "登陆页系统描述",
+      type: "input",
+      name: "loginSysDesc",
+    },
+    {
       label: "登陆页版权信息",
       type: "input",
       name: "loginCopyright",
+    },
+    {
+      label: "登陆页系统logo",
+      name: "loginSystemLogo",
+      type: "img",
+      width: "80",
+      height: "80",
+      initheight: "54",
+      annotation: "请上传高度为54px，格式为PNG的图片。",
+      btn: "+ 上传logo",
+      imgType: 3,
     },
     {
       label: "主页logo",
