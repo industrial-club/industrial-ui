@@ -1,0 +1,97 @@
+.pressureFiltrationHome {
+  height: 100%;
+  background-color: #eff2f6 !important;
+  padding: 0 !important;
+  display: flex;
+  justify-content: space-between;
+  &-left {
+    width: 80%;
+    padding: 20px;
+    background-color: #fff;
+  }
+  &-right {
+    width: 20%;
+    height: 100%;
+    overflow: hidden;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    > div {
+      background-color: #fff;
+    }
+    &-control {
+      height: 30%;
+      padding: 10px;
+      .state {
+        font-size: 16px;
+        padding: 20px 0;
+        text-align: center;
+      }
+      .but {
+        margin-bottom: 10px;
+      }
+    }
+    &-parameter {
+      margin-top: 20px;
+      height: calc(35% - 20px);
+      padding: 10px;
+      .title {
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .list {
+        margin: 0;
+        padding: 0;
+        height: calc(100% - 32px);
+        overflow-y: auto;
+        li {
+          list-style: none;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 5px 10px;
+          margin-bottom: 10px;
+          background-color: rgba(62, 126, 255, 0.05);
+        }
+      }
+    }
+    &-alarm {
+      margin-top: 20px;
+      height: calc(35% - 20px);
+      padding: 10px 20px;
+      .title {
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .list {
+        margin: 0;
+        padding: 0;
+        height: calc(100% - 26px);
+        overflow-y: auto;
+        li {
+          list-style: none;
+          padding: 10px;
+          margin-bottom: 20px;
+          box-shadow: 0px 2px 7px 0px rgba(146, 165, 179, 0.31);
+          border-radius: 3px;
+          background: #ffffff;
+          .name {
+            font-size: 14px;
+            .icon {
+              margin-right: 10px;
+              color: red;
+            }
+          }
+          .time {
+            color: #8f959e;
+            margin-left: 24px;
+          }
+        }
+      }
+    }
+  }
+}
