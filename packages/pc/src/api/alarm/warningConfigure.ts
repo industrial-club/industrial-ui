@@ -120,7 +120,7 @@ export const getRootSystem = async () =>
  */
 export const getChildrenSystem = async (id: string) =>
   instance.post(
-    `/thing/v1/adapter/thing/relation/findZInstsByClass/${id}/SYSTEM_MT_SYSTEM`,
+    `/thing/v1/adapter/thing/relation/findZInstsByClass/${id}/SYSTEM_MT_SYSTEM_MT`,
     null,
     { baseURL: "/api/" }
   );

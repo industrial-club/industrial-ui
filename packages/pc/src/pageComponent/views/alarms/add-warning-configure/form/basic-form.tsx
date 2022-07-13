@@ -63,12 +63,13 @@ const BasicForm = defineComponent({
     getRoot();
     const loadSystemList = async (treeNode: any) => {
       const { data } = await getChildrenSystem(treeNode.dataRef.id);
-      systemList.value.push([
+      systemList.value.push(
         ...data.map((item: any) => ({
           ...item.thingInst,
           pId: treeNode.dataRef.id,
-        })),
-      ]);
+        }))
+      );
+      return true;
     };
 
     const state = reactive<{
