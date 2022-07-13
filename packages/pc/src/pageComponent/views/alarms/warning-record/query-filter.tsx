@@ -77,7 +77,7 @@ const QueryFilter = defineComponent({
               </a-form-item>
             </a-col>
             <a-col span={6}>
-              <a-form-item label={null} name="keyword">
+              <a-form-item label="报警名称" name="keyword">
                 <a-input
                   style={{ width: "200px" }}
                   placeholder="请输入关键字"
@@ -100,7 +100,7 @@ const QueryFilter = defineComponent({
                   <a-button
                     type="primary"
                     onClick={() => {
-                      _props.onSubmit(form);
+                      _props.onSubmit!(form);
                     }}
                   >
                     查询
@@ -108,7 +108,7 @@ const QueryFilter = defineComponent({
                   <a-button
                     onClick={() => {
                       formRef.value.resetFields();
-                      _props.onSubmit(form);
+                      _props.onSubmit!(form);
                     }}
                   >
                     重置
