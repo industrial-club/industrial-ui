@@ -95,7 +95,7 @@ export const getPropertiesListByInstanceId =
 
 // 获取部门及人员树
 export const getDepPeopleTreeList = (url: string) => (keyword?: string) =>
-  instance.get(url ?? "/department/all/tree/org/employee", {
+  instance.get(url ?? "/department/all/tree/org/user", {
     baseURL: `/api/${faceName.common}`,
     params: { keyword },
   });
