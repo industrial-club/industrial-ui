@@ -1,7 +1,6 @@
 import { defineComponent, nextTick, onMounted, reactive, ref } from "vue";
 import utils from "@/utils";
 import pressureFiltrationRecordApi from "@/api/pressureFiltration/pressureFiltrationRecord";
-import moment from "moment";
 import dayjs, { Dayjs } from "dayjs";
 
 const columns = [
@@ -235,13 +234,20 @@ const record = defineComponent({
           <a-table
             columns={columns}
             dataSource={dataSource.value}
+            onChange={(page) => {
+              const { current, pageSize, total } = page;
+              pagination.current = current;
+              pagination.pageSize = pageSize;
+              pagination.total = total;
+              http();
+            }}
             v-slots={{
               bodyCell: ({ column, record, index }) => {
                 if (column.key === "feedingTime") {
-                  return moment(record.feedingTime).format("HH:mm:ss");
+                  return dayjs(record.feedingTime).format("HH:mm:ss");
                 }
                 if (column.key === "unloadTime") {
-                  return moment(record.unloadTime).format("HH:mm:ss");
+                  return dayjs(record.unloadTime).format("HH:mm:ss");
                 }
               },
             }}
