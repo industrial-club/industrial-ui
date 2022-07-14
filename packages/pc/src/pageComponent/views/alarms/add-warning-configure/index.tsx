@@ -10,12 +10,12 @@ import {
 import { useRouter, useRoute } from "vue-router";
 import { message } from "ant-design-vue";
 import {
-  baseAll,
-  getInstanceListBySystemId,
   getPropertiesListByInstanceId,
   getEnum,
   insertAlarmRule,
   getRuleConfigureById,
+  getDeviceListBySystemId,
+  getPropertiesByDeviceCode,
 } from "@/api/alarm/warningConfigure";
 import { TreeDataItem } from "ant-design-vue/es/tree/Tree";
 import $store from "@/pageComponent/store";
@@ -101,40 +101,34 @@ const AddWarningConfigure = defineComponent({
       return val;
     };
     /**
-     * 获取所有系统
-     */
-    const getBaseAll = async () => {
-      const res = await baseAll(urlObj.baseAll)();
-      baseAllList.value = res.data.list;
-    };
-    /**
      * 获取所有设备
      */
     watch(
-      () => $store.state.basicForm.systemCode,
+      () => $store.state.basicForm.systemUuid,
       async (val) => {
         if (val) {
-          const res = await getInstanceListBySystemId(urlObj.instanceList)(val);
+          const res = await getDeviceListBySystemId(val);
 
           res.data = res.data.map((item: any) => {
-            item.label = item.modelInstance.instanceName;
-            item.value = item.modelInstance.instanceCode;
+            item.id = item.thingInst.id;
+            item.label = item.thingInst.name;
+            item.value = item.thingInst.id;
             return item;
           });
 
           const propertiesList = await Promise.all(
             res.data.map((item: any) => {
-              return getPropertiesListByInstanceId(urlObj.propertiesList)(
-                item.id
-              );
+              return getPropertiesByDeviceCode(item.thingInst.thingCode);
             })
           );
           propertiesList.forEach((item, index) => {
-            res.data[index].children = item.data.map((item: any) => {
-              item.label = item.propertyName;
-              item.value = item.propertyCode;
-              return item;
-            });
+            res.data[index].children = item.data.thingPropertyList
+              .filter((item: any) => item.propertyType !== "property")
+              .map((item: any) => {
+                item.label = item.name;
+                item.value = item.code;
+                return item;
+              });
           });
           findAllList.value = res.data;
         }
@@ -152,7 +146,7 @@ const AddWarningConfigure = defineComponent({
         ...$store.getters.linkageForm,
         ruleType: "COMPARE_TYPE",
         propertyCode: $store.getters.ruleForm.propertyCode[1],
-        instanceCode: $store.getters.ruleForm.propertyCode[0],
+        instanceUuid: $store.getters.ruleForm.propertyCode[0],
         notificationUserList:
           $store.getters.linkageForm.notificationUserList.map((item: any) => ({
             userId: item.id,
@@ -172,7 +166,6 @@ const AddWarningConfigure = defineComponent({
     const goBack = () => props.onClose?.();
 
     onMounted(() => {
-      getBaseAll();
       // getFindAll();
       http();
     });
@@ -180,13 +173,15 @@ const AddWarningConfigure = defineComponent({
       <div class="add-warning-configure">
         {/* 面包屑 */}
         <a-breadcrumb>
-          <a-breadcrumb-item>报警配置</a-breadcrumb-item>
+          <a-breadcrumb-item>
+            <a onClick={goBack}>报警配置</a>
+          </a-breadcrumb-item>
           <a-breadcrumb-item>添加报警</a-breadcrumb-item>
         </a-breadcrumb>
         {/* 表单 */}
         <div class="form-list-container">
           {/* 基础信息 */}
-          <BasicForm enumObj={enumObj} baseAllList={baseAllList.value} />
+          <BasicForm enumObj={enumObj} />
           {/* 报警规则 */}
           <RuleForm enumObj={enumObj} instanceList={findAllList.value} />
           {/* 联动配置 */}

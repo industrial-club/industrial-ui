@@ -45,10 +45,10 @@ const noticeManagerApi = {
   },
 
   /**
-   * 根据id查记录详情
+   * 修改通知内容
    */
-  recordId(id) {
-    return instance.get(`record/${id}`);
+  recordUpdate(data) {
+    return instance.post(`record/update`, data);
   },
 };
 

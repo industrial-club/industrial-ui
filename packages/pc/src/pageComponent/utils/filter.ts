@@ -43,6 +43,7 @@ export const sendStatusFilter = (val) => {
       return "失败";
       break;
     default:
+      return "--";
       break;
   }
 };
@@ -56,6 +57,7 @@ export const readStateFilter = (val) => {
       return "未读";
       break;
     default:
+      return "--";
       break;
   }
 };
@@ -72,6 +74,7 @@ export const resendTypeFilter = (val) => {
       return "定时发送";
       break;
     default:
+      return "--";
       break;
   }
 };
@@ -87,5 +90,16 @@ export const channelFilter = (val, data) => {
   if (data.length > 0) {
     const { channelName } = data.find((v) => v.id === val);
     return channelName;
+  }
+};
+
+export const receiverNameFilter = (val, data) => {
+  // const receiverNames = data.filter()
+};
+
+export const sendStateFilter = (val, data) => {
+  if (val && data.length > 0) {
+    const sendState = data.find((n) => n.code === val).name;
+    return sendState;
   }
 };

@@ -1,7 +1,7 @@
 /**
  * 布局组件 - 侧边菜单
  */
-import { defineComponent, reactive, ref, watch, PropType } from "vue";
+import { defineComponent, reactive, ref, watch, PropType, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import utils from "@/utils";
 
@@ -39,31 +39,52 @@ const LayoutSidebar = defineComponent({
 
     watch(
       route,
-      () => {
+      async () => {
+        await nextTick();
         const { menuCode: code } = route.query as any;
-        state.selectedKeys = [code];
+        if (code?.startsWith("http")) {
+          const menuItem = prop.menu.find((item) => item.url === code);
+          state.selectedKeys = [menuItem?.code || ""];
+        } else {
+          state.selectedKeys = [code];
+        }
       },
       { immediate: true }
     );
 
-    const toPath = (code: string) => {
-      router.push(`/?menuCode=${code}`);
+    const toPath = (menu: any) => {
+      if (menu.mode === 0) {
+        router.push(`/?menuCode=${menu.code}&type=${menu.mode}`);
+      } else if (menu.mode === 2) {
+        router.push(`/?menuCode=${menu.url}&type=${menu.mode}`);
+      } else {
+        const url = menu.url.startsWith("http")
+          ? menu.url
+          : location.origin + menu.url;
+
+        const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+        const urlObj = new URL(url);
+        urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+        urlObj.searchParams.set("userId", userinfo.userId);
+        window.open(urlObj.href);
+      }
     };
 
-    watch(
-      [() => prop.menu, route],
-      () => {
-        if (
-          prop.menu.length &&
-          prop.userMenuTree.find(
-            (item: any) => item.code === route.query.menuCode
-          )
-        ) {
-          toPath(prop.menu[0].code);
-        }
-      },
-      { immediate: true, deep: true }
-    );
+    // 取消 默认跳转第一个菜单
+    // watch(
+    //   [() => prop.menu, route],
+    //   () => {
+    //     if (
+    //       prop.menu.length &&
+    //       prop.userMenuTree.find(
+    //         (item: any) => item.code === route.query.menuCode
+    //       )
+    //     ) {
+    //       toPath(prop.menu[0]);
+    //     }
+    //   },
+    //   { immediate: true, deep: true }
+    // );
 
     const getMenuItem = (item: any, fPath?: string) => {
       return (
@@ -71,7 +92,7 @@ const LayoutSidebar = defineComponent({
           key={item.code}
           title={item.name}
           onClick={() => {
-            toPath(item.code);
+            toPath(item);
           }}
           v-slots={{
             icon: () =>

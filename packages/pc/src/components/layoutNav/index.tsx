@@ -3,7 +3,7 @@
  */
 import { defineComponent, PropType, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getActiveNavByCode } from "@/utils/route";
+import { getActiveNavByProp } from "@/utils/route";
 
 import utils from "@/utils";
 
@@ -60,7 +60,17 @@ const LayoutNav = defineComponent({
       () => {
         const { menuCode: code } = route.query as any;
         if (code) {
-          const activeNav = getActiveNavByCode(code, prop.userMenuTree);
+          const activeNavCode = getActiveNavByProp(
+            "code",
+            code,
+            prop.userMenuTree
+          );
+          const activeNavUrl = getActiveNavByProp(
+            "url",
+            code,
+            prop.userMenuTree
+          );
+          const activeNav = activeNavCode || activeNavUrl;
           if (activeNav) {
             state.selectedKeys = [activeNav.code];
             context.emit("routeChange", activeNav);

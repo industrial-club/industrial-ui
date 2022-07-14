@@ -19,6 +19,13 @@ const VideoPlayer = defineComponent({
     // 视频实例
     let play: WebRtcMt | null;
 
+    // 停止播放
+    const stopPlay = () => {
+      if (play) {
+        play.stopPlay(`videoPlayer${timer}`);
+      }
+    };
+
     // 初始化视频
     const init = (camera: videoInfo) => {
       play = null;
@@ -45,6 +52,7 @@ const VideoPlayer = defineComponent({
     watch(
       () => _prop.camera,
       async (e) => {
+        stopPlay();
         if (e && typeof e === "object") {
           init(e as videoInfo);
         } else if (e && typeof e === "string") {
@@ -59,13 +67,6 @@ const VideoPlayer = defineComponent({
         deep: true,
       }
     );
-
-    // 停止播放
-    const stopPlay = () => {
-      if (play) {
-        play.stopPlay(`videoPlayer${timer}`);
-      }
-    };
 
     // 页面销毁时停止播放视频流
     onUnmounted(() => {

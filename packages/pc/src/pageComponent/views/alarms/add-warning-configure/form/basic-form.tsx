@@ -10,13 +10,11 @@ import {
 import $store from "@/pageComponent/store";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import { TreeDataItem } from "ant-design-vue/lib/tree/Tree";
+import { getRootSystem, getChildrenSystem } from "@/api/alarm/warningConfigure";
 
 const props = {
   enumObj: {
     type: Object as PropType<{ [key: string]: Array<any> }>,
-  },
-  baseAllList: {
-    type: Array as PropType<Array<TreeDataItem>>,
   },
 };
 const rules = {
@@ -42,7 +40,7 @@ const BasicForm = defineComponent({
       releaseType: "AUTO", // 是否手动消警
       tagList: [], // 标签
       available: true, // 是否启用
-      systemCode: undefined, // 系统编码
+      systemUuid: undefined, // 系统编码
     });
 
     // 表单回显
@@ -52,6 +50,49 @@ const BasicForm = defineComponent({
         basicForm.value = val;
       }
     );
+
+    // 系统列表
+    const systemList = ref<any[]>([]);
+
+    // 递归获取所有系统列表
+    async function getSystemList(pId: string | 0) {
+      let data: any[] = [];
+      if (pId === 0) {
+        data = (await getRootSystem()).data.map((item: any) => ({
+          ...item.thingInst,
+          pId: 0,
+        }));
+      } else {
+        const { data: list } = await getChildrenSystem(pId);
+        data = list.map((item: any) => ({ ...item.thingInst, pId }));
+      }
+      if (data.length > 0) {
+        data.forEach((item: any) => {
+          getSystemList(item.id);
+        });
+      }
+
+      systemList.value.push(...data);
+    }
+    // const getRoot = async () => {
+    //   const { data } = await getRootSystem();
+    //   systemList.value = data.map((item: any) => ({
+    //     ...item.thingInst,
+    //     pId: 0,
+    //   }));
+    // };
+    // getRoot();
+    // const loadSystemList = async (treeNode: any) => {
+    //   const { data } = await getChildrenSystem(treeNode.dataRef.id);
+    //   systemList.value.push(
+    //     ...data.map((item: any) => ({
+    //       ...item.thingInst,
+    //       pId: treeNode.dataRef.id,
+    //     }))
+    //   );
+    //   return true;
+    // };
+    getSystemList(0);
 
     const state = reactive<{
       tags: Array<string>;
@@ -153,15 +194,17 @@ const BasicForm = defineComponent({
               </a-col> */}
               <a-col span={12}>
                 <a-form-item
-                  name="systemCode"
+                  name="systemUuid"
                   label="报警系统"
                   rules={{ required: true, message: "请选择报警系统" }}
                 >
                   <a-tree-select
                     tree-default-expand-all
-                    tree-data={_props.baseAllList}
-                    replaceFields={{ value: "id", label: "systemName" }}
-                    v-model={[basicForm.value.systemCode, "value"]}
+                    tree-data={systemList.value}
+                    treeDataSimpleMode
+                    replaceFields={{ value: "id", label: "name" }}
+                    // loadData={loadSystemList}
+                    v-model={[basicForm.value.systemUuid, "value"]}
                   ></a-tree-select>
                 </a-form-item>
               </a-col>

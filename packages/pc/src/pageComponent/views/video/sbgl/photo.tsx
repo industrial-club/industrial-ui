@@ -569,27 +569,25 @@ const com = defineComponent({
               高级
               {advancedShow.value ? <UpOutlined /> : <DownOutlined />}
             </div>
-
-            <a-formItem label="uuid" class={advancedShow.value ? "" : "hide"}>
-              <a-input v-model={[data.formState.uuid, "value"]}></a-input>
-            </a-formItem>
-            <a-formItem
-              label="关联海康平台indexCode"
-              class={advancedShow.value ? "" : "hide"}
-            >
-              <a-select
-                class="param"
-                v-model={[data.formState.hikIndexCode, "value"]}
-              >
-                {haikangList.map((item: any) => {
-                  return (
-                    <a-selectOption value={item.indexCode}>
-                      {item.name}
-                    </a-selectOption>
-                  );
-                })}
-              </a-select>
-            </a-formItem>
+            <div class={advancedShow.value ? "" : "hide"}>
+              <a-formItem label="uuid">
+                <a-input v-model={[data.formState.uuid, "value"]}></a-input>
+              </a-formItem>
+              <a-formItem label="关联海康平台indexCode">
+                <a-select
+                  class="param"
+                  v-model={[data.formState.hikIndexCode, "value"]}
+                >
+                  {haikangList.map((item: any) => {
+                    return (
+                      <a-selectOption value={item.indexCode}>
+                        {item.name}
+                      </a-selectOption>
+                    );
+                  })}
+                </a-select>
+              </a-formItem>
+            </div>
           </a-form>
         </a-modal>
         <div class="header flex">

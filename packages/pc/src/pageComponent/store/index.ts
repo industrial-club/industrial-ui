@@ -9,7 +9,7 @@ export default createStore({
       releaseType: "0", // 是否手动消警
       tagList: [], // 标签
       available: true, // 是否启用
-      systemCode: undefined, // 系统编码
+      systemUuid: undefined, // 系统编码
     },
     ruleForm: {
       propertyCode: [] as any[], // 设备信号
@@ -57,14 +57,14 @@ export default createStore({
         description: payload.description,
         name: payload.name,
         releaseType: payload.releaseType,
-        systemCode: payload.systemCode,
+        systemUuid: payload.systemUuid,
         tagList: payload.tagList,
       };
       // 规则表单
       state.ruleForm = {
         alarmConditionList: payload.alarmConditionList,
         conditionRelation: payload.conditionRelation,
-        propertyCode: [payload.instanceCode, payload.propertyCode],
+        propertyCode: [Number(payload.instanceUuid), payload.propertyCode],
         triggerTime: payload.triggerTime,
         triggerType: payload.triggerType,
         valueType: payload.valueType,

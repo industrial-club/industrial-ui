@@ -168,6 +168,7 @@ export default defineComponent({
                 <a-button
                   type="primary"
                   onClick={() => {
+                    pagination.current = 1;
                     http();
                   }}
                 >
@@ -254,6 +255,7 @@ export default defineComponent({
         >
           <addTemplate
             formData={templateData.value}
+            channelId={data.id}
             onClose={() => {
               http();
               templateVisible.value = false;

@@ -18,6 +18,10 @@ const DynamicForm = defineComponent({
       type: String,
       required: true,
     },
+    code: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const urmMap = inject<IUrlObj>("urlMap")!;
@@ -32,6 +36,13 @@ const DynamicForm = defineComponent({
         if (!item.paramDefineValue || !("value" in item.paramDefineValue)) {
           item.paramDefineValue = { value: null };
         }
+
+        // 给paramDefineValue加上defineId 和 defineCode
+        item.paramDefineValue = {
+          ...item.paramDefineValue,
+          defineId: item.paramDefine.id,
+          defineCode: item.paramDefine.code,
+        };
 
         if (
           item.paramDefine.type === "float" ||
@@ -52,12 +63,13 @@ const DynamicForm = defineComponent({
               item.paramDefine.listDataValue
             );
 
-            const selected = item.paramDefine.listDataValue.filter(
-              (item: any) => {
+            // 如果有value 赋值value 没有value 取选项中default为1的value
+            const selected =
+              item?.paramDefineValue?.value ??
+              item.paramDefine.listDataValue.find((item: any) => {
                 return item.default === "1";
-              }
-            );
-            item.paramDefineValue.value = selected[0].value;
+              })?.value;
+            item.paramDefineValue.value = selected;
           }
         }
 
@@ -90,7 +102,8 @@ const DynamicForm = defineComponent({
       const res: any[] = [];
       for (const key in form.value) {
         res.push({
-          key,
+          // 拼接code
+          key: props.code ? `${props.code}.${key}` : key,
           value: form.value[key],
           valueDefine: valueDefineMap.value.get(key),
         });

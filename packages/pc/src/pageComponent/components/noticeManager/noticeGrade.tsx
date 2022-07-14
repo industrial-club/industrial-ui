@@ -37,6 +37,7 @@ export default defineComponent({
     // 是否编辑
     const isEdit = ref(false);
 
+    // 获取通知方式
     const enumList = async () => {
       const res = await noticeCenterApi.getEnumList("PlatformEnum");
       options.value = res.data.map((item) => ({

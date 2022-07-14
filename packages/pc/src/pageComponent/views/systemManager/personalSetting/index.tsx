@@ -142,7 +142,7 @@ const PersonalSetting = defineComponent({
           <a-form-item
             name="userName"
             label="用户名"
-            rules={[getRequiredRule("用户名"), getMaxRule("用户名", 32)]}
+            rules={[getRequiredRule("用户名")]}
           >
             {state.canEdit ? (
               <a-input
@@ -173,7 +173,7 @@ const PersonalSetting = defineComponent({
           <a-form-item
             name="phone"
             label="电话"
-            rules={[getRequiredRule("电话"), getMaxRule("电话", 16)]}
+            rules={[getRequiredRule("电话")]}
           >
             {state.canEdit ? (
               <a-input
@@ -185,11 +185,7 @@ const PersonalSetting = defineComponent({
             )}
           </a-form-item>
 
-          <a-form-item
-            name="zhixin"
-            label="智信"
-            rules={[getMaxRule("智信", 16)]}
-          >
+          <a-form-item name="zhixin" label="智信">
             {state.canEdit ? (
               <a-input
                 v-model={[formState.value.zhixin, "value"]}
@@ -200,11 +196,7 @@ const PersonalSetting = defineComponent({
             )}
           </a-form-item>
 
-          <a-form-item
-            name="wechat"
-            label="微信"
-            rules={[getMaxRule("微信", 16)]}
-          >
+          <a-form-item name="wechat" label="微信">
             {state.canEdit ? (
               <a-input
                 v-model={[formState.value.wechat, "value"]}
@@ -218,10 +210,7 @@ const PersonalSetting = defineComponent({
           <a-form-item
             name="mail"
             label="邮箱"
-            rules={[
-              getMaxRule("邮箱", 32),
-              { type: "email", message: "请输入正确的邮箱" },
-            ]}
+            rules={[{ type: "email", message: "请输入正确的邮箱" }]}
           >
             {state.canEdit ? (
               <a-input

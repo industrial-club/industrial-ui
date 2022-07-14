@@ -37,7 +37,7 @@ export default defineComponent({
     const getAlarmVideo = async () => {
       const { data } = await getVideo(urlObj.getVideo)(
         alarmDetail.value.id,
-        alarmDetail.value.instanceCode
+        alarmDetail.value.instanceUuid
       );
       videoList.value = Object.values(data).map(
         (item: any) => item.relatedPath
@@ -165,7 +165,7 @@ export default defineComponent({
         <a-page-header style={{ padding: 0 }} title="报警详情" onBack={back} />
         {/* 详情  描述列表*/}
         <a-descriptions
-          labelStyle={{ width: "100px", textAlign: "right" }}
+          labelStyle={{ width: "120px", textAlign: "right" }}
           column={2}
         >
           <a-descriptions-item label="报警名称">
@@ -231,7 +231,11 @@ export default defineComponent({
               <a-empty description="暂无视频" />
             )}
           </a-descriptions-item>
-          <a-descriptions-item label="报警生命周期">
+          <a-descriptions-item
+            label="报警生命周期"
+            span={2}
+          ></a-descriptions-item>
+          <a-descriptions-item contentStyle={{ margin: "16px" }}>
             {alarmDetail.value?.alarmLifecycleList?.length ? (
               <div ref={chartRef}></div>
             ) : (

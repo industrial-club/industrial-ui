@@ -52,8 +52,27 @@ const LayoutContent = defineComponent({
     watch(
       route,
       () => {
-        const { menuCode: code } = route.query as any;
-        if (code && !tabs.value.find((tab) => tab.code === code)) {
+        let { menuCode: code, type } = route.query as any;
+        // type为2为iframe
+        if (type && type === "2") {
+          const tab = userNavList.value.find((item: any) => item.url === code);
+          const url = tab.url.startsWith("http")
+            ? tab.url
+            : location.origin + tab.url;
+
+          const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+          const urlObj = new URL(url);
+          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+          urlObj.searchParams.set("userId", userinfo.userId);
+
+          if (tab && !tabs.value.find((item) => item.code === tab.code)) {
+            tabs.value.push({
+              ...tab,
+              href: urlObj.href,
+              key: Date.now(),
+            });
+          }
+        } else if (code && !tabs.value.find((tab) => tab.code === code)) {
           const route = props.allRoutes.find((item) => item.code === code);
           if (!route || !route.component || route.component === RouterView) {
             return;
@@ -91,9 +110,31 @@ const LayoutContent = defineComponent({
 
     // 当前tabs中缓存的组件
     const cacheComponents = computed(() => {
-      return props.allRoutes.filter((item) => {
+      const iframeRoutes = tabs.value
+        .filter((item) => item.mode === 2)
+        .map((item) => {
+          const url = item.url.startsWith("http")
+            ? item.url
+            : location.origin + item.url;
+
+          const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+          const urlObj = new URL(url);
+          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+          urlObj.searchParams.set("userId", userinfo.userId);
+
+          return {
+            url: item.url,
+            code: item.code,
+            component: () => (
+              <iframe src={urlObj.href} frameborder="0"></iframe>
+            ),
+          };
+        });
+      const tabRoutes = props.allRoutes.filter((item) => {
         return tabs.value.find((tab) => tab.code === item.code);
       });
+
+      return [...tabRoutes, ...iframeRoutes];
     });
 
     return () => (
@@ -113,36 +154,39 @@ const LayoutContent = defineComponent({
               </a-button>
               <div class="tabs-list" ref={tabsRef}>
                 {tabs.value.map((item, index) => (
-                  <router-link
-                    key={item.code}
-                    class={[
-                      "tab-item",
-                      item.code === activeCode.value ? "active" : "",
-                    ]}
-                    to={`/?menuCode=${item.code}`}
+                  <a-dropdown
+                    trigger={["contextmenu"]}
+                    v-slots={{
+                      overlay: () => (
+                        <a-menu>
+                          <a-menu-item>
+                            <a onClick={() => closeToRight(index)}>关闭右侧</a>
+                          </a-menu-item>
+                          <a-menu-item>
+                            <a onClick={() => closeToLeft(index)}>关闭左侧</a>
+                          </a-menu-item>
+                          <a-menu-item>
+                            <a onClick={() => closeOthers(index)}>关闭其他</a>
+                          </a-menu-item>
+                          {/* <a-menu-item>
+                            <a onClick={() => refreshCpn(index)}>刷新</a>
+                          </a-menu-item> */}
+                        </a-menu>
+                      ),
+                    }}
                   >
-                    <a-dropdown
-                      trigger={["contextmenu"]}
-                      v-slots={{
-                        overlay: () => (
-                          <a-menu>
-                            <a-menu-item>
-                              <a onClick={() => closeToRight(index)}>
-                                关闭右侧
-                              </a>
-                            </a-menu-item>
-                            <a-menu-item>
-                              <a onClick={() => closeToLeft(index)}>关闭左侧</a>
-                            </a-menu-item>
-                            <a-menu-item>
-                              <a onClick={() => closeOthers(index)}>关闭其他</a>
-                            </a-menu-item>
-                            <a-menu-item>
-                              <a onClick={() => refreshCpn(index)}>刷新</a>
-                            </a-menu-item>
-                          </a-menu>
-                        ),
-                      }}
+                    <router-link
+                      key={item.code}
+                      class={[
+                        "tab-item",
+                        item.code === activeCode.value ||
+                        item.url === activeCode.value
+                          ? "active"
+                          : "",
+                      ]}
+                      to={`/?menuCode=${
+                        item.mode === 2 ? item.url : item.code
+                      }&type=${item.mode}`}
                     >
                       <span class="tab-item-text">
                         {item.icon && (
@@ -165,8 +209,8 @@ const LayoutContent = defineComponent({
                           </span>
                         )}
                       </span>
-                    </a-dropdown>
-                  </router-link>
+                    </router-link>
+                  </a-dropdown>
                 ))}
               </div>
               <a-button
@@ -189,9 +233,13 @@ const LayoutContent = defineComponent({
               (cpn: any, index) =>
                 cpn && (
                   <cpn.component
-                    key={tabs.value[index].key}
+                    key={cpn.code || cpn.url}
                     style={{
-                      display: cpn.code === activeCode.value ? "" : "none",
+                      display:
+                        cpn.code === activeCode.value ||
+                        cpn.url === activeCode.value
+                          ? ""
+                          : "none",
                     }}
                   />
                 )
