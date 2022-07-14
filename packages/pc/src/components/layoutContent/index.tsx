@@ -52,13 +52,23 @@ const LayoutContent = defineComponent({
     watch(
       route,
       () => {
-        const { menuCode: code } = route.query as any;
-        // 以http开头 为 iframe
-        if (code && code.startsWith("http")) {
+        let { menuCode: code, type } = route.query as any;
+        // type为2为iframe
+        if (type && type === "2") {
           const tab = userNavList.value.find((item: any) => item.url === code);
+          const url = tab.url.startsWith("http")
+            ? tab.url
+            : location.origin + tab.url;
+
+          const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+          const urlObj = new URL(url);
+          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+          urlObj.searchParams.set("userId", userinfo.userId);
+
           if (tab && !tabs.value.find((item) => item.code === tab.code)) {
             tabs.value.push({
               ...tab,
+              href: urlObj.href,
               key: Date.now(),
             });
           }
@@ -102,11 +112,24 @@ const LayoutContent = defineComponent({
     const cacheComponents = computed(() => {
       const iframeRoutes = tabs.value
         .filter((item) => item.mode === 2)
-        .map((item) => ({
-          url: item.url,
-          code: item.code,
-          component: () => <iframe src={item.url} frameborder="0"></iframe>,
-        }));
+        .map((item) => {
+          const url = item.url.startsWith("http")
+            ? item.url
+            : location.origin + item.url;
+
+          const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+          const urlObj = new URL(url);
+          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+          urlObj.searchParams.set("userId", userinfo.userId);
+
+          return {
+            url: item.url,
+            code: item.code,
+            component: () => (
+              <iframe src={urlObj.href} frameborder="0"></iframe>
+            ),
+          };
+        });
       const tabRoutes = props.allRoutes.filter((item) => {
         return tabs.value.find((tab) => tab.code === item.code);
       });
@@ -163,7 +186,7 @@ const LayoutContent = defineComponent({
                       ]}
                       to={`/?menuCode=${
                         item.mode === 2 ? item.url : item.code
-                      }`}
+                      }&type=${item.mode}`}
                     >
                       <span class="tab-item-text">
                         {item.icon && (

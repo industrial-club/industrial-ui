@@ -54,11 +54,19 @@ const LayoutSidebar = defineComponent({
 
     const toPath = (menu: any) => {
       if (menu.mode === 0) {
-        router.push(`/?menuCode=${menu.code}`);
+        router.push(`/?menuCode=${menu.code}&type=${menu.mode}`);
       } else if (menu.mode === 2) {
-        router.push(`/?menuCode=${menu.url}`);
+        router.push(`/?menuCode=${menu.url}&type=${menu.mode}`);
       } else {
-        window.open(menu.url);
+        const url = menu.url.startsWith("http")
+          ? menu.url
+          : location.origin + menu.url;
+
+        const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+        const urlObj = new URL(url);
+        urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+        urlObj.searchParams.set("userId", userinfo.userId);
+        window.open(urlObj.href);
       }
     };
 
