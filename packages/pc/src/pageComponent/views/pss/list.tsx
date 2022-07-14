@@ -52,7 +52,7 @@ export default defineComponent({
                 },
               }}
             >
-              <tab.component type={tab.key} />
+              <tab.component tab={tab.key} />
             </TabPane>
           ))}
         </Tabs>

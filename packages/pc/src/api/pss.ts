@@ -78,13 +78,13 @@ api.startByMePage = async (data: any) => {
  *我发起的 详情
  */
 api.startByMeDetail = async (data: any) => {
-  return instance.post("/spms/v1/startByMe/detail", data);
+  return instance.post("/startByMe/detail", data);
 };
 /**
  *流程 审批
  */
 api.processApproval = async (data: any) => {
-  return instance.post("/spms/v1/process/approval", data);
+  return instance.post("/process/approval", data);
 };
 /**
  *流程 试车
