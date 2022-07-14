@@ -26,11 +26,11 @@ export function fomatDepTree(treeData: any) {
       if (dep.subList.length) {
         formatSubList(dep.subList);
       }
-      if (dep.employeeSummaryList) {
+      if (dep.userSummaryList) {
         dep.subList.push(
-          ...dep.employeeSummaryList.map((emp: any) => {
-            emp.id = emp.employeeId;
-            emp.name = emp.employeeName;
+          ...dep.userSummaryList.map((emp: any) => {
+            emp.id = emp.userId;
+            emp.name = emp.userName;
 
             return emp;
           })
