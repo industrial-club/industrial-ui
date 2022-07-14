@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-03-31 13:05:01
  */
 
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { debounce } from "lodash";
 
 /**
@@ -17,7 +17,7 @@ import { debounce } from "lodash";
 export default function useTableList(
   getData: () => Promise<any>,
   listProp?: string,
-  totalName = 'totalCount',
+  totalName = "totalCount"
 ) {
   const tableList = ref([]);
   const isLoading = ref(false);
@@ -53,6 +53,17 @@ export default function useTableList(
     refresh();
   };
 
+  const pagination = reactive({
+    current: currPage,
+    pageSize,
+    total,
+    showSizeChanger: true,
+    showQuickJumper: true,
+    showTotal: (total: number) => `共 ${total} 条`,
+    "onUpdate:current": handlePageChange,
+    "onUpdate:pageSize": hanldePageSizeChange,
+  });
+
   return {
     isLoading,
     tableList,
@@ -65,5 +76,7 @@ export default function useTableList(
 
     total,
     refresh,
+
+    pagination,
   };
 }

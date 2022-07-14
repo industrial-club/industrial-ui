@@ -34,7 +34,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
 
   instance.interceptors.request.use(
     (conf) => {
-      const corpId = sessionStorage.getItem("corpId");
+      const corpId = sessionStorage.getItem("corpId") || getUser()?.corpId;
       conf.headers.token = getToken();
       conf.headers.userId =
         getUser()?.userId || localStorage.getItem("userId") || "-1";
@@ -69,7 +69,10 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
   instance.interceptors.response.use(
     (res) => {
       const resData = res.data;
-      const status = resData.code === "M0000" || resData.code === "0"  || resData.code === "ok";
+      const status =
+        resData.code === "M0000" ||
+        resData.code === "0" ||
+        resData.code === "ok";
       if (resData.code === "M4003") {
         message.error("登陆已过期，请重新登陆");
         window.location.hash = "login";
