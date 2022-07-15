@@ -74,7 +74,7 @@ export default defineComponent({
           <a-input-number
             v-model={[val.value, "value"]}
             addon-after={inputList.unit}
-            onPressEnter={(e) => {
+            onBlur={(e) => {
               // setPageParamValueSingle(instanceCode, metricCode, val.value);
               console.log(val.value);
             }}
