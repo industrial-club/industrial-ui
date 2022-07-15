@@ -54,9 +54,9 @@ const LayoutSidebar = defineComponent({
 
     const toPath = (menu: any) => {
       if (menu.mode === 0) {
-        router.push(`/?menuCode=${menu.code}&type=${menu.mode}`);
+        router.push(`/?menuCode=${menu.code}`);
       } else if (menu.mode === 2) {
-        router.push(`/?menuCode=${menu.url}&type=${menu.mode}`);
+        router.push(`/?menuCode=${menu.code}`);
       } else {
         const url = menu.url.startsWith("http")
           ? menu.url

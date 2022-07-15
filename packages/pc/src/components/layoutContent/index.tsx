@@ -52,25 +52,19 @@ const LayoutContent = defineComponent({
     watch(
       route,
       () => {
-        let { menuCode: code, type } = route.query as any;
-        // type为2为iframe
-        if (type && type === "2") {
-          const tab = userNavList.value.find((item: any) => item.url === code);
-          const url = tab.url.startsWith("http")
-            ? tab.url
-            : location.origin + tab.url;
+        let { menuCode: code } = route.query as any;
+        const menuItem = userNavList.value.find((item) => item.code === code);
+        // mode为2为iframe
+        if (menuItem && menuItem.mode === 2) {
+          const url = menuItem.url.startsWith("http")
+            ? menuItem.url
+            : location.origin + menuItem.url;
 
-          const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
-          const urlObj = new URL(url);
-          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
-          urlObj.searchParams.set("userId", userinfo.userId);
-
-          if (tab && !tabs.value.find((item) => item.code === tab.code)) {
-            tabs.value.push({
-              ...tab,
-              href: urlObj.href,
-              key: Date.now(),
-            });
+          if (
+            menuItem &&
+            !tabs.value.find((item) => item.code === menuItem.code)
+          ) {
+            tabs.value.push(menuItem);
           }
         } else if (code && !tabs.value.find((tab) => tab.code === code)) {
           const route = props.allRoutes.find((item) => item.code === code);
@@ -131,7 +125,9 @@ const LayoutContent = defineComponent({
           };
         });
       const tabRoutes = props.allRoutes.filter((item) => {
-        return tabs.value.find((tab) => tab.code === item.code);
+        return tabs.value.find((tab) => {
+          return tab.code === item.code && tab.mode === 0;
+        });
       });
 
       return [...tabRoutes, ...iframeRoutes];
@@ -179,14 +175,9 @@ const LayoutContent = defineComponent({
                       key={item.code}
                       class={[
                         "tab-item",
-                        item.code === activeCode.value ||
-                        item.url === activeCode.value
-                          ? "active"
-                          : "",
+                        item.code === activeCode.value && "active",
                       ]}
-                      to={`/?menuCode=${
-                        item.mode === 2 ? item.url : item.code
-                      }&type=${item.mode}`}
+                      to={`/?menuCode=${item.code}`}
                     >
                       <span class="tab-item-text">
                         {item.icon && (
