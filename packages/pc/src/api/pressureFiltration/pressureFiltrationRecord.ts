@@ -32,6 +32,16 @@ const pressureFiltrationRecordApi = {
   getFilterList() {
     return instance.get(`/business/combobox/getFilterList`);
   },
+
+  /**
+   * getFilterShiftLogger
+   */
+  getFilterShiftLogger(pageSize, pageNum, data) {
+    return instance.post(
+      `/logger/getFilterShiftLogger?pageSize=${pageSize}&pageNum=${pageNum}`,
+      data
+    );
+  },
 };
 
 export default pressureFiltrationRecordApi;

@@ -1,4 +1,5 @@
 import { defineComponent, PropType } from "vue";
+import dayjs, { Dayjs } from "dayjs";
 
 const props = {
   data: {
@@ -20,9 +21,11 @@ export default defineComponent({
             <li>
               <div class="name">
                 <exclamation-circle-filled class="icon" />
-                601浓缩机耙压过大
+                {item.name}
               </div>
-              <div class="time">2022-11-21 20:43:00</div>
+              <div class="time">
+                {dayjs(item.firstAlarmTime).format("YYYY-MM-DD HH:mm:ss")}
+              </div>
             </li>
           ))}
         </ul>

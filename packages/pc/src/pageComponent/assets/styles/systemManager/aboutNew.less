@@ -1,0 +1,98 @@
+.aboutNew {
+  position: relative;
+  min-height: 600px;
+
+  .logoLine {
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .logo {
+      width: 360px;
+      margin-bottom: 30px;
+    }
+  }
+
+  .titleLine {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .title {
+      height: 24px;
+      font-size: 16px;
+      font-family: PingFangSC-Semibold, PingFang SC;
+      font-weight: 600;
+      color: #354052;
+      line-height: 24px;
+
+      &::before {
+        content: "";
+        border-left: 3px solid #1D33A2;
+        height: 10px;
+        margin-right: 12px;
+      }
+    }
+  }
+
+  .card {
+    border: 0;
+    margin: 0 0 20px 12px;
+
+    background: rgba(239, 242, 246, 0.5);
+
+    .summary {
+      font-size: 14px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #5D616B;
+    }
+
+    .software {
+      height: 22px;
+      font-size: 14px;
+      font-family: PingFangSC-Semibold,
+        PingFang SC;
+      font-weight: 600;
+      color: #31363C;
+      line-height: 22px;
+
+      &:not(:first-child) {
+        margin-top: 16px;
+      }
+    }
+  }
+
+
+  .bottom_line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    .QRcode {
+      width: 121px;
+      margin-right: 24px;
+    }
+
+    .companyInfo {
+      .infoLine {
+        height: 20px;
+        font-size: 14px;
+        font-family: PingFangSC-Medium, PingFang SC;
+
+        &:not(:first-child) {
+          margin-top: 4px;
+        }
+
+        .label {
+          color: #31363C;
+          font-weight: 600;
+        }
+
+        .value {
+          color: #5D616B;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}

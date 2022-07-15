@@ -19,9 +19,8 @@ export default defineConfig({
       "/api/thingmodel/": "http://192.168.5.234",
       "/vms/": "http://192.168.5.234/",
       "/api/vms/": "http://192.168.5.234/",
-      "/api/spms/": "http://192.168.5.234/",
       "/api/": {
-        target: "http://192.168.5.234:8099/",
+        target: "http://192.168.5.234/",
       },
     },
   },

@@ -215,6 +215,7 @@ export default defineComponent({
           v-model={[props.showInfo, "visible"]}
           title="任务/任务详情"
           wrapClassName="pssInfoModal"
+          getContainer={() => document.getElementById("pssList")}
           onCancel={close}
           v-slots={{
             footer: () => {
