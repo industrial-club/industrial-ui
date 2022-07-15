@@ -19,7 +19,7 @@ const BaseDemo = defineComponent({
         ></inl-about> */}
 
         {/* ====== 日志管理 ====== */}
-        <inl-log-manager></inl-log-manager>
+        {/* <inl-log-manager></inl-log-manager> */}
 
         {/* ====== 参数管理 ====== */}
         {/* <inl-param-manager
@@ -56,6 +56,7 @@ const BaseDemo = defineComponent({
           projectName="工业物联平台"
           copyright="天津美腾科技股份有限公司 Tianjin Meiteng Technology Co.,Itd"
         ></inl-login-page> */}
+        <inl-pss-list />
       </div>
     );
   },

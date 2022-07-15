@@ -6,7 +6,7 @@ import {
   onMounted,
   watch,
 } from "vue";
-import { message, Select, Input } from "ant-design-vue";
+import { message } from "ant-design-vue";
 import type { UploadChangeParam, UploadProps } from "ant-design-vue";
 import utils from "@/utils";
 import {
@@ -21,8 +21,6 @@ import {
 } from "@/api/systemSetting";
 import { systemConfig, picList } from "./data";
 
-const aInput = Input;
-const aSelect = Select;
 interface OptionItem {
   name: string;
   id: string;
@@ -240,12 +238,12 @@ const SystemSetting = defineComponent({
             <div class="systemConfig_vertical">
               <div class="label">{item.label}</div>
               <div class="item">
-                <aInput
+                <a-input
                   placeholder=""
                   v-model={[data.form[`${item.name}`], "value"]}
                   class="input"
                   disabled={!edit.value}
-                ></aInput>
+                ></a-input>
               </div>
             </div>
           ) : (
@@ -320,6 +318,7 @@ const SystemSetting = defineComponent({
         ? (themes.value = "dark")
         : (themes.value = "default");
       _context.emit("setTheme", themes.value);
+      window.localStorage.setItem("theme", themes.value);
       // 获取图片
       const arr: any = {
         loginPageSystemTitle: "",
@@ -346,6 +345,7 @@ const SystemSetting = defineComponent({
       if ((res as any).code === "M0000") {
         message.success("保存成功");
         edit.value = !edit.value;
+        http();
       } else {
         message.error("保存失败");
       }
@@ -417,7 +417,7 @@ const SystemSetting = defineComponent({
           </div>
         </div>
         <div class="systemConfig_right">
-          <div class="box" style="zoom:0.75">
+          <div class="box">
             <div class="left">
               {picList.left.map((item) => (
                 <>

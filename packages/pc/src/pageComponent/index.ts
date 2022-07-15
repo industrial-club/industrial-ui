@@ -27,10 +27,12 @@ import AlarmConfigure from "@/pageComponent/views/alarms/warning-configure";
 import noticeCenter from "@/pageComponent/views/systemManager/noticeManager/noticeCenter";
 import noticeManager from "@/pageComponent/views/systemManager/noticeManager/noticeManager";
 import PssList from "@/pageComponent/views/pss";
-
 import PssRecord from "@/pageComponent/views/pssRecord";
-
-
+import feeding from "@/pageComponent/views/pressureFiltration/feeding";
+import productionShiftReport from "@/pageComponent/views/pressureFiltration/productionShiftReport";
+import record from "@/pageComponent/views/pressureFiltration/record";
+import unloading from "@/pageComponent/views/pressureFiltration/unloading";
+import pressureFiltrationHome from "@/pageComponent/views/pressureFiltration/pressureFiltrationHome";
 
 export default [
   About,
@@ -62,5 +64,10 @@ export default [
   noticeCenter,
   noticeManager,
   PssList,
-  PssRecord
+  PssRecord,
+  feeding,
+  productionShiftReport,
+  record,
+  unloading,
+  pressureFiltrationHome,
 ];
