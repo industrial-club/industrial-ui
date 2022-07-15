@@ -36,7 +36,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div class="pssList">
+      <div class="pssList" id="pssList">
         <Tabs v-model={[tabConfig.activeKey, "activeKey"]}>
           {tabConfig.tabs.map((tab) => (
             <TabPane
