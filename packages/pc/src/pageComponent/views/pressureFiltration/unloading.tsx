@@ -1,172 +1,75 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref, reactive } from "vue";
 import utils from "@/utils";
+import configuration from "@/pageComponent/components/pressureFiltration/configuration";
+import filterPressConfigurationApi, {
+  pageParamlistData,
+} from "@/api/pressureFiltration/filterPressConfiguration";
 
 const unloading = defineComponent({
   name: "Unloading",
-  setup(this, props, ctx) {
-    const form = ref<{
-      model?: string;
-      time?: number;
-    }>({});
+  components: {
+    configuration,
+  },
+  setup(this, _props, ctx) {
+    // 页面配置项数据
+    const pageParamList = reactive<pageParamlistData>({});
+
+    // 获取页面配置项
+    const http = async () => {
+      const res = await filterPressConfigurationApi.getPageParamList();
+      for (const key in res.data) {
+        pageParamList[key] = res.data[key];
+      }
+    };
+
+    onMounted(() => {
+      http();
+    });
     return () => (
       <div class="unloading">
-        <div>
-          <a-divider orientation="left">卸料设定</a-divider>
-          <a-form model={form.value}>
-            <a-row gutter={24}>
-              <a-col span={6}>
-                <a-form-item label="开始卸料模式确认" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="0">人工确认</a-radio-button>
-                    <a-radio-button value="1">系统自动</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-              <a-col span={6}>
-                <a-form-item label="允许卸料台数" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="0">一台</a-radio-button>
-                    <a-radio-button value="1">两台</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-form>
-        </div>
-        <div>
-          <a-divider orientation="left">卸料判断模式</a-divider>
-          <a-form model={form.value}>
-            <a-row gutter={24}>
-              <a-col span={6}>
-                <a-form-item label="8053判断式" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="1">智能</a-radio-button>
-                    <a-radio-button value="0">手动</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-form>
-        </div>
-        <div>
-          <a-divider orientation="left">转载设备启动设置</a-divider>
-          <a-form model={form.value}>
-            <a-row gutter={24}>
-              <a-col span={6}>
-                <a-form-item label="模式选择" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="1">智能</a-radio-button>
-                    <a-radio-button value="0">手动</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-              <a-col span={6}>
-                <a-form-item label="确认模式选择" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="0">人工确认</a-radio-button>
-                    <a-radio-button value="1">系统自动</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-form>
-        </div>
-        <div>
-          <a-divider orientation="left">转载设备启动设置</a-divider>
-          <a-form model={form.value}>
-            <a-row gutter={24}>
-              <a-col span={6}>
-                <a-form-item label="模式选择" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="1">智能</a-radio-button>
-                    <a-radio-button value="0">手动</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-              <a-col span={6}>
-                <a-form-item label="确认模式选择" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="0">人工确认</a-radio-button>
-                    <a-radio-button value="1">系统自动</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row gutter={24}>
-              <a-col span={6}>
-                <a-form-item label="8087延时设置" colon={false}>
-                  <a-input-number
-                    v-model={[form.value.time, "value"]}
-                    addon-after="s"
-                  ></a-input-number>
-                </a-form-item>
-              </a-col>
-              <a-col span={6}>
-                <a-form-item label="8088延时设置" colon={false}>
-                  <a-input-number
-                    v-model={[form.value.time, "value"]}
-                    addon-after="s"
-                  ></a-input-number>
-                </a-form-item>
-              </a-col>
-              <a-col span={6}>
-                <a-form-item label="8089延时设置" colon={false}>
-                  <a-input-number
-                    v-model={[form.value.time, "value"]}
-                    addon-after="s"
-                  ></a-input-number>
-                </a-form-item>
-              </a-col>
-              <a-col span={6}>
-                <a-form-item label="8091延时设置" colon={false}>
-                  <a-input-number
-                    v-model={[form.value.time, "value"]}
-                    addon-after="s"
-                  ></a-input-number>
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-form>
-        </div>
-        <div>
-          <a-divider orientation="left">生产闭锁</a-divider>
-          <a-form model={form.value}>
-            <a-row gutter={24}>
-              <a-col span={6}>
-                <a-form-item label="生产闭锁" colon={false}>
-                  <a-radio-group
-                    v-model={[form.value.model, "value"]}
-                    button-style="solid"
-                  >
-                    <a-radio-button value="1">闭锁</a-radio-button>
-                    <a-radio-button value="0">解锁</a-radio-button>
-                  </a-radio-group>
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-form>
-        </div>
+        {pageParamList.unload && (
+          <>
+            <configuration
+              title="卸料设定"
+              form={pageParamList.unload.model}
+              onRefresh={() => {
+                http();
+              }}
+            ></configuration>
+            <configuration
+              title="卸料判断模式"
+              form={pageParamList.unload.adjustModel}
+              onRefresh={() => {
+                http();
+              }}
+            ></configuration>
+          </>
+        )}
+        {pageParamList.belt && (
+          <>
+            <configuration
+              title="转载设备启动设置"
+              form={pageParamList.belt.start}
+              onRefresh={() => {
+                http();
+              }}
+            ></configuration>
+            <configuration
+              title="转载设备停止设置"
+              form={pageParamList.belt.stop}
+              onRefresh={() => {
+                http();
+              }}
+            ></configuration>
+            <configuration
+              title="生产闭锁"
+              form={pageParamList.belt.lock}
+              onRefresh={() => {
+                http();
+              }}
+            ></configuration>
+          </>
+        )}
       </div>
     );
   },
