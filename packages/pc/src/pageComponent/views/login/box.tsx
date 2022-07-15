@@ -283,20 +283,22 @@ export default defineComponent({
     };
 
     return () => (
-      <a-spin tip="登录中。。。" spinning={loginspinning.value}>
-        <div class="login_box">
-          {renderTitleBox()}
-          {renderForm()}
-          {imgModel()}
-          <div style={{ textAlign: "center", margin: "2rem 0" }}>
-            {status === "system" ? (
-              <img src={ms} style={{ width: "232px" }} />
-            ) : (
-              ""
-            )}
+      <div class={"login_center_box"}>
+        <a-spin tip="登录中。。。" spinning={loginspinning.value}>
+          <div class="login_box">
+            {renderTitleBox()}
+            {renderForm()}
+            {imgModel()}
+            <div style={{ textAlign: "center", margin: "2rem 0" }}>
+              {status === "system" ? (
+                <img src={ms} style={{ width: "232px" }} />
+              ) : (
+                ""
+              )}
+            </div>
           </div>
-        </div>
-      </a-spin>
+        </a-spin>
+      </div>
     );
   },
 });

@@ -1,74 +1,64 @@
-// 图片验证
-
-.login_slider {
-  .ant-modal-body {
-    padding: 0;
-  }
-
-  .imgBox {
-    width: 432px;
-    height: 268px;
-    position: relative;
-
-    .anticon {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      z-index: 3;
-      color: #fff;
+  // 图片验证
+  
+  .login_slider{
+    .ant-modal-body{
+      padding: 0;
     }
-
-    img {
-      z-index: 2;
-      position: absolute;
-    }
-
-    .bgImg {
-      z-index: 1;
+    .imgBox{
       width: 432px;
       height: 268px;
+      position: relative;
+      .anticon{
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 3;
+        color: #fff;
+      }
+      img{
+        z-index: 2;
+        position: absolute;
+      }
+      .bgImg{
+        z-index: 1;
+        width: 432px;
+        height: 268px;
+      }
+     
     }
-  }
-
-  .modal-box {
-    box-sizing: content-box;
-  }
-
-  .ant-slider {
+    .modal-box {
+      box-sizing:content-box;
+    }
+    .ant-slider{
     height: 30px;
-    background-color: #f4f6f8;
+    background-color: #F4F6F8;
     margin: 0;
     padding: 0;
-    margin-top: 0.6rem;
-
-    .ant-slider-rail,
-    .ant-slider-track,
-    .ant-slider-step {
+    margin-top:0.6rem;
+    .ant-slider-rail, .ant-slider-track, .ant-slider-step{
       height: 30px;
       top: 0;
       padding: 0;
     }
-
-    &:hover {
-      .ant-slider-track {
-        background-color: #22cc83;
+    &:hover{
+      .ant-slider-track{
+        background-color: green;
       }
     }
 
-    .ant-slider-track {
-      background-color: #22cc83;
+    .ant-slider-track{
+      background-color: green;
     }
 
-    .ant-slider-handle {
+    .ant-slider-handle{
       top: 3px;
       width: 34px;
       height: 34px;
-      border-radius: 0.1rem;
       background-color: #fff;
+      border-radius: 0.1rem;
+      border-color: #ccc;
       border: 1px solid #ccc;
-      transform: translateX(-2%) !important;
-
-      &::after {
+      &::after{
         position: absolute;
         width: 100%;
         text-align: center;
@@ -76,86 +66,62 @@
         line-height: 30px;
       }
     }
-
-    .ant-slider-rail {
-      background-color: #f4f6f8;
+    .ant-slider-rail{
+      background-color: #F4F6F8;
       position: relative;
-
-      &::before {
+      &::before{
         position: absolute;
         width: 100%;
         line-height: 30px;
-        content: "向右滑动完成拼图";
+        content: '向右滑动完成拼图';
         text-align: center;
       }
     }
-
     // #F4F6F8
   }
 }
-
-[data-theme="light"] body {
-  .login_box {
-    input {
-      color: black;
-    }
-
-    input:-internal-autofill-previewed,
-    input:-internal-autofill-selected {
-      -webkit-text-fill-color: black;
-      color: black !important;
-      transition: background-color 9999s ease-out 0.1s;
-    }
-  }
-}
-
 .login_box {
   display: flex;
   flex-direction: column;
-
-  input {
-    color: #fff;
-    height: 34px;
-  }
-
+  color: #fff;
   input:-internal-autofill-previewed,
   input:-internal-autofill-selected {
-    -webkit-text-fill-color: #fff;
-    color: #fff !important;
-    transition: background-color 9999s ease-out 0.1s;
+      -webkit-text-fill-color: #fff;
+      color: #fff !important;
+      transition: background-color 9999s ease-out 0.1s;
   }
 
+
+  
   .ant-input-password span span svg {
     color: #fff;
   }
-
   .ant-form {
     padding: 0 67px;
+    input{
+      color: #fff;
+    }
   }
 
   .ant-form-item {
     margin-bottom: 28px;
 
-    input,
-    .ant-input-password {
+    .ant-btn,
+    input {
+      height: 40px;
       border-radius: 0.5rem;
-      background: none;
     }
-
-    .ant-btn {
+    .ant-btn{
       border-radius: 0;
       height: 44px;
-      border: none;
+      border:none;
     }
-
-    .ant-form-item-control-input-content {
-      background-color: rgba(255, 255, 255, 0.2000);
-
-      .ant-input-password,
-      >.ant-input {
+    .ant-form-item-control-input-content{
+      background-color: rgba(255,255,255,0.3);
+      .ant-input-password, >.ant-input{
         border-radius: 0;
         height: 44px;
-        border: 1px solid #5E657F;
+        border:1px solid #fff;
       }
     }
   }
@@ -163,21 +129,19 @@
   .titleBox {
     margin: 65px 0 32px 0;
     justify-content: center;
-    display: flex;
-
     img {
-      // width: 40px;
+      width: 40px;
       height: 36px;
       margin-right: 15px;
     }
-
     .title {
       height: 46px;
-      font-size: 2rem;
+      font-size: 35px;
       font-family: YouSheBiaoTiHei;
       color: #ffffff;
       line-height: 46px;
-      font-weight: 600;
+      font-weight: bold;
+      font-style:italic;
       padding: 0;
     }
   }

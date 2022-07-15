@@ -11,10 +11,16 @@
   background-image: url(../img/loginBackground.png);
   background-size: cover;
   background-origin: content-box;
-
+ position: relative;
+ font-family: PingFangSC-Ultralight, sans-serif;
+ min-height: 880px;
+ overflow-y: auto;
   .topTitle {
     margin: 60px;
-
+    position: absolute;
+    top:0;
+    left: 0;
+    z-index: 2;
     img {
       width: 452px;
       height: 54px;
@@ -86,20 +92,34 @@
     &.platform {
 
       // align-items: center;
-      display: block;
-      position: relative;
-
+      position: absolute;
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      min-height: 880px;
+      overflow-y: auto;
+      top: 0;
+      left: 0;
+      align-items: center;
+      padding: 0;
+      .login_center_box{
+        flex: 1;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
       .ant-spin-nested-loading {
-        position: absolute;
-        top: 106px;
-        right: 200px;
+        
       }
 
       .left {
-        width: 920px;
-        height: 700px;
-        margin-left: 50px;
-        display: inline;
+        flex: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // width: 920px;
+        // height: 700px;
+        // display: inline;
       }
     }
 
@@ -162,7 +182,7 @@
       padding: 0 100px;
 
       &.platform {
-        .left {
+        .left_img {
           width: 52rem;
           height: 40rem;
         }
@@ -181,8 +201,7 @@
       &.platform {
         display: flex;
         align-items: center;
-
-        .left {
+        .left_img {
           width: 46.8rem;
           height: 36rem;
         }

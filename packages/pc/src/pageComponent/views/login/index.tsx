@@ -94,7 +94,9 @@ const Login = defineComponent({
         <topTitle corpLogo={prop.titleLogo} />
         <div class={["content_login flex-center", prop.status]}>
           {prop.status === "platform" ? (
-            <img class="left" src={prop.loginMainImg} alt="" />
+            <div class={"left"}>
+              <img class="left_img" src={prop.loginMainImg} alt="" />
+            </div>
           ) : (
             <leftImg />
           )}
