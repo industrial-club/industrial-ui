@@ -241,6 +241,7 @@ const record = defineComponent({
               pagination.total = total;
               http();
             }}
+            pagination={pagination}
             v-slots={{
               bodyCell: ({ column, record, index }) => {
                 if (column.key === "feedingTime") {
