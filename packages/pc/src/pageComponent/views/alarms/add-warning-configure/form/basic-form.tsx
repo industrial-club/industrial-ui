@@ -122,7 +122,9 @@ const BasicForm = defineComponent({
       });
     };
     const handleClose = (removedTag: string) => {
-      const tags = basicForm.value.tagList.filter((tag) => tag !== removedTag);
+      const tags = basicForm.value.tagList.filter(
+        (tag: string) => tag !== removedTag
+      );
       basicForm.value.tagList = tags;
     };
     watch(
@@ -213,6 +215,7 @@ const BasicForm = defineComponent({
                   <span>
                     {basicForm.value.tagList.map((item, index) => (
                       <a-tag
+                        key={item}
                         closable
                         onClose={() => {
                           handleClose(item);
