@@ -6,4 +6,5 @@ test-*
 *.local
 lib
 mtip-*
+test-theme
 quick-start-cra
