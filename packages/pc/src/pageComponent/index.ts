@@ -1,4 +1,5 @@
 import About from "@/pageComponent/views/systemManager/about";
+import aboutNew from "@/pageComponent/views/systemManager/aboutNew";
 import UserManager from "@/pageComponent/views/systemManager/authManager/userManager";
 import RoleManager from "@/pageComponent/views/systemManager/authManager/RoleManager";
 import MenuManager from "@/pageComponent/views/systemManager/authManager/menuManager";
@@ -36,6 +37,7 @@ import pressureFiltrationHome from "@/pageComponent/views/pressureFiltration/pre
 
 export default [
   About,
+  aboutNew,
   UserManager,
   RoleManager,
   MenuManager,
