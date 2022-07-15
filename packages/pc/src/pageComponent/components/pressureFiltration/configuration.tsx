@@ -1,6 +1,7 @@
 import filterPressConfigurationApi, {
   listItem,
 } from "@/api/pressureFiltration/filterPressConfiguration";
+import { message } from "ant-design-vue";
 import { defineComponent, ref, PropType, watch } from "vue";
 
 interface formItem {
@@ -29,7 +30,10 @@ export default defineComponent({
         metricCode,
         value,
       });
-      console.log(res);
+      if (res.data === "ok") {
+        message.success("下发成功");
+        _ctx.emit("refresh");
+      }
     };
 
     // 组件类型判断
@@ -42,8 +46,7 @@ export default defineComponent({
             v-model={[val.value, "value"]}
             button-style="solid"
             onChange={(e) => {
-              // setPageParamValueSingle(instanceCode, metricCode, e.target.value);
-              console.log(e.target.value);
+              setPageParamValueSingle(instanceCode, metricCode, e.target.value);
             }}
           >
             {inputList?.map((item) => (
@@ -58,8 +61,7 @@ export default defineComponent({
           <a-select
             v-model={[val.value, "value"]}
             onChange={(e) => {
-              // setPageParamValueSingle(instanceCode, metricCode, e);
-              console.log(e);
+              setPageParamValueSingle(instanceCode, metricCode, e);
             }}
           >
             {inputList.map((item) => (
@@ -75,8 +77,7 @@ export default defineComponent({
             v-model={[val.value, "value"]}
             addon-after={inputList.unit}
             onBlur={(e) => {
-              // setPageParamValueSingle(instanceCode, metricCode, val.value);
-              console.log(val.value);
+              setPageParamValueSingle(instanceCode, metricCode, val.value);
             }}
           ></a-input-number>
         );
