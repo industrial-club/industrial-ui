@@ -10,7 +10,7 @@ const AboutNew = defineComponent({
       default:
         "美腾工业物联平台是基于工业物联网技术架构实现的工业智能管理一体化平台。可实现工业场景下智能采集、智能感知、智能预警、智能执行、智能分析、智能决策、专家系统的全覆盖智能化管理平台。该平台包含美腾工业数据管理平台与美腾工业AI智能算法平台子平台，可以实现工业大数据管理、大数据分析决策、深度学习、机器学习、模型训练等一系列AI智能管理能力。平台内置大量工业场景算法，可以支持常用工业场景AI智能识别处理。",
     },
-    // 软件版本
+    // 版本详情
     softwareList: {
       type: Array,
       default: () => [
@@ -18,7 +18,7 @@ const AboutNew = defineComponent({
         "数据库版本：TLS-DB-V 1.0.0.1",
       ],
     },
-
+    // 公司信息
     companyInfo: {
       type: Array,
       default: () => [

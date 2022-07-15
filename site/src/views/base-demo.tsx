@@ -18,7 +18,7 @@ const BaseDemo = defineComponent({
           manualUrl="http://www.baidu.com"
         ></inl-about> */}
         {/* ====== 关于系统 -新====== */}
-        <inl-about-new
+        {/* <inl-about-new
           summary="美腾工业物联平台是基于工业物联网技术架构实现的工业智能管理一体化平台。可实现工业场景下智能采集、智能感知、智能预警、智能执行、智能分析、智能决策、专家系统的全覆盖智能化管理平台。该平台包含美腾工业数据管理平台与美腾工业AI智能算法平台子平台，可以实现工业大数据管理、大数据分析决策、深度学习、机器学习、模型训练等一系列AI智能管理能力。平台内置大量工业场景算法，可以支持常用工业场景AI智能识别处理。"
           softwareList={[
             "软件版本：TLS-SW-V 1.0.0.1",
@@ -43,7 +43,7 @@ const BaseDemo = defineComponent({
               value: "www.tjmeiteng.com",
             },
           ]}
-        ></inl-about-new>
+        ></inl-about-new> */}
         {/* ====== 日志管理 ====== */}
         {/* <inl-log-manager></inl-log-manager> */}
         {/* ====== 参数管理 ====== */}
@@ -79,7 +79,7 @@ const BaseDemo = defineComponent({
           copyright="天津美腾科技股份有限公司 Tianjin Meiteng Technology Co.,Itd"
         ></inl-login-page> */}
         {/* 停送电列表 */}
-        {/* <inl-pss-list /> */}
+        <inl-pss-list />
       </div>
     );
   },

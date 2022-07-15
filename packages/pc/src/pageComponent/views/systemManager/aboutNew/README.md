@@ -17,21 +17,10 @@ export default defineComponent({
 
 ## 参数
 
-| 参数名称  | 类型                   | 默认值 | 作用                                      |
-| --------- | ---------------------- | ------ | ----------------------------------------- |
-| summary   | string                 |        | 产品简介                                  |
-| hardware  | IVersionDetail(见下方) |        | 硬件版本                                  |
-| software  | IVersionDetail(见下方) |        | 软件版本                                  |
-| database  | IVersionDetail(见下方) |        | 数据库版本                                |
-| manualUrl | String                 |        | 系统说明书下载链接 （不传不展示下载链接） |
+| 参数名称     | 类型   | 默认值 | 作用     |
+| ------------ | ------ | ------ | -------- |
+| summary      | string |        | 产品简介 |
+| softwareList | Array  |        | 版本详情 |
+| companyInfo  | Array  |        | 公司信息 |
 
-### IVersionDetail
 
-```typescript
-export interface IVersionDetail {
-  // 版本号
-  version: string | number;
-  // 版本概述
-  summary?: string;
-}
-```
