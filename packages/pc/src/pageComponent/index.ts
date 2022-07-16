@@ -34,6 +34,7 @@ import productionShiftReport from "@/pageComponent/views/pressureFiltration/prod
 import record from "@/pageComponent/views/pressureFiltration/record";
 import unloading from "@/pageComponent/views/pressureFiltration/unloading";
 import pressureFiltrationHome from "@/pageComponent/views/pressureFiltration/pressureFiltrationHome";
+import factoryManage from "@/pageComponent/views/thingModel/factoryManage";
 
 export default [
   About,
@@ -72,4 +73,5 @@ export default [
   record,
   unloading,
   pressureFiltrationHome,
+  factoryManage
 ];
