@@ -5,6 +5,7 @@ dist-ssr
 test-*
 *.local
 lib
+mtip-factory
 mtip-*
 test-theme
 quick-start-cra
