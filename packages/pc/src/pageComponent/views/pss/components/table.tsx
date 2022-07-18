@@ -69,7 +69,7 @@ export default defineComponent({
         }
         if (props.tab === "self") {
           getStartByMe();
-          const data = await getDone();
+          const data = await getStartByMe();
           return { data };
         }
       },
