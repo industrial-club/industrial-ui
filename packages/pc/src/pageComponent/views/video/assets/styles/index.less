@@ -1,0 +1,27 @@
+@import url('./const.less');
+@import url('./reset.less');
+@import url('./login.less');
+
+.flex {
+  display: flex;
+}
+
+each(range(12), {
+    .flex@{value} {
+      flex: @value;
+    }
+  }
+);
+
+.center {
+  text-align: center;
+}
+.hide {
+  display: none;
+}
+.ant-select {
+  width: 200px;
+}
+.btn {
+  cursor: pointer;
+}

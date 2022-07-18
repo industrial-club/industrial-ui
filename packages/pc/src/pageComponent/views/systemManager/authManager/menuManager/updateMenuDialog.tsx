@@ -9,8 +9,8 @@
 import { defineComponent, inject, ref, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/menuManager";
-import { IUrlObj } from "./index";
+import api from "@/api/auth/menuManager";
+import { IUrlObj, openMode } from "./index";
 
 import { Modal, message } from "ant-design-vue";
 import IconSelect from "@/pageComponent/components/IconSelect";
@@ -43,6 +43,7 @@ const UpdateMenuDialog = defineComponent({
       url: "",
       valid: true,
       icon: undefined,
+      mode: 0,
     });
 
     const handleCommit = async () => {
@@ -98,13 +99,37 @@ const UpdateMenuDialog = defineComponent({
               required
               rules={getRequiredRule("页面URL")}
             >
-              <a-input v-model={[form.value.url, "value"]}></a-input>
+              <a-input
+                v-model={[form.value.url, "value"]}
+                onChange={() => {
+                  if (
+                    form.value.url.startsWith("http") &&
+                    form.value.mode === 0
+                  ) {
+                    form.value.mode = 1;
+                  }
+                }}
+              ></a-input>
+            </a-form-item>
+            <a-form-item label="打开方式" name="openMode">
+              <a-select v-model={[form.value.mode, "value"]}>
+                {openMode.map((item) => (
+                  <a-select-option
+                    value={item.value}
+                    disabled={
+                      item.value === 0 && form.value.url.startsWith("http")
+                    }
+                  >
+                    {item.label}
+                  </a-select-option>
+                ))}
+              </a-select>
             </a-form-item>
             <a-form-item label="启用状态" name="valid">
               <a-switch v-model={[form.value.valid, "checked"]}></a-switch>
             </a-form-item>
             <a-form-item label="ICON" name="icon">
-              <IconSelect v-model={[form.value.icon, "value"]} />
+              <a-input v-model={[form.value.icon, "value"]}></a-input>
             </a-form-item>
           </a-form>
         </Modal>

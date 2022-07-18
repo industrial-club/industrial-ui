@@ -10,8 +10,8 @@ import useProxy from "@/pageComponent/hooks/useProxy";
 import useBus from "@/pageComponent/hooks/useBus";
 import { cloneDeep, omit } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/menuManager";
-import { IUrlObj } from "./index";
+import api from "@/api/auth/menuManager";
+import { IUrlObj, openMode } from "./index";
 
 import { message } from "ant-design-vue";
 import IconSelect from "@/pageComponent/components/IconSelect";
@@ -65,6 +65,10 @@ const MenuDetail = defineComponent({
     };
 
     return () => {
+      // 打开方式
+      const renderMode = (mode: number) =>
+        openMode.find((item) => item.value === mode)?.label;
+
       return (
         <div class="menu-detail">
           {props.node ? (
@@ -137,9 +141,38 @@ const MenuDetail = defineComponent({
                   rules={getRequiredRule("页面URL")}
                 >
                   {isEdit.value ? (
-                    <a-input v-model={[form.value.url, "value"]} />
+                    <a-input
+                      onChange={() => {
+                        if (
+                          form.value.url.startsWith("http") &&
+                          form.value.mode === 0
+                        ) {
+                          form.value.mode = 1;
+                        }
+                      }}
+                      v-model={[form.value.url, "value"]}
+                    />
                   ) : (
                     <span>{props.node.url}</span>
+                  )}
+                </a-form-item>
+                <a-form-item label="打开方式" name="mode">
+                  {isEdit.value ? (
+                    <a-select v-model={[form.value.mode, "value"]}>
+                      {openMode.map((item) => (
+                        <a-select-option
+                          value={item.value}
+                          disabled={
+                            item.value === 0 &&
+                            form.value.url?.startsWith("http")
+                          }
+                        >
+                          {item.label}
+                        </a-select-option>
+                      ))}
+                    </a-select>
+                  ) : (
+                    <span>{renderMode(props.node.mode)}</span>
                   )}
                 </a-form-item>
                 <a-form-item label="启用状态" name="valid">
@@ -149,11 +182,18 @@ const MenuDetail = defineComponent({
                     <span>{props.node.valid ? "启用" : "禁用"}</span>
                   )}
                 </a-form-item>
-                <a-form-item label="ICON" name="icon">
+                <a-form-item
+                  label="ICON"
+                  name="icon"
+                  extra="请输入iconfont中的名称"
+                >
                   {isEdit.value ? (
-                    <IconSelect v-model={[form.value.icon, "value"]} />
+                    <a-input v-model={[form.value.icon, "value"]}></a-input>
                   ) : (
-                    <Dynamicicon icon={props.node.icon} />
+                    <icon-font
+                      style={{ color: "#5c667d", fontSize: "20px" }}
+                      type={props.node.icon}
+                    ></icon-font>
                   )}
                 </a-form-item>
               </a-form>

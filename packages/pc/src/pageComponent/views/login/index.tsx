@@ -1,9 +1,9 @@
-import { Component, defineComponent, ref, PropType, provide } from "vue";
+import { Component, defineComponent, PropType, provide } from "vue";
 import { useRouter } from "vue-router";
-import { message } from "ant-design-vue";
 import utils from "@/utils";
 import { getInstance } from "@/api/axios";
-import { encodeStr } from "@/pageComponent/utils/base64";
+import { login } from "@/utils/publicUtil";
+import faceName from "@/api/faceName";
 import loginBox, { EventBySubmitParams } from "./box";
 import leftImg from "./leftImg";
 import topTitle from "./top-title";
@@ -16,8 +16,12 @@ const Login = defineComponent({
   components,
   props: {
     serverName: {
-      default: "comlite/v1/",
+      default: faceName.common,
       type: String,
+    },
+    isClould: {
+      default: false,
+      type: Boolean,
     },
     prefix: {
       default: "",
@@ -38,7 +42,7 @@ const Login = defineComponent({
       default: "天津美腾科技股份有限公司 Tianjin Meiteng Technology Co.,Itd",
     },
     projectName: {
-      default: "工业物联平台",
+      default: "系统登录",
     },
     bg: {
       default: "",
@@ -48,11 +52,9 @@ const Login = defineComponent({
   setup(prop) {
     const router = useRouter();
 
-    // 是否验证图片验证码
-    const imgVerifyStatus = ref<boolean>(false);
-
     // 将相关数据注入到所有子组件中
     provide("status", prop.status);
+    provide("isClould", prop.isClould);
     provide("corpLogo", prop.titleLogo);
     provide("ms", prop.ms);
     provide("productLogo", prop.loginMainImg);
@@ -71,26 +73,14 @@ const Login = defineComponent({
      * 登录动作
      */
 
-    // 弹出图形验证码
-    const Verifymode = () => {};
-
-    //
-
     const handleSubmit = async (e: EventBySubmitParams) => {
-      const { data } = await instance.post("auth/login", {
-        userName: e.username,
-        passWord: encodeStr(e.password),
+      const LoginFun = new login();
+      await LoginFun.getTokenByCode({
+        username: e.username,
+        password: e.password,
       });
-      if (!data) {
-        message.error("用户名或密码错误，请重试");
-      } else {
-        // 保存登录信息
-        const { sysUser, token } = data;
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("userinfo", JSON.stringify(sysUser));
-        message.success("登录成功");
-        router.push("/");
-      }
+
+      router.push("/");
     };
 
     return () => (
@@ -98,12 +88,15 @@ const Login = defineComponent({
         class="login"
         style={{
           background: `url(${prop.bg})`,
+          backgroundSize: "100% 100%",
         }}
       >
         <topTitle corpLogo={prop.titleLogo} />
         <div class={["content_login flex-center", prop.status]}>
           {prop.status === "platform" ? (
-            <img class="left" src={prop.loginMainImg} alt="" />
+            <div class={"left"}>
+              <img class="left_img" src={prop.loginMainImg} alt="" />
+            </div>
           ) : (
             <leftImg />
           )}

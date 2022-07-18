@@ -12,7 +12,7 @@ import useVModel from "@/pageComponent/hooks/useVModel";
 import { cloneDeep, omit } from "lodash";
 import { encodeStr } from "@/pageComponent/utils/base64";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/auth/userManager";
+import api from "@/api/auth/userManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";
@@ -54,27 +54,36 @@ const UpdateUserDialog = defineComponent({
       await nextTick();
       // 打开对话框时复制表单 新建用户时不用
       if (val) {
+        getEmployeeList();
         if (props.mode === "add") return;
         form.value = cloneDeep(props.record);
         // 转换角色列表
         form.value.roleIds = form.value.roleIds.split(",");
+        // 获取员工列表
       } else {
         // 清空表单
         formRef.value.resetFields();
+        for (const key in form.value) {
+          if (Array.isArray(form.value[key])) {
+            form.value[key] = [];
+          }
+        }
       }
     });
 
     // 获取员工列表
     const employeeList = ref([]);
-    api
-      .getEmployeeList(urlMap.employeeList)()
-      .then(({ data }) => (employeeList.value = data));
+    const getEmployeeList = async () => {
+      api
+        .getEmployeeList(urlMap.employeeList)()
+        .then(({ data }) => (employeeList.value = data));
+    };
 
     /* 对话框标题 */
     const modalTitle = computed(() => {
       if (props.mode === "add") return "新建用户";
       else if (props.mode === "edit") return "编辑用户";
-      return "查看用户";
+      return "用户详情";
     });
 
     /* 是否查看模式 */
@@ -153,7 +162,13 @@ const UpdateUserDialog = defineComponent({
                   name="userName"
                   label="用户名"
                   required
-                  rules={getRequiredRule("用户名")}
+                  rules={[
+                    getRequiredRule("用户名"),
+                    {
+                      pattern: /^[0-9a-zA-Z]*$/g,
+                      message: "只能数字数字和字母",
+                    },
+                  ]}
                 >
                   {isView.value ? (
                     <span>{form.value.userName}</span>
@@ -162,9 +177,12 @@ const UpdateUserDialog = defineComponent({
                   )}
                 </a-form-item>
                 <a-form-item
-                  name="employeeName"
+                  name="employeeId"
                   label="员工姓名"
-                  help="中英文均可，最长14个英文或者7个汉字"
+                  help={
+                    props.mode === "add" &&
+                    "中英文均可，最长14个英文或者7个汉字"
+                  }
                 >
                   {isView.value ? (
                     <a-button type="link" onClick={handleProfileClick}>
@@ -197,6 +215,7 @@ const UpdateUserDialog = defineComponent({
                       ]}
                     >
                       <a-input-password
+                        placeholder="输入密码"
                         v-model={[form.value.passWord, "value"]}
                       ></a-input-password>
                     </a-form-item>
@@ -216,7 +235,7 @@ const UpdateUserDialog = defineComponent({
                   </>
                 ) : (
                   // 查看和编辑用户 展示重置密码
-                  <a-form-item name="passWord" label="密码重置">
+                  <a-form-item required label="密码">
                     <span>●●●●●●●●</span>
                     {props.mode === "edit" && (
                       <a-button type="link" onClick={handleResetPassword}>

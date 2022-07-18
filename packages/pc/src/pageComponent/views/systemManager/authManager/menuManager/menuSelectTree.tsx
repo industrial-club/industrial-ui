@@ -9,7 +9,7 @@ import { defineComponent, onMounted, ref, inject } from "vue";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import useBus from "@/pageComponent/hooks/useBus";
 import { omit } from "lodash";
-import api from "@/pageComponent/api/auth/menuManager";
+import api from "@/api/auth/menuManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";
@@ -61,7 +61,7 @@ const MenuSelectTree = defineComponent({
     // 复制节点
     const handleCopy = async (node: any) => {
       await api.insertMenuRecord(urlMap.add)(
-        omit(node, "id", "sort", "subList")
+        omit(node, "id", "sort", "subList", "code")
       );
       message.success("复制成功");
       refresh();

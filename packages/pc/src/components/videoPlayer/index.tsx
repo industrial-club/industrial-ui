@@ -1,16 +1,14 @@
 import { defineComponent, onMounted, onUnmounted, PropType, watch } from "vue";
 import utils from "@/utils";
-import { getByUuid, videoInfo } from "./util/byUuid";
+import api from "@/api/video";
+import { videoInfo } from "./util/interface";
 import { WebRtcMt } from "./util/video";
 
 const props = {
-  // 视频信息
+  // 视频信息|视频源uuid
   camera: {
-    type: Object as PropType<videoInfo>,
+    type: [Object, String] as PropType<videoInfo | String>,
   },
-
-  // 视频uuid
-  cameraUuid: String,
 };
 
 const timer = new Date().getTime();
@@ -20,6 +18,13 @@ const VideoPlayer = defineComponent({
   setup(_prop, _context) {
     // 视频实例
     let play: WebRtcMt | null;
+
+    // 停止播放
+    const stopPlay = () => {
+      if (play) {
+        play.stopPlay(`videoPlayer${timer}`);
+      }
+    };
 
     // 初始化视频
     const init = (camera: videoInfo) => {
@@ -43,12 +48,15 @@ const VideoPlayer = defineComponent({
       });
     };
 
-    // 播放 uuid 变化, 获取播放信息, 初始化视频
+    // 播放信息变化初始化视频
     watch(
-      () => _prop.cameraUuid,
+      () => _prop.camera,
       async (e) => {
-        if (e) {
-          const res = await getByUuid(e);
+        stopPlay();
+        if (e && typeof e === "object") {
+          init(e as videoInfo);
+        } else if (e && typeof e === "string") {
+          const res = await api.getCameraByUuid(e as string);
           if (res.data) {
             init(res.data);
           }
@@ -56,30 +64,9 @@ const VideoPlayer = defineComponent({
       },
       {
         immediate: true,
-      }
-    );
-
-    // 播放信息变化初始化视频
-    watch(
-      () => _prop.camera,
-      (e) => {
-        if (e) {
-          stopPlay();
-          init(e);
-        }
-      },
-      {
-        immediate: true,
         deep: true,
       }
     );
-
-    // 停止播放
-    const stopPlay = () => {
-      if (play) {
-        play.stopPlay(`videoPlayer${timer}`);
-      }
-    };
 
     // 页面销毁时停止播放视频流
     onUnmounted(() => {

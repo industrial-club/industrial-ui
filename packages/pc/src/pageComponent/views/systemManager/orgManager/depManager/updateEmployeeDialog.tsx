@@ -19,7 +19,7 @@ import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import dayjs from "dayjs";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
-import api from "@/pageComponent/api/org/depManager";
+import api from "@/api/org/depManager";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";
@@ -62,6 +62,11 @@ const UpdateEmployeeDialog = defineComponent({
     watch(isVisible, async (val) => {
       if (!val) {
         formRef.value.resetFields();
+        for (const key in form.value) {
+          if (Array.isArray(form.value[key])) {
+            form.value[key] = [];
+          }
+        }
         return;
       }
       await nextTick();
@@ -262,7 +267,7 @@ const UpdateEmployeeDialog = defineComponent({
                         ) : (
                           <SearchSelect
                             {...{ allowClear: true }}
-                            getUrl={urlMap.empSelect}
+                            getUrl={urlMap.empSelect ?? "/employee/all/summary"}
                             extParams={{
                               departmentId: props.record?.depId ?? props.depId,
                               ruleType: 0,
@@ -284,7 +289,7 @@ const UpdateEmployeeDialog = defineComponent({
                         ) : (
                           <SearchSelect
                             {...{ mode: "multiple" }}
-                            getUrl={urlMap.postSelect}
+                            getUrl={urlMap.postSelect ?? "/jobPost/all/summary"}
                             extParams={{
                               depId: props.record?.depId ?? props.depId,
                             }}

@@ -14,7 +14,7 @@ import { transformMenuTree } from "@/pageComponent/utils/transform";
 import { IUrlObj } from "./index";
 
 import { Modal, message } from "ant-design-vue";
-import api from "@/pageComponent/api/auth/roleManager";
+import api from "@/api/auth/roleManager";
 
 const UpdateRoleDialog = defineComponent({
   props: {
@@ -102,6 +102,11 @@ const UpdateRoleDialog = defineComponent({
 
     const handleCommit = async () => {
       await formRef.value.validate();
+      checkedPermissionList.value = checkedPermissionList.value.filter(
+        (item: string) => {
+          return !`${item}`.startsWith("sys");
+        }
+      );
       const res = {
         ...form.value,
         checkedMenuIds: checkedPermissionList.value,

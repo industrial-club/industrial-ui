@@ -9,6 +9,7 @@ import babel from "@rollup/plugin-babel";
 const extensions = [".ts", ".js", ".tsx", ".json", ".ttf", ".woff", ".woff2"];
 const globals = {
   vue: "Vue",
+  vuex: "vuex",
 };
 
 export default defineConfig({
@@ -28,9 +29,9 @@ export default defineConfig({
     babel({ babelHelpers: "bundled", extensions }),
     postcss({
       plugins: [cssnano],
-      extract: "style.css", // 输出路径
+      extract: `style.css`,
     }),
   ],
   acornInjectPlugins: [jsx()],
-  external: ["vue"],
+  external: ["vue", "vuex"],
 });

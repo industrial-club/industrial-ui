@@ -1,0 +1,122 @@
+.event {
+  background: white;
+  margin: 20px 20px 20px 10px;
+  padding: 20px;
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    line-height: 32px;
+    .reset {
+      margin-left: 10px;
+    }
+    .label {
+      text-align: end;
+      margin-right: 16px;
+      font-size: 14px;
+      color: #31363c;
+      width: 112px;
+    }
+    .param {
+      width: 200px;
+    }
+    .btns {
+      text-align: end;
+    }
+  }
+  .algorithmTypeTable {
+    .tableOpera {
+      font-weight: 500;
+      color: #3e7eff;
+      font-size: 14px;
+      a {
+        margin-right: 10px;
+        cursor: pointer;
+      }
+    }
+    .level {
+      width: 20px;
+      height: 20px;
+      border-radius: 20px;
+      border: 1px solid grey;
+      margin-right: 5px;
+    }
+    .levelOne {
+      background: yellow;
+    }
+    .levelTwo {
+      background: plum;
+    }
+    .levelThree {
+      background: cornflowerblue;
+    }
+  }
+}
+.eventModal {
+  .ant-form-item-label {
+    width: 80px !important;
+  }
+  .ant-form-item {
+    margin-bottom: 10px;
+  }
+  .addCamera {
+    margin-left: 10px;
+    .label {
+      align-items: center;
+      max-width: 100%;
+      color: #333333;
+      font-size: 1rem;
+    }
+  }
+}
+.algorithmTypeModal {
+  .ant-form-item-label {
+    width: 80px !important;
+  }
+}
+
+.transfer {
+  display: flex;
+  overflow: hidden;
+  .transfer_box {
+    padding: 10px;
+    border: 1px solid #c9cfd8;
+    border-radius: 2px;
+    flex: 0.4;
+    display: flex;
+    flex-direction: column;
+    z-index: 99;
+    .transfer_title {
+      display: flex;
+      justify-content: space-between;
+      .name {
+        font-weight: 600;
+        color: #31363c;
+      }
+    }
+    .tree {
+      overflow-x: hidden;
+      overflow-y: auto;
+      min-height: 100px;
+      max-height: 160px;
+    }
+    .checkList {
+      margin-top: 10px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      min-height: 100px;
+      max-height: 180px;
+    }
+  }
+  .transfer_middle {
+    flex: 0.2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    // flex-direction: column;
+    padding: 80px 10px;
+    button {
+      flex: 1;
+    }
+  }
+}

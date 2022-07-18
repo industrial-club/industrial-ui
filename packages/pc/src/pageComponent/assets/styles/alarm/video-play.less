@@ -1,0 +1,22 @@
+.video-play {
+  .container {
+    position: relative;
+    padding: 0 30px;
+    .btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 0;
+      &:hover {
+        color: #4279f6;
+      }
+      &.btn-prev {
+        left: 0;
+      }
+      &.btn-next {
+        right: 0;
+      }
+    }
+  }
+}

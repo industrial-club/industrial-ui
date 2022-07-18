@@ -3,6 +3,7 @@ import "./styles/index.less";
 import { version } from "../package.json";
 import components from "./components";
 import pageComponents from "@/pageComponent";
+import utils from "@/utils/publicUtil";
 
 const comps = [...pageComponents, ...components];
 export default {
@@ -11,5 +12,6 @@ export default {
       app.use(i);
     }
   },
+  utils,
   version,
 };

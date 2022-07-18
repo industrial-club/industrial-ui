@@ -7,7 +7,7 @@
  */
 import { computed, defineComponent, inject, ref, unref, watch } from "vue";
 import useProxy from "@/pageComponent/hooks/useProxy";
-import { api } from "@/pageComponent/api/param";
+import { api } from "@/api/param";
 import { IUrlObj } from "./index";
 
 import ProFormItem from "@/pageComponent/components/ProFormItem";
@@ -15,7 +15,11 @@ import ProFormItem from "@/pageComponent/components/ProFormItem";
 const DynamicForm = defineComponent({
   props: {
     id: {
-      type: Number,
+      type: String,
+      required: true,
+    },
+    code: {
+      type: String,
       required: true,
     },
   },
@@ -28,7 +32,49 @@ const DynamicForm = defineComponent({
     const formDescList = ref([]);
     const getFormDescList = async () => {
       const { data } = await api.getParamDefineList(urmMap.define)(props.id);
-      formDescList.value = data.paramDefineValueVoList;
+      formDescList.value = data.paramDefineValueVoList.map((item: any) => {
+        if (!item.paramDefineValue || !("value" in item.paramDefineValue)) {
+          item.paramDefineValue = { value: null };
+        }
+
+        // 给paramDefineValue加上defineId 和 defineCode
+        item.paramDefineValue = {
+          ...item.paramDefineValue,
+          defineId: item.paramDefine.id,
+          defineCode: item.paramDefine.code,
+        };
+
+        if (
+          item.paramDefine.type === "float" ||
+          item.paramDefine.type === "int"
+        ) {
+          item.paramDefineValue.value = item.paramDefineValue.value
+            ? Number(item.paramDefineValue.value)
+            : 0;
+        }
+
+        if (item.paramDefine.type === "boolean") {
+          item.paramDefineValue.value = item.paramDefineValue.value ?? "false";
+        }
+
+        if (item.paramDefine.type === "select") {
+          if (item.paramDefine.listDataType === "json") {
+            item.paramDefine.listDataValue = JSON.parse(
+              item.paramDefine.listDataValue
+            );
+
+            // 如果有value 赋值value 没有value 取选项中default为1的value
+            const selected =
+              item?.paramDefineValue?.value ??
+              item.paramDefine.listDataValue.find((item: any) => {
+                return item.default === "1";
+              })?.value;
+            item.paramDefineValue.value = selected;
+          }
+        }
+
+        return item;
+      });
     };
     getFormDescList();
 
@@ -40,7 +86,7 @@ const DynamicForm = defineComponent({
       valueDefineMap.value = new Map();
       // 设置表单的初始值
       form.value = val.reduce((prev: any, curr: any) => {
-        prev[curr.paramDefine.code] = curr.paramDefineValue.value;
+        prev[curr.paramDefine.code] = curr.paramDefineValue?.value;
         valueDefineMap.value.set(curr.paramDefine.code, curr.paramDefineValue);
         return prev;
       }, {});
@@ -56,7 +102,8 @@ const DynamicForm = defineComponent({
       const res: any[] = [];
       for (const key in form.value) {
         res.push({
-          key,
+          // 拼接code
+          key: props.code ? `${props.code}.${key}` : key,
           value: form.value[key],
           valueDefine: valueDefineMap.value.get(key),
         });

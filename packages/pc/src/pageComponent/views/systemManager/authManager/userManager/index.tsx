@@ -1,16 +1,10 @@
-import {
-  defineComponent,
-  h,
-  resolveComponent,
-  ref,
-  PropType,
-  provide,
-} from "vue";
+import { defineComponent, ref, PropType, provide } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api, { setInstance } from "@/pageComponent/api/auth/userManager";
+import api, { setInstance } from "@/api/auth/userManager";
 import utils from "@/utils";
 
 import { Modal, message } from "ant-design-vue";
+import { SearchOutlined, PlusOutlined } from "@ant-design/icons-vue";
 import UpdateUserDialog from "./updateUserDialog";
 import UserProfileDialog from "./userProfileDialog";
 
@@ -94,6 +88,10 @@ const UserManager = defineComponent({
   },
   setup(props) {
     setInstance({ prefix: props.prefix, serverName: props.serverName });
+    provide("urlPrefix", {
+      prefix: props.prefix,
+      serverName: props.serverName,
+    });
 
     const urlMap = { ...props.url };
     provide("urlMap", urlMap);
@@ -103,16 +101,24 @@ const UserManager = defineComponent({
     });
 
     /* 调用hook 初始化查询一次 */
-    const { currPage, handlePageChange, isLoading, refresh, tableList, total } =
-      useTableList(
-        () =>
-          api.getUserList(urlMap.list)({
-            keyWord: formState.value.userName,
-            pageNum: currPage.value,
-            pageSize: 10,
-          }),
-        "userJsons"
-      );
+    const {
+      currPage,
+      handlePageChange,
+      isLoading,
+      refresh,
+      tableList,
+      total,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(
+      () =>
+        api.getUserList(urlMap.list)({
+          keyWord: formState.value.userName,
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+        }),
+      "userJsons"
+    );
     refresh();
 
     const handleSubmit = () => {
@@ -196,7 +202,7 @@ const UserManager = defineComponent({
               type="primary"
               html-type="submit"
               v-slots={{
-                icon: () => h(resolveComponent("SearchOutlined")),
+                icon: () => <SearchOutlined />,
               }}
             >
               搜索
@@ -207,7 +213,7 @@ const UserManager = defineComponent({
             <a-button
               type="primary"
               v-slots={{
-                icon: () => h(resolveComponent("PlusOutlined")),
+                icon: () => <PlusOutlined />,
               }}
               onClick={handleAddClick}
             >
@@ -222,10 +228,14 @@ const UserManager = defineComponent({
           rowKey="userId"
           loading={isLoading.value}
           pagination={{
-            pageSize: 10,
+            pageSize: pageSize.value,
             current: currPage.value,
-            "onUpdate:current": handlePageChange,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
             total: total.value,
+            "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
           }}
           v-slots={{
             employeeName: ({ record }: any) => {

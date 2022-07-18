@@ -1,0 +1,100 @@
+{
+  "id": "3350590",
+  "name": "视频监控",
+  "font_family": "iconfont",
+  "css_prefix_text": "",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "29581223",
+      "name": "icon_系统类_设置_设置_2",
+      "font_class": "icon_xitonglei_shezhi_shezhi_2",
+      "unicode": "e6a2",
+      "unicode_decimal": 59042
+    },
+    {
+      "icon_id": "29581196",
+      "name": "icon_系统类_视频_视频_3",
+      "font_class": "icon_xitonglei_shipin_shipin_3",
+      "unicode": "e6a1",
+      "unicode_decimal": 59041
+    },
+    {
+      "icon_id": "29581191",
+      "name": "icon_系统类_视频_相机_1",
+      "font_class": "icon_xitonglei_shipin_xiangji_1",
+      "unicode": "e6a0",
+      "unicode_decimal": 59040
+    },
+    {
+      "icon_id": "29581176",
+      "name": "icon_系统类_时间",
+      "font_class": "icon_xitonglei_shijian",
+      "unicode": "e69f",
+      "unicode_decimal": 59039
+    },
+    {
+      "icon_id": "29303837",
+      "name": "视频联动",
+      "font_class": "icon_yewulei_shipinjiankong_shipinliandong",
+      "unicode": "e697",
+      "unicode_decimal": 59031
+    },
+    {
+      "icon_id": "29303779",
+      "name": "事件管理",
+      "font_class": "icon_yewulei_shipinjiankong_shijianguanli",
+      "unicode": "e696",
+      "unicode_decimal": 59030
+    },
+    {
+      "icon_id": "29212435",
+      "name": "关闭面性",
+      "font_class": "icon_yewulei_shipinjiankong_guanbimianxing",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "29212436",
+      "name": "码流",
+      "font_class": "icon_yewulei_shipinjiankong_maliu",
+      "unicode": "e692",
+      "unicode_decimal": 59026
+    },
+    {
+      "icon_id": "29212437",
+      "name": "录像",
+      "font_class": "icon_yewulei_shipinjiankong_luxiang",
+      "unicode": "e693",
+      "unicode_decimal": 59027
+    },
+    {
+      "icon_id": "29212438",
+      "name": "截屏",
+      "font_class": "icon_yewulei_shipinjiankong_jieping",
+      "unicode": "e694",
+      "unicode_decimal": 59028
+    },
+    {
+      "icon_id": "29212439",
+      "name": "全屏面性",
+      "font_class": "icon_yewulei_shipinjiankong_quanpingmianxing",
+      "unicode": "e695",
+      "unicode_decimal": 59029
+    },
+    {
+      "icon_id": "29212189",
+      "name": "分割方式",
+      "font_class": "icon_yewulei_shipinjiankong_fengefangshi",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
+      "icon_id": "29212190",
+      "name": "视频轮巡",
+      "font_class": "icon_yewulei_shipinjiankong_shipinlunxun",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    }
+  ]
+}

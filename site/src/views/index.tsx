@@ -4,24 +4,34 @@ import menuDemo from "./menu";
 import formDemo from "./form";
 import videoDemo from "./video";
 import baseDemo from "./base-demo";
+import alarmDemo from "./alarm-demo";
+import systemSetting from "./ststemSetting-demo";
+import factoryDemo from "./factory";
 
 export default defineComponent({
-  setup() {
-    return () => (
-      <div style={{ backgroundColor: "#fff", height: "100%" }}>
-        {/* <buttonDemo></buttonDemo>
+	setup() {
+		return () => (
+			<div style={{ backgroundColor: "#fff", height: "100%" }}>
+				{/* <buttonDemo></buttonDemo>
         <menuDemo></menuDemo>
         <formDemo></formDemo> */}
-        {/* <videoDemo></videoDemo> */}
-        <baseDemo></baseDemo>
-      </div>
-    );
-  },
-  components: {
-    buttonDemo,
-    menuDemo,
-    formDemo,
-    videoDemo,
-    baseDemo,
-  },
+				{/* <videoDemo></videoDemo> */}
+				{/* <baseDemo></baseDemo> */}
+				{/* <alarm-demo></alarm-demo> */}
+
+				{/* <systemSetting></systemSetting> */}
+				<factoryDemo />
+			</div>
+		);
+	},
+	components: {
+		buttonDemo,
+		menuDemo,
+		formDemo,
+		videoDemo,
+		baseDemo,
+		alarmDemo,
+		systemSetting,
+    factoryDemo
+	},
 });

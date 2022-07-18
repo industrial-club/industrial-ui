@@ -9,7 +9,7 @@ import { defineComponent, PropType, provide, ref, watch } from "vue";
 import useBus from "@/pageComponent/hooks/useBus";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
 import { isEmpty } from "lodash";
-import api, { setInstance } from "@/pageComponent/api/org/depManager";
+import api, { setInstance } from "@/api/org/depManager";
 import utils from "@/utils";
 
 import EmployeeTable from "./employeeTable";
@@ -58,11 +58,23 @@ const DepManager = defineComponent({
     serverName: {
       type: String,
     },
+    dividerGap: {
+      type: Number,
+      default: 24,
+    },
+    dividerColor: {
+      type: String,
+      default: "#EFF2F6",
+    },
   },
   setup(prop, context) {
     setInstance({ prefix: prop.prefix, serverName: prop.serverName });
     const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
+    provide("urlPrefix", {
+      prefix: prop.prefix,
+      serverName: prop.serverName,
+    });
 
     const bus = useBus("system");
 
@@ -96,7 +108,13 @@ const DepManager = defineComponent({
         <div class="left">
           <DepTree onSelect={handleSelectDep} />
         </div>
-        <div class="divider"></div>
+        <div
+          class="divider"
+          style={{
+            margin: `${-prop.dividerGap}px 20px ${-prop.dividerGap}px 0`,
+            background: prop.dividerColor,
+          }}
+        ></div>
         <div class="right">
           {/* 基本信息 */}
           <div class="basic-info">

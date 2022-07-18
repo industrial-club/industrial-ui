@@ -1,6 +1,7 @@
 import { defineComponent, reactive, ref, PropType, inject } from "vue";
 import { Form, message } from "ant-design-vue";
 import { getInstance } from "@/api/axios";
+import faceName from "@/api/faceName";
 
 type LoginType = 1 | 2;
 
@@ -19,7 +20,7 @@ const formItem = Form.Item;
 // props
 const props = {
   serverName: {
-    default: "comlite/v1/",
+    default: faceName.common,
     type: String,
   },
   prefix: {
@@ -66,6 +67,7 @@ export default defineComponent({
     });
     const serverName = inject<string>("serverName");
     const prefix = inject<string>("prefix");
+    const isClould = inject<string>("isClould");
     const instance = getInstance({
       serverName,
       prefix,
@@ -96,7 +98,16 @@ export default defineComponent({
     });
     const hkVal = ref<number>(0); // 滑块值
     const getImg = async () => {
-      const res = await instance.get("auth/code/get");
+      let res;
+      try {
+        res = await instance.get("auth/code/get");
+      } catch (error) {
+        message.error("服务端错误，请联系管理员处理.");
+        loginspinning.value = false;
+        spinning.value = false;
+        return;
+      }
+
       if (res.data.backImage) {
         imgSrc.value = `data:image/png;base64, ${res.data.backImage}`;
         slideImage.value = `data:image/png;base64, ${res.data.slideImage}`;
@@ -113,15 +124,26 @@ export default defineComponent({
     const checkImg = async () => {
       spinning.value = true;
       spinningText.value = "正在验证...";
-      const res = await instance.post("auth/code/check", {
-        imageToken,
-        sliderTrack: [
-          {
-            x: slideImagePosition.value.left.replace("px", ""),
-            y: slideImagePosition.value.top.replace("px", ""),
-          },
-        ],
-      });
+      let res;
+      try {
+        res = await instance.post("auth/code/check", {
+          imageToken,
+          sliderTrack: [
+            {
+              x: slideImagePosition.value.left.replace("px", ""),
+              y: slideImagePosition.value.top.replace("px", ""),
+            },
+          ],
+        });
+      } catch (error) {
+        slideImagePosition.value.left = "0px";
+        hkVal.value = 0;
+        spinning.value = true;
+        spinningText.value = "正在更新图片验证...";
+        message.error("服务端错误，请联系管理员处理.");
+        return;
+      }
+
       spinning.value = false;
       if (res && res.data === true) {
         toSunmit();
@@ -143,7 +165,7 @@ export default defineComponent({
           class="login_slider"
           closable={false}
           footer={null}
-          width="460px"
+          width="480px"
           v-models={[[visible.value, "visible"]]}
         >
           <a-spin tip={spinningText.value} spinning={spinning.value}>
@@ -215,8 +237,12 @@ export default defineComponent({
     // clicl submitBtn
     const loginspinning = ref<boolean>(false);
     const subminBtnClick = () => {
-      loginspinning.value = true;
-      getImg();
+      if (isClould) {
+        loginspinning.value = true;
+        getImg();
+      } else {
+        toSunmit();
+      }
     };
     const renderForm = () => {
       return (
@@ -247,27 +273,32 @@ export default defineComponent({
     const renderTitleBox = () => {
       return (
         <div class="titleBox flex-center">
-          <img src={platformLogo} alt="" />
-          <div class="title">{systemTitle}</div>
+          {status === "system" ? (
+            <img src={platformLogo} alt="" />
+          ) : (
+            <div class="title">{systemTitle}</div>
+          )}
         </div>
       );
     };
 
     return () => (
-      <a-spin tip="登录中。。。" spinning={loginspinning.value}>
-        <div class="login_box">
-          {renderTitleBox()}
-          {renderForm()}
-          {imgModel()}
-          <div style={{ textAlign: "center", margin: "2rem 0" }}>
-            {status === "system" ? (
-              <img src={ms} style={{ width: "232px" }} />
-            ) : (
-              ""
-            )}
+      <div class={"login_center_box"}>
+        <a-spin tip="登录中。。。" spinning={loginspinning.value}>
+          <div class="login_box">
+            {renderTitleBox()}
+            {renderForm()}
+            {imgModel()}
+            <div style={{ textAlign: "center", margin: "2rem 0" }}>
+              {status === "system" ? (
+                <img src={ms} style={{ width: "232px" }} />
+              ) : (
+                ""
+              )}
+            </div>
           </div>
-        </div>
-      </a-spin>
+        </a-spin>
+      </div>
     );
   },
 });

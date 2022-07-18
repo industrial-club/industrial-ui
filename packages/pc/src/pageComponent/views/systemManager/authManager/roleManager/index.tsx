@@ -1,6 +1,6 @@
 import { defineComponent, PropType, provide, ref } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
-import api, { setInstance } from "@/pageComponent/api/auth/roleManager";
+import api, { setInstance } from "@/api/auth/roleManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";
@@ -52,6 +52,7 @@ const columns = [
     title: "操作",
     key: "operaton",
     slots: { customRender: "operation" },
+    width: 200,
   },
 ];
 
@@ -81,16 +82,24 @@ const RoleManager = defineComponent({
       keyword: "",
     });
 
-    const { isLoading, refresh, tableList, total, currPage, handlePageChange } =
-      useTableList(
-        () =>
-          api.getRoleListByPager(urlMap.list)({
-            keyword: filter.value.keyword,
-            pageNum: currPage.value,
-            pageSize: 10,
-          }),
-        "roleList"
-      );
+    const {
+      isLoading,
+      refresh,
+      tableList,
+      total,
+      currPage,
+      handlePageChange,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(
+      () =>
+        api.getRoleListByPager(urlMap.list)({
+          keyword: filter.value.keyword,
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+        }),
+      "roleList"
+    );
     refresh();
 
     /* 控制启用 */
@@ -185,9 +194,13 @@ const RoleManager = defineComponent({
 
         <a-table
           pagination={{
-            pageSize: 10,
+            pageSize: pageSize.value,
             current: currPage.value,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
             "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
             total: total.value,
           }}
           loading={isLoading.value}

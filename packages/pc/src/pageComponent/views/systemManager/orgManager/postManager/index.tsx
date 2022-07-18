@@ -1,7 +1,7 @@
 import { defineComponent, PropType, provide, ref } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
-import api, { setInstance } from "@/pageComponent/api/org/postManager";
+import api, { setInstance } from "@/api/org/postManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";
@@ -82,16 +82,24 @@ const PostManager = defineComponent({
       keyWord: "",
     });
 
-    const { currPage, total, handlePageChange, isLoading, refresh, tableList } =
-      useTableList(
-        () =>
-          api.getPostList(urlMap.list)({
-            pageNum: currPage.value,
-            pageSize: 10,
-            keyword: form.value.keyWord,
-          }),
-        "jobPostList"
-      );
+    const {
+      currPage,
+      total,
+      handlePageChange,
+      isLoading,
+      refresh,
+      tableList,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(
+      () =>
+        api.getPostList(urlMap.list)({
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+          keyword: form.value.keyWord,
+        }),
+      "jobPostList"
+    );
     refresh();
 
     /* 查看 */
@@ -158,7 +166,16 @@ const PostManager = defineComponent({
           loading={isLoading.value}
           dataSource={tableList.value}
           columns={column}
-          pagination={{ total: total.value, onChange: handlePageChange }}
+          pagination={{
+            pageSize: pageSize.value,
+            current: currPage.value,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
+            "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
+            total: total.value,
+          }}
           v-slots={{
             valid: ({ record }: any) => {
               return (

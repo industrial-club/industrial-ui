@@ -1,7 +1,7 @@
 import { defineComponent, ref, provide, PropType } from "vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
-import api, { setInstance } from "@/pageComponent/api/org/teamManager";
+import api, { setInstance } from "@/api/org/teamManager";
 import utils from "@/utils";
 
 import { message, Modal } from "ant-design-vue";
@@ -85,21 +85,33 @@ const TeamManager = defineComponent({
     setInstance({ prefix: prop.prefix, serverName: prop.serverName });
     const urlMap = { ...prop.url };
     provide("urlMap", urlMap);
+    provide("urlPrefix", {
+      prefix: prop.prefix,
+      serverName: prop.serverName,
+    });
 
     const form = ref({
       keyWord: "",
     });
 
-    const { currPage, total, handlePageChange, isLoading, refresh, tableList } =
-      useTableList(
-        () =>
-          api.getTeamListByPage(urlMap.list)({
-            pageNum: currPage.value,
-            pageSize: 10,
-            keyword: form.value.keyWord,
-          }),
-        "workgroupList"
-      );
+    const {
+      currPage,
+      total,
+      handlePageChange,
+      isLoading,
+      refresh,
+      tableList,
+      pageSize,
+      hanldePageSizeChange,
+    } = useTableList(
+      () =>
+        api.getTeamListByPage(urlMap.list)({
+          pageNum: currPage.value,
+          pageSize: pageSize.value,
+          keyword: form.value.keyWord,
+        }),
+      "workgroupList"
+    );
     refresh();
 
     /* 查看 */
@@ -161,7 +173,16 @@ const TeamManager = defineComponent({
           loading={isLoading.value}
           dataSource={tableList.value}
           columns={column}
-          pagination={{ total: total.value, onChange: handlePageChange }}
+          pagination={{
+            pageSize: pageSize.value,
+            current: currPage.value,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total: number) => `共${total}条`,
+            total: total.value,
+            "onUpdate:current": handlePageChange,
+            "onUpdate:pageSize": hanldePageSizeChange,
+          }}
           v-slots={{
             valid: ({ record }: any) => {
               return (

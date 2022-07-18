@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-03-31 13:05:01
  */
 
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { debounce } from "lodash";
 
 /**
@@ -16,7 +16,8 @@ import { debounce } from "lodash";
  */
 export default function useTableList(
   getData: () => Promise<any>,
-  listProp?: string
+  listProp?: string,
+  totalName = "totalCount"
 ) {
   const tableList = ref([]);
   const isLoading = ref(false);
@@ -30,7 +31,7 @@ export default function useTableList(
       const { data } = await getData();
       if (listProp) {
         tableList.value = data[listProp];
-        total.value = data.totalCount;
+        total.value = data[totalName];
       } else {
         tableList.value = data;
       }
@@ -45,13 +46,37 @@ export default function useTableList(
     refresh();
   };
 
+  const pageSize = ref(10);
+  const hanldePageSizeChange = (size: number) => {
+    currPage.value = 1;
+    pageSize.value = size;
+    refresh();
+  };
+
+  const pagination = reactive({
+    current: currPage,
+    pageSize,
+    total,
+    showSizeChanger: true,
+    showQuickJumper: true,
+    showTotal: (total: number) => `共 ${total} 条`,
+    "onUpdate:current": handlePageChange,
+    "onUpdate:pageSize": hanldePageSizeChange,
+  });
+
   return {
     isLoading,
     tableList,
 
     currPage,
     handlePageChange,
+
+    pageSize,
+    hanldePageSizeChange,
+
     total,
     refresh,
+
+    pagination,
   };
 }
