@@ -7,15 +7,25 @@
   }
   .manufactorManager {
     .tree_data {
-      width: 300px;
+      width: 260px;
       flex-shrink: 0;
       background-color: #fff;
-      padding: 20px;
+      padding-right:20px;
+      position:relative;
+      &:after{
+        content:'';
+        display:block;
+        width:1px;
+        position:absolute;
+        right:0;
+        top:-24px;
+        bottom:-24px;
+        background:#E7E7E7;
+      }
     }
     .info_con {
       flex-grow: 1;
       background-color: #fff;
-      padding: 20px;
       margin-left: 20px;
     }
   }
