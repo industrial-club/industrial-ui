@@ -38,7 +38,7 @@ import {
   HolderOutlined,
 } from '@ant-design/icons-vue';
 import useTreeSearch from '@/pageComponent/hooks/treeSearch';
-import { setInstance } from '@/api/factory';
+import { setInstance ,setInstance2} from '@/api/factory';
 
 export interface IUrlObj {
   getList: string;
@@ -55,6 +55,7 @@ export interface IUrlObj {
   compareConditionFactory: string;
   compareConditionBrand: string;
   compareConditionModel: string;
+  userInfo: string;
 }
 interface InfoState {
   name: string;
@@ -137,9 +138,13 @@ const FactoryManage = defineComponent({
     serverName: {
       type: String,
     },
+    serverUserName: {
+      type: String,
+    },
   },
   setup(props) {
     setInstance({ prefix: props.prefix, serverName: props.serverName });
+    setInstance2({ prefix: props.prefix, serverName: props.serverUserName });
     const state = reactive<{
       rightInfoShow: boolean;
       nodeLevel: number;
@@ -229,7 +234,7 @@ const FactoryManage = defineComponent({
 
     const getList = () => {
       manufactorApi
-        .getList()()
+        .getList(props.url.getList)()
         .then((res) => {
           const data = generateKey('0', res.data);
           generateList(data);
@@ -326,14 +331,20 @@ const FactoryManage = defineComponent({
       });
     };
 
-    const selectNode = (
+    const selectNode = async (
       selectedKeys: string[] | number[],
       { selected, node }: any
     ) => {
       if (selected) {
         state.nodeLevel = node.level;
         selectedKeyArr.value = selectedKeys;
-        selectNodeData = { ...node.dataRef };
+        const resCreate = await getUserInfo(node.createUser);
+        const resUpdate = await getUserInfo(node.updateUser);
+        selectNodeData = {
+          ...node.dataRef,
+          createUserName: resCreate.data?.userName || '--',
+          updateUserName: resUpdate.data?.userName || '--',
+        };
         insertParantId = node.code;
         cancel();
         state.rightInfoShow = true;
@@ -372,16 +383,32 @@ const FactoryManage = defineComponent({
         }
         manufactorApi
           .update(props.url)({ ...res, ...extra }, type, getNodeSort().apiSort)
-          .then((resp) => {
-            selectNodeData = { ...selectNodeData, ...resp.data };
+          .then(async (resp) => {
+            const resData = resp.data;
+            const resCreate = await getUserInfo(resData.createUser);
+            const resUpdate = await getUserInfo(resData.updateUser);
+            selectNodeData = { ...selectNodeData, ...resData ,createUserName: resCreate.data?.userName || '--',
+              updateUserName: resUpdate.data?.userName || '--',};
             infoRef.infoState = { ...selectNodeData };
             getList();
+            if (isNew.value) {
+              selectedKeyArr.value = [];
+            }
             isEdit.value = false;
             isNew.value = false;
           });
       });
     };
-
+    const getUserInfo = async (id: string) => {
+      if (!id) {
+        return {
+          data: {
+            userName: '--',
+          },
+        };
+      }
+      return manufactorApi.getUserInfo(props.url.userInfo)(id);
+    };
     watch(
       () => isEdit.value,
       (n) => {
@@ -567,8 +594,8 @@ const FactoryManage = defineComponent({
                       true,
                       state.nodeLevel === 1
                     )}
-                    {getRowInfo('createUser', '创建人', false, !isEdit.value)}
-                    {getRowInfo('updateUser', '更新人', false, !isEdit.value)}
+                    {getRowInfo('createUserName', '创建人', false, !isEdit.value)}
+                    {getRowInfo('updateUserName', '更新人', false, !isEdit.value)}
                     {getRowInfo(
                       'createDt',
                       '创建时间',
@@ -590,15 +617,17 @@ const FactoryManage = defineComponent({
                         label='备注'
                         name='remark'
                         wrapper-col={{ span: 19 }}
+                        maxlength = {500}
                       >
                         {isEdit.value ? (
                           <a-textarea
                             v-model={[infoRef.infoState.remark, 'value']}
                           />
                         ) : (
-                          <span>{infoRef.infoState.remark}</span>
+                          <span>{infoRef.infoState.remark || '暂无'}</span>
                         )}
                       </a-form-item>
+					  
                     </a-col>
                   </a-row>
                 </a-form>
