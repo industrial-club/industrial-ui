@@ -24,12 +24,21 @@ let instance = getInstance({
 	prefix: "/api/",
 	serverName: faceName.thingmodel,
 });
-
+let instance2 = getInstance({
+	prefix: "/api/",
+	serverName: faceName.common,
+});
 export function setInstance({
 	serverName = faceName.thingmodel,
 	prefix = "/api/",
 }) {
 	instance = getInstance({ prefix, serverName });
+}
+export function setInstance2({
+	serverName = faceName.common,
+	prefix = "/api/",
+}) {
+	instance2 = getInstance({ prefix, serverName });
 }
 const findUrl = (urlObj: Partial<IUrlObj>, sort: string, type: string) => {
 	if (type === "insert") {
@@ -106,6 +115,14 @@ const api = {
 		const param = formatParams(data);
 		const url = findUrl(urlObj, type, "compare");
 		return instance.post(`${url}?${param}`);
+	},
+	
+	/**
+	 * 获取用户信息
+	 */
+
+	getUserInfo: (url?: string) => (userId:string) => {
+		return instance2.get(url ?? `/user/detail?userId=${userId}`);
 	},
 };
 
