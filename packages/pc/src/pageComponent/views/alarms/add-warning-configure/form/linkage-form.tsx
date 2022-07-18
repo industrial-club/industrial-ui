@@ -53,6 +53,16 @@ const LinkageForm = defineComponent({
         immediate: true,
       }
     );
+
+    const linkageCheckboxList = computed(() => {
+      const list = _props.enumObj?.AlarmActionEnum;
+      if (!list?.length) return [];
+      if (isThread.value) {
+        return list;
+      }
+      return [list[0], list[3]];
+    });
+
     return () => (
       <div class="linkage-form form">
         <h2 class="form-title">联动配置</h2>
@@ -96,11 +106,7 @@ const LinkageForm = defineComponent({
                 <a-form-item label="通知阶段">
                   <a-checkbox-group
                     v-model={[linkageForm.value.notificationStageList, "value"]}
-                    options={(
-                      (isThread.value
-                        ? _props.enumObj?.AlarmActionEnum
-                        : _props.enumObj?.AlarmActionEnum?.slice(0, 2)) as any[]
-                    ).map((item) => ({
+                    options={linkageCheckboxList.value.map((item) => ({
                       label: item.name,
                       value: item.code,
                     }))}
