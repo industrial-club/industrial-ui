@@ -13,17 +13,16 @@
   background-origin: content-box;
  position: relative;
  font-family: PingFangSC-Ultralight, sans-serif;
- min-height: 880px;
  overflow-y: auto;
   .topTitle {
-    margin: 60px;
+    margin: 4.29rem;
     position: absolute;
     top:0;
     left: 0;
     z-index: 2;
     img {
-      width: 452px;
-      height: 54px;
+      width: 32.29rem;
+      height: 3.86rem;
     }
   }
 
@@ -96,7 +95,6 @@
       display: flex;
       width: 100vw;
       height: 100vh;
-      min-height: 880px;
       overflow-y: auto;
       top: 0;
       left: 0;
@@ -108,23 +106,20 @@
         justify-content: flex-start;
         align-items: center;
       }
-      .ant-spin-nested-loading {
-        
-      }
-
       .left {
         flex: 2;
         display: flex;
         justify-content: center;
         align-items: center;
-        // width: 920px;
-        // height: 700px;
-        // display: inline;
+        .left_img{
+          width: 65.71rem;
+          height: 50rem;
+        }
       }
     }
 
     .left {
-      width: 60rem;
+      // width: 60rem;
     }
 
     .login_box {
@@ -146,10 +141,13 @@
         // justify-content: space-around;
         .ant-form-item {
           flex: 1;
-          margin-bottom: 55px;
+          margin-bottom: 3.14rem;
 
           .ant-form-item-label {
-            padding-bottom: 25px;
+            padding-bottom: 1.14rem;
+            label{
+            font-size: 1.14rem;
+            }
           }
         }
       }
@@ -162,7 +160,7 @@
     margin: 0;
     left: 0;
     right: 0;
-    font-size: 14px;
+    font-size: 1rem;
     font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;
     color: #7B8492;
@@ -176,36 +174,5 @@
   }
 }
 
-@media screen and (max-width: 1900px) {
-  .login {
-    .content_login {
-      padding: 0 100px;
 
-      &.platform {
-        .left_img {
-          width: 52rem;
-          height: 40rem;
-        }
-      }
-    }
-  }
-}
 
-@media screen and (max-width: 1684px) {
-  .login {
-    background: red;
-
-    .content_login {
-      padding: 0 60px;
-
-      &.platform {
-        display: flex;
-        align-items: center;
-        .left_img {
-          width: 46.8rem;
-          height: 36rem;
-        }
-      }
-    }
-  }
-}
