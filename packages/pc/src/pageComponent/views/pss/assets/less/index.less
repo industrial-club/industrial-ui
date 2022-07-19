@@ -59,6 +59,12 @@
           font-size: 14px;
           font-weight: 500;
           color: #3E7EFF;
+
+          .op {
+            button {
+              padding: 0;
+            }
+          }
         }
 
 
@@ -89,6 +95,20 @@
 
 .pssInfoModal {
   position: absolute;
+
+  .info_footer {
+    padding: 0 60px;
+
+    .red {
+      color: #FF6B54;
+      border-color: #FF6B54;
+    }
+
+    .yellow {
+      color: #FF9000;
+      border-color: #FF9000;
+    }
+  }
 
   .ant-modal {
     width: unset !important;
@@ -430,3 +450,4 @@
 
 @import url("./cus-table.less");
 @import url("./PerformOperation.less");
+@import url("./ApproveOpinion.less");
