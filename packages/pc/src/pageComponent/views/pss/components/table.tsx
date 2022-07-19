@@ -86,8 +86,8 @@ export default defineComponent({
           pageSize: pagination.pageSize,
         },
         busId: "spms",
-        processId: state.typeOptions[state.type]?.code,
-        taskDefKey: state.statusOptions[state.status]?.code,
+        processId: (state.typeOptions[state.type] as any)?.code,
+        taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
       if (state.type === 0) {
@@ -147,8 +147,8 @@ export default defineComponent({
           pageSize: pagination.pageSize,
         },
         busId: "spms",
-        processId: state.typeOptions[state.type]?.code,
-        taskDefKey: state.statusOptions[state.status]?.code,
+        processId: (state.typeOptions[state.type] as any)?.code,
+        taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
       return data.pageInfo;
@@ -162,8 +162,8 @@ export default defineComponent({
           pageSize: pagination.pageSize,
         },
         busId: "spms",
-        processId: (state.typeOptions[state.type] as any).code,
-        taskDefKey: (state.statusOptions[state.status] as any).code,
+        processId: (state.typeOptions[state.type] as any)?.code,
+        taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
       return data.pageInfo;
@@ -177,12 +177,19 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
-    watch([() => state.type, () => state.status], async (nVal, oVal) => {
+    watch([() => state.type], async (nVal, oVal) => {
       if (nVal[0] === 0) {
         state.status = 0;
       }
       refresh();
     });
+
+    watch(
+      () => state.status,
+      async (nVal, oVal) => {
+        refresh();
+      }
+    );
 
     const batch = ref(false);
 
