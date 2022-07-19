@@ -6,6 +6,19 @@ import pageComponents from "@/pageComponent";
 import utils from "@/utils/publicUtil";
 
 const comps = [...pageComponents, ...components];
+
+utils.setRem({
+  fontSize: 14,
+  designSize: 1920,
+});
+
+window.onresize = () => {
+  utils.setRem({
+    fontSize: 14,
+    designSize: 1920,
+  });
+};
+
 export default {
   install(app: App) {
     for (let i of comps) {

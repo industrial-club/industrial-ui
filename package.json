@@ -22,7 +22,7 @@
     "site": "vite site",
     "factory": "vite mtip-factory",
     "testLogin": "vite test-login",
-    "test": "vite test-theme"
+    "test": "vite theme"
   },
   "private": true,
   "repository": "https://github.com/industrial-club/industrial-ui",
