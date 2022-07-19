@@ -3,8 +3,8 @@ import {
   onMounted,
   ref,
   reactive,
-  onUnmounted,
   inject,
+  onBeforeUnmount,
 } from "vue";
 import { message, Modal } from "ant-design-vue";
 import moment, { Moment } from "moment";
@@ -280,7 +280,7 @@ const WarningRecord = defineComponent({
       setTimeout(startSpeech, 2000);
     });
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       window.speechSynthesis.cancel();
       speech.onend = null;
     });
