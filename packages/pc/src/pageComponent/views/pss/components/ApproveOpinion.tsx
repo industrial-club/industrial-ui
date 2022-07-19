@@ -49,7 +49,7 @@ export default defineComponent({
         <a-modal
           v-model={[props.showOpinion, "visible"]}
           title={props.detail.taskName}
-          wrapClassName=""
+          wrapClassName="ApproveOpinionModal"
           onCancel={close}
           v-slots={{
             footer: () => (
@@ -67,7 +67,8 @@ export default defineComponent({
                     </a-button>
                   ) : (
                     <a-button
-                      type="danger"
+                      type="primary"
+                      class="red"
                       onClick={() => {
                         context.emit("toProcessApproval");
                       }}
@@ -115,6 +116,7 @@ export default defineComponent({
                     </a-button>
                   ) : (
                     <a-button
+                      type="primary"
                       class="yellow"
                       onClick={() => {
                         context.emit("toProcessApproval");
@@ -138,7 +140,8 @@ export default defineComponent({
                     </a-button>
                   ) : (
                     <a-button
-                      type="danger"
+                      type="primary"
+                      class="red"
                       onClick={() => {
                         context.emit("toProcessApproval_Batch");
                       }}
@@ -159,7 +162,7 @@ export default defineComponent({
               v-model={[isComment.value, "value"]}
               rows={4}
               show-count
-              maxlength={200}
+              maxlength={100}
               placeholder="请填写"
             />
           </div>

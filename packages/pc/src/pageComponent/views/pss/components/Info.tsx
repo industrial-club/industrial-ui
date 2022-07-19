@@ -378,8 +378,18 @@ export default defineComponent({
                         )
                       }
                     >
-                      <div class="content flex-center">
-                        <div class="label">{pro.activityName}</div>
+                      <div class="content flex">
+                        <div
+                          class={[
+                            "label",
+                            dataObj.value?.process?.length - 1 === index
+                              ? "timeLineActive"
+                              : "",
+                          ]}
+                        >
+                          <div>{pro.activityName}</div>
+                          <div>{pro.assigneeName || "-"}</div>
+                        </div>
                         <div class="time">
                           {pro.endTime && dayjs(pro.endTime).format(Format)}
                         </div>

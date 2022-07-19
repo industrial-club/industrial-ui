@@ -86,8 +86,8 @@ export default defineComponent({
           pageSize: pagination.pageSize,
         },
         busId: "spms",
-        processId: state.typeOptions[state.type]?.code,
-        taskDefKey: state.statusOptions[state.status]?.code,
+        processId: (state.typeOptions[state.type] as any)?.code,
+        taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
       if (state.type === 0) {
@@ -147,8 +147,8 @@ export default defineComponent({
           pageSize: pagination.pageSize,
         },
         busId: "spms",
-        processId: state.typeOptions[state.type]?.code,
-        taskDefKey: state.statusOptions[state.status]?.code,
+        processId: (state.typeOptions[state.type] as any)?.code,
+        taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
       return data.pageInfo;
@@ -162,8 +162,8 @@ export default defineComponent({
           pageSize: pagination.pageSize,
         },
         busId: "spms",
-        processId: (state.typeOptions[state.type] as any).code,
-        taskDefKey: (state.statusOptions[state.status] as any).code,
+        processId: (state.typeOptions[state.type] as any)?.code,
+        taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
       return data.pageInfo;
@@ -177,68 +177,77 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
-    watch([() => state.type, () => state.status], async (nVal, oVal) => {
+    watch([() => state.type], async (nVal, oVal) => {
       if (nVal[0] === 0) {
         state.status = 0;
       }
       refresh();
     });
 
+    watch(
+      () => state.status,
+      async (nVal, oVal) => {
+        refresh();
+      }
+    );
+
     const batch = ref(false);
 
     const tableConfig: any = reactive({
-      loading: false,
       dataSource: [{}],
       columns: [
         {
           dataIndex: "supplyTypeName",
           title: "申请类型",
-          width: "10%",
+          width: 200,
         },
         {
           dataIndex: "applyUserName",
           title: "发起人",
-          width: "10%",
+          width: 100,
         },
         {
           title: "当前状态",
-          width: "10%",
           key: "currentState",
+          width: 120,
         },
         {
           title: "设备编号/名称",
-          width: "15%",
           key: "numAndName",
+          width: 200,
         },
         {
           title: "回路数量",
-          width: "10%",
           key: "loopsNum",
+          width: 100,
         },
         {
           title: "控制回路",
-          width: "20%",
           key: "loops",
+          width: 300,
+          ellipsis: true,
         },
         {
           dataIndex: "applyReason",
           title: "申请原因",
-          width: "10%",
+          width: 120,
+          ellipsis: true,
         },
         {
           title: "计划停电时间",
-          width: "10%",
           key: "planStopPowerDt",
+          width: 150,
         },
         {
           title: "计划送电时间",
-          width: "10%",
           key: "planSupplyPowerDt",
+          width: 150,
         },
         {
           title: "执行操作",
-          width: "20%",
           key: "operation",
+          fixed: "right",
+          width: 220,
         },
       ],
     });
@@ -295,7 +304,6 @@ export default defineComponent({
     const toRecondition = (record) => {
       currentObj.value = record;
 
-      console.info(555);
       operationState.showOpinion = true;
       operationState.label = "停电检修备注";
     };
@@ -346,13 +354,6 @@ export default defineComponent({
 
     // 批量 停电审批、送电审批
     const processApproval_Batch = async () => {
-      // const resp: any = await pssApi.processApproval({
-      //   comment: operationState.comment,
-      //   processGateway: operationState.isAgree ? "agree" : "disagree",
-      //   taskId: currentObj.value.taskId,
-      //   userId,
-      // });
-
       const postData = selectedRow.selectedRows.map((item: any) => {
         const obj = {
           comment: operationState.comment,
@@ -457,14 +458,16 @@ export default defineComponent({
      */
 
     // 按钮
-    const getBtn = (record: any) => {
+    const getBtn = (record: any, isInfo = false) => {
       return (
         <div class="op">
           {/* 停电审批 Approval_stop */}
           {record.taskDefKey === "Approval_stop" && !batch.value && (
             <a-space>
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
+                class="red"
                 onClick={() => {
                   toStopRefuse(record);
                 }}
@@ -473,7 +476,8 @@ export default defineComponent({
               </a-button>
 
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
                 onClick={() => {
                   toStopAgree(record);
                 }}
@@ -488,7 +492,8 @@ export default defineComponent({
             record.taskDefKey === "Execute_supply") && (
             <a-space>
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
                 onClick={() => {
                   toExecute(record);
                 }}
@@ -502,7 +507,8 @@ export default defineComponent({
           {record.taskDefKey === "Attempt_stop" && (
             <a-space>
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
                 onClick={() => {
                   toStopTestRun(record);
                 }}
@@ -516,7 +522,8 @@ export default defineComponent({
           {record.taskDefKey === "Overhaul_stop" && (
             <a-space>
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
                 onClick={() => {
                   toRecondition(record);
                 }}
@@ -530,7 +537,9 @@ export default defineComponent({
           {record.taskDefKey === "Approval_supply" && !batch.value && (
             <a-space>
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
+                class="yellow"
                 onClick={() => {
                   toSupplyRefuse(record);
                 }}
@@ -538,7 +547,8 @@ export default defineComponent({
                 驳回
               </a-button>
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
                 onClick={() => {
                   toSupplyAgree(record);
                 }}
@@ -552,7 +562,8 @@ export default defineComponent({
           {record.taskDefKey === "Attempt_supply" && (
             <a-space>
               <a-button
-                type="link"
+                type={isInfo ? "primary" : "link"}
+                ghost={isInfo}
                 onClick={() => {
                   toSupplyTestRun(record);
                 }}
@@ -705,6 +716,7 @@ export default defineComponent({
 
         <div class="table">
           <a-table
+            scroll={{ x: 1300 }}
             dataSource={tableList.value}
             columns={tableConfig.columns}
             pagination={pagination}
@@ -742,19 +754,19 @@ export default defineComponent({
 
                 // 回路数量
                 if (column.key === "loopsNum") {
-                  return <span>{record.loops.length}</span>;
+                  return <span>{record.loops.length}个</span>;
                 }
 
                 // 控制回路
                 if (column.key === "loops") {
+                  const result = record.loops
+                    .map((loop: any) => {
+                      return `${loop.id}-${loop.name}`;
+                    })
+                    .join("；");
+
                   return (
-                    <span>
-                      {record.loops
-                        .map((loop: any) => {
-                          return `${loop.id}-${loop.name}`;
-                        })
-                        .join("；")}
-                    </span>
+                    <a-tooltip v-slots={{ title: result }}>{result}</a-tooltip>
                   );
                 }
 
@@ -831,7 +843,7 @@ export default defineComponent({
         {/* 详情 */}
         <Info
           v-model={[operationState.showInfo, "showInfo"]}
-          btn={getBtn(currentObj.value)}
+          btn={getBtn(currentObj.value, true)}
           showFooter={operationState.showFooter}
           detail={currentObj.value}
           tab={props.tab}
