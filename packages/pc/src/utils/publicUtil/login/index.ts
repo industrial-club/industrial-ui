@@ -62,8 +62,15 @@ class Login {
     }
   }
 
+  public async refreshToken() {
+    const res = await (this.config.axios.post(`auth/refreshToken`) as any);
+    const { sysUser, token } = res.data;
+    this.saveInfo("token", token);
+    this.saveInfo("userinfo", JSON.stringify(sysUser));
+  }
+
   public async getTokenByCode(e?: { username: string; password: string }) {
-    const { userCode, token, userId } = this.config.queryInfo;
+    const { userCode, token, userId, appType } = this.config.queryInfo;
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};
@@ -85,6 +92,7 @@ class Login {
       if (userCode) {
         headers.isMtip = false;
       }
+
       const res = (await this.config.axios.post(this.config.api, data, {
         headers,
       })) as any;
@@ -98,13 +106,29 @@ class Login {
       return Promise.resolve(res);
       //    router.push("/");
     } else {
-      userId;
-      this.saveInfo("token", token);
-      this.saveInfo("userId", userId);
-      return Promise.resolve({
-        token,
-        userId,
-      });
+      const tokenNew = token;
+      if (!appType) {
+        const headers = {
+          appType: "mtip-base-system",
+          token: tokenNew,
+        };
+        const res = (await this.config.axios.post(this.config.api, data, {
+          headers,
+        })) as any;
+        const { sysUser, token } = res.data;
+        this.saveInfo("token", token);
+        this.saveInfo("userinfo", JSON.stringify(sysUser));
+
+        return Promise.resolve(res);
+      } else {
+        userId;
+        this.saveInfo("token", token);
+        this.saveInfo("userId", userId);
+        return Promise.resolve({
+          token,
+          userId,
+        });
+      }
     }
   }
 }
