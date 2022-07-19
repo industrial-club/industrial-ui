@@ -8,13 +8,14 @@
 
 import { defineComponent, ref, onMounted, inject } from "vue";
 import useModalVisibleControl from "@/pageComponent/hooks/manage-module/useModalVisibleControl";
+import { message } from "ant-design-vue";
 import { removeDateProp } from "@/pageComponent/utils/tree";
 import api from "@/api/org/depManager";
 import { IUrlObj } from "./index";
 
+import { CloudDownloadOutlined } from "@ant-design/icons-vue";
 import CommonTree from "@/pageComponent/components/CommonTree";
 import UpdateDepDialog from "./updateDepDialog";
-import { message } from "ant-design-vue";
 
 const DepTree = defineComponent({
   props: {
@@ -70,6 +71,12 @@ const DepTree = defineComponent({
       refresh();
     };
 
+    // 同步智信组织架构
+    const handleSync = async () => {
+      await api.syncOrgZhixin(urlMap.sync)();
+      message.success("后台开始同步，请稍后刷新");
+    };
+
     return () => (
       <div class="dep-tree">
         <CommonTree
@@ -81,7 +88,18 @@ const DepTree = defineComponent({
           onDelete={hanldeDeleteDep}
           onDrop={hanldeDrop}
           onSelect={handleSelect}
-        />
+        >
+          {{
+            toolbar: () => (
+              <a-space style={{ justifyContent: "flex-end", width: "100%" }}>
+                <a-button type="link" onClick={handleSync}>
+                  <CloudDownloadOutlined />
+                  同步智信
+                </a-button>
+              </a-space>
+            ),
+          }}
+        </CommonTree>
 
         {/* 添加部门 */}
         <UpdateDepDialog

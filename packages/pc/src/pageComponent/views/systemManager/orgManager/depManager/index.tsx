@@ -44,6 +44,8 @@ export interface IUrlObj {
   deleteEmp: string;
   // 岗位下拉列表
   postSelect: string;
+  // 同步智信组织架构
+  sync: string;
 }
 
 const DepManager = defineComponent({
