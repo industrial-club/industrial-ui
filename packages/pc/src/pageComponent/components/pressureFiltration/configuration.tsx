@@ -24,11 +24,21 @@ export default defineComponent({
     const dataList = ref<Array<listItem>>([]);
 
     // 下发
-    const setPageParamValueSingle = async (instanceCode, metricCode, value) => {
+    const setPageParamValueSingle = async (
+      instanceCode,
+      metricCode,
+      value,
+      key,
+      dataSourceType,
+      instanceId
+    ) => {
       const res = await filterPressConfigurationApi.setPageParamValueSingle({
         instanceCode,
         metricCode,
         value,
+        completeKey: key,
+        dataSourceType,
+        instanceId,
       });
       if (res.data === "ok") {
         message.success("下发成功");
@@ -38,7 +48,7 @@ export default defineComponent({
 
     // 组件类型判断
     const inputType = (val) => {
-      const { instanceCode, metricCode } = val;
+      const { instanceCode, metricCode, key, dataSourceType, instanceId } = val;
       if (val.inputType === "btn") {
         const inputList = JSON.parse(val.inputList);
         return (
@@ -46,7 +56,14 @@ export default defineComponent({
             v-model={[val.value, "value"]}
             button-style="solid"
             onChange={(e) => {
-              setPageParamValueSingle(instanceCode, metricCode, e.target.value);
+              setPageParamValueSingle(
+                instanceCode,
+                metricCode,
+                e.target.value,
+                key,
+                dataSourceType,
+                instanceId
+              );
             }}
           >
             {inputList?.map((item) => (
@@ -61,7 +78,14 @@ export default defineComponent({
           <a-select
             v-model={[val.value, "value"]}
             onChange={(e) => {
-              setPageParamValueSingle(instanceCode, metricCode, e);
+              setPageParamValueSingle(
+                instanceCode,
+                metricCode,
+                e,
+                key,
+                dataSourceType,
+                instanceId
+              );
             }}
           >
             {inputList.map((item) => (
@@ -77,7 +101,14 @@ export default defineComponent({
             v-model={[val.value, "value"]}
             addon-after={inputList.unit}
             onBlur={(e) => {
-              setPageParamValueSingle(instanceCode, metricCode, val.value);
+              setPageParamValueSingle(
+                instanceCode,
+                metricCode,
+                val.value,
+                key,
+                dataSourceType,
+                instanceId
+              );
             }}
           ></a-input-number>
         );
@@ -100,10 +131,7 @@ export default defineComponent({
           <a-row gutter={24}>
             {dataList.value.map((item) => (
               <a-col span={8}>
-                <a-form-item
-                  label={`${item.key ? item.key : ""}${item.desc}`}
-                  colon={false}
-                >
+                <a-form-item label={item.desc} colon={false}>
                   {inputType(item)}
                 </a-form-item>
               </a-col>
