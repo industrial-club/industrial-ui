@@ -179,7 +179,7 @@ const LayoutContent = defineComponent({
                       ]}
                       to={`/?menuCode=${item.code}`}
                     >
-                      <span class="tab-item-text">
+                      <a class="tab-item-text">
                         {item.icon && (
                           <icon-font class="icon" type={item.icon} />
                         )}
@@ -199,7 +199,7 @@ const LayoutContent = defineComponent({
                             )}
                           </span>
                         )}
-                      </span>
+                      </a>
                     </router-link>
                   </a-dropdown>
                 ))}
