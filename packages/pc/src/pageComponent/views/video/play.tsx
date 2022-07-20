@@ -1,4 +1,4 @@
-import { defineComponent, ref, onMounted, onUnmounted } from "vue";
+import { defineComponent, ref, onMounted, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 import socket from "./utils/webSocket";
 import "./assets/styles/play.less";
@@ -47,7 +47,7 @@ const com = defineComponent({
         );
       }
     });
-    onUnmounted(socket.closeSocket);
+    onBeforeUnmount(socket.closeSocket);
 
     return {
       cameraUuids,
