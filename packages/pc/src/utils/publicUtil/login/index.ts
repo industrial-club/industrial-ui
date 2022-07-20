@@ -95,12 +95,18 @@ class Login {
     }
 
     if (!token) {
-      const headers = {
-        isMtip: true,
+      const headers: {
+        appType: string | null;
+      } = {
+        appType: null,
       };
 
-      if (userCode) {
-        headers.isMtip = false;
+      if (appType === "single") {
+        headers.appType = "mtip-base-system";
+      }
+
+      if (appType === "factory") {
+        headers.appType = "mtip-factory";
       }
 
       const res = (await this.config.axios.post(this.config.api, data, {
