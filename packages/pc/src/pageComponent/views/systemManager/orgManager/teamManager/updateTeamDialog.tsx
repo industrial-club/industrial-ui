@@ -84,20 +84,20 @@ const UpdatePostDialog = defineComponent({
     };
 
     // 岗位列表
-    const postList = ref([]);
-    const getPostList = () => {
-      api
-        .getPostList(urlMap.postList)({ depId: form.value.depId })
-        .then(({ data }) => (postList.value = data));
-    };
+    // const postList = ref([]);
+    // const getPostList = () => {
+    //   api
+    //     .getPostList(urlMap.postList)({ depId: form.value.depId })
+    //     .then(({ data }) => (postList.value = data));
+    // };
 
-    watch(
-      () => form.value.depId,
-      (val) => {
-        if (val) getPostList();
-      },
-      { immediate: true }
-    );
+    // watch(
+    //   () => form.value.depId,
+    //   (val) => {
+    //     if (val) getPostList();
+    //   },
+    //   { immediate: true }
+    // );
 
     /* 保存 */
     const handleSave = async () => {
@@ -161,7 +161,7 @@ const UpdatePostDialog = defineComponent({
                       ></a-tree-select>
                     )}
                   </a-form-item>
-                  <a-form-item name="jobPostId" label="岗位名称">
+                  {/* <a-form-item name="jobPostId" label="岗位名称">
                     {isView.value ? (
                       <span>{props.record.jobPostName}</span>
                     ) : (
@@ -176,7 +176,7 @@ const UpdatePostDialog = defineComponent({
                         ))}
                       </a-select>
                     )}
-                  </a-form-item>
+                  </a-form-item> */}
                   <a-form-item
                     name="name"
                     required
