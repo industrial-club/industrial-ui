@@ -5,17 +5,16 @@
  * @LastEditors: wang liang
  * @LastEditTime: 2022-04-27 11:49:31
  */
-import { defineComponent, ref, inject } from "vue";
+import { defineComponent, ref, inject, watch } from "vue";
 import useProxy from "@/pageComponent/hooks/useProxy";
 import useBus from "@/pageComponent/hooks/useBus";
-import { cloneDeep, omit } from "lodash";
+import { cloneDeep, omit, isEqual } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import api from "@/api/auth/menuManager";
 import { IUrlObj, openMode } from "./index";
 
-import { message } from "ant-design-vue";
-import IconSelect from "@/pageComponent/components/IconSelect";
-import Dynamicicon from "@/pageComponent/components/DynamicIcon";
+import { message, Modal } from "ant-design-vue";
+import MenuForm from "./menuForm";
 
 const MenuDetail = defineComponent({
   props: {
@@ -35,26 +34,55 @@ const MenuDetail = defineComponent({
     const isEdit = ref(false);
 
     const form = ref<any>({});
+    const originForm = ref<any>({});
+    const changeForm = (val: any) => {
+      if (!val) return;
+      originForm.value = {
+        ...(val.dataRef ?? val),
+        valid: val.valid === 1,
+      };
+      form.value = cloneDeep(originForm.value);
+    };
+    watch(
+      () => props.node,
+      async (val) => {
+        // 确定是否保存
+        const currForm = isEdit.value ? formRef.value._getForm() : form.value;
+        if (isEdit.value && !isEqual(currForm, originForm.value)) {
+          Modal.confirm({
+            title: "确定保存",
+            content: "是否保存当前修改？",
+            async onOk() {
+              await handleSave();
+              changeForm(val);
+            },
+            onCancel() {
+              changeForm(val);
+              isEdit.value = false;
+            },
+          });
+        } else {
+          isEdit.value = false;
+          changeForm(val);
+        }
+      },
+      { immediate: true, deep: true }
+    );
 
     const startEdit = () => {
       if (props.node) {
-        isEdit.value = false;
-        form.value = cloneDeep({
-          ...(props.node.dataRef ?? props.node),
-          valid: props.node.valid === 1,
-        });
         isEdit.value = true;
       }
     };
 
     const handleSave = async () => {
-      await formRef.value.validate();
+      const data = await formRef.value._validate();
 
       await api.editMenuRecord(urlMap.update)({
-        ...omit(form.value, "subList"),
-        valid: form.value.valid ? 1 : 0,
+        ...omit(data, "subList"),
+        valid: data.valid ? 1 : 0,
       });
-      message.success("修改成功");
+      message.success("保存成功");
       bus.emit("tree/refresh");
       isEdit.value = false;
     };
@@ -100,103 +128,31 @@ const MenuDetail = defineComponent({
                   )}
                 </a-space>
               </div>
-              <a-form
-                class="form"
-                ref={formRef}
-                labelCol={{ span: 4 }}
-                labelAlign="right"
-                model={form.value}
-              >
-                <a-form-item
-                  label="菜单编码"
-                  name="code"
-                  required
-                  rules={getRequiredRule("菜单编码")}
-                >
-                  {isEdit.value ? (
-                    <a-input v-model={[form.value.code, "value"]} />
-                  ) : (
-                    <span>{props.node.code}</span>
-                  )}
-                </a-form-item>
-                <a-form-item
-                  label="页面名称"
-                  name="name"
-                  required
-                  rules={getRequiredRule("页面名称")}
-                >
-                  {isEdit.value ? (
-                    <a-input v-model={[form.value.name, "value"]} />
-                  ) : (
-                    <span>{props.node.name}</span>
-                  )}
-                </a-form-item>
-                <a-form-item label="父级页面">
-                  <span>{props.node?.parent?.node?.name}</span>
-                </a-form-item>
-                <a-form-item
-                  label="页面URL"
-                  name="url"
-                  required
-                  rules={getRequiredRule("页面URL")}
-                >
-                  {isEdit.value ? (
-                    <a-input
-                      onChange={() => {
-                        if (
-                          form.value.url.startsWith("http") &&
-                          form.value.mode === 0
-                        ) {
-                          form.value.mode = 1;
-                        }
-                      }}
-                      v-model={[form.value.url, "value"]}
-                    />
-                  ) : (
-                    <span>{props.node.url}</span>
-                  )}
-                </a-form-item>
-                <a-form-item label="打开方式" name="mode">
-                  {isEdit.value ? (
-                    <a-select v-model={[form.value.mode, "value"]}>
-                      {openMode.map((item) => (
-                        <a-select-option
-                          value={item.value}
-                          disabled={
-                            item.value === 0 &&
-                            form.value.url?.startsWith("http")
-                          }
-                        >
-                          {item.label}
-                        </a-select-option>
-                      ))}
-                    </a-select>
-                  ) : (
-                    <span>{renderMode(props.node.mode)}</span>
-                  )}
-                </a-form-item>
-                <a-form-item label="启用状态" name="valid">
-                  {isEdit.value ? (
-                    <a-switch v-model={[form.value.valid, "checked"]} />
-                  ) : (
-                    <span>{props.node.valid ? "启用" : "禁用"}</span>
-                  )}
-                </a-form-item>
-                <a-form-item
-                  label="ICON"
-                  name="icon"
-                  extra="请输入iconfont中的名称"
-                >
-                  {isEdit.value ? (
-                    <a-input v-model={[form.value.icon, "value"]}></a-input>
-                  ) : (
-                    <icon-font
-                      style={{ color: "#5c667d", fontSize: "20px" }}
-                      type={props.node.icon}
-                    ></icon-font>
-                  )}
-                </a-form-item>
-              </a-form>
+              {isEdit.value ? (
+                <MenuForm
+                  ref={formRef}
+                  form={form.value}
+                  parentName={props.node?.parent?.node.name}
+                />
+              ) : (
+                <a-form labelCol={{ style: { width: "6em" } }}>
+                  <a-form-item label="菜单编码">{form.value.code}</a-form-item>
+                  <a-form-item label="页面名称">{form.value.name}</a-form-item>
+                  <a-form-item label="父级页面">
+                    {props.node?.parent?.node.name}
+                  </a-form-item>
+                  <a-form-item label="页面URL">{form.value.url}</a-form-item>
+                  <a-form-item label="打开方式">
+                    {renderMode(form.value.mode)}
+                  </a-form-item>
+                  <a-form-item label="启用状态">
+                    {form.value.valid ? "启用" : "禁用"}
+                  </a-form-item>
+                  <a-form-item label="ICON">
+                    <icon-font type={form.value.icon}></icon-font>
+                  </a-form-item>
+                </a-form>
+              )}
             </>
           ) : (
             <a-empty style={{ maxWidth: "500px" }} description="请选择菜单" />

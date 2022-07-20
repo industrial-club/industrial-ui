@@ -105,6 +105,12 @@ const api = {
   deleteEmployeeById: (url?: string) => (employeeId: number) => {
     return instance.get(`${url ?? "/employee/remove/"}${employeeId}`);
   },
+  /**
+   * 同步智信
+   */
+  syncOrgZhixin: (url?: string) => () => {
+    return instance.post(url ?? "/user/sync/zxData");
+  },
 };
 
 export default api;

@@ -16,7 +16,7 @@ export default defineComponent({
       tabs: [
         {
           key: "do",
-          name: "代办",
+          name: "待办",
           count: 0,
           component: shallowRef(Tables),
         },
@@ -37,7 +37,11 @@ export default defineComponent({
 
     return () => (
       <div class="pssList" id="pssList">
-        <Tabs v-model={[tabConfig.activeKey, "activeKey"]}>
+        <Tabs
+          v-model={[tabConfig.activeKey, "activeKey"]}
+          animated
+          destroyInactiveTabPane
+        >
           {tabConfig.tabs.map((tab) => (
             <TabPane
               key={tab.key}

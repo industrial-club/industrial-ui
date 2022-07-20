@@ -15,7 +15,7 @@ class Login {
 
   protected checkSystemInfo() {
     // 系统服务信息 用于切换智信 或平台登录信息
-    const { userCode, token } = this.config.queryInfo;
+    const { userCode, token, appType } = this.config.queryInfo;
     // 智信环境
     if (userCode) {
       // 智信微应用环境
@@ -23,8 +23,18 @@ class Login {
     }
 
     // 平台微应用环境
-    if (token) {
+    if (appType === "factory") {
       this.config.env = "mtip-app-env";
+    }
+
+    // 单机版微应用环境
+    if (appType === "single") {
+      this.config.env = "tpf-app-env";
+    }
+
+    // 第三方微应用环境
+    if (appType === "third") {
+      this.config.env = "other-app-env";
     }
 
     this.systemServerInfo = this.config.env;
@@ -62,8 +72,18 @@ class Login {
     }
   }
 
-  public async getTokenByCode(e?: { username: string; password: string }) {
-    const { userCode, token, userId } = this.config.queryInfo;
+  public async refreshToken() {
+    const res = await (this.config.axios.post(`auth/refreshToken`) as any);
+    const { sysUser, token } = res.data;
+    this.saveInfo("token", token);
+    this.saveInfo("userinfo", JSON.stringify(sysUser));
+  }
+
+  public async getTokenByCode(
+    e?: { username: string; password: string },
+    zxAppType?: string
+  ) {
+    const { userCode, token, userId, appType } = this.config.queryInfo;
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};
@@ -78,13 +98,20 @@ class Login {
     }
 
     if (!token) {
-      const headers = {
-        isMtip: true,
+      const headers: {
+        appType: string | null;
+      } = {
+        appType: null,
       };
 
-      if (userCode) {
-        headers.isMtip = false;
+      if (zxAppType === "single") {
+        headers.appType = "mtip-base-system";
       }
+
+      if (zxAppType === "factory") {
+        headers.appType = "mtip-factory";
+      }
+
       const res = (await this.config.axios.post(this.config.api, data, {
         headers,
       })) as any;
@@ -98,13 +125,28 @@ class Login {
       return Promise.resolve(res);
       //    router.push("/");
     } else {
-      userId;
-      this.saveInfo("token", token);
-      this.saveInfo("userId", userId);
-      return Promise.resolve({
-        token,
-        userId,
-      });
+      window.sessionStorage.setItem("token", token);
+      if (appType === "single") {
+        const headers = {
+          appType: "mtip-base-system",
+        };
+        const res = (await this.config.axios.post(this.config.api, data, {
+          headers,
+        })) as any;
+        const { sysUser, token } = res.data;
+        this.saveInfo("token", token);
+        this.saveInfo("userinfo", JSON.stringify(sysUser));
+
+        return Promise.resolve(res);
+      } else {
+        userId;
+        this.saveInfo("token", token);
+        this.saveInfo("userId", userId);
+        return Promise.resolve({
+          token,
+          userId,
+        });
+      }
     }
   }
 }

@@ -43,6 +43,8 @@ const column = [
     title: "所属角色",
     dataIndex: "roleTypeNames",
     key: "roleTypeNames",
+    ellipsis: true,
+    width: 300,
   },
   {
     title: "员工姓名",

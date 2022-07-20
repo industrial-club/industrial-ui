@@ -3,8 +3,8 @@ import {
   onMounted,
   ref,
   reactive,
-  onUnmounted,
   inject,
+  onBeforeUnmount,
 } from "vue";
 import { message, Modal } from "ant-design-vue";
 import moment, { Moment } from "moment";
@@ -280,7 +280,7 @@ const WarningRecord = defineComponent({
       setTimeout(startSpeech, 2000);
     });
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       window.speechSynthesis.cancel();
       speech.onend = null;
     });
@@ -288,11 +288,13 @@ const WarningRecord = defineComponent({
     return () => (
       <div class="warning-record">
         <QueryFilter onSubmit={search} enumObj={enumObj} />
-        <div class="operation">
+        <div class="operation" style={{ marginBottom: "16px" }}>
           <a-space>
             <span class="checked">已选中{selectedRows.value.length}项</span>
-            <a onClick={handleBatchClear}>批量消警</a>
-            <a onClick={hanldeBatchMute}>批量消音</a>
+            <a-button type="primary" onClick={handleBatchClear}>
+              批量消警
+            </a-button>
+            <a-button onClick={hanldeBatchMute}>批量消音</a-button>
           </a-space>
         </div>
         <a-table
