@@ -39,9 +39,10 @@ const com = defineComponent({
         algoTypeCode: "",
         algoTypeName: "",
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 10,
         current: 1,
         total: 0,
+        showTotal: (total: number) => `共 ${total} 条`,
       },
       dataSource: [],
       columns: [
@@ -103,20 +104,20 @@ const com = defineComponent({
     };
     const getData = async () => {
       data.pagination.pageNum = data.pagination.current;
-      if (data.pagination.algoTypeName.trim()) {
-        data.pagination.algoTypeCode = data.algoPoList.find(
-          (item) => item.name === data.pagination.algoTypeName.trim()
-        )?.code;
-      } else {
-        data.pagination.algoTypeCode = "";
-      }
-      if (data.pagination.eventTypeName.trim()) {
-        data.pagination.eventTypeCode = data.eventTypeList.find(
-          (item) => item.name === data.pagination.eventTypeName.trim()
-        )?.code;
-      } else {
-        data.pagination.eventTypeCode = "";
-      }
+      // if (data.pagination.algoTypeName.trim()) {
+      //   data.pagination.algoTypeCode = data.algoPoList.find(
+      //     (item) => item.name === data.pagination.algoTypeName.trim()
+      //   )?.code;
+      // } else {
+      //   data.pagination.algoTypeCode = "";
+      // }
+      // if (data.pagination.eventTypeName.trim()) {
+      //   data.pagination.eventTypeCode = data.eventTypeList.find(
+      //     (item) => item.name === data.pagination.eventTypeName.trim()
+      //   )?.code;
+      // } else {
+      //   data.pagination.eventTypeCode = "";
+      // }
       const res = await eventApi.getEventConfig(data.pagination);
       data.pagination.total = res.data.total;
       data.dataSource = res.data.list;
@@ -243,25 +244,41 @@ const com = defineComponent({
         }
       }
     );
+    const filterOption = (input: string, option: any) => {
+      const ele = data.eventTypeList.find((type: any) => {
+        return option.value === type.code;
+      });
+      return ele?.name.indexOf(input) >= 0;
+    };
 
     return () => (
       <div class="event">
         <div class="header flex">
           <div class="">
             <span class="label">事件类型</span>
-            <a-input
-              class="param"
-              v-model={[data.pagination.eventTypeName, "value"]}
-              placeholder="请输入搜索内容"
-            ></a-input>
+            <a-select
+              placeholder="请选择"
+              allowClear={true}
+              v-model={[data.pagination.eventTypeCode, "value"]}
+              show-search
+              filter-option={filterOption}
+            >
+              {data.eventTypeList.map((item) => (
+                <a-select-option value={item.code}>{item.name}</a-select-option>
+              ))}
+            </a-select>
           </div>
           <div class="flex1 flex">
             <span class="label">算法类型</span>
-            <a-input
-              class="param"
-              v-model={[data.pagination.algoTypeName, "value"]}
-              placeholder="请输入搜索内容"
-            ></a-input>
+            <a-select
+              allowClear={true}
+              placeholder="请选择"
+              v-model={[data.pagination.algoTypeCode, "value"]}
+            >
+              {data.algoPoList.map((item) => (
+                <a-select-option value={item.code}>{item.name}</a-select-option>
+              ))}
+            </a-select>
           </div>
           <div class="flex3 btns">
             <a-button

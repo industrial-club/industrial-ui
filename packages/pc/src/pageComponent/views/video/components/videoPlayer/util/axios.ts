@@ -1,29 +1,29 @@
-import axios from 'axios';
+import axios from "axios";
 
 const instance = axios.create({
-  baseURL: '/api/',
+  baseURL: "/api/",
   timeout: 5000,
   headers: {
-    'X-Custom-Header': 'foobar',
-    clientType: 'webapp',
-    'Content-Type': 'application/json;charset=UTF-8',
-    userId: '-1',
+    "X-Custom-Header": "foobar",
+    clientType: "webapp",
+    "Content-Type": "application/json;charset=UTF-8",
+    userId: "-1",
   },
 });
 
 const getToken = (): string => {
-  return `Bearer ${sessionStorage.getItem('token')}`;
+  return `${sessionStorage.getItem("token")}`;
 };
 
 instance.interceptors.request.use(
   (conf) => {
-    if (conf.method === 'get') {
+    if (conf.method === "get") {
       conf.paramsSerializer = (params) => {
         return JSON.stringify(params);
       };
     }
     // const corpId = sessionStorage.getItem('corpId');
-    conf.headers.Authorization = getToken();
+    conf.headers.token = getToken();
     // if (corpId) {
     //   conf.headers.corpId = corpId;
     // }
@@ -31,13 +31,13 @@ instance.interceptors.request.use(
   },
   (err) => {
     return Promise.reject(err);
-  },
+  }
 );
 
 instance.interceptors.response.use(
   (res) => {
     const resData = res.data;
-    const status = resData.code === 'M0000';
+    const status = resData.code === "M0000";
     if (status) {
       return Promise.resolve(resData);
     }
@@ -45,7 +45,7 @@ instance.interceptors.response.use(
   },
   (err) => {
     return Promise.reject(err);
-  },
+  }
 );
 
 export { instance };

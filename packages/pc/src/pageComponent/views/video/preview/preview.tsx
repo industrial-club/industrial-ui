@@ -24,6 +24,7 @@ import fullScreen from "./components/fullScreen";
 import followItem from "./components/followItem";
 import alarmLinkageModal from "./components/alarmLinkageModal";
 import utils from "@/utils";
+import moment from "moment";
 
 const com = defineComponent({
   props: {
@@ -227,6 +228,7 @@ const com = defineComponent({
     };
     const fullScreenType = ref(false);
     const sizeDataRef: any = ref(null);
+    let interval2: any;
     onMounted(async () => {
       if (props.serverName) {
         videoApi.setInstance(props.serverName);
@@ -244,6 +246,14 @@ const com = defineComponent({
       interval = setInterval(() => {
         updateVideoState();
       }, 10000);
+      interval2 = setInterval(() => {
+        if (
+          moment().format("hh:mm:ss") === "12:00:00" ||
+          moment().format("hh:mm:ss") === "00:00:00"
+        ) {
+          window.location.reload();
+        }
+      }, 900);
     });
 
     const pitchOn = (index: number) => {
@@ -376,6 +386,7 @@ const com = defineComponent({
     };
     onBeforeUnmount(() => {
       clearInterval(interval);
+      clearInterval(interval2);
       socket.closeSocket();
       overVideo();
     });
