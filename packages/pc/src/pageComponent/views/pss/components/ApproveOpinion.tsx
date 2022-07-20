@@ -54,6 +54,8 @@ export default defineComponent({
           v-slots={{
             footer: () => (
               <div class="modal_footer">
+                <a-button onClick={close}>取消</a-button>
+
                 {/* 停电审批 Approval_stop */}
                 {props.detail.taskDefKey === "Approval_stop" &&
                   (props.isAgree ? (
@@ -150,14 +152,13 @@ export default defineComponent({
                     </a-button>
                   ))}
                 {/* 停电审批 Approval_stop */}
-
-                <a-button onClick={close}>取消</a-button>
               </div>
             ),
           }}
         >
           <div class="pageContent">
-            {props.label}
+            <div>{props.label} </div>
+
             <a-textarea
               v-model={[isComment.value, "value"]}
               rows={4}

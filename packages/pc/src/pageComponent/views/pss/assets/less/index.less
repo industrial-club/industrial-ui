@@ -1,5 +1,8 @@
 .pssIndex {
+  height: 100%;
+
   .pssList {
+    height: 100%;
     position: relative;
 
     .ant-tabs {
@@ -94,10 +97,11 @@
 }
 
 .pssInfoModal {
-  position: absolute;
+  position: absolute !important;
+
 
   .info_footer {
-    padding: 0 60px;
+    // padding: 0 60px;
 
     .red {
       color: #FF6B54;
@@ -350,9 +354,29 @@
     font-size: 12px;
     font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;
-    color: #3E7EFF;
+    color: #3e7eff;
     background: rgba(62, 126, 255, 0.2);
     border-radius: 2px;
+
+    &.blue {
+      color: #3e7eff;
+      background: rgba(62, 126, 255, 0.2);
+    }
+
+    &.red {
+      color: #ED3F3C;
+      background: rgba(237, 63, 60, 0.2);
+    }
+
+    &.green {
+      color: #18C0BF;
+      background: rgba(24, 192, 191, 0.2);
+    }
+
+    &.orange {
+      color: #FF9214;
+      background: rgba(255, 146, 20, 0.2);
+    }
   }
 }
 
