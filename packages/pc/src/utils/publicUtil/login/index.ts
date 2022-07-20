@@ -101,7 +101,7 @@ class Login {
       const headers: {
         appType: string | null;
       } = {
-        appType: null,
+        appType: "",
       };
 
       if (zxAppType === "single") {
