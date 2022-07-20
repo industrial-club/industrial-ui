@@ -766,7 +766,13 @@ export default defineComponent({
                     .join("；");
 
                   return (
-                    <a-tooltip v-slots={{ title: result }}>{result}</a-tooltip>
+                    <a-tooltip
+                      v-slots={{
+                        title: () => result,
+                      }}
+                    >
+                      {result}
+                    </a-tooltip>
                   );
                 }
 
