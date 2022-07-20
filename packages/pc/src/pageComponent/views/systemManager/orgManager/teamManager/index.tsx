@@ -47,6 +47,8 @@ const column = [
   {
     title: "班组成员",
     dataIndex: "memberNames",
+    ellipsis: true,
+    width: 300,
   },
   {
     title: "创建人",
