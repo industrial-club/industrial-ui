@@ -7,17 +7,17 @@ import utils from "@/utils/publicUtil";
 
 const comps = [...pageComponents, ...components];
 
-utils.setRem({
-  fontSize: 14,
-  designSize: 1920,
-});
+// utils.setRem({
+//   fontSize: 14,
+//   designSize: 1920,
+// });
 
-window.onresize = () => {
-  utils.setRem({
-    fontSize: 14,
-    designSize: 1920,
-  });
-};
+// window.onresize = () => {
+//   utils.setRem({
+//     fontSize: 14,
+//     designSize: 1920,
+//   });
+// };
 
 export default {
   install(app: App) {

@@ -265,7 +265,14 @@ const UpdateUserDialog = defineComponent({
                   name="phone"
                   label="电话"
                   required
-                  rules={getRequiredRule("电话")}
+                  rules={[
+                    getRequiredRule("电话"),
+                    {
+                      pattern: /^(1)\d{10}$/,
+                      message: "请输入正确的手机号",
+                      trigger: "blur",
+                    },
+                  ]}
                 >
                   {isView.value ? (
                     <span>{form.value.phone}</span>

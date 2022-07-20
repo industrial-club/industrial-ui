@@ -104,6 +104,7 @@ const LayoutContent = defineComponent({
 
     // 当前tabs中缓存的组件
     const cacheComponents = computed(() => {
+      // iframe页签
       const iframeRoutes = tabs.value
         .filter((item) => item.mode === 2)
         .map((item) => {
@@ -124,13 +125,20 @@ const LayoutContent = defineComponent({
             ),
           };
         });
+      // 普通页签
       const tabRoutes = props.allRoutes.filter((item) => {
         return tabs.value.find((tab) => {
           return tab.code === item.code && tab.mode === 0;
         });
       });
+      // 扩展页签
+      const extendRoutes = props.allRoutes.filter((item) => {
+        return tabs.value.find((tab) => {
+          return tab.code === item.code && tab.isExtend;
+        });
+      });
 
-      return [...tabRoutes, ...iframeRoutes];
+      return [...tabRoutes, ...iframeRoutes, ...extendRoutes];
     });
 
     return () => (
@@ -179,7 +187,7 @@ const LayoutContent = defineComponent({
                       ]}
                       to={`/?menuCode=${item.code}`}
                     >
-                      <span class="tab-item-text">
+                      <a class="tab-item-text">
                         {item.icon && (
                           <icon-font class="icon" type={item.icon} />
                         )}
@@ -193,13 +201,15 @@ const LayoutContent = defineComponent({
                             }}
                           >
                             {item.code === activeCode.value ? (
-                              <close-circle-filled />
+                              <close-circle-filled
+                                style={{ color: "#cdd0d3" }}
+                              />
                             ) : (
                               <close-outlined />
                             )}
                           </span>
                         )}
-                      </span>
+                      </a>
                     </router-link>
                   </a-dropdown>
                 ))}

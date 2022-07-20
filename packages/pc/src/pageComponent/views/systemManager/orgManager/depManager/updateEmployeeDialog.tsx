@@ -205,6 +205,7 @@ const UpdateEmployeeDialog = defineComponent({
                           {
                             pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
                             message: "请输入正确的身份证号",
+                            trigger: "blur",
                           },
                         ]}
                       >
@@ -249,6 +250,7 @@ const UpdateEmployeeDialog = defineComponent({
                           {
                             pattern: /^(1)\d{10}$/,
                             message: "请输入正确的手机号",
+                            trigger: "blur",
                           },
                         ]}
                       >
