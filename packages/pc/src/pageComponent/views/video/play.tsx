@@ -1,10 +1,13 @@
 import { defineComponent, ref, onMounted, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
+import { login as Login } from "@/utils/publicUtil";
 import socket from "./utils/webSocket";
 import "./assets/styles/play.less";
 import PlayVideos from "./components/videoPlayer";
 
 import utils from "@/utils";
+
+const loginUtil = new Login();
 
 const com = defineComponent({
   props: {
@@ -48,6 +51,14 @@ const com = defineComponent({
       }
     });
     onBeforeUnmount(socket.closeSocket);
+
+    // 刷新token
+    const timer = setInterval(() => {
+      loginUtil.refreshToken();
+    }, 1000 * 60 * 5);
+    onBeforeUnmount(() => {
+      timer && clearInterval(timer);
+    });
 
     return {
       cameraUuids,
