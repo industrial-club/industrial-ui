@@ -17,7 +17,7 @@ class Login {
     // 系统服务信息 用于切换智信 或平台登录信息
     const { userCode, token, appType } = this.config.queryInfo;
     // 智信环境
-    if (appType === "zhixin") {
+    if (userCode) {
       // 智信微应用环境
       this.config.env = "zx-env";
     }
@@ -60,7 +60,6 @@ class Login {
     if (url.indexOf("?") != -1) {
       let obj = {};
       let arr = url.slice(url.indexOf("?") + 1).split("&");
-      console.log(arr);
       arr.forEach((item) => {
         let param = item.split("=");
         obj[param[0]] = param[1];
@@ -80,7 +79,10 @@ class Login {
     this.saveInfo("userinfo", JSON.stringify(sysUser));
   }
 
-  public async getTokenByCode(e?: { username: string; password: string }) {
+  public async getTokenByCode(
+    e?: { username: string; password: string },
+    zxAppType?: string
+  ) {
     const { userCode, token, userId, appType } = this.config.queryInfo;
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
@@ -96,12 +98,18 @@ class Login {
     }
 
     if (!token) {
-      const headers = {
-        isMtip: true,
+      const headers: {
+        appType: string | null;
+      } = {
+        appType: null,
       };
 
-      if (userCode) {
-        headers.isMtip = false;
+      if (zxAppType === "single") {
+        headers.appType = "mtip-base-system";
+      }
+
+      if (zxAppType === "factory") {
+        headers.appType = "mtip-factory";
       }
 
       const res = (await this.config.axios.post(this.config.api, data, {

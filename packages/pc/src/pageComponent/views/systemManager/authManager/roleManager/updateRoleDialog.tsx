@@ -42,18 +42,15 @@ const UpdateRoleDialog = defineComponent({
     // 树结构数据
     const treeData = ref<any[]>([]);
 
-    // 选中的权限列表
-    const checkedPermissionList = ref([]);
-
     /* ===== 初始化表单 ===== */
     const formRef = ref();
     const form = ref<any>({});
     watch(isVisible, async (val) => {
       // 等待record赋值 / 完全关闭
       await nextTick();
-      checkedPermissionList.value = [];
       // 打开对话框时复制表单 新建用户时不用
       if (val) {
+        let checkedMenuIds = [];
         if (props.mode === "add") {
           const { data } = await api.getRoleTree(urlMap.addPermission)();
           treeData.value = transformMenuTree(data);
@@ -64,13 +61,10 @@ const UpdateRoleDialog = defineComponent({
           });
 
           treeData.value = transformMenuTree(data.roleMenuVoList);
-          checkedPermissionList.value = data.checkedMenuIds;
+          checkedMenuIds = data.checkedMenuIds;
         }
         form.value = cloneDeep(props.record);
-
-        // state.treeData = sysMenuVoList.map((item) => {
-        //   return {};
-        // });
+        form.value.checkedMenuIds = checkedMenuIds;
       } else {
         // 清空表单
         formRef.value.resetFields();
@@ -91,25 +85,16 @@ const UpdateRoleDialog = defineComponent({
       isVisible.value = false;
     };
 
-    // 验证权限列表 至少选择一个权限
-    const validatePermission = async (rule: any, value: any) => {
-      if (checkedPermissionList.value.length) {
-        return true;
-      } else {
-        return new Error("请选择权限");
-      }
-    };
-
     const handleCommit = async () => {
       await formRef.value.validate();
-      checkedPermissionList.value = checkedPermissionList.value.filter(
+      const checkedMenuIds = form.value.checkedMenuIds.filter(
         (item: string) => {
           return !`${item}`.startsWith("sys");
         }
       );
       const res = {
         ...form.value,
-        checkedMenuIds: checkedPermissionList.value,
+        checkedMenuIds,
       };
       if (props.mode === "add") {
         await api.insertRole(urlMap.save)(res);
@@ -164,8 +149,8 @@ const UpdateRoleDialog = defineComponent({
                   )}
                 </a-form-item>
                 <a-form-item
-                  name="abc"
-                  rules={{ validator: validatePermission }}
+                  name="checkedMenuIds"
+                  rules={getRequiredRule("角色权限")}
                   label="角色权限"
                 >
                   {treeData.value.length > 0 && (
@@ -180,7 +165,7 @@ const UpdateRoleDialog = defineComponent({
                         disabled={isView.value}
                         checkable
                         tree-data={treeData.value}
-                        v-model={[checkedPermissionList.value, "checkedKeys"]}
+                        v-model={[form.value.checkedMenuIds, "checkedKeys"]}
                       />
                     </div>
                   )}

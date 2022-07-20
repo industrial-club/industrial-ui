@@ -159,6 +159,7 @@ const MenuForm = defineComponent({
         return form.value;
       },
       _resetFields: () => formRef.value.resetFields(),
+      _getForm: () => form.value,
     });
 
     return () => (
