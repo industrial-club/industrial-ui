@@ -58,6 +58,8 @@ export default defineComponent({
           v-slots={{
             footer: () => (
               <div class="modal_footer">
+                <a-button onClick={close}>取消</a-button>
+
                 <a-button
                   type="primary"
                   onClick={() => {
@@ -73,8 +75,6 @@ export default defineComponent({
                 >
                   确认{props.detail.taskName}
                 </a-button>
-
-                <a-button onClick={close}>取消</a-button>
               </div>
             ),
           }}

@@ -215,6 +215,7 @@ export default defineComponent({
           v-model={[props.showInfo, "visible"]}
           title="任务/任务详情"
           wrapClassName="pssInfoModal"
+          maskStyle={{ position: "absolute" }}
           getContainer={() => document.getElementById("pssList")}
           onCancel={close}
           v-slots={{
@@ -247,8 +248,8 @@ export default defineComponent({
                 <Row gutter={24}>
                   <Col span={8}>
                     <div class="label">当前状态:</div>
-                    <div class="stateNode">
-                      待{dataObj.value.taskName || dataObj.value.applyReason}
+                    <div class={["stateNode", dataObj.value.taskFlag]}>
+                      {dataObj.value.taskStatus}
                     </div>
                   </Col>
                   <Col span={8}>
@@ -256,10 +257,17 @@ export default defineComponent({
                     <div class="value">{dataObj.value.equipName}</div>
                   </Col>
                   <Col span={8}>
-                    <div class="label">计划停电时间:</div>
-                    <div class="value">
-                      {dayjs(dataObj.value.planStopPowerDt).format(Format)}
-                    </div>
+                    {dataObj.value.supplyTypeCode !== "supplyPower" &&
+                      dataObj.value.planStopPowerDt && (
+                        <>
+                          <div class="label">计划停电时间:</div>
+                          <div class="value">
+                            {dayjs(dataObj.value.planStopPowerDt).format(
+                              Format
+                            )}
+                          </div>
+                        </>
+                      )}
                   </Col>
                   <Col span={8}>
                     <div class="label">任务编号:</div>
@@ -271,16 +279,17 @@ export default defineComponent({
                   </Col>
 
                   <Col span={8}>
-                    {dataObj.value.planSupplyPowerDt && (
-                      <div class="flex">
-                        <div class="label">计划送电时间:</div>
-                        <div class="value">
-                          {dayjs(dataObj.value.planSupplyPowerDt).format(
-                            Format
-                          )}
-                        </div>
-                      </div>
-                    )}
+                    {dataObj.value.supplyTypeCode !== "stopPower" &&
+                      dataObj.value.planSupplyPowerDt && (
+                        <>
+                          <div class="label">计划送电时间:</div>
+                          <div class="value">
+                            {dayjs(dataObj.value.planSupplyPowerDt).format(
+                              Format
+                            )}
+                          </div>
+                        </>
+                      )}
                   </Col>
                 </Row>
               </div>

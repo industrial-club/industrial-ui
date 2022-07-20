@@ -737,8 +737,8 @@ export default defineComponent({
                 // console.info(text, column, record, index);
                 if (column.key === "currentState") {
                   return (
-                    <span class="stateNode">
-                      待{record.taskName || record.applyReason}
+                    <span class={["stateNode", record.taskFlag]}>
+                      {record.taskStatus}
                     </span>
                   );
                 }
@@ -779,7 +779,11 @@ export default defineComponent({
                 // 计划停电时间
                 if (column.key === "planStopPowerDt") {
                   return (
-                    <span>{dayjs(record.planStopPowerDt).format(Format)}</span>
+                    <span>
+                      {record.supplyTypeCode !== "supplyPower"
+                        ? dayjs(record.planStopPowerDt).format(Format)
+                        : "-"}
+                    </span>
                   );
                 }
 
@@ -787,7 +791,9 @@ export default defineComponent({
                 if (column.key === "planSupplyPowerDt") {
                   return (
                     <span>
-                      {dayjs(record.planSupplyPowerDt).format(Format)}
+                      {record.supplyTypeCode !== "stopPower"
+                        ? dayjs(record.planSupplyPowerDt).format(Format)
+                        : "-"}
                     </span>
                   );
                 }
