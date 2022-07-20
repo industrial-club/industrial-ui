@@ -79,7 +79,10 @@ class Login {
     this.saveInfo("userinfo", JSON.stringify(sysUser));
   }
 
-  public async getTokenByCode(e?: { username: string; password: string }) {
+  public async getTokenByCode(
+    e?: { username: string; password: string },
+    zxAppType?: string
+  ) {
     const { userCode, token, userId, appType } = this.config.queryInfo;
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
@@ -101,11 +104,11 @@ class Login {
         appType: null,
       };
 
-      if (appType === "single") {
+      if (zxAppType === "single") {
         headers.appType = "mtip-base-system";
       }
 
-      if (appType === "factory") {
+      if (zxAppType === "factory") {
         headers.appType = "mtip-factory";
       }
 
