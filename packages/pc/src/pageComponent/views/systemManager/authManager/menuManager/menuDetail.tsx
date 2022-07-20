@@ -8,14 +8,12 @@
 import { defineComponent, ref, inject, watch } from "vue";
 import useProxy from "@/pageComponent/hooks/useProxy";
 import useBus from "@/pageComponent/hooks/useBus";
-import { cloneDeep, omit } from "lodash";
+import { cloneDeep, omit, isEqual } from "lodash";
 import { getRequiredRule } from "@/pageComponent/utils/validation";
 import api from "@/api/auth/menuManager";
 import { IUrlObj, openMode } from "./index";
 
-import { message } from "ant-design-vue";
-import IconSelect from "@/pageComponent/components/IconSelect";
-import Dynamicicon from "@/pageComponent/components/DynamicIcon";
+import { message, Modal } from "ant-design-vue";
 import MenuForm from "./menuForm";
 
 const MenuDetail = defineComponent({
@@ -36,14 +34,37 @@ const MenuDetail = defineComponent({
     const isEdit = ref(false);
 
     const form = ref<any>({});
+    const originForm = ref<any>({});
+    const changeForm = (val: any) => {
+      if (!val) return;
+      originForm.value = {
+        ...(val.dataRef ?? val),
+        valid: val.valid === 1,
+      };
+      form.value = cloneDeep(originForm.value);
+    };
     watch(
       () => props.node,
-      (val) => {
-        if (!val) return;
-        form.value = cloneDeep({
-          ...(val.dataRef ?? val),
-          valid: val.valid === 1,
-        });
+      async (val) => {
+        // 确定是否保存
+        const currForm = isEdit.value ? formRef.value._getForm() : form.value;
+        if (isEdit.value && !isEqual(currForm, originForm.value)) {
+          Modal.confirm({
+            title: "确定保存",
+            content: "是否保存当前修改？",
+            async onOk() {
+              await handleSave();
+              changeForm(val);
+            },
+            onCancel() {
+              changeForm(val);
+              isEdit.value = false;
+            },
+          });
+        } else {
+          isEdit.value = false;
+          changeForm(val);
+        }
       },
       { immediate: true, deep: true }
     );
@@ -61,7 +82,7 @@ const MenuDetail = defineComponent({
         ...omit(data, "subList"),
         valid: data.valid ? 1 : 0,
       });
-      message.success("修改成功");
+      message.success("保存成功");
       bus.emit("tree/refresh");
       isEdit.value = false;
     };
