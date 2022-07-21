@@ -1,0 +1,242 @@
+import { defineComponent, onMounted, reactive, ref } from "vue";
+import "@/assets/styles/pages/developerCenter/thingInstance.less";
+import { MenuFoldOutlined, DownOutlined } from "@ant-design/icons-vue";
+import useTreeSearch from "./hooks/useTreeSearch";
+import useTableList from "./hooks/useTableList";
+import thingModal from "./modal";
+import * as thingApis from "@/api/thingInstance";
+import { columns, queryOpts } from "./data";
+import utils from "@/utils";
+
+const com = defineComponent({
+  components: { thingModal },
+  setup() {
+    // 模型树
+    const {
+      tree,
+      searchValue,
+      expandedKeys,
+      autoExpandParent,
+      selectedKeyArr,
+      fieldNames,
+      generateKey,
+      generateList,
+    } = useTreeSearch({
+      title: "name",
+      children: "child",
+    });
+    const getTreeData = () => {
+      thingApis.findAllThingForTree().then((res) => {
+        refresh();
+        const data = generateKey("0", res.data);
+        generateList(data);
+        tree.data = data;
+      });
+    };
+    const selectNode = (
+      selectedKeys: string[] | number[],
+      { selected, node }: any
+    ) => {
+      if (selected) {
+        formQuery.thingCode = node.code;
+      } else {
+        formQuery.thingCode = "";
+      }
+      selectedKeyArr.value = selectedKeys;
+      refresh();
+    };
+
+    const expandNode = (keys: string[]) => {
+      expandedKeys.value = keys;
+      autoExpandParent.value = false;
+    };
+
+    // table
+    const queryFormRef = ref();
+    const formQuery = reactive({
+      name: "",
+      thingCode: "POWER_LOOP",
+      code: "",
+      catalogCode: "",
+      factoryCode: "",
+      brandCode: "",
+      modelCode: "",
+    });
+    const getList = () => {
+      return thingApis.indInsts({
+        ...formQuery,
+        pageNum: currPage.value,
+        pageSize: pageSize.value,
+      });
+    };
+    const state = reactive<{
+      selectedRowKeys: string[];
+      modalVisible: boolean;
+    }>({
+      selectedRowKeys: [],
+      modalVisible: true,
+    });
+    const onSelectChange = (selectedRowKeys: string[]) => {
+      state.selectedRowKeys = selectedRowKeys;
+    };
+    const { isLoading, tableList, pagination, refresh, currPage, pageSize } =
+      useTableList(getList, "list", "total");
+    const reset = () => {
+      queryFormRef.value.resetFields();
+    };
+    // 弹框
+    const modalRef = ref<any>(null);
+    const updateModal = (row?: any) => {
+      modalRef.value.showModal(row, formQuery.thingCode);
+    };
+    onMounted(() => {
+      getTreeData();
+    });
+    return () => (
+      <div class="thingInstance flex">
+        <div class="left_wrap">
+          <div class="flex_lr_c">
+            <span>物模型</span>
+            <MenuFoldOutlined />
+          </div>
+          <div class="tree_data">
+            <a-input-search
+              v-model={[searchValue.value, "value"]}
+              style="margin-bottom: 8px"
+              placeholder="Search"
+            />
+            <div class="mar-t-20 tree_wrap">
+              <a-tree
+                show-line
+                blockNode={true}
+                tree-data={tree.data}
+                field-names={fieldNames}
+                onSelect={selectNode}
+                onExpand={expandNode}
+                selectedKeys={selectedKeyArr.value}
+                expanded-keys={expandedKeys.value}
+                auto-expand-parent={autoExpandParent.value}
+                v-slots={{
+                  title: ({ name }: any) => {
+                    return (
+                      <span class="tree-node-title">
+                        {name.indexOf(searchValue.value) > -1 ? (
+                          <span>
+                            {name.substr(0, name.indexOf(searchValue.value))}
+                            <span style={{ color: "#f50" }}>
+                              {searchValue.value}
+                            </span>
+                            {name.substr(
+                              name.indexOf(searchValue.value) +
+                                searchValue.value.length
+                            )}
+                          </span>
+                        ) : (
+                          <span>{name}</span>
+                        )}
+                      </span>
+                    );
+                  },
+                }}
+              ></a-tree>
+            </div>
+          </div>
+        </div>
+        <div class="table_wrap">
+          <div class="option">
+            <a-form ref={queryFormRef} model={formQuery}>
+              <a-row gutter={30}>
+                {queryOpts.map((item) => {
+                  return (
+                    <a-col span={6}>
+                      <a-form-item label={item.name} name={item.prop}>
+                        <a-input v-model={[formQuery[item.prop], "value"]} />
+                      </a-form-item>
+                    </a-col>
+                  );
+                })}
+                <a-col span={24 - (queryOpts.length % 4) * 6} class="align-r">
+                  <a-space size={16}>
+                    <a-button type="primary" onClick={refresh}>
+                      查询
+                    </a-button>
+                    <a-button onClick={reset}>重置</a-button>
+                    <a-space size={5}>
+                      <span>更多</span>
+                      <DownOutlined />
+                    </a-space>
+                  </a-space>
+                </a-col>
+              </a-row>
+            </a-form>
+          </div>
+          <a-space size={16}>
+            <a-button
+              type="primary"
+              onClick={() => updateModal(null)}
+              disabled={!formQuery.thingCode}
+            >
+              新增
+            </a-button>
+            <a-button type="primary" ghost>
+              批量导入
+            </a-button>
+            <a-button type="primary" ghost>
+              导出全部
+            </a-button>
+            <a-button
+              type="primary"
+              disabled={state.selectedRowKeys.length == 0}
+            >
+              导出选中
+            </a-button>
+            <a-button
+              type="danger"
+              disabled={state.selectedRowKeys.length == 0}
+            >
+              删除选中
+            </a-button>
+          </a-space>
+          <div class="mar-t-20">
+            <a-table
+              rowKey="code"
+              columns={columns}
+              row-selection={{
+                selectedRowKeys: state.selectedRowKeys,
+                onChange: onSelectChange,
+              }}
+              dataSource={tableList.value}
+              loading={isLoading.value}
+              pagination={pagination}
+              v-slots={{
+                action: (row: any) => {
+                  return (
+                    <a-space>
+                      <a
+                        onClick={() => {
+                          updateModal(row);
+                        }}
+                      >
+                        编辑
+                      </a>
+                      <a
+                        onClick={() => {
+                          updateModal(row);
+                        }}
+                      >
+                        详情
+                      </a>
+                      <span class="red pointer">删除</span>
+                    </a-space>
+                  );
+                },
+              }}
+            ></a-table>
+          </div>
+        </div>
+        <thing-modal ref={modalRef} />
+      </div>
+    );
+  },
+});
+export default utils.installComponent(com, "thing");
