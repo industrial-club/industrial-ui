@@ -41,8 +41,10 @@ export default defineComponent({
         instanceId,
       });
       if (res.data === "ok") {
-        message.success("下发成功");
-        _ctx.emit("refresh");
+        setTimeout(() => {
+          message.success("下发成功");
+          _ctx.emit("refresh");
+        }, 100);
       }
     };
 

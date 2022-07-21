@@ -138,6 +138,18 @@ class Login {
         this.saveInfo("userinfo", JSON.stringify(sysUser));
 
         return Promise.resolve(res);
+      } else if (appType === "factory") {
+        const headers = {
+          appType: "mtip-factory",
+        };
+        const res = (await this.config.axios.post(this.config.api, data, {
+          headers,
+        })) as any;
+        const { sysUser, token } = res.data;
+        this.saveInfo("token", token);
+        this.saveInfo("userinfo", JSON.stringify(sysUser));
+
+        return Promise.resolve(res);
       } else {
         userId;
         this.saveInfo("token", token);
