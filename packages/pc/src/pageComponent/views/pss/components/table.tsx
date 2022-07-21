@@ -90,7 +90,7 @@ export default defineComponent({
         taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
-      if (state.type === 0 && state.status === null) {
+      if (state.type === 0 && state.status === 0) {
         // 筛选条件 typeOptions
         state.typeOptions = data.processIdMapCountVOs.map((vo: any) => ({
           text: `${vo.name} ${vo.count}`,
