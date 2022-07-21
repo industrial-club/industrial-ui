@@ -199,7 +199,7 @@ export default defineComponent({
         {
           dataIndex: "supplyTypeName",
           title: "申请类型",
-          width: 200,
+          width: 150,
         },
         {
           dataIndex: "applyUserName",
@@ -346,8 +346,9 @@ export default defineComponent({
       if (resp.data === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
-
+        operationState.comment = "";
         operationState.showFooter = false;
+
         refresh();
       }
     };
@@ -368,6 +369,7 @@ export default defineComponent({
       if (resp.code === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
+        operationState.comment = "";
 
         cancelBatch();
         refresh();
@@ -430,8 +432,9 @@ export default defineComponent({
       if (resp.data === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
-
+        operationState.comment = "";
         operationState.showFooter = false;
+
         refresh();
       }
     };
@@ -448,8 +451,9 @@ export default defineComponent({
       if (resp.data === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
-
+        operationState.comment = "";
         operationState.showFooter = false;
+
         refresh();
       }
     };
@@ -684,7 +688,7 @@ export default defineComponent({
                 ghost
                 onClick={() => {
                   if (selectedRow.selectedRowKeys.length) {
-                    toStopRefuse({ taskDefKey: "batch" });
+                    toStopRefuse({ taskDefKey: "batch", taskName: "批量审批" });
                   } else {
                     message.error("请选择");
                   }
@@ -698,7 +702,7 @@ export default defineComponent({
                 ghost
                 onClick={() => {
                   if (selectedRow.selectedRowKeys.length) {
-                    toStopAgree({ taskDefKey: "batch" });
+                    toStopAgree({ taskDefKey: "batch", taskName: "批量审批" });
                   } else {
                     message.error("请选择");
                   }
@@ -766,13 +770,15 @@ export default defineComponent({
                     .join("；");
 
                   return (
-                    <a-tooltip
-                      v-slots={{
-                        title: () => result,
-                      }}
-                    >
-                      {result}
-                    </a-tooltip>
+                    // <a-tooltip
+                    //   v-slots={{
+                    //     title: () => result,
+                    //   }}
+                    // >
+                    //   {result}
+                    // </a-tooltip>
+
+                    <div title={result}>{result}</div>
                   );
                 }
 
