@@ -133,7 +133,10 @@ export default defineComponent({
           <a-row gutter={24}>
             {dataList.value.map((item) => (
               <a-col span={8}>
-                <a-form-item label={item.desc} colon={false}>
+                <a-form-item
+                  label={`${item.instanceCode}${item.desc}`}
+                  colon={false}
+                >
                   {inputType(item)}
                 </a-form-item>
               </a-col>
