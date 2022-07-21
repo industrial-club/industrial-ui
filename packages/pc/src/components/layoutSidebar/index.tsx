@@ -70,21 +70,33 @@ const LayoutSidebar = defineComponent({
       }
     };
 
-    // 取消 默认跳转第一个菜单
-    // watch(
-    //   [() => prop.menu, route],
-    //   () => {
-    //     if (
-    //       prop.menu.length &&
-    //       prop.userMenuTree.find(
-    //         (item: any) => item.code === route.query.menuCode
-    //       )
-    //     ) {
-    //       toPath(prop.menu[0]);
-    //     }
-    //   },
-    //   { immediate: true, deep: true }
-    // );
+    // 第一次进来 默认跳转第一个菜单
+    const cancleWatchMenu = watch(
+      [() => prop.menu, route],
+      async () => {
+        await nextTick();
+        if (prop.menu.length && route.query.menuCode !== undefined) {
+          cancleWatchMenu();
+          if (
+            prop.menu.length &&
+            prop.userMenuTree.find((item) => item.code === route.query.menuCode)
+          ) {
+            function findFirstMenu(menu: any) {
+              if (Array.isArray(menu.subList) && menu.subList.length) {
+                return findFirstMenu(menu.subList[0]);
+              }
+              return menu;
+            }
+            const firstMenu = findFirstMenu(prop.menu[0]);
+            toPath(firstMenu);
+          }
+        }
+      },
+      {
+        immediate: true,
+        deep: true,
+      }
+    );
 
     const getMenuItem = (item: any, fPath?: string) => {
       return (
@@ -108,11 +120,12 @@ const LayoutSidebar = defineComponent({
 
     const getSubMenu = (obj: any, fPath?: string) => {
       return obj.map((item: any, index: string) => {
-        let result;
+        let result: any;
 
         if (item.subList?.length > 0) {
           result = (
             <a-sub-menu
+              key={item.code}
               title={item.name}
               v-slots={{
                 icon: () =>

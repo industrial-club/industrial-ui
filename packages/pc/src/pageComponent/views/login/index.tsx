@@ -7,6 +7,7 @@ import faceName from "@/api/faceName";
 import loginBox, { EventBySubmitParams } from "./box";
 import leftImg from "./leftImg";
 import topTitle from "./top-title";
+import { message } from "ant-design-vue";
 
 const components: Component = {
   components: { loginBox, leftImg, topTitle },
@@ -75,11 +76,13 @@ const Login = defineComponent({
 
     const handleSubmit = async (e: EventBySubmitParams) => {
       const LoginFun = new login();
-      await LoginFun.getTokenByCode({
+      const res = await LoginFun.getTokenByCode({
         username: e.username,
         password: e.password,
       });
-
+      if (res.data) {
+        message.success("登录成功");
+      }
       router.push("/");
     };
 

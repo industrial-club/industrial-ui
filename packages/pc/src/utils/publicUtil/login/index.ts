@@ -119,9 +119,6 @@ class Login {
       this.saveInfo("token", token);
       this.saveInfo("userinfo", JSON.stringify(sysUser));
 
-      if (!userCode) {
-        message.success("登录成功");
-      }
       return Promise.resolve(res);
       //    router.push("/");
     } else {
@@ -129,6 +126,18 @@ class Login {
       if (appType === "single") {
         const headers = {
           appType: "mtip-base-system",
+        };
+        const res = (await this.config.axios.post(this.config.api, data, {
+          headers,
+        })) as any;
+        const { sysUser, token } = res.data;
+        this.saveInfo("token", token);
+        this.saveInfo("userinfo", JSON.stringify(sysUser));
+
+        return Promise.resolve(res);
+      } else if (appType === "factory") {
+        const headers = {
+          appType: "mtip-factory",
         };
         const res = (await this.config.axios.post(this.config.api, data, {
           headers,

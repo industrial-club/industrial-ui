@@ -291,7 +291,7 @@ export default defineComponent({
             {imgModel()}
             <div style={{ textAlign: "center", margin: "2rem 0" }}>
               {status === "system" ? (
-                <img src={ms} style={{ width: "232px" }} />
+                <img src={ms} style={{ width: "16.57rem" }} />
               ) : (
                 ""
               )}
