@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "ln": "lerna",
+    "dev:card": "yarn workspace inl-docs run docs:dev",
     "dev:docs": "yarn workspace inl-docs run docs:dev",
     "build:docs": "yarn workspace inl-docs run docs:build",
     "dev:app": "yarn workspace inl-app-ui run dev",
