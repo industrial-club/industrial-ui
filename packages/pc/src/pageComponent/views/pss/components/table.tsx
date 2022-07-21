@@ -90,7 +90,7 @@ export default defineComponent({
         taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
-      if (state.type === 0) {
+      if (state.type === 0 && state.status === null) {
         // 筛选条件 typeOptions
         state.typeOptions = data.processIdMapCountVOs.map((vo: any) => ({
           text: `${vo.name} ${vo.count}`,
@@ -103,8 +103,8 @@ export default defineComponent({
             data.processIdMapCountVOs.length === 1
               ? data.processIdMapCountVOs[0].count
               : data.processIdMapCountVOs.reduce((prev: any, curr: any) => {
-                  return prev.count + curr.count;
-                });
+                  return prev + curr.count;
+                }, 0);
 
           state.typeOptions.unshift({
             text: `全部类型 ${typeCount}`,
@@ -125,8 +125,8 @@ export default defineComponent({
             data.taskDefKeyMapCountVOs.length === 1
               ? data.taskDefKeyMapCountVOs[0].count
               : data.taskDefKeyMapCountVOs.reduce((prev: any, curr: any) => {
-                  return prev.count + curr.count;
-                });
+                  return prev + curr.count;
+                }, 0);
 
           state.statusOptions.unshift({
             text: `全部状态 ${stateCount}`,
