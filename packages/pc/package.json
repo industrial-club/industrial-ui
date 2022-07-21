@@ -3,7 +3,6 @@
   "version": "0.0.9-rc.35",
   "description": "工业 pc ui库",
   "main": "dist/index.js",
-  "module": "src/index.ts",
   "types": "./dist/types/src/index.d.ts",
   "repository": "https://github.com/industrial-club/industrial-ui",
   "author": "bhabgs",
