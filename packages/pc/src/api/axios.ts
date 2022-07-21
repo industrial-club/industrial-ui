@@ -35,7 +35,7 @@ const getInstance = (opt: { serverName?: string; prefix?: string }) => {
   instance.interceptors.request.use(
     (conf) => {
       const corpId = sessionStorage.getItem("corpId") || getUser()?.corpId;
-      conf.headers.token = getToken();
+      conf.headers.token = getToken() || "";
       conf.headers.userId =
         getUser()?.userId || localStorage.getItem("userId") || "-1";
       conf.headers.userName = getUser()?.userName;
