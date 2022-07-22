@@ -20,6 +20,7 @@ const com = defineComponent({
         pageSize: number;
         current: number;
         total: number;
+        showTotal: any;
       };
       dataSource: Array<any>;
       columns: any;
@@ -32,9 +33,10 @@ const com = defineComponent({
         name: "",
         code: "",
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 10,
         current: 1,
         total: 0,
+        showTotal: (total: number) => `共 ${total} 条`,
       },
       dataSource: [],
       columns: [

@@ -108,7 +108,7 @@ api.saveEventData = async (data: any, createTime: any) => {
 // 事件配置获取
 api.getEventConfig = async (data: EventConfigItem) => {
   return instance.get(
-    `/eventConfig/searchByParam?pageNum=${data.pageNum}&pageSize=${data.pageSize}&eventYypeCode=${data.eventTypeCode}&algoTypeCode=${data.algoTypeCode}`
+    `/eventConfig/searchByParam?pageNum=${data.pageNum}&pageSize=${data.pageSize}&eventTypeCode=${data.eventTypeCode}&algoTypeCode=${data.algoTypeCode}`
   );
 };
 // 事件配置保存
