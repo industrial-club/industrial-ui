@@ -246,14 +246,14 @@ const com = defineComponent({
       interval = setInterval(() => {
         updateVideoState();
       }, 10000);
-      interval2 = setInterval(() => {
-        if (
-          moment().format("hh:mm:ss") === "12:00:00" ||
-          moment().format("hh:mm:ss") === "00:00:00"
-        ) {
-          window.location.reload();
-        }
-      }, 900);
+      // interval2 = setInterval(() => {
+      //   if (
+      //     moment().format("hh:mm:ss") === "12:00:00" ||
+      //     moment().format("hh:mm:ss") === "00:00:00"
+      //   ) {
+      //     window.location.reload();
+      //   }
+      // }, 900);
     });
 
     const pitchOn = (index: number) => {
@@ -386,7 +386,7 @@ const com = defineComponent({
     };
     onBeforeUnmount(() => {
       clearInterval(interval);
-      clearInterval(interval2);
+      // clearInterval(interval2);
       socket.closeSocket();
       overVideo();
     });
