@@ -10,12 +10,16 @@ import {
 
 const APP_TYPE_LIST = [
   {
-    label: "厂矿平台",
-    value: "factory",
+    label: "工矿平台版",
+    value: "mtip-factory",
   },
   {
-    label: "执行单机",
-    value: "single",
+    label: "执行单机版",
+    value: "mtip-base-system",
+  },
+  {
+    label: "设备单机版",
+    value: "mtip-base-device",
   },
   {
     label: "第三方应用",
