@@ -4,6 +4,7 @@
 import { defineComponent, reactive, ref, watch, PropType, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import utils from "@/utils";
+import { getMenuByCode, getParentMenuByCode } from "@/utils/route";
 
 // props
 const props = {
@@ -42,12 +43,7 @@ const LayoutSidebar = defineComponent({
       async () => {
         await nextTick();
         const { menuCode: code } = route.query as any;
-        if (code?.startsWith("http")) {
-          const menuItem = prop.menu.find((item) => item.url === code);
-          state.selectedKeys = [menuItem?.code || ""];
-        } else {
-          state.selectedKeys = [code];
-        }
+        state.selectedKeys = [code];
       },
       { immediate: true }
     );
@@ -70,17 +66,20 @@ const LayoutSidebar = defineComponent({
       }
     };
 
-    // 第一次进来 默认跳转第一个菜单
+    // 第一次进来
     const cancleWatchMenu = watch(
       [() => prop.menu, route],
       async () => {
         await nextTick();
-        if (prop.menu.length && route.query.menuCode !== undefined) {
+        const navCodeList = prop.userMenuTree.map((item: any) => item.code);
+
+        const { menuCode } = route.query as any;
+        const isGroup = route.query.isGroup === "true";
+        const isNavMenu = navCodeList.includes(menuCode);
+        if (prop.menu.length && menuCode) {
           cancleWatchMenu();
-          if (
-            prop.menu.length &&
-            prop.userMenuTree.find((item) => item.code === route.query.menuCode)
-          ) {
+          // 默认跳转第一个菜单
+          if (isNavMenu || isGroup) {
             function findFirstMenu(menu: any) {
               if (Array.isArray(menu.subList) && menu.subList.length) {
                 return findFirstMenu(menu.subList[0]);
@@ -90,11 +89,19 @@ const LayoutSidebar = defineComponent({
             const firstMenu = findFirstMenu(prop.menu[0]);
             toPath(firstMenu);
           }
+          // 递归展开选中的菜单的父级菜单
+          if (!isNavMenu || isGroup) {
+            const menu = getParentMenuByCode(menuCode, prop.menu);
+            if (menu) {
+              state.openKeys = [menu.code];
+            }
+          }
         }
       },
       {
         immediate: true,
         deep: true,
+        flush: "post",
       }
     );
 
@@ -148,6 +155,7 @@ const LayoutSidebar = defineComponent({
       <a-menu
         class="layout-sidebar"
         mode="inline"
+        forceSubMenuRender
         v-models={[
           [state.selectedKeys, "selectedKeys"],
           [state.openKeys, "openKeys"],
