@@ -166,7 +166,7 @@ const UpdateUserDialog = defineComponent({
                     getRequiredRule("用户名"),
                     {
                       pattern: /^[0-9a-zA-Z]*$/g,
-                      message: "只能数字数字和字母",
+                      message: "只能输入数字和字母",
                     },
                   ]}
                 >
