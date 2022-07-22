@@ -104,7 +104,6 @@ class Login {
       return Promise.resolve(res);
       //    router.push("/");
     } else {
-      window.sessionStorage.setItem("token", token);
       if (zxAppType) {
         const headers = {
           appType: zxAppType,
@@ -115,7 +114,6 @@ class Login {
         const { sysUser, token } = res.data;
         this.saveInfo("token", token);
         this.saveInfo("userinfo", JSON.stringify(sysUser));
-
         return Promise.resolve(res);
       } else {
         this.saveInfo("token", token);
