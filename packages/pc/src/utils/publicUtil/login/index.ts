@@ -73,7 +73,7 @@ class Login {
     e?: { username: string; password: string },
     zxAppType?: string
   ) {
-    const { userCode, token, userId, appType } = this.config.queryInfo;
+    const { userCode, token, userId } = this.config.queryInfo;
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};
@@ -102,16 +102,19 @@ class Login {
       this.saveInfo("userinfo", JSON.stringify(sysUser));
 
       return Promise.resolve(res);
-      //    router.push("/");
     } else {
-      window.sessionStorage.setItem("token", token);
+      this.saveInfo("token", token);
       if (zxAppType) {
         const headers = {
           appType: zxAppType,
         };
-        const res = (await this.config.axios.post(this.config.api, data, {
-          headers,
-        })) as any;
+        const res = (await this.config.axios.post(
+          this.config.api,
+          {},
+          {
+            headers,
+          }
+        )) as any;
         const { sysUser, token } = res.data;
         this.saveInfo("token", token);
         this.saveInfo("userinfo", JSON.stringify(sysUser));
