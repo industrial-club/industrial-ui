@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 import pressureFiltrationRecordApi from "@/api/pressureFiltration/pressureFiltrationRecord";
 
 interface formType {
-  shift?: number;
+  shift?: string;
   time?: Array<string>;
   startTime?: string | number;
   endTime?: string | number;
@@ -14,13 +14,15 @@ const productionShiftReport = defineComponent({
   name: "ProductionShiftReport",
   setup(this, props, ctx) {
     const formData = ref<formType>({
-      time: [],
-      shift: 0,
+      shift: "0",
     });
     const columns = ref([]);
 
     // 列表数据
     const dataSource = ref([]);
+
+    // 班次列表
+    const shiftList = ref<Array<{ [key: string]: string }>>([]);
 
     // 分页配置
     const pagination = reactive({
@@ -28,32 +30,39 @@ const productionShiftReport = defineComponent({
       pageSize: 10,
       pageSizeOptions: ["10", "20", "30", "50", "100"],
       total: 0,
-      showQuickJumper: true,
     });
 
-    // 获取列表数据
-    const http = async (data?) => {
-      const res = await pressureFiltrationRecordApi.getFilterShiftLogger(
-        pagination.pageSize,
-        pagination.current,
-        data
-      );
-      if (res.data) {
-        dataSource.value = res.data.list;
-        pagination.current = res.data.pageNum;
-        pagination.total = res.data.total;
-      }
+    const getShiftList = async () => {
+      const res = await pressureFiltrationRecordApi.getShiftList();
+      shiftList.value = res.data;
     };
 
-    // 查询
-    const search = () => {
+    // 获取列表数据
+    const http = async () => {
       const data: formType = {};
       if (formData.value.time && formData.value.time.length > 0) {
         data.startTime = dayjs(formData.value.time[0]).valueOf();
         data.endTime = dayjs(formData.value.time[1]).valueOf();
       }
       data.shift = formData.value.shift;
-      http(data);
+      const res = await pressureFiltrationRecordApi.getFilterShiftLogger(
+        pagination.pageSize,
+        pagination.current,
+        data
+      );
+      if (res.data) {
+        const { body, head } = res.data;
+
+        dataSource.value = body.data;
+        columns.value = head;
+        pagination.current = body.pageNum;
+        pagination.total = body.total;
+      }
+    };
+
+    // 查询
+    const search = () => {
+      http();
     };
 
     // 重置
@@ -64,6 +73,7 @@ const productionShiftReport = defineComponent({
 
     onMounted(() => {
       http();
+      getShiftList();
     });
     return () => (
       <div class="productionShiftReport">
@@ -93,9 +103,11 @@ const productionShiftReport = defineComponent({
                     style={{ width: "100%" }}
                     v-model:value={[formData.value.shift, "value"]}
                   >
-                    <a-select-option value={0}>全部</a-select-option>
-                    <a-select-option value={1}>早班</a-select-option>
-                    <a-select-option value={2}>晚班</a-select-option>
+                    {shiftList.value.map((item) => (
+                      <a-select-option value={item.code}>
+                        {item.text}
+                      </a-select-option>
+                    ))}
                   </a-select>
                 </a-form-item>
               </a-col>
@@ -122,6 +134,19 @@ const productionShiftReport = defineComponent({
               pagination.pageSize = pageSize;
               pagination.total = total;
               http();
+            }}
+            v-slots={{
+              bodyCell: ({ column, record, index }) => {
+                if (column.key === "recordDate") {
+                  return dayjs(record.recordDate).format("YYYY-MM-DD");
+                }
+                if (column.key === "shiftCode") {
+                  const data = shiftList.value.find(
+                    (n) => n.code === `${record.shiftCode}`
+                  );
+                  return data?.text || "--";
+                }
+              },
             }}
           ></a-table>
         </div>
