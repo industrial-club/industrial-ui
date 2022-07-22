@@ -240,12 +240,15 @@ const WarningRecord = defineComponent({
     };
 
     /* ===== 播放报警 ===== */
-    const speech = new SpeechSynthesisUtterance();
-    speech.onend = () => {
-      setTimeout(() => {
-        startSpeech();
-      }, 2000);
-    };
+    let speech: SpeechSynthesisUtterance;
+    try {
+      speech = new SpeechSynthesisUtterance();
+      speech.onend = () => {
+        setTimeout(() => {
+          startSpeech();
+        }, 2000);
+      };
+    } catch (e) {}
     // 语音播报报警内容
     const startSpeech = async () => {
       try {
@@ -285,8 +288,10 @@ const WarningRecord = defineComponent({
     });
 
     onBeforeUnmount(() => {
-      window.speechSynthesis.cancel();
-      speech.onend = null;
+      try {
+        window.speechSynthesis.cancel();
+        speech.onend = null;
+      } catch (e) {}
     });
 
     return () => (
