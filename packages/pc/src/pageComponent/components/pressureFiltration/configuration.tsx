@@ -41,8 +41,10 @@ export default defineComponent({
         instanceId,
       });
       if (res.data === "ok") {
-        message.success("下发成功");
-        _ctx.emit("refresh");
+        setTimeout(() => {
+          message.success("下发成功");
+          _ctx.emit("refresh");
+        }, 100);
       }
     };
 
@@ -131,7 +133,10 @@ export default defineComponent({
           <a-row gutter={24}>
             {dataList.value.map((item) => (
               <a-col span={8}>
-                <a-form-item label={item.desc} colon={false}>
+                <a-form-item
+                  label={`${item.instanceCode}${item.desc}`}
+                  colon={false}
+                >
                   {inputType(item)}
                 </a-form-item>
               </a-col>

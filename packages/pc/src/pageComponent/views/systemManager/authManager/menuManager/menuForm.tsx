@@ -10,12 +10,16 @@ import {
 
 const APP_TYPE_LIST = [
   {
-    label: "厂矿平台",
-    value: "factory",
+    label: "工矿平台版",
+    value: "mtip-factory",
   },
   {
-    label: "执行单机",
-    value: "single",
+    label: "执行单机版",
+    value: "mtip-base-system",
+  },
+  {
+    label: "设备单机版",
+    value: "mtip-base-device",
   },
   {
     label: "第三方应用",
@@ -55,7 +59,7 @@ const MenuForm = defineComponent({
 
     /* ===== URL参数逻辑 ===== */
     // 应用类型
-    const appType = ref("factory");
+    const appType = ref<string | undefined>("mtip-factory");
 
     const isWithOrigin = computed(() => form.value.url.startsWith("http"));
     const fullUrl = computed(() => {
@@ -67,68 +71,72 @@ const MenuForm = defineComponent({
       return res;
     });
 
+    const searchParams = computed(() => {
+      try {
+        const url = new URL(fullUrl.value);
+        let finnalUrl = url;
+        if (url.hash) {
+          finnalUrl = new URL(url.hash.replace("#", location.origin));
+        }
+        return finnalUrl.searchParams;
+      } catch (e) {
+        console.error(e);
+        return new URLSearchParams();
+      }
+    });
+
     // 回显应用类型
     watch(
       () => form.value.url,
       () => {
-        try {
-          const url = new URL(fullUrl.value);
-          const type = url.searchParams.get("appType");
-          if (type) {
-            appType.value = type;
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      },
-      { immediate: true }
-    );
-
-    watch(
-      [appType, () => form.value.mode],
-      ([val, mode]) => {
-        if (mode === 0) return;
-        try {
-          const url = new URL(fullUrl.value);
-          url.searchParams.set("appType", val);
-          form.value.url = isWithOrigin.value
-            ? url.href
-            : url.href.replace(location.origin, "");
-        } catch (e) {
-          console.log(e);
-        }
+        appType.value =
+          searchParams.value.get("appType") ?? APP_TYPE_LIST[0].value;
       },
       { immediate: true }
     );
 
     // 参数列表
     const paramList = computed(() => {
-      try {
-        const url = new URL(fullUrl.value);
-        const res: { key: string; value: string }[] = [];
-        url.searchParams.forEach((val, key) => {
-          res.push({
-            key,
-            value: val,
-          });
+      const res: any[] = [];
+      searchParams.value.forEach((val, key) => {
+        res.push({
+          key,
+          value: val,
         });
-        return res;
-      } catch (e) {
-        console.log(e);
-      }
+      });
+      return res;
     });
 
-    // 移除一个参数
-    const handleRemoveParam = (item: any) => {
+    // 更改/删除 参数
+    const modifyParam = ({ key, value }: any, isRemove = false) => {
       try {
         const url = new URL(fullUrl.value);
-        url.searchParams.delete(item.key);
+        if (url.hash) {
+          const converceUrl = new URL(url.hash.replace("#", location.origin));
+          if (isRemove) {
+            converceUrl.searchParams.delete(key);
+          } else {
+            converceUrl.searchParams.set(key, value);
+          }
+          url.hash = converceUrl.href.replace(location.origin, "#");
+        } else {
+          if (isRemove) {
+            url.searchParams.delete(key);
+          } else {
+            url.searchParams.set(key, value);
+          }
+        }
         form.value.url = isWithOrigin.value
           ? url.href
           : url.href.replace(location.origin, "");
       } catch (e) {
         console.log(e);
       }
+    };
+
+    // 移除一个参数
+    const handleRemoveParam = (item: any) => {
+      modifyParam(item, true);
     };
 
     // 添加参数
@@ -138,20 +146,19 @@ const MenuForm = defineComponent({
     });
     const isAddParam = ref(false);
     const handleAddParam = () => {
-      try {
-        const url = new URL(fullUrl.value);
-        url.searchParams.set(newParam.value.key, newParam.value.value);
-        form.value.url = isWithOrigin.value
-          ? url.href
-          : url.href.replace(location.origin, "");
-        newParam.value = {
-          key: "",
-          value: "",
-        };
-      } catch (e) {
-        console.log(e);
-      }
+      modifyParam(newParam.value);
+      newParam.value.key = "";
+      newParam.value.value = "";
     };
+
+    watch(
+      [appType, () => form.value.mode],
+      ([val, mode]) => {
+        if (mode === 0) return;
+        modifyParam({ key: "appType", value: appType.value });
+      },
+      { immediate: true }
+    );
 
     expose({
       _validate: async () => {

@@ -59,7 +59,7 @@ const column = [
     dataIndex: "createDt",
   },
   {
-    title: "启动",
+    title: "启用",
     index: "valid",
     slots: { customRender: "valid" },
   },

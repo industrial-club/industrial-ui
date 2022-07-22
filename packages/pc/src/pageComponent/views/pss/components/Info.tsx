@@ -63,6 +63,8 @@ export default defineComponent({
         name: props.detail.taskName,
         processInstanceId: props.detail.processInstanceId,
         taskDefinitionKey: props.detail.taskDefKey,
+        taskFlag: props.detail.taskFlag,
+        taskStatus: props.detail.taskStatus,
         properties: {
           startTime: props.detail.applyDt,
           stopTime: props.detail.planStopPowerDt,
@@ -88,6 +90,8 @@ export default defineComponent({
         name: props.detail.taskName,
         processInstanceId: props.detail.processInstanceId,
         taskDefinitionKey: props.detail.taskDefKey,
+        taskFlag: props.detail.taskFlag,
+        taskStatus: props.detail.taskStatus,
         properties: {
           startTime: props.detail.applyDt,
           stopTime: props.detail.planStopPowerDt,
@@ -113,6 +117,8 @@ export default defineComponent({
         name: props.detail.taskName,
         processInstanceId: props.detail.processInstanceId,
         taskDefinitionKey: props.detail.taskDefKey,
+        taskFlag: props.detail.taskFlag,
+        taskStatus: props.detail.taskStatus,
         properties: {
           startTime: props.detail.applyDt,
           stopTime: props.detail.planStopPowerDt,
@@ -248,9 +254,11 @@ export default defineComponent({
                 <Row gutter={24}>
                   <Col span={8}>
                     <div class="label">当前状态:</div>
-                    <div class={["stateNode", dataObj.value.taskFlag]}>
-                      {dataObj.value.taskStatus}
-                    </div>
+                    {dataObj.value.taskStatus && (
+                      <div class={["stateNode", dataObj.value.taskFlag]}>
+                        {dataObj.value.taskStatus}
+                      </div>
+                    )}
                   </Col>
                   <Col span={8}>
                     <div class="label">设备名称:</div>
@@ -398,6 +406,7 @@ export default defineComponent({
                         >
                           <div>{pro.activityName}</div>
                           <div>{pro.assigneeName || "-"}</div>
+                          <div>{pro.comments}</div>
                         </div>
                         <div class="time">
                           {pro.endTime && dayjs(pro.endTime).format(Format)}
