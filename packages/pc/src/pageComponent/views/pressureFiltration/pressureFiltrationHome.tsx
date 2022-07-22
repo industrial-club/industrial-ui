@@ -8,6 +8,7 @@ import { Modal } from "ant-design-vue";
 
 const props = {
   pressureFiltrationPng: String,
+  homeType: String,
 };
 interface popButtonItem {
   buttonName: string;
@@ -164,7 +165,7 @@ const pressureFiltrationHome = defineComponent({
       timerOut = null;
     });
     return () => (
-      <div class="pressureFiltrationHome">
+      <div class={`pressureFiltrationHome ${_props.homeType}`}>
         <div class="pressureFiltrationHome-left">
           <img
             src={_props.pressureFiltrationPng}
@@ -185,24 +186,28 @@ const pressureFiltrationHome = defineComponent({
             >
               班次交接
             </a-button>
-            <a-button
-              block
-              class="but"
-              onClick={() => {
-                _context.emit("goRoute", "/configuration");
-              }}
-            >
-              压滤配置
-            </a-button>
-            <a-button
-              block
-              class="but"
-              onClick={() => {
-                _context.emit("goRoute", "/pressureFiltrationJournal");
-              }}
-            >
-              压滤记录
-            </a-button>
+            {_props.homeType === "pad" ? (
+              <>
+                <a-button
+                  block
+                  class="but"
+                  onClick={() => {
+                    _context.emit("goRoute", "/configuration");
+                  }}
+                >
+                  压滤配置
+                </a-button>
+                <a-button
+                  block
+                  class="but"
+                  onClick={() => {
+                    _context.emit("goRoute", "/pressureFiltrationJournal");
+                  }}
+                >
+                  压滤记录
+                </a-button>
+              </>
+            ) : null}
           </div>
           <parameter data={parameterData.value}></parameter>
           <alarmList data={filterAlarmList.value}></alarmList>
