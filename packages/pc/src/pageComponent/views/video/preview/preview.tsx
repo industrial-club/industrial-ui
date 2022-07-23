@@ -229,6 +229,15 @@ const com = defineComponent({
     const fullScreenType = ref(false);
     const sizeDataRef: any = ref(null);
     let interval2: any;
+    const refresh = () => {
+      imgType.numList.forEach((ele: any, index: number) => {
+        if (imgType.videoActiveList[index]?.data.onlineStatus === "ONLINE") {
+          playVideo.play[index].stopPlay(imgType.videoActiveList[index].id);
+          stopV(imgType.videoActiveList[index].id);
+        }
+      });
+      loadHistory();
+    };
     onMounted(async () => {
       if (props.serverName) {
         videoApi.setInstance(props.serverName);
@@ -243,17 +252,19 @@ const com = defineComponent({
           sizeDataRef.value.sizeData.fullScreen = false;
         }
       };
+
       interval = setInterval(() => {
         updateVideoState();
       }, 10000);
-      // interval2 = setInterval(() => {
-      //   if (
-      //     moment().format("hh:mm:ss") === "12:00:00" ||
-      //     moment().format("hh:mm:ss") === "00:00:00"
-      //   ) {
-      //     window.location.reload();
-      //   }
-      // }, 900);
+      interval2 = setInterval(() => {
+        refresh();
+        // if (
+        //   moment().format("hh:mm:ss") === "12:00:00" ||
+        //   moment().format("hh:mm:ss") === "00:00:00"
+        // ) {
+        //   window.location.reload();
+        // }
+      }, 60 * 60 * 1000);
     });
 
     const pitchOn = (index: number) => {
@@ -322,8 +333,12 @@ const com = defineComponent({
       return true;
     };
 
-    const closeVideo = (e: any, index: any) => {
-      e.stopPropagation();
+    const closeVideo = (index: any, e?: any) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      if (imgType.videoActiveList[index]) {
+      }
       treeItemRef.value.remoSelectValue(
         imgType.videoActiveList[index].eventKey
       );
@@ -386,7 +401,7 @@ const com = defineComponent({
     };
     onBeforeUnmount(() => {
       clearInterval(interval);
-      // clearInterval(interval2);
+      clearInterval(interval2);
       socket.closeSocket();
       overVideo();
     });
@@ -747,7 +762,7 @@ const com = defineComponent({
                           ""
                         )}
                         <img
-                          onClick={(e: any) => closeVideo(e, index)}
+                          onClick={(e: any) => closeVideo(index, e)}
                           src={"/micro-assets/inl/video/close.png"}
                         />
                       </div>
