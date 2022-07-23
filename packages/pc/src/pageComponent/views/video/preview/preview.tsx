@@ -229,6 +229,7 @@ const com = defineComponent({
     const fullScreenType = ref(false);
     const sizeDataRef: any = ref(null);
     let interval2: any;
+    let interval2Time = "8";
     const refresh = () => {
       imgType.numList.forEach((ele: any, index: number) => {
         if (imgType.videoActiveList[index]?.data.onlineStatus === "ONLINE") {
@@ -252,7 +253,11 @@ const com = defineComponent({
           sizeDataRef.value.sizeData.fullScreen = false;
         }
       };
-
+      if (localStorage.getItem("videoFreshTime")) {
+        interval2Time = localStorage.getItem("videoFreshTime")!;
+      } else {
+        localStorage.setItem("videoFreshTime", "8");
+      }
       interval = setInterval(() => {
         updateVideoState();
       }, 10000);
@@ -264,7 +269,7 @@ const com = defineComponent({
         // ) {
         //   window.location.reload();
         // }
-      }, 60 * 60 * 1000);
+      }, parseInt(interval2Time) * 60 * 60 * 1000);
     });
 
     const pitchOn = (index: number) => {
