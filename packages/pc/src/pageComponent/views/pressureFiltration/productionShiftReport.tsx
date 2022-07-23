@@ -67,7 +67,9 @@ const productionShiftReport = defineComponent({
 
     // 重置
     const reset = () => {
-      formData.value = {};
+      formData.value = {
+        shift: "0",
+      };
       http();
     };
 
