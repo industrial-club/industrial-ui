@@ -74,6 +74,9 @@ class Login {
     zxAppType?: string
   ) {
     const { userCode, token, userId } = this.config.queryInfo;
+    if (token) {
+      this.saveInfo("token", token);
+    }
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};
@@ -103,7 +106,6 @@ class Login {
 
       return Promise.resolve(res);
     } else {
-      this.saveInfo("token", token);
       if (zxAppType) {
         const headers = {
           appType: zxAppType,
@@ -118,7 +120,6 @@ class Login {
         const { sysUser, token } = res.data;
         this.saveInfo("token", token);
         this.saveInfo("userinfo", JSON.stringify(sysUser));
-
         return Promise.resolve(res);
       } else {
         this.saveInfo("token", token);
