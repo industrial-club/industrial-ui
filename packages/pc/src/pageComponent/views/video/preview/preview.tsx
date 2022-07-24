@@ -177,7 +177,7 @@ const com = defineComponent({
       trans?.tempArr.forEach((ele: any, index: number) => {
         let have = false;
         data.videoList.forEach((video: any) => {
-          if (ele && ele.data.uuid === video.uuid) {
+          if (ele && ele.data?.uuid === video?.uuid) {
             ele.data = video;
             have = true;
           }
@@ -206,7 +206,7 @@ const com = defineComponent({
       imgType.videoActiveList.forEach((ele: any) => {
         if (ele) {
           const videoRes = data.videoList.find(
-            (video: any) => video.uuid === ele.data.uuid
+            (video: any) => video?.uuid === ele.data?.uuid
           );
           ele.data = videoRes;
         }
@@ -287,7 +287,7 @@ const com = defineComponent({
       if (
         stream === undefined &&
         imgType.videoActiveList[index] &&
-        imgType.videoActiveList[index].data.uuid === uuid
+        imgType.videoActiveList[index].data?.uuid === uuid
       ) {
         return false;
       }
@@ -295,7 +295,7 @@ const com = defineComponent({
       for (let i = 0; i < imgType.videoActiveList.length; i++) {
         if (
           imgType.videoActiveList[i] &&
-          imgType.videoActiveList[i].data.uuid === uuid
+          imgType.videoActiveList[i].data?.uuid === uuid
         ) {
           playVideo.play[i].stopPlay(imgType.videoActiveList[i].id);
           treeItemRef.value.remoSelectValue(
@@ -314,7 +314,7 @@ const com = defineComponent({
         imgType.videoActiveList[index] = null;
       }
 
-      const video = data.videoList.find((ele: any) => ele.uuid === uuid);
+      const video = data.videoList.find((ele: any) => ele?.uuid === uuid);
       const item: any = {
         data: video,
         id: `video${index + 1}`,
@@ -370,7 +370,7 @@ const com = defineComponent({
     const videoMove = async (e: any, index: number, direction: number) => {
       e.stopPropagation();
       const res: any = await videoApi.setDirection({
-        uuid: imgType.videoActiveList[index].data.uuid,
+        uuid: imgType.videoActiveList[index].data?.uuid,
         direction,
       });
       message.success("下发成功");
@@ -663,7 +663,7 @@ const com = defineComponent({
                                     class="btn"
                                     onClick={() => {
                                       changeVideo(
-                                        rectData.data.uuid,
+                                        rectData.data?.uuid,
                                         rectData.eventKey,
                                         index,
                                         stream.code
@@ -783,7 +783,7 @@ const com = defineComponent({
                   }}
                   onDrop={() => {
                     changeVideo(
-                      dragNode.value.uuid,
+                      dragNode.value?.uuid,
                       dragNode.value.eventKey,
                       index
                     );
