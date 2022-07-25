@@ -4,8 +4,7 @@
   "description": "工业ui",
   "main": "index.js",
   "workspaces": [
-    "packages/*",
-    "mtip-factory"
+    "packages/*"
   ],
   "scripts": {
     "ln": "lerna",
