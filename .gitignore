@@ -7,5 +7,7 @@ test-*
 lib
 mtip-factory
 mtip-*
+tpf
+tpf-*
 test-theme
 quick-start-cra
