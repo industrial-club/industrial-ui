@@ -5,50 +5,57 @@
     height: 100vh;
     width: 100vw;
     display: grid;
+    overflow: hidden;
+    &.layout1 {
+      grid-template-areas: "a";
+    }
+    &.layout4 {
+      grid-template-areas:
+        "a b"
+        "c d";
+    }
+    &.layout8 {
+      grid-template-areas:
+        "a a a b"
+        "a a a c"
+        "a a a d"
+        "e f g h";
+    }
+    &.layout9 {
+      grid-template-areas:
+        "a b c"
+        "d e f"
+        "g h i";
+    }
+    &.layout13 {
+      grid-template-areas:
+        "a a b c"
+        "a a d e"
+        "f g h i"
+        "j k l m";
+    }
+    &.layout16 {
+      grid-template-areas:
+        "a b c d"
+        "e f g h"
+        "i j k l"
+        "m n o p";
+    }
+    .layout-item {
+      min-height: 100%;
+      height: 0;
+      min-width: 100%;
+      width: 0;
+      overflow: hidden;
+    }
     each(@list, {
       .layout-item:nth-of-type(@{index}) {
         grid-area: @value;
       }
     });
-    &.layout1 {
-      grid-template-areas: 'a';
-    }
-    &.layout4 {
-      grid-template-areas:
-        'a b'
-        'c d';
-    }
-    &.layout8 {
-      grid-template-areas:
-        'a a a b'
-        'a a a c'
-        'a a a d'
-        'e f g h';
-    }
-    &.layout9 {
-      grid-template-areas:
-        'a b c'
-        'd e f'
-        'g h i';
-    }
-    &.layout13 {
-      grid-template-areas:
-        'a a b c'
-        'a a d e'
-        'f g h i'
-        'j k l m';
-    }
-    &.layout16 {
-      grid-template-areas:
-        'a b c d'
-        'e f g h'
-        'i j k l'
-        'm n o p';
-    }
     .camera {
       height: 100%;
-      width: 100%;
-      overflow: hidden;
+      border: 1px solid #fff;
       .placeholder {
         height: 100%;
         width: 100%;

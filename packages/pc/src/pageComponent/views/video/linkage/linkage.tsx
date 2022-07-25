@@ -158,15 +158,21 @@ const com = defineComponent({
                 if (column.key === "action") {
                   return (
                     <a-space>
-                      <a
-                        onClick={() => {
-                          window.open(
-                            `/mtip-factory/#/intelligentCentralizedControl/videoManager/play?uuid=${record.itemCodeGroup}&modeCode=${record.modeCode}`
-                          );
+                      <router-link
+                        target="_BLANK"
+                        rel="opener"
+                        to={{
+                          path: "/intelligentCentralizedControl/videoManager/play",
+                          query: {
+                            groupCode: record.itemCodeGroup,
+                            modeCode: record.modeCode,
+                            splicingId: record.splicingId,
+                            cameraUuids: record.cameraUuids,
+                          },
                         }}
                       >
                         播放
-                      </a>
+                      </router-link>
                       <a onClick={() => this.handleEditClick(record)}>编辑</a>
                       <a-popconfirm
                         title="确定删除？"
