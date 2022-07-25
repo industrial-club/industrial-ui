@@ -103,3 +103,39 @@ export const sendStateFilter = (val, data) => {
     return sendState;
   }
 };
+
+// 配电柜数据处理
+export const elcRoomFilter = (data) => {
+  function loopStatusF(v) {
+    switch (v) {
+      case "0" || 0:
+        return "unknown";
+        break;
+      case "1" || 1:
+        return "charged";
+        break;
+      case "2" || 2:
+        return "blackout";
+        break;
+      default:
+        return "unknown";
+        break;
+    }
+  }
+  let datas: any = [];
+  for (const key in data) {
+    const list = data[key].cabinetListDtos.map((item, index) => ({
+      row: data[key].row,
+      col: index + 1,
+      prepareOffAndOnCount: item.layerCount,
+      cabinetName: "配电柜",
+      cabinetCode: item.cabinetName,
+      child: item.cardDtos.map((val) => ({
+        powerOffPlateCount: val.loopLockCount,
+        loopStatus: loopStatusF(val.loopStatus),
+      })),
+    }));
+    datas = [...datas, ...list];
+  }
+  return datas;
+};
