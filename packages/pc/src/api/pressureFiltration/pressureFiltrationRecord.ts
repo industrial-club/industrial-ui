@@ -42,6 +42,13 @@ const pressureFiltrationRecordApi = {
       data
     );
   },
+
+  /**
+   * getShiftList
+   */
+  getShiftList() {
+    return instance.get(`/business/combobox/getShiftList`);
+  },
 };
 
 export default pressureFiltrationRecordApi;

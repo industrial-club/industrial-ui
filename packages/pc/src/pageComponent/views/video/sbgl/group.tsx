@@ -57,6 +57,7 @@ const com = defineComponent({
     const searchValue: any = ref<string>("");
     const autoExpandParent = ref<boolean>(true);
     const gData: any = ref();
+    let treeDataRecord;
     const data: any = reactive({
       titleType: 0,
       move: false,
