@@ -19,30 +19,43 @@ const com = defineComponent({
   setup() {
     const route = useRoute();
     // 相机id列表(默认携带)
-    const cameraUuids = ref(
-      (route.query.uuid as string | undefined)?.split(",") ?? []
-    );
     // 模式code
-    const { modeCode } = route.query;
+    const {
+      modeCode,
+      groupCode,
+      cameraUuids,
+      splicingId: layoutCount,
+    } = route.query as any;
+
+    // 视频播放列表
+    const playList = ref<any[]>([]);
+
+    // 初始化播放列表
+    onMounted(() => {
+      const cameraUuidsList = cameraUuids.split(",");
+      const groupCodeList = groupCode.split(",");
+      cameraUuidsList.forEach((item: any, index: number) => {
+        playList.value.push({
+          layout: Number(groupCodeList[index]),
+          uuid: item,
+        });
+      });
+    });
 
     onMounted(() => {
+      // 通过socket接收播放列表变化
       if (modeCode) {
-        // ws = new WebSocket(
-        //   `ws://${window.location.host}/api/vms/v1/associatedWebSocket/${modeCode}`,
-        // );
-        // ws.onmessage = ({ data }) => {
-        //   const camaraList = JSON.parse(data).list;
-        //   cameraUuids.value = camaraList.map((item: any) => item.cameraUuid);
-        // };
         socket.initSocket(
           `http://${window.location.host}`,
           `/vmsWebsocket/associatedWebSocket/${modeCode}`,
           5000,
           "1",
           (data) => {
-            if (data === 1) return;
-            const camaraList = data.list;
-            cameraUuids.value = camaraList.map((item: any) => item.cameraUuid);
+            if (data === 1 || !data?.list) return;
+            playList.value = data.list.map((item: any) => ({
+              layout: Number(item.posId),
+              uuid: item.cameraUuid,
+            }));
           },
           (e) => {
             //
@@ -61,27 +74,31 @@ const com = defineComponent({
     });
 
     return {
-      cameraUuids,
+      layoutCount: Number(layoutCount),
+      playList,
     };
   },
   render() {
     return (
       <div class="play">
-        {this.cameraUuids?.length ? (
-          <div class={["layout", `layout${this.cameraUuids.length}`]}>
-            {this.cameraUuids.map((item, index) => (
-              <div key={item} class={["camera", `camera${index + 1}`]}>
-                {item ? (
-                  <PlayVideos key={item} cameraUuid={item} />
-                ) : (
-                  <div class="placeholder"></div>
-                )}
+        <div class={["layout", `layout${this.layoutCount}`]}>
+          {Array.from({ length: this.layoutCount }).map((_, index) => {
+            const play = this.playList.find(
+              (item: any) => item.layout === index + 1
+            );
+            return (
+              <div class="layout-item">
+                <div class={["camera", `camera${index + 1}`]}>
+                  {play ? (
+                    <PlayVideos key={play.uuid} cameraUuid={play.uuid} />
+                  ) : (
+                    <div class="layout-item placeholder"></div>
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <a-empty description="视频列表为空"></a-empty>
-        )}
+            );
+          })}
+        </div>
       </div>
     );
   },
