@@ -162,9 +162,9 @@ export default defineComponent({
         return;
       }
       collctData.concernUuid = "";
-      collctData?.uuid = "";
+      collctData.uuid && (collctData.uuid = "");
       e.stopPropagation();
-      collctData?.uuid = item?.uuid;
+      collctData.uuid && (collctData.uuid = item?.uuid);
       getConcern();
       collectVisible.value = true;
     };
