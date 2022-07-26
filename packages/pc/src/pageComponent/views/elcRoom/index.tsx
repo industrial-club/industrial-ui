@@ -47,9 +47,12 @@ const elcRoom = defineComponent({
   setup() {
     const elcRoomList = ref([]);
     const visible = ref(false);
-    const data = reactive({
-      roomId: 0,
-      name: "",
+    const data = reactive<{
+      roomId: number | null;
+      name: string | null;
+    }>({
+      roomId: null,
+      name: null,
     });
     const http = async () => {
       const res = await getCabinetRoomList();
@@ -84,11 +87,17 @@ const elcRoom = defineComponent({
         ></a-table>
         <a-modal
           v-model={[visible.value, "visible"]}
+          onCancel={() => {
+            data.roomId = null;
+            data.name = null;
+          }}
           width="100%"
           footer={false}
           wrap-class-name="elcRoom-full-modal"
         >
-          <elcRoomHt roomId={data.roomId} name={data.name}></elcRoomHt>
+          {visible.value ? (
+            <elcRoomHt roomId={data.roomId} name={data.name}></elcRoomHt>
+          ) : null}
         </a-modal>
       </div>
     );

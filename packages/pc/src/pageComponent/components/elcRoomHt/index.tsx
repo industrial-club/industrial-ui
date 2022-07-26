@@ -2,12 +2,14 @@ import { defineComponent, onMounted } from "vue";
 import renderCabinet from "@/pageComponent/components/pss-cabinet/cabinetRender";
 import { getCabinetRoomDetails } from "@/api/tupu";
 import { elcRoomFilter } from "@/pageComponent/utils/filter";
+import { message } from "ant-design-vue";
+import dayjs from "dayjs";
 
 const props = {
   name: String,
   roomId: Number,
 };
-
+const unix = dayjs().valueOf();
 export default defineComponent({
   name: "ElcRoomHt",
   props,
@@ -74,20 +76,24 @@ export default defineComponent({
       new ht.DataModel();
       const tupuCanvas = document.getElementById("tupu");
       const res = await getCabinetRoomDetails(_props.roomId);
-      const data = {
-        roomId: _props.roomId,
-        roomName: _props.name,
-        child: elcRoomFilter(res.data),
-      };
-      allCabinetData = handleCabinetData(data);
-      const obj: any = {
-        data: allCabinetData,
-        renderState: "group",
-      };
-      const cabinet = new renderCabinet({
-        domId: "tupu",
-        ...obj,
-      });
+      if (res.data) {
+        const data = {
+          roomId: _props.roomId,
+          roomName: _props.name,
+          child: elcRoomFilter(res.data),
+        };
+        allCabinetData = handleCabinetData(data);
+        const obj: any = {
+          data: allCabinetData,
+          renderState: "group",
+        };
+        const cabinet = new renderCabinet({
+          domId: `tupu${unix}`,
+          ...obj,
+        });
+      } else {
+        message.error("无数据");
+      }
 
       // (window as any).cabinetLoopClick = this.loopClick;
       // (window as any).rowClick = this.rowClick;
@@ -104,6 +110,6 @@ export default defineComponent({
       //   };
       // });
     });
-    return () => <div id="tupu"></div>;
+    return () => <div id={`tupu${unix}`}></div>;
   },
 });
