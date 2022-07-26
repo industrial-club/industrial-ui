@@ -30,6 +30,10 @@ const com = defineComponent({
       type: String,
       default: "",
     },
+    playPagePath: {
+      type: String,
+      default: "/intelligentCentralizedControl/videoManager/play",
+    },
   },
   setup(props, context) {
     const form = ref({ modeName: "", modeCode: "" });
@@ -162,7 +166,7 @@ const com = defineComponent({
                         target="_BLANK"
                         rel="opener"
                         to={{
-                          path: "/intelligentCentralizedControl/videoManager/play",
+                          path: this.playPagePath,
                           query: {
                             groupCode: record.itemCodeGroup,
                             modeCode: record.modeCode,
