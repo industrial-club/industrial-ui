@@ -4,6 +4,7 @@ import parameter from "@/pageComponent/components/pressureFiltration/numberOfPla
 import alarmList from "@/pageComponent/components/pressureFiltration/alarmList";
 import pressureFiltrationHomeApi from "@/api/pressureFiltration/pressureFiltrationHome";
 import shiftChange from "@/pageComponent/components/pressureFiltration/shiftChange";
+import htModal from "@/pageComponent/components/htModal";
 import { Modal } from "ant-design-vue";
 
 const props = {
@@ -32,6 +33,7 @@ const pressureFiltrationHome = defineComponent({
     parameter,
     alarmList,
     shiftChange,
+    htModal,
   },
   props,
   emits: ["goRoute"],
@@ -53,6 +55,11 @@ const pressureFiltrationHome = defineComponent({
 
     // 带料弹窗显示隐藏
     const visible = ref(false);
+
+    // 图扑流程图弹窗
+    const htVisible = ref(false);
+    // 图扑流程图弹窗title
+    const htTitle = ref("漏斗");
 
     // 定时器实例
     let timerOut: NodeJS.Timeout | null;
@@ -224,6 +231,18 @@ const pressureFiltrationHome = defineComponent({
             }}
             data={shiftChangeData.value}
           ></shiftChange>
+        </a-modal>
+        <a-modal
+          v-model={[htVisible.value, "visible"]}
+          title={htTitle.value}
+          centered
+          width={600}
+          footer={false}
+          mask={false}
+          maskClosable={false}
+          class="htVisible"
+        >
+          <htModal></htModal>
         </a-modal>
       </div>
     );

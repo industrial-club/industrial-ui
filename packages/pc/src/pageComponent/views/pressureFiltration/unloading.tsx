@@ -39,6 +39,7 @@ const unloading = defineComponent({
             <configuration
               title="卸料判断模式"
               form={pageParamList.unload.adjustModel}
+              showInstanceCode
               onRefresh={() => {
                 http();
               }}

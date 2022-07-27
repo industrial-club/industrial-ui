@@ -1,0 +1,20 @@
+.control {
+  display: flex;
+  &-left {
+    margin-right: 20px;
+  }
+  &-right {
+    flex: 1;
+    margin-left: 20px;
+    &-content {
+      margin-top: 10px;
+      height: calc(100% - 32px);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      .ant-btn {
+        width: 80%;
+      }
+    }
+  }
+}
