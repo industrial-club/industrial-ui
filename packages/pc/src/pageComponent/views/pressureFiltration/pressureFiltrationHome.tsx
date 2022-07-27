@@ -5,6 +5,7 @@ import alarmList from "@/pageComponent/components/pressureFiltration/alarmList";
 import pressureFiltrationHomeApi from "@/api/pressureFiltration/pressureFiltrationHome";
 import shiftChange from "@/pageComponent/components/pressureFiltration/shiftChange";
 import { Modal } from "ant-design-vue";
+import tpInit from "@/tpInit";
 
 const props = {
   pressureFiltrationPng: String,
@@ -35,6 +36,11 @@ const pressureFiltrationHome = defineComponent({
   props,
   emits: ["goRoute"],
   setup(_props, _context) {
+    let reloadFun: any;
+    onMounted(async () => {
+      const { reloadUrl } = await tpInit(document.getElementById("tp"), 3000);
+      reloadFun = reloadUrl;
+    });
     // 板数数据
     const parameterData = ref([]);
 
@@ -150,6 +156,9 @@ const pressureFiltrationHome = defineComponent({
       getFilterAlarmList();
     }, 3000);
 
+    // setInterval(() => {
+    //   reloadFun("displays/factory/xinjulong/filter.json");
+    // }, 100000);
     onMounted(() => {
       http();
       getQuery();
@@ -166,11 +175,13 @@ const pressureFiltrationHome = defineComponent({
     return () => (
       <div class="pressureFiltrationHome">
         <div class="pressureFiltrationHome-left">
-          <img
-            src={_props.pressureFiltrationPng}
-            style={{ width: "100%", height: "100%" }}
-            alt=""
-          />
+          <div
+            id="tp"
+            style={{
+              height: "100%",
+              position: "relative",
+            }}
+          ></div>
         </div>
         <div class="pressureFiltrationHome-right">
           <div class="pressureFiltrationHome-right-control">
