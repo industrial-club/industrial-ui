@@ -43,41 +43,35 @@ export default async (dom: unknown, time: number) => {
     dm?.getDataByTag("st_8036").setAttr("st.v", randomNum(69, 73).toString());
     dm?.getDataByTag("st_8036").setAttr("st.v", randomNum(69, 73).toString());
     dm?.getDataByTag("nsj_6004").setAttr(
-      "num1",
-      `${(Math.random() * 3 + 26).toFixed(0)}`
-    );
-
-    dm?.getDataByTag("B").setAttr(
-      "num1",
-      `${(Math.random() * 4 + 27).toFixed(0)}`
-    );
-    dm?.getDataByTag("B").setAttr(
       "num2",
       `${(Math.random() * 3 + 25).toFixed(0)}`
     );
-
+    dm?.getDataByTag("B").setAttr(
+      "num1",
+      `${(Math.random() * 4 + 26).toFixed(0)}`
+    );
+    dm?.getDataByTag("B").setAttr(
+      "num2",
+      `${(Math.random() * 3 + 24).toFixed(0)}`
+    );
     dm?.getDataByTag("ylj_8054").setAttr("min", "2.5");
     dm?.getDataByTag("ylj_8054").setAttr("max", "2.8");
     const v1 =
       dm?.getDataByTag("ylj_8054").getAttr("time") ||
       dm?.getDataByTag("ylj_8054").getAttr("t1");
     dm?.getDataByTag("ylj_8054").setAttr("time", (Number(v1) + 1).toString());
-
     const v2 =
       dm?.getDataByTag("ylj_8055").getAttr("time") ||
       dm?.getDataByTag("ylj_8055").getAttr("t1");
     dm?.getDataByTag("ylj_8055").setAttr("time", (Number(v2) + 1).toString());
-
     const v3 =
       dm?.getDataByTag("ylj_8056").getAttr("time") ||
       dm?.getDataByTag("ylj_8056").getAttr("t1");
     dm?.getDataByTag("ylj_8056").setAttr("time", (Number(v3) + 1).toString());
-
     const v4 =
       dm?.getDataByTag("AAAAAAA").getAttr("time") ||
       dm?.getDataByTag("AAAAAAA").getAttr("t1");
     dm?.getDataByTag("AAAAAAA").setAttr("time", (Number(v4) + 1).toString());
-
     dm?.getDataByTag("ylj_8054").setAttr(
       "fl",
       `${(Math.random() * (2.8 - 2.5 + 1) + 2.5).toFixed(1)}m³/h`
