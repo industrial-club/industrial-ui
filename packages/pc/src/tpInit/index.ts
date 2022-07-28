@@ -46,10 +46,10 @@ export default async (dom: unknown, time: number) => {
     dm?.getDataByTag("nsj_6004").setAttr("max", "28");
     dm?.getDataByTag("nsj_6004").setAttr("max2", "26");
     dm?.getDataByTag("nsj_6004").setAttr("max2", "28");
-    dm?.getDataByTag("nsj_6003").setAttr("min", "27");
-    dm?.getDataByTag("nsj_6003").setAttr("max", "30");
-    dm?.getDataByTag("nsj_6003").setAttr("max2", "27");
-    dm?.getDataByTag("nsj_6003").setAttr("min2", "25");
+    dm?.getDataByTag("B").setAttr("min", "27");
+    dm?.getDataByTag("B").setAttr("max", "30");
+    dm?.getDataByTag("B").setAttr("max2", "27");
+    dm?.getDataByTag("B").setAttr("min2", "25");
     dm?.getDataByTag("ylj_8054").setAttr("min", "2.5");
     dm?.getDataByTag("ylj_8054").setAttr("max", "2.8");
     const v1 =
