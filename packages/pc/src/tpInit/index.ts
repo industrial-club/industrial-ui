@@ -46,10 +46,10 @@ export default async (dom: unknown, time: number) => {
     dm?.getDataByTag("nsj_6004").setAttr("max", "28");
     dm?.getDataByTag("nsj_6004").setAttr("max2", "26");
     dm?.getDataByTag("nsj_6004").setAttr("max2", "28");
-    dm?.getDataByTag("nsj_6003").setAttr("max", "27");
-    dm?.getDataByTag("nsj_6003").setAttr("max", "30");
-    dm?.getDataByTag("nsj_6003").setAttr("max2", "25");
     dm?.getDataByTag("nsj_6003").setAttr("min", "27");
+    dm?.getDataByTag("nsj_6003").setAttr("max", "30");
+    dm?.getDataByTag("nsj_6003").setAttr("max2", "27");
+    dm?.getDataByTag("nsj_6003").setAttr("min2", "25");
     dm?.getDataByTag("ylj_8054").setAttr("min", "2.5");
     dm?.getDataByTag("ylj_8054").setAttr("max", "2.8");
     const v1 =
@@ -66,6 +66,11 @@ export default async (dom: unknown, time: number) => {
       dm?.getDataByTag("ylj_8056").getAttr("time") ||
       dm?.getDataByTag("ylj_8056").getAttr("t1");
     dm?.getDataByTag("ylj_8056").setAttr("time", (Number(v3) + 1).toString());
+
+    const v4 =
+      dm?.getDataByTag("AAAAAAA").getAttr("time") ||
+      dm?.getDataByTag("AAAAAAA").getAttr("t1");
+    dm?.getDataByTag("AAAAAAA").setAttr("time", (Number(v4) + 1).toString());
 
     dm?.getDataByTag("ylj_8054").setAttr(
       "fl",
