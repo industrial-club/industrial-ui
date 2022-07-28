@@ -42,14 +42,20 @@ export default async (dom: unknown, time: number) => {
     dm?.getDataByTag("st_8035").setAttr("st.v", randomNum(40, 45).toString());
     dm?.getDataByTag("st_8036").setAttr("st.v", randomNum(69, 73).toString());
     dm?.getDataByTag("st_8036").setAttr("st.v", randomNum(69, 73).toString());
-    dm?.getDataByTag("nsj_6004").setAttr("max", "28");
-    dm?.getDataByTag("nsj_6004").setAttr("max", "28");
-    dm?.getDataByTag("nsj_6004").setAttr("max2", "26");
-    dm?.getDataByTag("nsj_6004").setAttr("max2", "28");
-    dm?.getDataByTag("B").setAttr("min", "27");
-    dm?.getDataByTag("B").setAttr("max", "30");
-    dm?.getDataByTag("B").setAttr("max2", "27");
-    dm?.getDataByTag("B").setAttr("min2", "25");
+    dm?.getDataByTag("nsj_6004").setAttr(
+      "num1",
+      `${(Math.random() * 3 + 26).toFixed(0)}`
+    );
+
+    dm?.getDataByTag("B").setAttr(
+      "num1",
+      `${(Math.random() * 4 + 27).toFixed(0)}`
+    );
+    dm?.getDataByTag("B").setAttr(
+      "num2",
+      `${(Math.random() * 3 + 25).toFixed(0)}`
+    );
+
     dm?.getDataByTag("ylj_8054").setAttr("min", "2.5");
     dm?.getDataByTag("ylj_8054").setAttr("max", "2.8");
     const v1 =
