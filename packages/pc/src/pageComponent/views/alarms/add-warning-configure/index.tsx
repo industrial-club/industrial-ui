@@ -122,7 +122,7 @@ const AddWarningConfigure = defineComponent({
             })
           );
           propertiesList.forEach((item, index) => {
-            res.data[index].children = item.data.thingPropertyList
+            res.data[index].children = (item.data?.thingPropertyList ?? [])
               .filter((item: any) => item.propertyType !== "property")
               .map((item: any) => {
                 item.label = item.name;
