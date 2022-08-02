@@ -70,7 +70,7 @@ class Login {
   }
 
   public async getTokenByCode(
-    e?: { username: string; password: string } | string
+    e: { username: string; password: string } | string
   ) {
     const { userCode, token } = this.config.queryInfo;
 
@@ -87,7 +87,7 @@ class Login {
       data.userCode = userCode;
     }
 
-    if (typeof e === "object" && e?.username && e.password) {
+    if (typeof e === "object" && e.username && e.password) {
       // 如果 e 是对象,为用户名密码登陆
       data.passWord = encodeStr(e.password);
       data.userName = e.username;
