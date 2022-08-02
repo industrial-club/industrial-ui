@@ -1,5 +1,5 @@
-import { defineComponent, reactive, ref } from 'vue';
-import * as thingApis from '@/api/developerCenter/thingInstance';
+import { defineComponent, reactive, ref } from "vue";
+import * as thingApis from "@/api/thingInstance";
 
 interface ModalStateI {
   visible: boolean;
@@ -13,10 +13,10 @@ export default defineComponent({
   setup(_, { expose }) {
     const state = reactive<ModalStateI>({
       visible: false,
-      title: '实例',
-      activeKey: 'property', //Tab
-      thingCode: 'property',
-      thingType: '',
+      title: "实例",
+      activeKey: "property", //Tab
+      thingCode: "property",
+      thingType: "",
       info: {},
     });
     const formRefProp = ref();
@@ -27,10 +27,10 @@ export default defineComponent({
     });
     const showModal = (row: any, thingCode: string) => {
       if (row) {
-        state.title = '编辑';
-        findThingProperties(row.id);
+        state.title = "编辑";
+        findThingProperties(row.record.id);
       } else {
-        state.title = '新增';
+        state.title = "新增";
       }
       state.thingCode = thingCode;
       findTypeProperties(thingCode);
@@ -59,58 +59,58 @@ export default defineComponent({
     });
     return () => (
       <a-modal
-        v-model={[state.visible, 'visible']}
-        width='1100px'
-        class='instance_modal'
+        v-model={[state.visible, "visible"]}
+        width="1100px"
+        class="instance_modal"
         title={state.title}
       >
-        <div class='base_wrap'>
-          <img src='' alt='' />
-          <div class='base_info'>
-            <div class='flex_lr_c'>
+        <div class="base_wrap">
+          <img src="" alt="" />
+          <div class="base_info">
+            <div class="flex_lr_c">
               <h3>主选两产品重介旋流器</h3>
-              <a-button type='primary'>编辑</a-button>
+              <a-button type="primary">编辑</a-button>
             </div>
-            <div class='base_info_list mar-t-20'>
+            <div class="base_info_list mar-t-20">
               <div>
                 <a-space>
-                  <span class='color-6'>名称：</span>
-                  <span class='color-3'>3104</span>
+                  <span class="color-6">名称：</span>
+                  <span class="color-3">3104</span>
                 </a-space>
               </div>
-              <div class='mar-t-10'>
+              <div class="mar-t-10">
                 <a-space>
-                  <span class='color-6'>编码：</span>
-                  <span class='color-3'>3104</span>
+                  <span class="color-6">编码：</span>
+                  <span class="color-3">3104</span>
                 </a-space>
               </div>
-              {(state.thingType === 'device' ||
-                state.thingType === 'component' ||
-                state.thingType === 'system_it') && (
-                <div class='mar-t-10'>
+              {(state.thingType === "device" ||
+                state.thingType === "component" ||
+                state.thingType === "system_it") && (
+                <div class="mar-t-10">
                   <a-space>
-                    <span class='color-6'>厂家/品牌/型号：</span>
-                    <span class='color-3'>3104</span>
+                    <span class="color-6">厂家/品牌/型号：</span>
+                    <span class="color-3">3104</span>
                   </a-space>
                 </div>
               )}
             </div>
           </div>
         </div>
-        <div class='param_wrap border-10-gray'>
-          <a-tabs v-model={[state.activeKey, 'activeKey']}>
-            <a-tab-pane key='property' tab='基础属性'>
+        <div class="param_wrap border-10-gray">
+          <a-tabs v-model={[state.activeKey, "activeKey"]}>
+            <a-tab-pane key="property" tab="基础属性">
               <a-form ref={formRefProp}>
                 <a-row></a-row>
               </a-form>
             </a-tab-pane>
-            <a-tab-pane key='metric' tab='动态属性' force-render>
+            <a-tab-pane key="metric" tab="动态属性" force-render>
               Content of Tab Pane 2
             </a-tab-pane>
-            <a-tab-pane key='alarm' tab='报警'>
+            <a-tab-pane key="alarm" tab="报警">
               Content of Tab Pane 3
             </a-tab-pane>
-            <a-tab-pane key='action' tab='动作'>
+            <a-tab-pane key="action" tab="动作">
               Content of Tab Pane 3
             </a-tab-pane>
           </a-tabs>

@@ -6,8 +6,8 @@
  * @LastEditTime: 2022-03-31 13:05:01
  */
 
-import { reactive, ref, toRefs } from 'vue';
-import { debounce } from 'lodash';
+import { reactive, ref, toRefs } from "vue";
+import { debounce } from "lodash";
 
 /**
  * 通用表格查询hook
@@ -17,9 +17,11 @@ import { debounce } from 'lodash';
 export default function useTableList(
   getData: () => Promise<any>,
   listProp?: string,
-  totalName = 'totalCount',
+  totalName = "totalCount"
 ) {
   const tableList = ref<any[]>([]);
+  const columns = ref<any[]>([]);
+
   const isLoading = ref(false);
 
   const total = ref(0);
@@ -28,9 +30,11 @@ export default function useTableList(
   const refresh = debounce(async () => {
     isLoading.value = true;
     try {
-      const { data } = await getData();
+      const { data, columnData } = await getData();
       if (listProp) {
-        tableList.value = data[listProp];
+        tableList.value = data;
+        columns.value = columnData;
+        console.log(columns.value);
         total.value = data[totalName];
       } else {
         tableList.value = data;
@@ -60,12 +64,13 @@ export default function useTableList(
     showSizeChanger: true,
     showQuickJumper: true,
     showTotal: (total: number) => `共 ${total} 条`,
-    'onUpdate:current': handlePageChange,
-    'onUpdate:pageSize': hanldePageSizeChange,
+    "onUpdate:current": handlePageChange,
+    "onUpdate:pageSize": hanldePageSizeChange,
   });
 
   return {
     isLoading,
+    columns,
     tableList,
 
     currPage,

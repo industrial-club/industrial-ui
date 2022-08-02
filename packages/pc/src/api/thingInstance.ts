@@ -12,7 +12,7 @@ export const findAllThingForTree = () =>
  * 获取列表-分页
  */
 export const indInsts = (data: any) =>
-  instance.post("/thing/v1/adapter/thing/inst/findInstsByConditionPage", data);
+  instance.post("/thing/v1/adapter/thing/common/findPage", data);
 
 /**
  * 根据thingCode获取物规格type
@@ -30,7 +30,10 @@ export const addInst = (data: any) =>
  * 根据id查询物属性
  */
 export const findThingProperties = (id: string) =>
-  instance.get(`/thing/v1/adapter/thing/inst/get/${id}`);
+  instance.get(`/thing/v1/adapter/thing/common/findById/${id}`);
+// 删除
+export const deleteThing = (id: string) =>
+  instance.delete(`/thing/v1/adapter/thing/common/remove/${id}`);
 
 /**
  * 查询属性【按属性类型划分】
