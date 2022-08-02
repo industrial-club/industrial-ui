@@ -1,26 +1,28 @@
 .add-warning-configure {
-  padding-bottom: 50px;
-  .ant-breadcrumb {
-    margin-bottom: 16px;
-  }
-  .form-list-container {
-    max-width: 800px;
-    .form {
-      &-title {
-        font-size: 16px;
-        font-weight: 600;
-      }
-      &-container {
-        padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .form-container-outter {
+    flex: 1;
+    overflow: auto;
+    .ant-breadcrumb {
+      margin-bottom: 16px;
+    }
+    .form-list-container {
+      max-width: 800px;
+      .form {
+        &-title {
+          font-size: 16px;
+          font-weight: 600;
+        }
+        &-container {
+          padding: 16px;
+        }
       }
     }
   }
   .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
+    padding: 16px 16px 16px 32px;
     background-color: #fff;
     box-shadow: 0px -4px 4px rgb(0 0 0 / 20%);
   }

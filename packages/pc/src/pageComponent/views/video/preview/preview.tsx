@@ -177,7 +177,7 @@ const com = defineComponent({
       trans?.tempArr.forEach((ele: any, index: number) => {
         let have = false;
         data.videoList.forEach((video: any) => {
-          if (ele && ele.data.uuid === video.uuid) {
+          if (ele && ele.data?.uuid === video?.uuid) {
             ele.data = video;
             have = true;
           }
@@ -206,7 +206,7 @@ const com = defineComponent({
       imgType.videoActiveList.forEach((ele: any) => {
         if (ele) {
           const videoRes = data.videoList.find(
-            (video: any) => video.uuid === ele.data.uuid
+            (video: any) => video?.uuid === ele.data?.uuid
           );
           ele.data = videoRes;
         }
@@ -229,6 +229,16 @@ const com = defineComponent({
     const fullScreenType = ref(false);
     const sizeDataRef: any = ref(null);
     let interval2: any;
+    let interval2Time = "8";
+    const refresh = () => {
+      imgType.numList.forEach((ele: any, index: number) => {
+        if (imgType.videoActiveList[index]?.data.onlineStatus === "ONLINE") {
+          playVideo.play[index].stopPlay(imgType.videoActiveList[index].id);
+          stopV(imgType.videoActiveList[index].id);
+        }
+      });
+      loadHistory();
+    };
     onMounted(async () => {
       if (props.serverName) {
         videoApi.setInstance(props.serverName);
@@ -243,17 +253,23 @@ const com = defineComponent({
           sizeDataRef.value.sizeData.fullScreen = false;
         }
       };
+      if (localStorage.getItem("videoFreshTime")) {
+        interval2Time = localStorage.getItem("videoFreshTime")!;
+      } else {
+        localStorage.setItem("videoFreshTime", "8");
+      }
       interval = setInterval(() => {
         updateVideoState();
       }, 10000);
       interval2 = setInterval(() => {
-        if (
-          moment().format("hh:mm:ss") === "12:00:00" ||
-          moment().format("hh:mm:ss") === "00:00:00"
-        ) {
-          window.location.reload();
-        }
-      }, 900);
+        refresh();
+        // if (
+        //   moment().format("hh:mm:ss") === "12:00:00" ||
+        //   moment().format("hh:mm:ss") === "00:00:00"
+        // ) {
+        //   window.location.reload();
+        // }
+      }, parseInt(interval2Time) * 60 * 60 * 1000);
     });
 
     const pitchOn = (index: number) => {
@@ -271,7 +287,7 @@ const com = defineComponent({
       if (
         stream === undefined &&
         imgType.videoActiveList[index] &&
-        imgType.videoActiveList[index].data.uuid === uuid
+        imgType.videoActiveList[index].data?.uuid === uuid
       ) {
         return false;
       }
@@ -279,7 +295,7 @@ const com = defineComponent({
       for (let i = 0; i < imgType.videoActiveList.length; i++) {
         if (
           imgType.videoActiveList[i] &&
-          imgType.videoActiveList[i].data.uuid === uuid
+          imgType.videoActiveList[i].data?.uuid === uuid
         ) {
           playVideo.play[i].stopPlay(imgType.videoActiveList[i].id);
           treeItemRef.value.remoSelectValue(
@@ -298,7 +314,7 @@ const com = defineComponent({
         imgType.videoActiveList[index] = null;
       }
 
-      const video = data.videoList.find((ele: any) => ele.uuid === uuid);
+      const video = data.videoList.find((ele: any) => ele?.uuid === uuid);
       const item: any = {
         data: video,
         id: `video${index + 1}`,
@@ -322,8 +338,12 @@ const com = defineComponent({
       return true;
     };
 
-    const closeVideo = (e: any, index: any) => {
-      e.stopPropagation();
+    const closeVideo = (index: any, e?: any) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      if (imgType.videoActiveList[index]) {
+      }
       treeItemRef.value.remoSelectValue(
         imgType.videoActiveList[index].eventKey
       );
@@ -350,7 +370,7 @@ const com = defineComponent({
     const videoMove = async (e: any, index: number, direction: number) => {
       e.stopPropagation();
       const res: any = await videoApi.setDirection({
-        uuid: imgType.videoActiveList[index].data.uuid,
+        uuid: imgType.videoActiveList[index].data?.uuid,
         direction,
       });
       message.success("下发成功");
@@ -643,7 +663,7 @@ const com = defineComponent({
                                     class="btn"
                                     onClick={() => {
                                       changeVideo(
-                                        rectData.data.uuid,
+                                        rectData.data?.uuid,
                                         rectData.eventKey,
                                         index,
                                         stream.code
@@ -747,7 +767,7 @@ const com = defineComponent({
                           ""
                         )}
                         <img
-                          onClick={(e: any) => closeVideo(e, index)}
+                          onClick={(e: any) => closeVideo(index, e)}
                           src={"/micro-assets/inl/video/close.png"}
                         />
                       </div>
@@ -763,7 +783,7 @@ const com = defineComponent({
                   }}
                   onDrop={() => {
                     changeVideo(
-                      dragNode.value.uuid,
+                      dragNode.value?.uuid,
                       dragNode.value.eventKey,
                       index
                     );

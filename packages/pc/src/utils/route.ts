@@ -49,4 +49,40 @@ export function getActiveNavByProp(
   return res;
 }
 
+/**
+ * 根据菜单code返回对应的菜单
+ * @param code 菜单编码
+ * @param menuTree 菜单树结构
+ */
+export function getMenuByCode(code: string, menuTree: any[]) {
+  for (const menu of menuTree) {
+    if (menu.code === code) {
+      return menu;
+    } else {
+      const res = getMenuByCode(code, menu.subList);
+      if (res) {
+        return res;
+      }
+    }
+  }
+}
+
+/**
+ * 获取对应菜单的父级菜单
+ * @param code 菜单编码
+ * @param menuTree 菜单树结构
+ */
+export function getParentMenuByCode(code: string, menuTree: any[]) {
+  for (const menu of menuTree) {
+    if (menu.code === code) {
+      return menu;
+    } else {
+      const res = getParentMenuByCode(code, menu.subList);
+      if (res) {
+        return menu;
+      }
+    }
+  }
+}
+
 export default "";

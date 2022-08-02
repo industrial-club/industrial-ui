@@ -240,23 +240,30 @@ const WarningRecord = defineComponent({
     };
 
     /* ===== 播放报警 ===== */
-    const speech = new SpeechSynthesisUtterance();
-    speech.onend = () => {
-      setTimeout(() => {
-        startSpeech();
-      }, 2000);
-    };
+    let speech: SpeechSynthesisUtterance;
+    try {
+      speech = new SpeechSynthesisUtterance();
+      speech.onend = () => {
+        setTimeout(() => {
+          startSpeech();
+        }, 2000);
+      };
+    } catch (e) {}
     // 语音播报报警内容
     const startSpeech = async () => {
-      const { data } = await getWarningSpeechList(urlObj.speechList)();
-      window.speechSynthesis.cancel();
-      speech.text = data
-        .map((item: any) => item.name.replaceAll(/[0-9]/g, "$& "))
-        .join(",");
-      if (speech.text) {
-        window.speechSynthesis.speak(speech);
-      } else {
-        setTimeout(startSpeech, 2000);
+      try {
+        const { data } = await getWarningSpeechList(urlObj.speechList)();
+        window.speechSynthesis.cancel();
+        speech.text = data
+          .map((item: any) => item.name.replaceAll(/[0-9]/g, "$& "))
+          .join(",");
+        if (speech.text) {
+          window.speechSynthesis.speak(speech);
+        } else {
+          setTimeout(startSpeech, 2000);
+        }
+      } catch (e) {
+        console.log(e);
       }
     };
     /* ----- 播放报警 ----- */
@@ -281,8 +288,10 @@ const WarningRecord = defineComponent({
     });
 
     onBeforeUnmount(() => {
-      window.speechSynthesis.cancel();
-      speech.onend = null;
+      try {
+        window.speechSynthesis.cancel();
+        speech.onend = null;
+      } catch (e) {}
     });
 
     return () => (

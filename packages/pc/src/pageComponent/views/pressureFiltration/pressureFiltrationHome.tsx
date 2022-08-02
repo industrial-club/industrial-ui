@@ -4,11 +4,13 @@ import parameter from "@/pageComponent/components/pressureFiltration/numberOfPla
 import alarmList from "@/pageComponent/components/pressureFiltration/alarmList";
 import pressureFiltrationHomeApi from "@/api/pressureFiltration/pressureFiltrationHome";
 import shiftChange from "@/pageComponent/components/pressureFiltration/shiftChange";
+import htModal from "@/pageComponent/components/htModal";
 import { Modal } from "ant-design-vue";
 import tpInit from "@/tpInit";
 
 const props = {
   pressureFiltrationPng: String,
+  homeType: String,
 };
 interface popButtonItem {
   buttonName: string;
@@ -32,6 +34,7 @@ const pressureFiltrationHome = defineComponent({
     parameter,
     alarmList,
     shiftChange,
+    htModal,
   },
   props,
   emits: ["goRoute"],
@@ -58,6 +61,11 @@ const pressureFiltrationHome = defineComponent({
 
     // 带料弹窗显示隐藏
     const visible = ref(false);
+
+    // 图扑流程图弹窗
+    const htVisible = ref(false);
+    // 图扑流程图弹窗title
+    const htTitle = ref("漏斗");
 
     // 定时器实例
     let timerOut: NodeJS.Timeout | null;
@@ -173,7 +181,7 @@ const pressureFiltrationHome = defineComponent({
       timerOut = null;
     });
     return () => (
-      <div class="pressureFiltrationHome">
+      <div class={`pressureFiltrationHome ${_props.homeType}`}>
         <div class="pressureFiltrationHome-left">
           <div
             id="tp"
@@ -196,24 +204,28 @@ const pressureFiltrationHome = defineComponent({
             >
               班次交接
             </a-button>
-            <a-button
-              block
-              class="but"
-              onClick={() => {
-                _context.emit("goRoute", "/configuration");
-              }}
-            >
-              压滤配置
-            </a-button>
-            <a-button
-              block
-              class="but"
-              onClick={() => {
-                _context.emit("goRoute", "/pressureFiltrationJournal");
-              }}
-            >
-              压滤记录
-            </a-button>
+            {_props.homeType === "pad" ? (
+              <>
+                <a-button
+                  block
+                  class="but"
+                  onClick={() => {
+                    _context.emit("goRoute", "/configuration");
+                  }}
+                >
+                  压滤配置
+                </a-button>
+                <a-button
+                  block
+                  class="but"
+                  onClick={() => {
+                    _context.emit("goRoute", "/pressureFiltrationJournal");
+                  }}
+                >
+                  压滤记录
+                </a-button>
+              </>
+            ) : null}
           </div>
           <parameter data={parameterData.value}></parameter>
           <alarmList data={filterAlarmList.value}></alarmList>
@@ -230,6 +242,18 @@ const pressureFiltrationHome = defineComponent({
             }}
             data={shiftChangeData.value}
           ></shiftChange>
+        </a-modal>
+        <a-modal
+          v-model={[htVisible.value, "visible"]}
+          title={htTitle.value}
+          centered
+          width={600}
+          footer={false}
+          mask={false}
+          maskClosable={false}
+          class="htVisible"
+        >
+          <htModal></htModal>
         </a-modal>
       </div>
     );

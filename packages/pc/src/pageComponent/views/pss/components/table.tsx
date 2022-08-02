@@ -90,7 +90,7 @@ export default defineComponent({
         taskDefKey: (state.statusOptions[state.status] as any)?.code,
       });
 
-      if (state.type === 0) {
+      if (state.type === 0 && state.status === 0) {
         // 筛选条件 typeOptions
         state.typeOptions = data.processIdMapCountVOs.map((vo: any) => ({
           text: `${vo.name} ${vo.count}`,
@@ -103,8 +103,8 @@ export default defineComponent({
             data.processIdMapCountVOs.length === 1
               ? data.processIdMapCountVOs[0].count
               : data.processIdMapCountVOs.reduce((prev: any, curr: any) => {
-                  return prev.count + curr.count;
-                });
+                  return prev + curr.count;
+                }, 0);
 
           state.typeOptions.unshift({
             text: `全部类型 ${typeCount}`,
@@ -125,8 +125,8 @@ export default defineComponent({
             data.taskDefKeyMapCountVOs.length === 1
               ? data.taskDefKeyMapCountVOs[0].count
               : data.taskDefKeyMapCountVOs.reduce((prev: any, curr: any) => {
-                  return prev.count + curr.count;
-                });
+                  return prev + curr.count;
+                }, 0);
 
           state.statusOptions.unshift({
             text: `全部状态 ${stateCount}`,
@@ -199,7 +199,7 @@ export default defineComponent({
         {
           dataIndex: "supplyTypeName",
           title: "申请类型",
-          width: 200,
+          width: 150,
         },
         {
           dataIndex: "applyUserName",
@@ -339,6 +339,7 @@ export default defineComponent({
       const resp: any = await pssApi.processApproval({
         comment: operationState.comment,
         processGateway: operationState.isAgree ? "agree" : "disagree",
+        taskDefKey: currentObj.value.taskDefKey,
         taskId: currentObj.value.taskId,
         userId,
       });
@@ -346,8 +347,9 @@ export default defineComponent({
       if (resp.data === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
-
+        operationState.comment = "";
         operationState.showFooter = false;
+
         refresh();
       }
     };
@@ -368,6 +370,7 @@ export default defineComponent({
       if (resp.code === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
+        operationState.comment = "";
 
         cancelBatch();
         refresh();
@@ -423,6 +426,7 @@ export default defineComponent({
       const resp: any = await pssApi.processAttempt({
         comment: operationState.comment,
         processGateway: operationState.isAgree ? "agree" : "disagree",
+        taskDefKey: currentObj.value.taskDefKey,
         taskId: currentObj.value.taskId,
         userId,
       });
@@ -430,8 +434,9 @@ export default defineComponent({
       if (resp.data === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
-
+        operationState.comment = "";
         operationState.showFooter = false;
+
         refresh();
       }
     };
@@ -441,6 +446,7 @@ export default defineComponent({
       const resp: any = await pssApi.processOverhaul({
         comment: operationState.comment,
         processGateway: operationState.isAgree ? "agree" : "disagree",
+        taskDefKey: currentObj.value.taskDefKey,
         taskId: currentObj.value.taskId,
         userId,
       });
@@ -448,8 +454,9 @@ export default defineComponent({
       if (resp.data === "ok") {
         message.success(resp.message || "成功");
         operationState.showOpinion = false;
-
+        operationState.comment = "";
         operationState.showFooter = false;
+
         refresh();
       }
     };
@@ -684,7 +691,7 @@ export default defineComponent({
                 ghost
                 onClick={() => {
                   if (selectedRow.selectedRowKeys.length) {
-                    toStopRefuse({ taskDefKey: "batch" });
+                    toStopRefuse({ taskDefKey: "batch", taskName: "批量审批" });
                   } else {
                     message.error("请选择");
                   }
@@ -698,7 +705,7 @@ export default defineComponent({
                 ghost
                 onClick={() => {
                   if (selectedRow.selectedRowKeys.length) {
-                    toStopAgree({ taskDefKey: "batch" });
+                    toStopAgree({ taskDefKey: "batch", taskName: "批量审批" });
                   } else {
                     message.error("请选择");
                   }
@@ -766,13 +773,15 @@ export default defineComponent({
                     .join("；");
 
                   return (
-                    <a-tooltip
-                      v-slots={{
-                        title: () => result,
-                      }}
-                    >
-                      {result}
-                    </a-tooltip>
+                    // <a-tooltip
+                    //   v-slots={{
+                    //     title: () => result,
+                    //   }}
+                    // >
+                    //   {result}
+                    // </a-tooltip>
+
+                    <div title={result}>{result}</div>
                   );
                 }
 

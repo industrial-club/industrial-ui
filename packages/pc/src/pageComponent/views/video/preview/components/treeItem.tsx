@@ -11,24 +11,24 @@ import { useRoute } from "vue-router";
 import videoApi from "@/api/video";
 import "../../assets/styles/video/preview.less";
 
-const dataList: any[] = [];
-const generateList = (data: any) => {
-  let list: any = [];
-  list = data;
-  if (list) {
-    for (let i = 0; i < list.length; i++) {
-      const node = list[i];
-      // if (node.nodeType === 'G') {
-      //   node.disabled = true;
-      // }
-      const { key } = node;
-      dataList.push({ key, title: key });
-      if (node.children) {
-        generateList(node.children);
-      }
-    }
-  }
-};
+// const dataList: any[] = [];
+// const generateList = (data: any) => {
+//   let list: any = [];
+//   list = data;
+//   if (list) {
+//     for (let i = 0; i < list.length; i++) {
+//       const node = list[i];
+//       // if (node.nodeType === 'G') {
+//       //   node.disabled = true;
+//       // }
+//       const { key } = node;
+//       dataList.push({ key, title: key });
+//       if (node.children) {
+//         generateList(node.children);
+//       }
+//     }
+//   }
+// };
 const getParentKey = (
   key: string | number,
   tree: any
@@ -68,14 +68,19 @@ export default defineComponent({
     const searchValue: any = ref<string>("");
     const autoExpandParent = ref<boolean>(true);
     const gData: any = ref();
+    let treeDataRecord;
     const data: any = reactive({
       titleType: 0,
       list: [],
     });
     const getQueryGroup = async (params: any) => {
       const res = await videoApi.getQueryGroup(params);
-      gData.value = res.data;
-      generateList(gData.value);
+      treeDataRecord = res.data;
+      gData.value = filterTree(
+        JSON.parse(JSON.stringify(treeDataRecord)),
+        searchValue.value
+      );
+      // generateList(gData.value);
     };
     const getGroup = async () => {
       const res = await videoApi.getGroup();
@@ -89,7 +94,7 @@ export default defineComponent({
       searchValue.value = "";
       selectedKeys.value = [];
       gData.value = [];
-      generateList(gData.value);
+      // generateList(gData.value);
       getQueryGroup(data.list[data.titleType]);
       context.emit("titleChange");
       return true;
@@ -110,7 +115,7 @@ export default defineComponent({
       }
       pitchOn.data = info;
       if (props.domType) {
-        context.emit("stopVideo", info.node.uuid, info.node.eventKey);
+        context.emit("stopVideo", info.node?.uuid, info.node.eventKey);
         if (!info.selected) {
           selectedKeys.value.push(info.node.eventKey);
         }
@@ -153,20 +158,20 @@ export default defineComponent({
       return have;
     };
     const collectShow = (e: any, item: any) => {
-      if (checkAttention(item.uuid)) {
+      if (checkAttention(item?.uuid)) {
         return;
       }
       collctData.concernUuid = "";
-      collctData.uuid = "";
+      collctData.uuid && (collctData.uuid = "");
       e.stopPropagation();
-      collctData.uuid = item.uuid;
+      collctData.uuid && (collctData.uuid = item?.uuid);
       getConcern();
       collectVisible.value = true;
     };
     const collectSave = async () => {
       const val = {
         concernUuid: collctData.concernUuid,
-        cameraUuid: collctData.uuid,
+        cameraUuid: collctData?.uuid,
       };
       const res = await videoApi.addConcern(val);
       collectVisible.value = false;
@@ -194,23 +199,41 @@ export default defineComponent({
     onUnmounted(() => {
       clearInterval(interval);
     });
+    const filterTree = (arr: any[], key: string) => {
+      for (let i = 0; i < arr.length; i++) {
+        const obj = arr[i];
+        if (obj.title.indexOf(key) === -1) {
+          arr.splice(i, 1);
+          i--;
+          continue;
+        }
+        if (obj.children && obj.children.length != 0) {
+          filterTree(obj.children, key);
+        }
+      }
+      return arr;
+    };
     watch(
       () => searchValue.value,
       (value) => {
-        const expanded = dataList
-          .map((item: any) => {
-            if (item.title.indexOf(value) > -1) {
-              return getParentKey(item.key, gData.value);
-            }
-            return null;
-          })
-          .filter(
-            (item: any, i: number, self: any[]) =>
-              item && self.indexOf(item) === i
-          );
-        expandedKeys.value = expanded;
-        searchValue.value = value;
-        autoExpandParent.value = true;
+        gData.value = filterTree(
+          JSON.parse(JSON.stringify(treeDataRecord)),
+          searchValue.value
+        );
+        // const expanded = dataList
+        //   .map((item: any) => {
+        //     if (item.title.indexOf(value) > -1) {
+        //       return getParentKey(item.key, gData.value);
+        //     }
+        //     return null;
+        //   })
+        //   .filter(
+        //     (item: any, i: number, self: any[]) =>
+        //       item && self.indexOf(item) === i
+        //   );
+        // expandedKeys.value = expanded;
+        // searchValue.value = value;
+        // autoExpandParent.value = true;
       }
     );
 
@@ -281,7 +304,7 @@ export default defineComponent({
                         alt="在线"
                       />
                     </div>
-                    {item.title.indexOf(searchValue.value) > -1 ? (
+                    {/* {item.title.indexOf(searchValue.value) > -1 ? (
                       <span
                         class={[
                           "xj",
@@ -299,23 +322,23 @@ export default defineComponent({
                             searchValue.value.length
                         )}
                       </span>
-                    ) : (
-                      <span
-                        class={[
-                          "xj",
-                          item.nodeType === "G" ? "gactive" : "",
-                          item.onlineStatus === "ONLINE" ? "yactive" : "",
-                        ]}
-                      >
-                        {item.title}
-                      </span>
-                    )}
+                    ) : ( */}
+                    <span
+                      class={[
+                        "xj",
+                        item.nodeType === "G" ? "gactive" : "",
+                        item.onlineStatus === "ONLINE" ? "yactive" : "",
+                      ]}
+                    >
+                      {item.title}
+                    </span>
+                    {/* )} */}
                     <div class="icons-min" v-show={item.nodeType === "C"}>
                       <img
                         class="active-l"
                         onClick={(e: any) => collectShow(e, item)}
                         src={
-                          checkAttention(item.uuid)
+                          checkAttention(item?.uuid)
                             ? "/micro-assets/inl/video/operation/collectYes.png"
                             : "/micro-assets/inl/video/operation/collectNo.png"
                         }
@@ -347,7 +370,7 @@ export default defineComponent({
             >
               {listData.value.map((item: any, index: any) => {
                 return (
-                  <a-select-option value={item.uuid}>
+                  <a-select-option value={item?.uuid}>
                     {item.name}
                   </a-select-option>
                 );

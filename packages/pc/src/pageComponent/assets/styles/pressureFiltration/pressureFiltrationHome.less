@@ -9,6 +9,19 @@
     padding: 20px;
     background-color: #fff;
   }
+  &.pc {
+    .pressureFiltrationHome-right {
+      &-control {
+        height: 20%;
+      }
+      &-parameter {
+        height: calc(40% - 20px);
+      }
+      &-alarm {
+        height: calc(40% - 20px);
+      }
+    }
+  }
   &-right {
     width: 20%;
     height: 100%;
@@ -21,21 +34,22 @@
     }
     &-control {
       height: 30%;
-      padding: 10px;
+      padding: 5%;
       .state {
         font-size: 16px;
-        padding: 20px 0;
+        padding: 5% 0;
+        padding-top: 0;
         text-align: center;
         font-weight: bold;
       }
       .but {
-        margin-bottom: 10px;
+        margin-bottom: 5%;
       }
     }
     &-parameter {
       margin-top: 20px;
       height: calc(35% - 20px);
-      padding: 10px;
+      padding: 5%;
       .title {
         font-size: 16px;
         display: flex;
@@ -61,7 +75,7 @@
     &-alarm {
       margin-top: 20px;
       height: calc(35% - 20px);
-      padding: 10px 20px;
+      padding: 5% 20px;
       .title {
         font-size: 16px;
         display: flex;
