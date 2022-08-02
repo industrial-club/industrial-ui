@@ -108,14 +108,30 @@ const LayoutContent = defineComponent({
       const iframeRoutes = tabs.value
         .filter((item) => item.mode === 2)
         .map((item) => {
-          const url = item.url.startsWith("http")
+          const isWithOrigin = item.url.startsWith("http");
+          const url = isWithOrigin
             ? item.url
-            : location.origin + item.url;
+            : `${location.origin}${item.url.startsWith("/") ? "" : "/"}${
+                item.url
+              }`;
 
           const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
           const urlObj = new URL(url);
-          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
-          urlObj.searchParams.set("userId", userinfo.userId);
+          if (urlObj.hash) {
+            const converceUrl = new URL(
+              urlObj.hash.replace("#", location.origin)
+            );
+            converceUrl.searchParams.set(
+              "token",
+              sessionStorage.getItem("token")!
+            );
+            converceUrl.searchParams.set("userId", userinfo.userId);
+            urlObj.hash = converceUrl.href.replace(location.origin, "#");
+          } else {
+            urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+            urlObj.searchParams.set("userId", userinfo.userId);
+          }
+          item.url = urlObj.href;
 
           return {
             url: item.url,
