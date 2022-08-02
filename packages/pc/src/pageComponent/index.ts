@@ -1,4 +1,5 @@
 import About from "@/pageComponent/views/systemManager/about";
+import aboutNew from "@/pageComponent/views/systemManager/aboutNew";
 import UserManager from "@/pageComponent/views/systemManager/authManager/userManager";
 import RoleManager from "@/pageComponent/views/systemManager/authManager/RoleManager";
 import MenuManager from "@/pageComponent/views/systemManager/authManager/menuManager";
@@ -29,9 +30,17 @@ import noticeManager from "@/pageComponent/views/systemManager/noticeManager/not
 import PssList from "@/pageComponent/views/pss";
 import PssRecord from "@/pageComponent/views/pssRecord";
 import Thing from "@/pageComponent/views/thing";
+import feeding from "@/pageComponent/views/pressureFiltration/feeding";
+import productionShiftReport from "@/pageComponent/views/pressureFiltration/productionShiftReport";
+import record from "@/pageComponent/views/pressureFiltration/record";
+import unloading from "@/pageComponent/views/pressureFiltration/unloading";
+import pressureFiltrationHome from "@/pageComponent/views/pressureFiltration/pressureFiltrationHome";
+import factoryManage from "@/pageComponent/views/thingModel/factoryManage";
+import elcRoom from "@/pageComponent/views/elcRoom";
 
 export default [
   About,
+  aboutNew,
   UserManager,
   RoleManager,
   MenuManager,
@@ -62,4 +71,11 @@ export default [
   PssList,
   PssRecord,
   Thing,
+  feeding,
+  productionShiftReport,
+  record,
+  unloading,
+  pressureFiltrationHome,
+  factoryManage,
+  elcRoom,
 ];

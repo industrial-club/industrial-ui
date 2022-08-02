@@ -21,8 +21,8 @@ export interface IUrlObj {
   switchStatus: string;
   // 获取部门列表(添加、编辑 部门下拉框)
   depList: string;
-  // 岗位下拉列表
-  postList: string;
+  // // 岗位下拉列表
+  // postList: string;
   // 获取人员列表 (下拉框)
   empList: string;
 }
@@ -36,10 +36,10 @@ const column = [
     title: "所属部门",
     dataIndex: "depName",
   },
-  {
-    title: "岗位名称",
-    dataIndex: "jobPostName",
-  },
+  // {
+  //   title: "岗位名称",
+  //   dataIndex: "jobPostName",
+  // },
   {
     title: "班组组长",
     dataIndex: "leaderName",
@@ -47,6 +47,8 @@ const column = [
   {
     title: "班组成员",
     dataIndex: "memberNames",
+    ellipsis: true,
+    width: 300,
   },
   {
     title: "创建人",
@@ -57,7 +59,7 @@ const column = [
     dataIndex: "createDt",
   },
   {
-    title: "启动",
+    title: "启用",
     index: "valid",
     slots: { customRender: "valid" },
   },

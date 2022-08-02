@@ -1,0 +1,17 @@
+{
+  "name": "inl-card",
+  "version": "0.0.1",
+  "description": "卡片",
+  "main": "dist/index.js",
+  "types": "./dist/types/src/index.d.ts",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=dev rollup -c conf/rollup.config.ts  -w",
+    "build": "rollup -c conf/rollup.config.ts"
+  },
+  "keywords": [
+    "card",
+    "bhabgs"
+  ],
+  "author": "bhabgs",
+  "license": "ISC"
+}

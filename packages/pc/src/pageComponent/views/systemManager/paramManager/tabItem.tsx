@@ -155,7 +155,7 @@ const TabItem = defineComponent({
                       <DynamicForm
                         ref={(ins: any) => (cellFormRef.value[index] = ins)}
                         id={cell.id}
-                        code={item.code}
+                        code={`${item.code}.${cell.code}`}
                       />
                     </CollapseContainer>
                   ))}

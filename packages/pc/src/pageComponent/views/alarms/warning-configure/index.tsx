@@ -52,7 +52,13 @@ const WarningConfigure = defineComponent({
     };
 
     return () => (
-      <div class="index">
+      <div
+        class="index"
+        style={{
+          height: "100%",
+          overflow: isAddShow.value ? "hidden" : "auto",
+        }}
+      >
         {isAddShow.value ? (
           <AddWarningConfig
             id={detailId.value}

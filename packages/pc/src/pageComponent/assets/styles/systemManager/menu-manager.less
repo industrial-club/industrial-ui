@@ -20,6 +20,7 @@
   }
   .right-detail {
     flex: auto;
+    overflow: auto;
     .menu-detail {
       .header {
         display: flex;
@@ -49,4 +50,20 @@
   line-height: 1;
   color: #ccc;
   cursor: pointer;
+}
+
+.menu-form {
+  .params-container {
+    list-style: none;
+    padding: 0;
+    .param-item {
+      margin-bottom: 8px;
+      .btn-remove {
+        display: none;
+      }
+      &:hover .btn-remove {
+        display: inline;
+      }
+    }
+  }
 }

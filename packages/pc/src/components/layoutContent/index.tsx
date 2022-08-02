@@ -52,15 +52,19 @@ const LayoutContent = defineComponent({
     watch(
       route,
       () => {
-        const { menuCode: code } = route.query as any;
-        // 以http开头 为 iframe
-        if (code && code.startsWith("http")) {
-          const tab = userNavList.value.find((item: any) => item.url === code);
-          if (tab && !tabs.value.find((item) => item.code === tab.code)) {
-            tabs.value.push({
-              ...tab,
-              key: Date.now(),
-            });
+        let { menuCode: code } = route.query as any;
+        const menuItem = userNavList.value.find((item) => item.code === code);
+        // mode为2为iframe
+        if (menuItem && menuItem.mode === 2) {
+          const url = menuItem.url.startsWith("http")
+            ? menuItem.url
+            : location.origin + menuItem.url;
+
+          if (
+            menuItem &&
+            !tabs.value.find((item) => item.code === menuItem.code)
+          ) {
+            tabs.value.push(menuItem);
           }
         } else if (code && !tabs.value.find((tab) => tab.code === code)) {
           const route = props.allRoutes.find((item) => item.code === code);
@@ -100,18 +104,41 @@ const LayoutContent = defineComponent({
 
     // 当前tabs中缓存的组件
     const cacheComponents = computed(() => {
+      // iframe页签
       const iframeRoutes = tabs.value
         .filter((item) => item.mode === 2)
-        .map((item) => ({
-          url: item.url,
-          code: item.code,
-          component: () => <iframe src={item.url} frameborder="0"></iframe>,
-        }));
+        .map((item) => {
+          const url = item.url.startsWith("http")
+            ? item.url
+            : location.origin + item.url;
+
+          const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+          const urlObj = new URL(url);
+          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+          urlObj.searchParams.set("userId", userinfo.userId);
+
+          return {
+            url: item.url,
+            code: item.code,
+            component: () => (
+              <iframe src={urlObj.href} frameborder="0"></iframe>
+            ),
+          };
+        });
+      // 普通页签
       const tabRoutes = props.allRoutes.filter((item) => {
-        return tabs.value.find((tab) => tab.code === item.code);
+        return tabs.value.find((tab) => {
+          return tab.code === item.code && tab.mode === 0;
+        });
+      });
+      // 扩展页签
+      const extendRoutes = props.allRoutes.filter((item) => {
+        return tabs.value.find((tab) => {
+          return tab.code === item.code && tab.isExtend;
+        });
       });
 
-      return [...tabRoutes, ...iframeRoutes];
+      return [...tabRoutes, ...iframeRoutes, ...extendRoutes];
     });
 
     return () => (
@@ -131,41 +158,36 @@ const LayoutContent = defineComponent({
               </a-button>
               <div class="tabs-list" ref={tabsRef}>
                 {tabs.value.map((item, index) => (
-                  <router-link
-                    key={item.code}
-                    class={[
-                      "tab-item",
-                      item.code === activeCode.value ||
-                      item.url === activeCode.value
-                        ? "active"
-                        : "",
-                    ]}
-                    to={`/?menuCode=${item.mode === 2 ? item.url : item.code}`}
+                  <a-dropdown
+                    trigger={["contextmenu"]}
+                    v-slots={{
+                      overlay: () => (
+                        <a-menu>
+                          <a-menu-item>
+                            <a onClick={() => closeToRight(index)}>关闭右侧</a>
+                          </a-menu-item>
+                          <a-menu-item>
+                            <a onClick={() => closeToLeft(index)}>关闭左侧</a>
+                          </a-menu-item>
+                          <a-menu-item>
+                            <a onClick={() => closeOthers(index)}>关闭其他</a>
+                          </a-menu-item>
+                          {/* <a-menu-item>
+                            <a onClick={() => refreshCpn(index)}>刷新</a>
+                          </a-menu-item> */}
+                        </a-menu>
+                      ),
+                    }}
                   >
-                    <a-dropdown
-                      trigger={["contextmenu"]}
-                      v-slots={{
-                        overlay: () => (
-                          <a-menu>
-                            <a-menu-item>
-                              <a onClick={() => closeToRight(index)}>
-                                关闭右侧
-                              </a>
-                            </a-menu-item>
-                            <a-menu-item>
-                              <a onClick={() => closeToLeft(index)}>关闭左侧</a>
-                            </a-menu-item>
-                            <a-menu-item>
-                              <a onClick={() => closeOthers(index)}>关闭其他</a>
-                            </a-menu-item>
-                            {/* <a-menu-item>
-                              <a onClick={() => refreshCpn(index)}>刷新</a>
-                            </a-menu-item> */}
-                          </a-menu>
-                        ),
-                      }}
+                    <router-link
+                      key={item.code}
+                      class={[
+                        "tab-item",
+                        item.code === activeCode.value && "active",
+                      ]}
+                      to={`/?menuCode=${item.code}`}
                     >
-                      <span class="tab-item-text">
+                      <a class="tab-item-text">
                         {item.icon && (
                           <icon-font class="icon" type={item.icon} />
                         )}
@@ -179,15 +201,17 @@ const LayoutContent = defineComponent({
                             }}
                           >
                             {item.code === activeCode.value ? (
-                              <close-circle-filled />
+                              <close-circle-filled
+                                style={{ color: "#cdd0d3" }}
+                              />
                             ) : (
                               <close-outlined />
                             )}
                           </span>
                         )}
-                      </span>
-                    </a-dropdown>
-                  </router-link>
+                      </a>
+                    </router-link>
+                  </a-dropdown>
                 ))}
               </div>
               <a-button

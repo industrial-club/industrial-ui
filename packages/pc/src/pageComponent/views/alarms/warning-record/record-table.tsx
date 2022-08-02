@@ -3,8 +3,8 @@ import {
   onMounted,
   ref,
   reactive,
-  onUnmounted,
   inject,
+  onBeforeUnmount,
 } from "vue";
 import { message, Modal } from "ant-design-vue";
 import moment, { Moment } from "moment";
@@ -240,23 +240,30 @@ const WarningRecord = defineComponent({
     };
 
     /* ===== 播放报警 ===== */
-    const speech = new SpeechSynthesisUtterance();
-    speech.onend = () => {
-      setTimeout(() => {
-        startSpeech();
-      }, 2000);
-    };
+    let speech: SpeechSynthesisUtterance;
+    try {
+      speech = new SpeechSynthesisUtterance();
+      speech.onend = () => {
+        setTimeout(() => {
+          startSpeech();
+        }, 2000);
+      };
+    } catch (e) {}
     // 语音播报报警内容
     const startSpeech = async () => {
-      const { data } = await getWarningSpeechList(urlObj.speechList)();
-      window.speechSynthesis.cancel();
-      speech.text = data
-        .map((item: any) => item.name.replaceAll(/[0-9]/g, "$& "))
-        .join(",");
-      if (speech.text) {
-        window.speechSynthesis.speak(speech);
-      } else {
-        setTimeout(startSpeech, 2000);
+      try {
+        const { data } = await getWarningSpeechList(urlObj.speechList)();
+        window.speechSynthesis.cancel();
+        speech.text = data
+          .map((item: any) => item.name.replaceAll(/[0-9]/g, "$& "))
+          .join(",");
+        if (speech.text) {
+          window.speechSynthesis.speak(speech);
+        } else {
+          setTimeout(startSpeech, 2000);
+        }
+      } catch (e) {
+        console.log(e);
       }
     };
     /* ----- 播放报警 ----- */
@@ -280,23 +287,23 @@ const WarningRecord = defineComponent({
       setTimeout(startSpeech, 2000);
     });
 
-    onUnmounted(() => {
-      window.speechSynthesis.cancel();
-      speech.onend = null;
+    onBeforeUnmount(() => {
+      try {
+        window.speechSynthesis.cancel();
+        speech.onend = null;
+      } catch (e) {}
     });
 
     return () => (
       <div class="warning-record">
         <QueryFilter onSubmit={search} enumObj={enumObj} />
-        <div class="operation">
+        <div class="operation" style={{ marginBottom: "16px" }}>
           <a-space>
             <span class="checked">已选中{selectedRows.value.length}项</span>
-            <a-button type="link" onClick={handleBatchClear}>
+            <a-button type="primary" onClick={handleBatchClear}>
               批量消警
             </a-button>
-            <a-button type="link" onClick={hanldeBatchMute}>
-              批量消音
-            </a-button>
+            <a-button onClick={hanldeBatchMute}>批量消音</a-button>
           </a-space>
         </div>
         <a-table

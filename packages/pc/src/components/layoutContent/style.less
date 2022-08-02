@@ -15,7 +15,12 @@
       display: flex;
       align-items: center;
       .ant-btn {
+        width: 20px;
+        height: 20px;
         margin: 0 8px;
+        padding: 0;
+        color: #bdc1cf;
+        font-size: 12px;
       }
       .tabs-list {
         flex: 1;
@@ -27,18 +32,19 @@
         }
         .tab-item {
           flex-shrink: 0;
-          padding: 9px 16px;
+          padding: 5px 16px;
           border-radius: 6px 6px 0px 0px;
-          color: #5c667d;
           .icon {
             margin-right: 3px;
           }
           .btn-close {
             margin-left: 5px;
           }
+          &:not(.active) .tab-item-text {
+            color: #5c667d;
+          }
           &.active {
             background: #fff;
-            color: #1d33a2;
             .btn-close {
               color: #939393;
             }
@@ -50,7 +56,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      margin-top: 40px;
+      margin-top: 32px;
       padding: 24px;
       background: #fff;
       & > * {

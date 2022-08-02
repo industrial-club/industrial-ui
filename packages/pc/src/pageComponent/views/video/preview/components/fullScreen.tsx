@@ -1,11 +1,11 @@
-import { defineComponent, onMounted, reactive, ref } from 'vue';
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import {
   FullscreenOutlined,
   FullscreenExitOutlined,
-} from '@ant-design/icons-vue';
+} from "@ant-design/icons-vue";
 
 export default defineComponent({
-  emits: ['fullType'],
+  emits: ["fullType"],
   setup(props, context) {
     const sizeData: any = reactive({
       fullScreen: false,
@@ -36,7 +36,7 @@ export default defineComponent({
     };
     const setZoomType = () => {
       sizeData.fullScreen = !sizeData.fullScreen;
-      context.emit('fullType', sizeData.fullScreen);
+      context.emit("fullType", sizeData.fullScreen);
       if (sizeData.fullScreen) {
         setWindowFullScreen();
       } else {
@@ -48,14 +48,14 @@ export default defineComponent({
       sizeData,
     });
     return () => (
-      <div class='zoom-min' onClick={() => setZoomType()}>
+      <div class="zoom-min" onClick={() => setZoomType()}>
         {sizeData.fullScreen ? (
-          <FullscreenExitOutlined class='icons' />
+          <FullscreenExitOutlined class="icons" />
         ) : (
-          <FullscreenOutlined class='icons' />
+          <FullscreenOutlined class="icons" />
         )}
-        <span class='text'>
-          {sizeData.fullScreen ? '缩小展示' : '全屏显示'}
+        <span class="text">
+          {sizeData.fullScreen ? "缩小展示" : "全屏显示"}
         </span>
       </div>
     );

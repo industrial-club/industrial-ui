@@ -62,8 +62,21 @@ class Login {
     }
   }
 
-  public async getTokenByCode(e?: { username: string; password: string }) {
+  public async refreshToken() {
+    const res = await (this.config.axios.post(`auth/refreshToken`) as any);
+    const { sysUser, token } = res.data;
+    this.saveInfo("token", token);
+    this.saveInfo("userinfo", JSON.stringify(sysUser));
+  }
+
+  public async getTokenByCode(
+    e?: { username: string; password: string },
+    zxAppType?: string
+  ) {
     const { userCode, token, userId } = this.config.queryInfo;
+    if (token) {
+      this.saveInfo("token", token);
+    }
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};
@@ -78,13 +91,12 @@ class Login {
     }
 
     if (!token) {
-      const headers = {
-        isMtip: true,
+      const headers: {
+        appType: string;
+      } = {
+        appType: zxAppType || "",
       };
 
-      if (userCode) {
-        headers.isMtip = false;
-      }
       const res = (await this.config.axios.post(this.config.api, data, {
         headers,
       })) as any;
@@ -92,19 +104,31 @@ class Login {
       this.saveInfo("token", token);
       this.saveInfo("userinfo", JSON.stringify(sysUser));
 
-      if (!userCode) {
-        message.success("登录成功");
-      }
       return Promise.resolve(res);
-      //    router.push("/");
     } else {
-      userId;
-      this.saveInfo("token", token);
-      this.saveInfo("userId", userId);
-      return Promise.resolve({
-        token,
-        userId,
-      });
+      if (zxAppType) {
+        const headers = {
+          appType: zxAppType,
+        };
+        const res = (await this.config.axios.post(
+          this.config.api,
+          {},
+          {
+            headers,
+          }
+        )) as any;
+        const { sysUser, token } = res.data;
+        this.saveInfo("token", token);
+        this.saveInfo("userinfo", JSON.stringify(sysUser));
+        return Promise.resolve(res);
+      } else {
+        this.saveInfo("token", token);
+        this.saveInfo("userId", userId);
+        return Promise.resolve({
+          token,
+          userId,
+        });
+      }
     }
   }
 }

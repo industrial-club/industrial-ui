@@ -51,9 +51,10 @@ const com = defineComponent({
         eventTypeCode: "",
         eventTypeName: "",
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 10,
         current: 1,
         total: 0,
+        showTotal: (total: number) => `共 ${total} 条`,
         startTime: dayjs(new Date())
           .startOf("day")
           .subtract(1, "week")

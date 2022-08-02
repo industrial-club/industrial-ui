@@ -60,7 +60,7 @@ const CommonTree = defineComponent({
       type: Function,
     },
   },
-  setup(props) {
+  setup(props, { slots }) {
     const proxy = useProxy();
     const bus = useBus("system");
 
@@ -258,26 +258,28 @@ const CommonTree = defineComponent({
         />
         {/* 工具栏容器 */}
         <div class="utils-container">
-          {props.isJSONOperation && (
-            <>
-              <a-button
-                style={{ padding: "4px 0" }}
-                type="link"
-                onClick={() => props.onJSONUploadClick?.()}
-              >
-                <CloudUploadOutlined />
-                上传json文件
-              </a-button>
-              <a-button
-                style={{ padding: "4px 0" }}
-                type="link"
-                onClick={handleDownload}
-              >
-                <CloudDownloadOutlined />
-                下载json文件
-              </a-button>
-            </>
-          )}
+          {typeof slots.toolbar === "function"
+            ? slots.toolbar()
+            : props.isJSONOperation && (
+                <>
+                  <a-button
+                    style={{ padding: "4px 0" }}
+                    type="link"
+                    onClick={() => props.onJSONUploadClick?.()}
+                  >
+                    <CloudUploadOutlined />
+                    上传json文件
+                  </a-button>
+                  <a-button
+                    style={{ padding: "4px 0" }}
+                    type="link"
+                    onClick={handleDownload}
+                  >
+                    <CloudDownloadOutlined />
+                    下载json文件
+                  </a-button>
+                </>
+              )}
         </div>
         <div class="tree-container">
           <a-spin spinning={isLoading.value}>

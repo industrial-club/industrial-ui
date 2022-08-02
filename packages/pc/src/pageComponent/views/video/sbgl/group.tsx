@@ -57,6 +57,7 @@ const com = defineComponent({
     const searchValue: any = ref<string>("");
     const autoExpandParent = ref<boolean>(true);
     const gData: any = ref();
+    let treeDataRecord;
     const data: any = reactive({
       titleType: 0,
       move: false,
@@ -340,70 +341,72 @@ const com = defineComponent({
             添加分组
           </a-button>
         </div>
-        <a-tree
-          class="tree-min"
-          showLine={true}
-          onSelect={onSelect}
-          onDrop={onDrop}
-          v-model={[selectedKeys.value, "selectedKeys"]}
-          expandedKeys={expandedKeys.value}
-          autoExpandParent={autoExpandParent.value}
-          tree-data={gData.value}
-          onExpand={onExpand}
-          v-slots={{
-            title: (item: any) => {
-              return (
-                <div class="tree-icons-min">
-                  {item.title.indexOf(searchValue.value) > -1 ? (
-                    <span>
-                      {item.title.substr(
-                        0,
-                        item.title.indexOf(searchValue.value)
-                      )}
-                      <span style="color: #f50">{searchValue.value}</span>
-                      {item.title.substr(
-                        item.title.indexOf(searchValue.value) +
-                          searchValue.value.length
-                      )}
-                    </span>
-                  ) : (
-                    <span>{item.title}</span>
-                  )}
-                  {item.selected ? (
-                    <div class="icons-min">
-                      <img
-                        onClick={() => modifyName()}
-                        v-show={item.nodeType === "G"}
-                        src={"/micro-assets/inl/video/operation/edit.png"}
-                        alt="编辑"
-                      />
-                      <a-popconfirm
-                        onConfirm={() => {
-                          deleteGroup(item.nodeType === "G" ? "zu" : "xj");
-                        }}
-                        title="确定删除？"
-                      >
+        <div class="photoTree">
+          <a-tree
+            class="tree-min"
+            showLine={true}
+            onSelect={onSelect}
+            onDrop={onDrop}
+            v-model={[selectedKeys.value, "selectedKeys"]}
+            expandedKeys={expandedKeys.value}
+            autoExpandParent={autoExpandParent.value}
+            tree-data={gData.value}
+            onExpand={onExpand}
+            v-slots={{
+              title: (item: any) => {
+                return (
+                  <div class="tree-icons-min">
+                    {item.title.indexOf(searchValue.value) > -1 ? (
+                      <span>
+                        {item.title.substr(
+                          0,
+                          item.title.indexOf(searchValue.value)
+                        )}
+                        <span style="color: #f50">{searchValue.value}</span>
+                        {item.title.substr(
+                          item.title.indexOf(searchValue.value) +
+                            searchValue.value.length
+                        )}
+                      </span>
+                    ) : (
+                      <span>{item.title}</span>
+                    )}
+                    {item.selected ? (
+                      <div class="icons-min">
                         <img
-                          src={"/micro-assets/inl/video/operation/dele.png"}
-                          alt="删除"
+                          onClick={() => modifyName()}
+                          v-show={item.nodeType === "G"}
+                          src={"/micro-assets/inl/video/operation/edit.png"}
+                          alt="编辑"
                         />
-                      </a-popconfirm>
+                        <a-popconfirm
+                          onConfirm={() => {
+                            deleteGroup(item.nodeType === "G" ? "zu" : "xj");
+                          }}
+                          title="确定删除？"
+                        >
+                          <img
+                            src={"/micro-assets/inl/video/operation/dele.png"}
+                            alt="删除"
+                          />
+                        </a-popconfirm>
 
-                      <img
-                        onClick={() => addName("item")}
-                        v-show={item.nodeType === "G"}
-                        src={"/micro-assets/inl/video/operation/add.png"}
-                        alt="添加"
-                      />
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              );
-            },
-          }}
-        ></a-tree>
+                        <img
+                          onClick={() => addName("item")}
+                          v-show={item.nodeType === "G"}
+                          src={"/micro-assets/inl/video/operation/add.png"}
+                          alt="添加"
+                        />
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                );
+              },
+            }}
+          ></a-tree>
+        </div>
         <a-modal
           centered={true}
           v-model={[modifyModelVisible.value, "visible"]}

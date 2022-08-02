@@ -95,7 +95,7 @@ export const getPropertiesListByInstanceId =
 
 // 获取部门及人员树
 export const getDepPeopleTreeList = (url: string) => (keyword?: string) =>
-  instance.get(url ?? "/department/all/tree/org/employee", {
+  instance.get(url ?? "/department/all/tree/org/user", {
     baseURL: `/api/${faceName.common}`,
     params: { keyword },
   });
@@ -105,3 +105,42 @@ export const getEnum = (url: string) => async (enumName) => {
   const res = await instance.get<Array<any>>(`${url ?? "/enum/"}${enumName}`);
   return res;
 };
+
+/**
+ * 系统列表 获取根系统
+ */
+export const getRootSystem = async () =>
+  instance.post("/thing/v1/adapter/thing/relation/findRootRelationSys", null, {
+    baseURL: "/api/",
+  });
+
+/**
+ *  系统列表 获取子系统
+ * @param id 系统id
+ */
+export const getChildrenSystem = async (id: string) =>
+  instance.post(
+    `/thing/v1/adapter/thing/relation/findZInstsByClass/${id}/SYSTEM_MT_SYSTEM_MT`,
+    null,
+    { baseURL: "/api/" }
+  );
+
+/**
+ * 获取系统下的设备列表
+ * @param id 系统id
+ */
+export const getDeviceListBySystemId = (id: string) =>
+  instance.post(
+    `/thing/v1/adapter/thing/relation/findZInstsByClass/${id}/SYSTEM_MT_DEVICE`,
+    null,
+    { baseURL: "/api/" }
+  );
+
+/**
+ * 根据设备code获取信号列表
+ * @param code 设备code
+ */
+export const getPropertiesByDeviceCode = (code: string) =>
+  instance.get(`/thing/v1/core/thing/findByCode/${code}`, {
+    baseURL: "/api/",
+  });

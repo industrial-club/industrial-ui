@@ -6,6 +6,7 @@ import pageComponents from "@/pageComponent";
 import utils from "@/utils/publicUtil";
 
 const comps = [...pageComponents, ...components];
+
 export default {
   install(app: App) {
     for (let i of comps) {

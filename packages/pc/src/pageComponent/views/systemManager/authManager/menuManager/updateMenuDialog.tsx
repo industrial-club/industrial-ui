@@ -14,6 +14,7 @@ import { IUrlObj, openMode } from "./index";
 
 import { Modal, message } from "ant-design-vue";
 import IconSelect from "@/pageComponent/components/IconSelect";
+import MenuForm from "./menuForm";
 
 const UpdateMenuDialog = defineComponent({
   emits: ["update:visible"],
@@ -47,11 +48,11 @@ const UpdateMenuDialog = defineComponent({
     });
 
     const handleCommit = async () => {
-      await formRef.value.validate();
+      const data = await formRef.value._validate();
       const isSystemParent = props.parent.id.startsWith("sys");
       await api.insertMenuRecord(urlMap.add)({
-        ...form.value,
-        valid: Number(form.value.valid),
+        ...data,
+        valid: Number(data.valid),
         level: isSystemParent ? 1 : props.parent.level + 1,
         parentId: isSystemParent ? null : props.parent.id,
         softSysId: props.parent.softSysId,
@@ -64,7 +65,7 @@ const UpdateMenuDialog = defineComponent({
     // 清空表单
     watch(isVisible, (val) => {
       if (!val) {
-        formRef.value.resetFields();
+        formRef.value._resetFields();
       }
     });
 
@@ -76,62 +77,7 @@ const UpdateMenuDialog = defineComponent({
           v-model={[isVisible.value, "visible"]}
           onOk={handleCommit}
         >
-          <a-form ref={formRef} labelCol={{ span: 4 }} model={form.value}>
-            <a-form-item
-              label="菜单编码"
-              name="code"
-              required
-              rules={getRequiredRule("菜单编码")}
-            >
-              <a-input v-model={[form.value.code, "value"]}></a-input>
-            </a-form-item>
-            <a-form-item
-              label="页面名称"
-              name="name"
-              required
-              rules={getRequiredRule("页面名称")}
-            >
-              <a-input v-model={[form.value.name, "value"]}></a-input>
-            </a-form-item>
-            <a-form-item
-              label="页面URL"
-              name="url"
-              required
-              rules={getRequiredRule("页面URL")}
-            >
-              <a-input
-                v-model={[form.value.url, "value"]}
-                onChange={() => {
-                  if (
-                    form.value.url.startsWith("http") &&
-                    form.value.mode === 0
-                  ) {
-                    form.value.mode = 1;
-                  }
-                }}
-              ></a-input>
-            </a-form-item>
-            <a-form-item label="打开方式" name="openMode">
-              <a-select v-model={[form.value.mode, "value"]}>
-                {openMode.map((item) => (
-                  <a-select-option
-                    value={item.value}
-                    disabled={
-                      item.value === 0 && form.value.url.startsWith("http")
-                    }
-                  >
-                    {item.label}
-                  </a-select-option>
-                ))}
-              </a-select>
-            </a-form-item>
-            <a-form-item label="启用状态" name="valid">
-              <a-switch v-model={[form.value.valid, "checked"]}></a-switch>
-            </a-form-item>
-            <a-form-item label="ICON" name="icon">
-              <a-input v-model={[form.value.icon, "value"]}></a-input>
-            </a-form-item>
-          </a-form>
+          <MenuForm ref={formRef} form={form.value} />
         </Modal>
       </div>
     );

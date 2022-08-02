@@ -82,7 +82,7 @@ api.getGroup = async () => {
 };
 api.getQueryGroup = async (params: any) => {
   return instance.get("/cameraGroup/tree", {
-    params: { groupTypeUuid: params.uuid },
+    params: { groupTypeUuid: params.uuid, cameraName: params.cameraName },
   });
 };
 api.saveGroupTabs = async (param: any) => {
