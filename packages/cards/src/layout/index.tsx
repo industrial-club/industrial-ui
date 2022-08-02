@@ -29,34 +29,7 @@ const props = {
   },
   cards: {
     type: Array as PropType<Array<CardInfo>>,
-    default: [
-      {
-        name: "aa",
-        componentName: "alarm",
-        row: "1/3",
-        col: "1/2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-    ],
+    default: [],
   },
 };
 
