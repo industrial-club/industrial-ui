@@ -81,7 +81,7 @@ class Login {
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};
 
-    const headers: { appType?: string } = {};
+    const headers: { appType: string } = { appType: "" };
 
     if (userCode) {
       data.userCode = userCode;
