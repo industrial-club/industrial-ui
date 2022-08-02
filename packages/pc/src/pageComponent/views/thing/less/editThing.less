@@ -1,0 +1,94 @@
+.editThing {
+  .header {
+    .ant-page-header {
+      padding: 0;
+    }
+    .ant-btn {
+      margin: 8px;
+    }
+  }
+  .title {
+    .icon {
+      width: 4px;
+      height: 15px;
+      margin: 3.5px 6px;
+      background: #1d33a2;
+    }
+    .name {
+      width: 64px;
+      height: 22px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #354052;
+      line-height: 22px;
+    }
+    .fold {
+      height: 20px;
+      margin-left: 10px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #1d33a2;
+      line-height: 20px;
+      cursor: pointer;
+      span {
+        margin: 3px;
+      }
+    }
+  }
+  .basic {
+    .content {
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-content: start;
+        align-content: start;
+
+        .element {
+          margin: 8px 0;
+          justify-content: flex-end;
+          .name {
+            line-height: 32px;
+            margin-right: 10px;
+          }
+        }
+      }
+      .pic {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        img {
+          width: 240px;
+          height: 240px;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+  .tableTool {
+    button {
+      margin: 0 15px 10px 0;
+    }
+  }
+}
+.thingRelationDia {
+  .inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    justify-items: end;
+    grid-gap: 6px 10px;
+    .element {
+      .name {
+        line-height: 32px;
+        margin-right: 5px;
+      }
+    }
+  }
+  .btns {
+    margin-left: 20px;
+    button {
+      margin-bottom: 10px;
+    }
+  }
+}

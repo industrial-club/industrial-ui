@@ -29,6 +29,7 @@ import noticeCenter from "@/pageComponent/views/systemManager/noticeManager/noti
 import noticeManager from "@/pageComponent/views/systemManager/noticeManager/noticeManager";
 import PssList from "@/pageComponent/views/pss";
 import PssRecord from "@/pageComponent/views/pssRecord";
+import Thing from "@/pageComponent/views/thing";
 import feeding from "@/pageComponent/views/pressureFiltration/feeding";
 import productionShiftReport from "@/pageComponent/views/pressureFiltration/productionShiftReport";
 import record from "@/pageComponent/views/pressureFiltration/record";
@@ -69,6 +70,7 @@ export default [
   noticeManager,
   PssList,
   PssRecord,
+  Thing,
   feeding,
   productionShiftReport,
   record,
