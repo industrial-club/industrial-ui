@@ -4,7 +4,9 @@ import parameter from "@/pageComponent/components/pressureFiltration/numberOfPla
 import alarmList from "@/pageComponent/components/pressureFiltration/alarmList";
 import pressureFiltrationHomeApi from "@/api/pressureFiltration/pressureFiltrationHome";
 import shiftChange from "@/pageComponent/components/pressureFiltration/shiftChange";
+import htModal from "@/pageComponent/components/htModal";
 import { Modal } from "ant-design-vue";
+import tpInit from "@/tpInit";
 
 const props = {
   pressureFiltrationPng: String,
@@ -32,10 +34,16 @@ const pressureFiltrationHome = defineComponent({
     parameter,
     alarmList,
     shiftChange,
+    htModal,
   },
   props,
   emits: ["goRoute"],
   setup(_props, _context) {
+    let reloadFun: any;
+    onMounted(async () => {
+      const { reloadUrl } = await tpInit(document.getElementById("tp"), 3000);
+      reloadFun = reloadUrl;
+    });
     // 板数数据
     const parameterData = ref([]);
 
@@ -53,6 +61,11 @@ const pressureFiltrationHome = defineComponent({
 
     // 带料弹窗显示隐藏
     const visible = ref(false);
+
+    // 图扑流程图弹窗
+    const htVisible = ref(false);
+    // 图扑流程图弹窗title
+    const htTitle = ref("漏斗");
 
     // 定时器实例
     let timerOut: NodeJS.Timeout | null;
@@ -151,6 +164,9 @@ const pressureFiltrationHome = defineComponent({
       getFilterAlarmList();
     }, 3000);
 
+    // setInterval(() => {
+    //   reloadFun("displays/factory/xinjulong/filter.json");
+    // }, 100000);
     onMounted(() => {
       http();
       getQuery();
@@ -167,11 +183,13 @@ const pressureFiltrationHome = defineComponent({
     return () => (
       <div class={`pressureFiltrationHome ${_props.homeType}`}>
         <div class="pressureFiltrationHome-left">
-          <img
-            src={_props.pressureFiltrationPng}
-            style={{ width: "100%", height: "100%" }}
-            alt=""
-          />
+          <div
+            id="tp"
+            style={{
+              height: "100%",
+              position: "relative",
+            }}
+          ></div>
         </div>
         <div class="pressureFiltrationHome-right">
           <div class="pressureFiltrationHome-right-control">
@@ -224,6 +242,18 @@ const pressureFiltrationHome = defineComponent({
             }}
             data={shiftChangeData.value}
           ></shiftChange>
+        </a-modal>
+        <a-modal
+          v-model={[htVisible.value, "visible"]}
+          title={htTitle.value}
+          centered
+          width={600}
+          footer={false}
+          mask={false}
+          maskClosable={false}
+          class="htVisible"
+        >
+          <htModal></htModal>
         </a-modal>
       </div>
     );

@@ -339,6 +339,7 @@ export default defineComponent({
       const resp: any = await pssApi.processApproval({
         comment: operationState.comment,
         processGateway: operationState.isAgree ? "agree" : "disagree",
+        taskDefKey: currentObj.value.taskDefKey,
         taskId: currentObj.value.taskId,
         userId,
       });
@@ -425,6 +426,7 @@ export default defineComponent({
       const resp: any = await pssApi.processAttempt({
         comment: operationState.comment,
         processGateway: operationState.isAgree ? "agree" : "disagree",
+        taskDefKey: currentObj.value.taskDefKey,
         taskId: currentObj.value.taskId,
         userId,
       });
@@ -444,6 +446,7 @@ export default defineComponent({
       const resp: any = await pssApi.processOverhaul({
         comment: operationState.comment,
         processGateway: operationState.isAgree ? "agree" : "disagree",
+        taskDefKey: currentObj.value.taskDefKey,
         taskId: currentObj.value.taskId,
         userId,
       });

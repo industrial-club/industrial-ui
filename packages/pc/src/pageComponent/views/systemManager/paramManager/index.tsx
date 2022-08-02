@@ -12,7 +12,7 @@
  * @LastEditors: wang liang
  * @LastEditTime: 2022-03-29 15:03:27
  */
-import { defineComponent, PropType, provide, ref, watch } from "vue";
+import { defineComponent, onMounted, PropType, provide, ref, watch } from "vue";
 import { api, setInstance } from "@/api/param";
 import utils from "@/utils";
 
@@ -39,6 +39,9 @@ const ParamManager = defineComponent({
     serverName: {
       type: String,
     },
+    menu: {
+      type: Object as PropType<any>,
+    },
   },
   setup(props) {
     setInstance({ prefix: props.prefix, serverName: props.serverName });
@@ -46,24 +49,19 @@ const ParamManager = defineComponent({
     provide("urlMap", urlMap);
 
     const menus = ref([]);
-    const currentMenu = ref();
+    const currentMenu = ref(props.menu);
     const tabs = ref([]);
 
     const changeMenu = (menu: any) => {
       currentMenu.value = menu;
     };
 
-    watch(currentMenu, () => {
-      getTabs();
-    });
-
     const getMenus = async () => {
       const { data } = await api.getGroupList(urlMap.list)({ level: "menu" });
       menus.value = data;
       currentMenu.value = data[0];
     };
-
-    getMenus();
+    onMounted(() => !props.menu && getMenus());
 
     /* 获取标签页数据 */
     const getTabs = async () => {
@@ -74,18 +72,28 @@ const ParamManager = defineComponent({
       tabs.value = data;
     };
 
+    watch(
+      currentMenu,
+      (val) => {
+        if (val) getTabs();
+      },
+      { immediate: true }
+    );
+
     return () => (
       <div class="param-manager">
-        <a-space>
-          {menus.value.map((item: any, index: number) => (
-            <a-button
-              type={currentMenu.value.id === item.id ? "primary" : "default"}
-              onClick={() => changeMenu(item)}
-            >
-              {item.name}
-            </a-button>
-          ))}
-        </a-space>
+        {!props.menu && (
+          <a-space>
+            {menus.value.map((item: any, index: number) => (
+              <a-button
+                type={currentMenu.value.id === item.id ? "primary" : "default"}
+                onClick={() => changeMenu(item)}
+              >
+                {item.name}
+              </a-button>
+            ))}
+          </a-space>
+        )}
 
         <a-tabs>
           {tabs.value.map((item: any) => (

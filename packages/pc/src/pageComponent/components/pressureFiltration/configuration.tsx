@@ -14,6 +14,10 @@ const props = {
     type: Array as PropType<Array<formItem>>,
     default: [],
   },
+  showInstanceCode: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
 };
 
 export default defineComponent({
@@ -134,7 +138,9 @@ export default defineComponent({
             {dataList.value.map((item) => (
               <a-col span={8}>
                 <a-form-item
-                  label={`${item.instanceCode}${item.desc}`}
+                  label={`${_props.showInstanceCode ? item.instanceCode : ""}${
+                    item.desc
+                  }`}
                   colon={false}
                 >
                   {inputType(item)}

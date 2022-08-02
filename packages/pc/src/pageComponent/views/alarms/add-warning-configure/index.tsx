@@ -122,7 +122,7 @@ const AddWarningConfigure = defineComponent({
             })
           );
           propertiesList.forEach((item, index) => {
-            res.data[index].children = item.data.thingPropertyList
+            res.data[index].children = (item.data?.thingPropertyList ?? [])
               .filter((item: any) => item.propertyType !== "property")
               .map((item: any) => {
                 item.label = item.name;
@@ -171,21 +171,23 @@ const AddWarningConfigure = defineComponent({
     });
     return () => (
       <div class="add-warning-configure">
-        {/* 面包屑 */}
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <a onClick={goBack}>报警配置</a>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>添加报警</a-breadcrumb-item>
-        </a-breadcrumb>
-        {/* 表单 */}
-        <div class="form-list-container">
-          {/* 基础信息 */}
-          <BasicForm enumObj={enumObj} />
-          {/* 报警规则 */}
-          <RuleForm enumObj={enumObj} instanceList={findAllList.value} />
-          {/* 联动配置 */}
-          <LinkageForm enumObj={enumObj} />
+        <div class="form-container-outter">
+          {/* 面包屑 */}
+          <a-breadcrumb>
+            <a-breadcrumb-item>
+              <a onClick={goBack}>报警配置</a>
+            </a-breadcrumb-item>
+            <a-breadcrumb-item>添加报警</a-breadcrumb-item>
+          </a-breadcrumb>
+          {/* 表单 */}
+          <div class="form-list-container">
+            {/* 基础信息 */}
+            <BasicForm enumObj={enumObj} />
+            {/* 报警规则 */}
+            <RuleForm enumObj={enumObj} instanceList={findAllList.value} />
+            {/* 联动配置 */}
+            <LinkageForm enumObj={enumObj} />
+          </div>
         </div>
         {/* 底部按钮 固定 */}
         <div class="footer">

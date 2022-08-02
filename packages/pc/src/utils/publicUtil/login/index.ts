@@ -74,6 +74,9 @@ class Login {
     zxAppType?: string
   ) {
     const { userCode, token, userId } = this.config.queryInfo;
+    if (token) {
+      this.saveInfo("token", token);
+    }
 
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};

@@ -115,7 +115,7 @@ export default defineComponent({
       }
       pitchOn.data = info;
       if (props.domType) {
-        context.emit("stopVideo", info.node.uuid, info.node.eventKey);
+        context.emit("stopVideo", info.node?.uuid, info.node.eventKey);
         if (!info.selected) {
           selectedKeys.value.push(info.node.eventKey);
         }
@@ -158,20 +158,20 @@ export default defineComponent({
       return have;
     };
     const collectShow = (e: any, item: any) => {
-      if (checkAttention(item.uuid)) {
+      if (checkAttention(item?.uuid)) {
         return;
       }
       collctData.concernUuid = "";
-      collctData.uuid = "";
+      collctData.uuid && (collctData.uuid = "");
       e.stopPropagation();
-      collctData.uuid = item.uuid;
+      collctData.uuid && (collctData.uuid = item?.uuid);
       getConcern();
       collectVisible.value = true;
     };
     const collectSave = async () => {
       const val = {
         concernUuid: collctData.concernUuid,
-        cameraUuid: collctData.uuid,
+        cameraUuid: collctData?.uuid,
       };
       const res = await videoApi.addConcern(val);
       collectVisible.value = false;
@@ -338,7 +338,7 @@ export default defineComponent({
                         class="active-l"
                         onClick={(e: any) => collectShow(e, item)}
                         src={
-                          checkAttention(item.uuid)
+                          checkAttention(item?.uuid)
                             ? "/micro-assets/inl/video/operation/collectYes.png"
                             : "/micro-assets/inl/video/operation/collectNo.png"
                         }
@@ -370,7 +370,7 @@ export default defineComponent({
             >
               {listData.value.map((item: any, index: any) => {
                 return (
-                  <a-select-option value={item.uuid}>
+                  <a-select-option value={item?.uuid}>
                     {item.name}
                   </a-select-option>
                 );
