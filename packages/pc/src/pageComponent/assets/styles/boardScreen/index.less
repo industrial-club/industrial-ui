@@ -1,0 +1,57 @@
+@import url("./components/Card1Outer.less");
+@import url("./components/Card2Outer.less");
+@import url("./room/index.less");
+@import url("./components/PopBox.less");
+@import url("./tupu/index.less");
+
+.board-screen {
+  height: 100%;
+  background: #071214;
+  position: relative;
+  color: #fff;
+
+  // .board-header {
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   width: 100%;
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   z-index: 2;
+  //   height: 58px;
+  //   color: #fff;
+  //   font-size: 24px;
+
+  //   span {
+  //     margin-top: -5px;
+  //   }
+  // }
+
+  .tupu-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  .room-panel {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    bottom: 20px;
+    z-index: 2;
+    width: 408px;
+    pointer-events: none;
+  }
+
+  .video-panel {
+    position: absolute;
+    top: 58px;
+    right: 0;
+    z-index: 2;
+    width: 219px;
+  }
+}
