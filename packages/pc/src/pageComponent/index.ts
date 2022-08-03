@@ -37,7 +37,7 @@ import unloading from "@/pageComponent/views/pressureFiltration/unloading";
 import pressureFiltrationHome from "@/pageComponent/views/pressureFiltration/pressureFiltrationHome";
 import factoryManage from "@/pageComponent/views/thingModel/factoryManage";
 import elcRoom from "@/pageComponent/views/elcRoom";
-// import boardScreen from "@/pageComponent/views/boardScreen";
+import boardScreen from "@/pageComponent/views/boardScreen";
 
 export default [
   About,
@@ -79,5 +79,5 @@ export default [
   pressureFiltrationHome,
   factoryManage,
   elcRoom,
-  // boardScreen,
+  boardScreen,
 ];
