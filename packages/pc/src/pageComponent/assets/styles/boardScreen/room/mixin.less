@@ -1,0 +1,19 @@
+.scroll-bar(@width: 14px) {
+  // 滚动条
+  scrollbar-color: #179a6f #07434b;
+  scrollbar-width: @width;
+
+  &::-webkit-scrollbar {
+    width: @width;
+    height: @width;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 7px;
+    background: #07434b;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 7px;
+  }
+}

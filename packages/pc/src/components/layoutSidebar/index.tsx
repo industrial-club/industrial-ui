@@ -54,14 +54,30 @@ const LayoutSidebar = defineComponent({
       } else if (menu.mode === 2) {
         router.push(`/?menuCode=${menu.code}`);
       } else {
-        const url = menu.url.startsWith("http")
-          ? menu.url
-          : location.origin + menu.url;
-
         const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+        const isWithOrigin = menu.url.startsWith("http");
+        const url = isWithOrigin
+          ? menu.url
+          : `${location.origin}${menu.url.startsWith("/") ? "" : "/"}${
+              menu.url
+            }`;
+
         const urlObj = new URL(url);
-        urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
-        urlObj.searchParams.set("userId", userinfo.userId);
+        if (urlObj.hash) {
+          const converceUrl = new URL(
+            urlObj.hash.replace("#", location.origin)
+          );
+          converceUrl.searchParams.set(
+            "token",
+            sessionStorage.getItem("token")!
+          );
+          converceUrl.searchParams.set("userId", userinfo.userId);
+          urlObj.hash = converceUrl.href.replace(location.origin, "#");
+        } else {
+          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+          urlObj.searchParams.set("userId", userinfo.userId);
+        }
+
         window.open(urlObj.href);
       }
     };

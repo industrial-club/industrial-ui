@@ -1,0 +1,204 @@
+@import "./mixin.less";
+
+.room {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .room-header {
+    pointer-events: all;
+
+    .border-block-group {
+      .left-bottom-block,
+      .right-bottom-block {
+        display: none;
+      }
+    }
+    .card1-outer {
+      .card1-outer-header {
+        padding: 5px 20px;
+        // border-bottom: 1px solid;
+        background: url("/micro-assets/platform-web/card1OuterHeader.png")
+          no-repeat;
+        background-size: 100% 100%;
+
+        .select-header {
+          .select-active-bar {
+            display: flex;
+
+            .select-item {
+              flex: 1;
+              padding: 0 5px;
+              width: 0;
+
+              .ant-select {
+                width: 100%;
+                color: #fff;
+
+                .ant-select-selection {
+                  background: none;
+                  border: none;
+                  box-shadow: none;
+                  .ant-select-selection__rendered {
+                    font-size: 20px;
+                    color: #fff;
+                    .ant-select-selection-selected-value {
+                      width: 100%;
+                      text-align: center;
+                    }
+                  }
+                  .ant-select-arrow {
+                    color: #4cd3ac;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // .card1-outer-content {
+      //   .room-tab {
+      //     .room-tab-bar {
+      //       display: flex;
+      //       align-items: center;
+      //       justify-content: center;
+
+      //       .room-tab-item {
+      //         font-size: 12px;
+      //         cursor: pointer;
+      //         position: relative;
+      //         line-height: 30px;
+
+      //         + .room-tab-item {
+      //           margin-left: 60px;
+      //         }
+
+      //         &.room-tab-item-active {
+      //           font-size: 16px;
+      //           color: #4cd3ac;
+      //           &::after {
+      //             content: "";
+      //             position: absolute;
+      //             left: 0;
+      //             bottom: 0;
+      //             width: 100%;
+      //             height: 3px;
+      //             background: linear-gradient(115deg, #5b9594 0%, #014e54 100%);
+      //           }
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+    }
+  }
+
+  .room-content {
+    margin-top: 10px;
+    background: rgba(18, 58, 104, 0.2);
+    border: 1px solid #20355f;
+    backdrop-filter: blur(4px);
+
+    .room-content-panel {
+      max-height: 100%;
+      overflow-y: auto;
+      .scroll-bar();
+      pointer-events: all;
+      padding: 20px;
+      &-item {
+        padding: 20px;
+        box-sizing: border-box;
+        cursor: pointer;
+        background: url("/micro-assets/platform-web/distributionRoomCard-notSelect.png")
+          no-repeat;
+        background-size: 100% 100%;
+        margin-bottom: 20px;
+        &-title {
+          font-size: 16px;
+          font-weight: 500;
+          color: #ffffff;
+        }
+        &-content {
+          font-size: 14px;
+          font-weight: 400;
+          color: #ffffff;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          &-state {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            &-col {
+              > span {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 10px;
+                border: 1px solid #20355f;
+                &.green {
+                  background: #55f1ff;
+                }
+                &.white {
+                  background: #fff;
+                }
+                &.red {
+                  background: #ec763c;
+                }
+                &.grey {
+                  background: #a9b3c6;
+                }
+              }
+            }
+            > img {
+              width: 13px;
+              margin-right: 10px;
+            }
+          }
+        }
+        &-active {
+          background: url("/micro-assets/platform-web/distributionRoomCard-select.png")
+            no-repeat;
+          background-size: 100% 100%;
+          margin-bottom: 20px;
+        }
+      }
+    }
+  }
+}
+
+.ant-select-dropdown {
+  &.screen-select {
+    background: rgba(79, 104, 149, 0.7);
+    border: 1px solid #20355f;
+    backdrop-filter: blur(2px);
+    width: 408px !important;
+    left: 253px !important;
+    top: 197px !important;
+    .ant-select-item {
+      color: #fff;
+    }
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled),
+    .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+      background: #3377ff;
+    }
+
+    .ant-select-dropdown-content {
+      .ant-select-dropdown-menu {
+        .scroll-bar(10px);
+
+        .ant-select-dropdown-menu-item {
+          background: none;
+          color: #fff;
+
+          &.ant-select-dropdown-menu-item-active,
+          &.ant-select-dropdown-menu-item-selected {
+            background: #081e22;
+          }
+        }
+      }
+    }
+  }
+}

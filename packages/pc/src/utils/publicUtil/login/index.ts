@@ -70,10 +70,10 @@ class Login {
   }
 
   public async getTokenByCode(
-    e?: { username: string; password: string },
-    zxAppType?: string
+    e: { username: string; password: string } | string = "mtip-base-system"
   ) {
-    const { userCode, token, userId } = this.config.queryInfo;
+    const { userCode, token } = this.config.queryInfo;
+
     if (token) {
       this.saveInfo("token", token);
     }
@@ -81,55 +81,28 @@ class Login {
     const data: { userName?: string; passWord?: string; userCode?: string } =
       {};
 
+    const headers: { appType: string } = { appType: "" };
+
     if (userCode) {
       data.userCode = userCode;
     }
 
-    if (e?.username && e.password) {
+    if (typeof e === "object" && e.username && e.password) {
+      // 如果 e 是对象,为用户名密码登陆
       data.passWord = encodeStr(e.password);
       data.userName = e.username;
+    } else if (typeof e === "string") {
+      // 如果 e 是字符串,为免登
+      headers.appType = e;
     }
+    const res = (await this.config.axios.post(this.config.api, data, {
+      headers,
+    })) as any;
 
-    if (!token) {
-      const headers: {
-        appType: string;
-      } = {
-        appType: zxAppType || "",
-      };
+    this.saveInfo("token", res.data.token);
+    this.saveInfo("userinfo", JSON.stringify(res.data.sysUser));
 
-      const res = (await this.config.axios.post(this.config.api, data, {
-        headers,
-      })) as any;
-      const { sysUser, token } = res.data;
-      this.saveInfo("token", token);
-      this.saveInfo("userinfo", JSON.stringify(sysUser));
-
-      return Promise.resolve(res);
-    } else {
-      if (zxAppType) {
-        const headers = {
-          appType: zxAppType,
-        };
-        const res = (await this.config.axios.post(
-          this.config.api,
-          {},
-          {
-            headers,
-          }
-        )) as any;
-        const { sysUser, token } = res.data;
-        this.saveInfo("token", token);
-        this.saveInfo("userinfo", JSON.stringify(sysUser));
-        return Promise.resolve(res);
-      } else {
-        this.saveInfo("token", token);
-        this.saveInfo("userId", userId);
-        return Promise.resolve({
-          token,
-          userId,
-        });
-      }
-    }
+    return Promise.resolve(res);
   }
 }
 export default Login;
