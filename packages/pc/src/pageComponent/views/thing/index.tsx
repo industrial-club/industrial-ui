@@ -5,7 +5,6 @@ import useTreeSearch from "./hooks/useTreeSearch";
 import useTableList from "./hooks/useTableList";
 import thingModal from "./modal";
 import * as thingApis from "@/api/thingInstance";
-import { queryOpts } from "./data";
 import utils from "@/utils";
 import { message } from "ant-design-vue";
 import editThing from "./component/editThing";
@@ -57,7 +56,7 @@ const com = defineComponent({
     const queryFormRef = ref();
     const formQuery = reactive({
       name: "",
-      thingCode: "POWER_LOOP",
+      thingCode: "",
       code: "",
       catalogCode: "",
       factoryCode: "",
@@ -73,6 +72,7 @@ const com = defineComponent({
       const resObj: any = {
         columnData: [],
         data: [],
+        totalNum: res.data?.total,
       };
 
       const colArr = res.data?.list[0]?.thingInst.thing.thingPropertyList;
@@ -91,10 +91,9 @@ const com = defineComponent({
         key: "action",
         slots: { customRender: "action" },
       });
-      res.data.list.forEach((ele: any) => {
+      res.data?.list.forEach((ele: any) => {
         resObj.data.push(ele.staticMap.map);
       });
-      console.log(resObj);
       return resObj;
     };
     const state = reactive<{
@@ -119,10 +118,16 @@ const com = defineComponent({
     const reset = () => {
       queryFormRef.value.resetFields();
     };
+    const pageData = reactive({
+      editData: {},
+      thingCode: "",
+    });
     // 弹框
     const modalRef = ref<any>(null);
-    const updateModal = (row?: any) => {
-      // modalRef.value.showModal(row, formQuery.thingCode);
+    const updateModal = async (row?: any) => {
+      const res: any = await thingApis.findThingProperties(row.record.id);
+      pageData.thingCode = row.record.thing_code;
+      pageData.editData = res.data;
       page.value = "edit";
     };
     const deleteThing = async (row) => {
@@ -137,7 +142,16 @@ const com = defineComponent({
     const page = ref("list");
     return () => (
       <div class="thingApp">
-        {page.value === "edit" ? <editThing /> : ""}
+        {page.value === "edit" ? (
+          <editThing
+            data={pageData.editData}
+            onBack={() => {
+              page.value = "list";
+            }}
+          />
+        ) : (
+          ""
+        )}
         <div
           class="thingInstance flex"
           style={page.value !== "list" ? "display:none" : ""}
@@ -147,6 +161,7 @@ const com = defineComponent({
               <span>物模型</span>
               <MenuFoldOutlined />
             </div>
+
             <div class="tree_data">
               <a-input-search
                 v-model={[searchValue.value, "value"]}
@@ -262,7 +277,7 @@ const com = defineComponent({
                       <a-space>
                         <a
                           onClick={() => {
-                            // updateModal(row);
+                            updateModal(row);
                           }}
                         >
                           编辑
