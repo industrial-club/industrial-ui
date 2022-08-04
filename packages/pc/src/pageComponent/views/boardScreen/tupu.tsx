@@ -27,8 +27,8 @@ export default defineComponent({
   },
   props,
   setup(this, _props, _ctx) {
-    const visible = ref(true);
-    const loopId = ref("");
+    const visible = ref(false);
+    const loopList = ref<any>([]);
     const point = ref({
       x: 0,
       y: 0,
@@ -102,22 +102,22 @@ export default defineComponent({
         const tupuCanvas = document.getElementById(tupuId.value);
 
         tupuCanvas!.onmousedown = () => {
-          // visible.value = false;
+          visible.value = false;
         };
 
         tupuCanvas!.onwheel = () => {
-          // visible.value = false;
+          visible.value = false;
         };
       });
     };
     const rowClick = (rowId: string) => {
       rowId = rowId.match(/\d+/)?.[0] || "";
-      // visible.value = false;
+      visible.value = false;
       _ctx.emit("rowClick", Number(rowId));
     };
 
     const loopClick = (e: MouseEvent, loopId: any) => {
-      console.log(e, loopId);
+      const loopIds = JSON.parse(loopId);
       const { x, y } = e;
 
       point.value = {
@@ -125,7 +125,7 @@ export default defineComponent({
         y,
       };
       visible.value = true;
-      loopId.value = loopId;
+      loopList.value = loopIds;
     };
     return () => (
       <div class="tupu">
@@ -134,7 +134,7 @@ export default defineComponent({
         </div>
         <pop-box
           v-model={[visible.value, "visible"]}
-          loopId={loopId.value}
+          loopId={loopList.value}
           point={point.value}
         />
       </div>

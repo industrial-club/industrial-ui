@@ -133,6 +133,7 @@ export const elcRoomFilter = (data) => {
       child: item.cardDtos.map((val) => ({
         powerOffPlateCount: val.loopLockCount,
         loopStatus: loopStatusF(val.loopStatus),
+        loopIds: val.loopIds,
       })),
     }));
     datas = [...datas, ...list];
