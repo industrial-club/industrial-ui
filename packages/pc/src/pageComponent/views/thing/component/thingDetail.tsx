@@ -50,13 +50,13 @@ export default defineComponent({
       () => props.data,
       (value: any) => {
         colArr.value = JSON.parse(
-          JSON.stringify(value.thingInst?.thing?.thingPropertyList || [])
+          JSON.stringify(value.thingInst.thing.thingPropertyList)
         );
         basicForm.value = colArr.value.filter((ele: any) => {
           ele.value = value.staticMap.map[ele.code];
           return ele.propertyType === "property";
         });
-        dynamicTableList.value = value.dynamicProperties?.filter((ele: any) => {
+        dynamicTableList.value = value.dynamicProperties.filter((ele: any) => {
           const pro: any = colArr.value.find((col: any) => {
             return col.code === ele.thingPropertyCode;
           });
@@ -89,12 +89,6 @@ export default defineComponent({
         message.error("服务异常");
       }
     };
-    const folds = reactive({
-      basic: false,
-      dynamic: false,
-      logic: false,
-      action: false,
-    });
     return () => (
       <div class="editThing">
         <div class="header flex">

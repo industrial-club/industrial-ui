@@ -19,13 +19,6 @@ export const indInsts = (data: any) =>
  */
 export const findByCode = (thingCode: string) =>
   instance.get(`/thing/v1/core/thing/findByCode/${thingCode}`);
-
-/**
- * 添加实例对象
- */
-export const addInst = (data: any) =>
-  instance.post(`/thing/v1/adapter/thing/inst/add`, data);
-
 /**
  * 根据id查询物属性
  */
@@ -37,13 +30,21 @@ export const editThing = (data: any) =>
 // 删除
 export const deleteThing = (id: string) =>
   instance.delete(`/thing/v1/adapter/thing/common/remove/${id}`);
-// 获取关系分类
+// 获取关系tab
 export const getTabs = (direction: string, thingCode: string) =>
-  instance.get(`/thing/v1/findByCode/${direction}/${thingCode}`);
-/**
- * 查询属性【按属性类型划分】
- */
-export const findTypeProperties = (thingCode: string) =>
-  instance.post(`/thing/v1/core/thing/findTypeProperties/${thingCode}`);
+  instance.get(
+    `/thing/v1/core/relation/findByDirection/${direction}/${thingCode}`
+  );
+// 获取关系
+export const getRelationZ = (id: string, thingCode: string) =>
+  instance.post(`/thing/v1/adapter/thing/relation/findZ`, {
+    zthingCode: thingCode,
+    instId: id,
+  });
+export const getRelationA = (id: string, thingCode: string) =>
+  instance.post(`/thing/v1/adapter/thing/relation/findA`, {
+    athingCode: thingCode,
+    instId: id,
+  });
 
 export default "";
