@@ -70,7 +70,7 @@ class Login {
   }
 
   public async getTokenByCode(
-    e: { username: string; password: string } | string = "mtip-base-system"
+    e: { username: string; password: string } | string = "mtip-factory"
   ) {
     const { userCode, token } = this.config.queryInfo;
 

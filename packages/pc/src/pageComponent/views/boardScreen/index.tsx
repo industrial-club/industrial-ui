@@ -139,6 +139,7 @@ const boardScreen = defineComponent({
               // id: loop.loopId,
               state: loop.loopStatus,
               cards: loop.powerOffPlateCount,
+              loopIds: loop.loopIds,
             };
           });
           const colData = {
