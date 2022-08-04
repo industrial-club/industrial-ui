@@ -23,7 +23,7 @@
   const loginFun = new ui.utils.login();
 
   // 自动免登
-  loginFun.getTokenByCode(); // 方法内传值  mtip-base-system:单机(默认)、mtip-factory:平台
+  loginFun.getTokenByCode(); // 方法内传值  mtip-base-system:单机、mtip-factory:平台(默认)
   loginFun.systemServerInfo; // 查看当前环境  zx-env:智信环境、mtip-app-env：平台微应用环 境、mtip-env:平台独立环境
   ```
 
