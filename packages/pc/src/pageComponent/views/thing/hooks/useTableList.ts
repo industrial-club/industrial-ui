@@ -30,12 +30,11 @@ export default function useTableList(
   const refresh = debounce(async () => {
     isLoading.value = true;
     try {
-      const { data, columnData } = await getData();
+      const { data, columnData, totalNum } = await getData();
       if (listProp) {
         tableList.value = data;
         columns.value = columnData;
-        console.log(columns.value);
-        total.value = data[totalName];
+        total.value = totalNum;
       } else {
         tableList.value = data;
       }
