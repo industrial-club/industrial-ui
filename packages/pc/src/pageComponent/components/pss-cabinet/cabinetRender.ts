@@ -396,7 +396,7 @@ class cabinet {
       cardv.p3(-x / 2 + 30, y * 0.05, z + 1);
       cardv.s3(20, 10, 1);
       this.dm.add(cardv);
-      cardv.setTag(`cardv${JSON.stringify(item.loopIds)}`);
+      cardv.setTag(`cardv${JSON.stringify(item.info)}`);
       cardv.setAttr("v", item.cards);
       return cardv;
     },
@@ -519,13 +519,13 @@ class cabinet {
     },
   };
   // 回路事件
-  protected cabinetLoopClick = (e: MouseEvent, id: string) => {
+  protected cabinetLoopClick = (event: MouseEvent, id: string) => {
     if (!(window as any).cabinetLoopClick) {
       return this.errorEvent("window上不存在 ·cabinetLoopClick· 事件 .");
     }
 
     // 给当前点击的盒子添加高亮
-    (window as any).cabinetLoopClick(e, id);
+    (window as any).cabinetLoopClick(event, id);
   };
   protected errorEvent = (s: string) => {
     throw new Error(s);
