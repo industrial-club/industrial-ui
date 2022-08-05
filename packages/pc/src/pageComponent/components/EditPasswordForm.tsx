@@ -32,22 +32,28 @@ const Editpasswordform = defineComponent({
       passWord: {
         async validator(rule: any, value: string) {
           if (!value) throw new Error("请输入新密码");
+          if (value.length < 8 || value.length > 16)
+            throw new Error("请输入长度为8-14的字符");
           if (!formModel.value.checkPassWord) return true;
           if (value !== formModel.value.checkPassWord) {
             throw new Error("新旧密码不一致");
           }
           return true;
         },
+        trigger: "blur",
       },
       checkPassWord: {
         async validator(rule: any, value: string) {
           if (!value) throw new Error("请确认密码");
+          if (value.length < 8 || value.length > 16)
+            throw new Error("请输入长度为8-14的字符");
           if (!formModel.value.passWord) return true;
           if (value !== formModel.value.passWord) {
             throw new Error("新旧密码不一致");
           }
           return true;
         },
+        trigger: "blur",
       },
     };
 
@@ -70,7 +76,7 @@ const Editpasswordform = defineComponent({
       >
         <a-form-item
           name="oldPassWord"
-          rules={{ required: true, message: "请输入原密码" }}
+          rules={[{ required: true, message: "请输入原密码" }]}
           label="原密码"
         >
           <a-input-password v-model={[formModel.value.oldPassWord, "value"]} />
