@@ -37,6 +37,14 @@ export default defineComponent({
         title: "prePointCode",
         dataIndex: "prePointCode",
       },
+      {
+        title: "resetInterval",
+        dataIndex: "resetInterval",
+      },
+      {
+        title: "resetValue",
+        dataIndex: "resetValue",
+      },
     ]);
     const dynamicTableList = ref([]);
     // 逻辑表格
@@ -80,11 +88,13 @@ export default defineComponent({
         });
         element.preCode = dy.preCode;
         element.prePointCode = dy.prePointCode;
+        element.resetInterval = dy.resetInterval;
+        element.resetValue = dy.resetValue;
       });
       const res: any = await thingApis.editThing(param);
       if (res.code === "M0000") {
         message.success("保存成功");
-        context.emit("bach");
+        context.emit("back");
       } else {
         message.error("服务异常");
       }
@@ -167,7 +177,9 @@ export default defineComponent({
               bodyCell: ({ column, record, index }: any) => {
                 if (
                   column.dataIndex === "preCode" ||
-                  column.dataIndex === "prePointCode"
+                  column.dataIndex === "prePointCode" ||
+                  column.dataIndex === "resetInterval" ||
+                  column.dataIndex === "resetValue"
                 ) {
                   return (
                     <a-input
