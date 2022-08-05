@@ -4,6 +4,7 @@ import lodash from "lodash";
 import Card2Outer from "@/pageComponent/components/boardScreen/Card2Outer";
 import { message } from "ant-design-vue";
 import { getloopDetail } from "@/api/boardScreen/powersupply";
+import card2OuterTable from "@/pageComponent/components/boardScreen/card2OuterTable";
 
 const props = {
   point: {
@@ -23,6 +24,7 @@ const props = {
 export default defineComponent({
   components: {
     Card2Outer,
+    card2OuterTable,
   },
   props,
   setup(this, _props, _ctx) {
@@ -38,7 +40,6 @@ export default defineComponent({
       () => _props.loopInfo,
       (e) => {
         if (e && _props.visible) {
-          console.log(e);
           getData();
           list.value = e.loopIds;
           cabinetName.value = e.cabinetName;
@@ -63,70 +64,10 @@ export default defineComponent({
           // const line2 = `L${left + offset.value.x} ${top}`;
 
           pathD.value = `M${_props.point.x} ${_props.point.y} ${line1}`;
-          console.log(pathD.value);
         }
       });
     };
-    const getBrandData = async (loopId) => {
-      const res = await getloopDetail(loopId);
-      return (
-        <>
-          {res.data.length > 0 &&
-            res.data.map((item) => (
-              <a-row class="card2-outer-content-panel-table-body">
-                <a-col
-                  span={18}
-                  style={{
-                    background: "rgba(158, 183, 234, 0.1)",
-                  }}
-                >
-                  <a-row gutter={24}>
-                    <a-col span={8} style={{ textAlign: "center" }}>
-                      {item.applyUser}
-                    </a-col>
-                    <a-col span={8} style={{ textAlign: "center" }}>
-                      <img
-                        src="/micro-assets/platform-web/breakBrakePadlock.png"
-                        style={{ width: "13px" }}
-                        alt=""
-                      />
-                    </a-col>
-                    <a-col span={8} style={{ textAlign: "center" }}>
-                      {item.operationUser}
-                    </a-col>
-                  </a-row>
-                </a-col>
-                <a-col
-                  span={5}
-                  offset={1}
-                  style={{
-                    textAlign: "center",
-                    background: "rgba(158, 183, 234, 0.2)",
-                  }}
-                >
-                  {item.taskStatus}
-                </a-col>
-              </a-row>
-            ))}
-        </>
-      );
-    };
-    const statusEle = (status) => {
-      switch (status) {
-        case 0 || "0":
-          return (
-            <div class="card2-outer-content-panel-content-state-col">
-              <span class="green"></span>
-              分闸
-            </div>
-          );
-          break;
 
-        default:
-          return null;
-          break;
-      }
-    };
     const getData = () => {
       pathD.value = "";
       setLinePath();
@@ -145,7 +86,7 @@ export default defineComponent({
                 <path
                   d={pathD.value}
                   stroke-dasharray="5,5"
-                  style="fill: transparent; stroke-width: 1.5; stroke: #fff;"
+                  style="fill: transparent; stroke-width: 1.5; stroke: #3377FF;"
                 />
               </svg>
             </div>
@@ -169,7 +110,7 @@ export default defineComponent({
                         <div class="card2-outer-content-panel">
                           <div class="card2-outer-content-panel-content">
                             <div class="card2-outer-content-panel-content-state">
-                              {statusEle(item.status)}
+                              {item.lockCount !== 0 ? "分闸" : "合闸"}
                             </div>
                             <div class="card2-outer-content-panel-content-state">
                               <img
@@ -179,47 +120,7 @@ export default defineComponent({
                               {item.lockCount}
                             </div>
                           </div>
-                          <div class="card2-outer-content-panel-table">
-                            <a-row class="card2-outer-content-panel-table-header">
-                              <a-col
-                                span={18}
-                                class="card2-outer-content-panel-table-header-info"
-                              >
-                                <a-row gutter={24}>
-                                  <a-col
-                                    span={8}
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    申请人
-                                  </a-col>
-                                  <a-col
-                                    span={8}
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    挂锁
-                                  </a-col>
-                                  <a-col
-                                    span={8}
-                                    style={{ textAlign: "center" }}
-                                  >
-                                    当前操作人
-                                  </a-col>
-                                </a-row>
-                              </a-col>
-                              <a-col
-                                span={5}
-                                offset={1}
-                                class="card2-outer-content-panel-table-header-state"
-                              >
-                                当前状态
-                              </a-col>
-                            </a-row>
-                            {getBrandData(item.id)}
-                            <div class="line">
-                              <span></span>
-                              <span></span>
-                            </div>
-                          </div>
+                          <card2OuterTable id={item.id}></card2OuterTable>
                         </div>
                       ),
                     }}
