@@ -130,9 +130,15 @@ export const elcRoomFilter = (data) => {
       prepareOffAndOnCount: item.layerCount,
       cabinetName: "配电柜",
       cabinetCode: item.cabinetName,
-      child: item.cardDtos.map((val) => ({
-        powerOffPlateCount: val.loopLockCount,
+      child: item.cardDtos.map((val, index) => ({
+        powerOffPlateCount: val.loopLockCount || val.loopIds.length,
         loopStatus: loopStatusF(val.loopStatus),
+        loopName: val.name,
+        info: {
+          loopIds: val.loopIds,
+          cabinetName: item.cabinetName,
+          index: index + 1,
+        },
       })),
     }));
     datas = [...datas, ...list];

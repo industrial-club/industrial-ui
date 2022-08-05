@@ -76,7 +76,12 @@ const UpdateUserDialog = defineComponent({
     const getEmployeeList = async () => {
       api
         .getEmployeeList(urlMap.employeeList)()
-        .then(({ data }) => (employeeList.value = data));
+        .then(({ data }) => {
+          employeeList.value = data.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        });
     };
 
     /* 对话框标题 */
@@ -191,6 +196,9 @@ const UpdateUserDialog = defineComponent({
                   ) : (
                     <a-select
                       allowClear
+                      show-search
+                      options={employeeList.value}
+                      optionFilterProp="label"
                       v-model={[form.value.employeeId, "value"]}
                     >
                       {employeeList.value.map((item: any) => (

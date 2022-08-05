@@ -27,8 +27,8 @@ export default defineComponent({
   },
   props,
   setup(this, _props, _ctx) {
-    const visible = ref(true);
-    const loopId = ref("");
+    const visible = ref(false);
+    const loopInfo = ref<any>({});
     const point = ref({
       x: 0,
       y: 0,
@@ -41,7 +41,7 @@ export default defineComponent({
     watch(
       () => _props.tupuData,
       (e) => {
-        // visible.value = false;
+        visible.value = false;
 
         nextTick(() => {
           const obj = {
@@ -86,7 +86,7 @@ export default defineComponent({
       () => visible.value,
       (e) => {
         if (!visible.value) {
-          loopId.value = "";
+          loopInfo.value = {};
         }
       }
     );
@@ -102,30 +102,30 @@ export default defineComponent({
         const tupuCanvas = document.getElementById(tupuId.value);
 
         tupuCanvas!.onmousedown = () => {
-          // visible.value = false;
+          visible.value = false;
         };
 
         tupuCanvas!.onwheel = () => {
-          // visible.value = false;
+          visible.value = false;
         };
       });
     };
     const rowClick = (rowId: string) => {
       rowId = rowId.match(/\d+/)?.[0] || "";
-      // visible.value = false;
+      visible.value = false;
       _ctx.emit("rowClick", Number(rowId));
     };
 
-    const loopClick = (e: MouseEvent, loopId: any) => {
-      console.log(e, loopId);
-      const { x, y } = e;
+    const loopClick = (event: MouseEvent, loopId: any) => {
+      const info = JSON.parse(loopId);
+      const { x, y } = event;
 
       point.value = {
         x,
         y,
       };
       visible.value = true;
-      loopId.value = loopId;
+      loopInfo.value = info;
     };
     return () => (
       <div class="tupu">
@@ -134,7 +134,7 @@ export default defineComponent({
         </div>
         <pop-box
           v-model={[visible.value, "visible"]}
-          loopId={loopId.value}
+          loopInfo={loopInfo.value}
           point={point.value}
         />
       </div>

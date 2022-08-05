@@ -33,7 +33,7 @@ class cabinet {
       x: 80,
       y: 22,
       z: 80,
-      boxColor: "#F5F4EB",
+      boxColor: "#EDF7FE",
       columnOffset: 1,
       offsetZ: 200,
       column: {
@@ -42,8 +42,8 @@ class cabinet {
     },
   };
 
-  protected dm: ht.DataModel;
-  protected g3d: ht.graph3d.Graph3dView;
+  protected dm!: ht.DataModel;
+  protected g3d!: ht.graph3d.Graph3dView;
 
   protected render = {
     overall: () => {
@@ -172,10 +172,10 @@ class cabinet {
         }
       }
       const plane = this.create.node();
-      const planeZ = g * (z + offsetZ);
+      const planeZ = g! * (z + offsetZ);
       const planeX = columnMaxL * (x + columnOffset) + offsetZ * 2;
       plane.s({
-        "all.color": "#234A49",
+        "all.color": "#32546A",
       });
       plane.p3(0, 0, -planeZ * 0.25 + offsetZ * 0.3);
       plane.s3(planeX, 5, planeZ);
@@ -283,7 +283,7 @@ class cabinet {
       np3[1] = p3[1] + y + columnOffset;
       headerName.s3(x, column.h, z);
       headerName.s({
-        "all.color": "red",
+        "all.color": "#E34D3E",
       });
 
       headerName.p3(np3);
@@ -325,7 +325,7 @@ class cabinet {
       const h1 = this.create.node();
       const h2 = this.create.node();
       const offset = 12;
-      const { x, z } = this.config.cabinet;
+      const { x, z } = this.config.cabinet as any;
       const p3 = [x / 2 - offset, 3, z];
       h1.s({
         shape3d: "handle",
@@ -396,7 +396,7 @@ class cabinet {
       cardv.p3(-x / 2 + 30, y * 0.05, z + 1);
       cardv.s3(20, 10, 1);
       this.dm.add(cardv);
-      cardv.setTag(`cardv${item.id}`);
+      cardv.setTag(`cardv${JSON.stringify(item.info)}`);
       cardv.setAttr("v", item.cards);
       return cardv;
     },
@@ -428,7 +428,6 @@ class cabinet {
     const load = (obj, mtl, p) => {
       heDef.loadObj(obj, mtl, p);
     };
-
     for (let i of parts) {
       const data = {
         obj: `objs/cabinet/${i}.obj`,
@@ -500,13 +499,11 @@ class cabinet {
       this.g3d.mi((e) => {
         const data = e.data as ht.Node;
         const event = e.event;
-        console.log(e);
         if (e.kind === "onClick") {
           const tag = data.getTag();
           const iscard = tag.indexOf("cardv");
           const isgroup = tag.indexOf("wall");
           const id = tag.replace("cardv", "");
-          console.log(e.type, iscard, this.config.renderState);
           if (
             iscard === 0 &&
             e.type === "image" &&
@@ -522,13 +519,13 @@ class cabinet {
     },
   };
   // 回路事件
-  protected cabinetLoopClick = (e: MouseEvent, id: string) => {
+  protected cabinetLoopClick = (event: MouseEvent, id: string) => {
     if (!(window as any).cabinetLoopClick) {
       return this.errorEvent("window上不存在 ·cabinetLoopClick· 事件 .");
     }
 
     // 给当前点击的盒子添加高亮
-    (window as any).cabinetLoopClick(e, id);
+    (window as any).cabinetLoopClick(event, id);
   };
   protected errorEvent = (s: string) => {
     throw new Error(s);
