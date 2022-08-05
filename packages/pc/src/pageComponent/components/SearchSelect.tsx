@@ -37,6 +37,10 @@ const SearchSelect = defineComponent({
       type: Array,
       default: () => [],
     },
+    // 对话框是否打开，打开后重新获取数据
+    visible: {
+      type: Boolean,
+    },
   },
   setup(props, { emit, attrs }) {
     const urlPrefix: any = inject("urlPrefix")!;
@@ -80,6 +84,14 @@ const SearchSelect = defineComponent({
       () => props.extParams,
       (curr, prev) => {
         if (!isEqual(curr, prev)) {
+          getOptionList("");
+        }
+      }
+    );
+    watch(
+      () => props.visible,
+      (val) => {
+        if (val) {
           getOptionList("");
         }
       }

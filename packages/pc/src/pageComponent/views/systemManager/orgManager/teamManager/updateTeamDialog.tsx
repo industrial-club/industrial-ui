@@ -65,7 +65,13 @@ const UpdatePostDialog = defineComponent({
       const list = await api.getDepList(urlMap.depList)();
       depList.value = list;
     };
-    getDepList();
+    watch(
+      isVisible,
+      (val) => {
+        if (val) getDepList();
+      },
+      { immediate: true }
+    );
 
     // 员工列表
     const employeeList = ref([]);
@@ -200,6 +206,7 @@ const UpdatePostDialog = defineComponent({
                     ) : (
                       <SearchSelect
                         {...{ mode: "multiple" }}
+                        visible={isVisible.value}
                         getUrl={urlMap.empList ?? "/employee/all/summary"}
                         extParams={{ departmentId: form.value.depId }}
                         excludeValues={[form.value.leaderId]}
@@ -217,6 +224,7 @@ const UpdatePostDialog = defineComponent({
                       <span>{props.record.leaderName}</span>
                     ) : (
                       <SearchSelect
+                        visible={isVisible.value}
                         getUrl={urlMap.empList ?? "/employee/all/summary"}
                         extParams={{ departmentId: form.value.depId }}
                         excludeValues={form.value.memberIds}

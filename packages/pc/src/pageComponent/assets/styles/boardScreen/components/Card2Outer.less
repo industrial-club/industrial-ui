@@ -48,11 +48,90 @@
   }
 
   .card2-outer-content {
-    padding: 10px 15px;
-    background: linear-gradient(
-      90deg,
-      rgba(22, 111, 176, 0.85) 0%,
-      rgb(23, 154, 111, 0.85) 100%
-    );
+    margin: 10px 15px;
+    &-panel {
+      width: 100%;
+      &-content {
+        font-size: 14px;
+        font-weight: 400;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        &-state {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-right: 20px;
+          &-col {
+            margin-right: 5px;
+            > span {
+              display: inline-block;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              margin-right: 5px;
+              border: 1px solid #20355f;
+              &.green {
+                background: #55f1ff;
+              }
+              &.white {
+                background: #fff;
+              }
+              &.red {
+                background: #ec763c;
+              }
+              &.grey {
+                background: #a9b3c6;
+              }
+            }
+          }
+          > img {
+            width: 13px;
+            margin-right: 10px;
+          }
+        }
+      }
+      &-table {
+        width: 100%;
+        &-header {
+          height: 42px;
+          line-height: 42px;
+          margin-bottom: 10px;
+          &-info {
+            background: url("/micro-assets/platform-web/headerA.png") no-repeat;
+            background-size: 100% 100%;
+          }
+          &-state {
+            text-align: center;
+            background: url("/micro-assets/platform-web/headerB.png") no-repeat;
+            background-size: 100% 100%;
+          }
+        }
+        &-body {
+          height: 32px;
+          line-height: 32px;
+        }
+        .line {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          padding: 3px 0;
+          > span {
+            &:first-child {
+              display: block;
+              width: 4px;
+              height: 2px;
+              background: #fcdf45;
+            }
+            &:last-child {
+              display: block;
+              width: calc(100% - 4px);
+              height: 1px;
+              background: #d3e2ff;
+            }
+          }
+        }
+      }
+    }
   }
 }
