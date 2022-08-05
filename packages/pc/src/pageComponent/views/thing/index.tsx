@@ -8,6 +8,7 @@ import * as thingApis from "@/api/thingInstance";
 import utils from "@/utils";
 import { message } from "ant-design-vue";
 import editThing from "./component/editThing";
+import thingDetail from "./component/thingDetail";
 
 const com = defineComponent({
   components: { thingModal, editThing },
@@ -75,7 +76,7 @@ const com = defineComponent({
         totalNum: res.data?.total,
       };
 
-      const colArr = res.data?.list[0]?.thingInst.thing.thingPropertyList;
+      const colArr = res.data?.list[0]?.thingInst.thing?.thingPropertyList;
       colArr?.forEach((element) => {
         if (element.listDisplay) {
           resObj.columnData.push({
@@ -124,14 +125,24 @@ const com = defineComponent({
     });
     // 弹框
     const modalRef = ref<any>(null);
-    const updateModal = async (row?: any) => {
-      const res: any = await thingApis.findThingProperties(row.record.id);
-      pageData.thingCode = row.record.thing_code;
+    const toEdit = async (row?: any) => {
+      const res: any = await thingApis.findThingProperties(row.record.ID);
+      pageData.thingCode = row.record.THING_CODE;
       pageData.editData = res.data;
       page.value = "edit";
     };
+    const toCreate = async (row?: any) => {
+      // const res: any = await thingApis.findThingProperties(row.record.ID);
+      page.value = "edit";
+    };
+    const toDetail = async (row?: any) => {
+      const res: any = await thingApis.findThingProperties(row.record.ID);
+      pageData.thingCode = row.record.THING_CODE;
+      pageData.editData = res.data;
+      page.value = "detail";
+    };
     const deleteThing = async (row) => {
-      const res: any = await thingApis.deleteThing(row.record.id);
+      const res: any = await thingApis.deleteThing(row.record.ID);
       if ((res.code = "M0000")) {
         message.success("删除成功");
       }
@@ -144,6 +155,16 @@ const com = defineComponent({
       <div class="thingApp">
         {page.value === "edit" ? (
           <editThing
+            data={pageData.editData}
+            onBack={() => {
+              page.value = "list";
+            }}
+          />
+        ) : (
+          ""
+        )}
+        {page.value === "detail" ? (
+          <thingDetail
             data={pageData.editData}
             onBack={() => {
               page.value = "list";
@@ -236,7 +257,7 @@ const com = defineComponent({
             <a-space size={16}>
               <a-button
                 type="primary"
-                onClick={() => updateModal(null)}
+                onClick={() => toCreate()}
                 disabled={!formQuery.thingCode}
               >
                 新增
@@ -277,12 +298,18 @@ const com = defineComponent({
                       <a-space>
                         <a
                           onClick={() => {
-                            updateModal(row);
+                            toEdit(row);
                           }}
                         >
                           编辑
                         </a>
-                        <a onClick={() => {}}>详情</a>
+                        <a
+                          onClick={() => {
+                            toDetail();
+                          }}
+                        >
+                          详情
+                        </a>
                         <span
                           class="red pointer"
                           onClick={() => {

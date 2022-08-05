@@ -135,11 +135,11 @@ const boardScreen = defineComponent({
           const rowData = allRowData[rowIndex];
           const loopData = cabinet.child.reverse().map((loop) => {
             return {
-              // name: handleTagName(loop.loopName, 5),
+              name: handleTagName(loop.loopName, 5),
               // id: loop.loopId,
               state: loop.loopStatus,
               cards: loop.powerOffPlateCount,
-              loopIds: loop.loopIds,
+              info: loop.info,
             };
           });
           const colData = {
