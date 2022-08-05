@@ -262,6 +262,7 @@ const UpdateUserDialog = defineComponent({
                     <span>{form.value.roleTypeNames}</span>
                   ) : (
                     <SearchSelect
+                      visible={isVisible.value}
                       getUrl="/role/list"
                       {...{ mode: "multiple" }}
                       valuePorp={{ key: "roleId", label: "roleName" }}

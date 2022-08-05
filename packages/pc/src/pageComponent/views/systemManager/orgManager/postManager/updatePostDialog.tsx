@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-04-14 14:31:57
  */
 
-import { defineComponent, computed, ref, PropType, inject } from "vue";
+import { defineComponent, computed, ref, PropType, inject, watch } from "vue";
 import useVModel from "@/pageComponent/hooks/useVModel";
 import useModalTitle from "@/pageComponent/hooks/manage-module/useModalTitle";
 import useModalForm from "@/pageComponent/hooks/manage-module/useModalForm";
@@ -50,7 +50,13 @@ const UpdatePostDialog = defineComponent({
       const list = await api.getDepList(urlMap.depList)();
       depList.value = list;
     };
-    getDepList();
+    watch(
+      isVisible,
+      (val) => {
+        if (val) getDepList();
+      },
+      { immediate: true }
+    );
 
     const { form, formRef } = useModalForm(
       isVisible,
