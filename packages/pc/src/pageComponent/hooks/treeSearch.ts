@@ -1,14 +1,24 @@
 import { reactive, ref, watch } from 'vue';
 import type { TreeProps } from 'ant-design-vue';
 
+interface treePropI {
+  id: string;
+  name: string;
+  key: string | number;
+  parentId?: string;
+}
 const useTreeSearch = (fieldNameObj = {}) => {
-  const tree = reactive<{ data: any[] }>({
+  const tree = reactive<{
+    data: TreeProps['treeData'];
+    treeDataOrigin: TreeProps['treeData'];
+  }>({
     data: [],
+    treeDataOrigin: [],
   });
   const searchValue = ref<string>('');
   const expandedKeys = ref<(string | number)[]>([]);
   const autoExpandParent = ref<boolean>(true);
-  const selectedKeyArr = ref<string[] | number[]>([]);
+  const selectedKeyArr = ref<string[]>([]);
   const defaultFieldNames = {
     title: 'title',
     children: 'children',
@@ -29,12 +39,12 @@ const useTreeSearch = (fieldNameObj = {}) => {
     });
     return list;
   };
-  const dataList: TreeProps['treeData'] = [];
+  const dataList: treePropI[] = [];
   const generateList = (data: TreeProps['treeData']) => {
     for (let i = 0; i < data.length; i++) {
       const node = data[i];
-      const { key } = node;
-      dataList.push({ key, name: node[fieldNames.title] });
+      const { key, parentId, id } = node;
+      dataList.push({ key, parentId, id, name: node[fieldNames.title] });
       if (node[fieldNames.children]) {
         generateList(node[fieldNames.children]);
       }
@@ -44,8 +54,8 @@ const useTreeSearch = (fieldNameObj = {}) => {
   const getParentKey = (
     key: string | number,
     treeData: TreeProps['treeData'],
-  ): string | number | undefined => {
-    let parentKey;
+  ): string | number => {
+    let parentKey: string | number = '';
 
     for (let i = 0; i < treeData.length; i++) {
       const node = treeData[i];
@@ -61,8 +71,8 @@ const useTreeSearch = (fieldNameObj = {}) => {
   };
 
   const searchFn = (value: string) => {
-    const expanded = dataList
-      .map((item: TreeProps['treeData'][number]) => {
+    const expanded: (string | number)[] = dataList
+      .map((item: treePropI) => {
         if (item.name && item.name.indexOf(value) > -1) {
           return getParentKey(item.key, tree.data);
         }
@@ -73,9 +83,36 @@ const useTreeSearch = (fieldNameObj = {}) => {
     searchValue.value = value;
     autoExpandParent.value = true;
   };
+  const filter = (data: any[]) => {
+    const newArr: any[] = [];
+    data?.forEach((item) => {
+      if (item.name && item.name.indexOf(searchValue.value) > -1) {
+        newArr.push({
+          ...item,
+          subList: [],
+        });
+      } else if (item.subList && item.subList.length > 0) {
+        const subs = filter(item.subList);
+        if (subs?.length > 0) {
+          item.subList = subs;
+          newArr.push({
+            ...item,
+            subList: subs,
+          });
+        }
+      }
+    });
+    return newArr;
+  };
   watch(searchValue, (value) => {
     searchFn(value);
+    if (value.trim() === '') {
+      tree.data = tree.treeDataOrigin;
+    } else {
+      tree.data = filter(tree.treeDataOrigin);
+    }
   });
+
   return {
     tree,
     searchValue,
