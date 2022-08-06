@@ -75,7 +75,7 @@ const picList = {
     {
       label: "登陆页系统标题",
       name: "loginPageSystemTitle",
-      width: "140px",
+      // width: "140px",
       height: "30px",
       color: "darkBlue",
       type: "img",

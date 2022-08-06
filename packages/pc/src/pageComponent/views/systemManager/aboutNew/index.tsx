@@ -14,8 +14,8 @@ const AboutNew = defineComponent({
     softwareList: {
       type: Array,
       default: () => [
-        "软件版本：TLS-SW-V 1.0.0.1",
-        "数据库版本：TLS-DB-V 1.0.0.1",
+        "软件版本：V1.0.0",
+        // "数据库版本：TLS-DB-V 1.0.0.1",
       ],
     },
     // 公司信息

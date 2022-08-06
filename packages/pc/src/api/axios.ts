@@ -9,11 +9,15 @@ import axios from "axios";
 import { omit, isPlainObject } from "lodash";
 import { message } from "ant-design-vue";
 
-const getInstance = (opt: { serverName?: string; prefix?: string }) => {
+const getInstance = (opt: {
+  serverName?: string;
+  prefix?: string;
+  timeout?: number;
+}) => {
   const prefix = opt.prefix || "/api/";
   const instance = axios.create({
     baseURL: prefix + (opt.serverName || ""),
-    timeout: 1000 * 10,
+    timeout: 1000 * (opt.timeout || 10),
     headers: {
       "X-Custom-Header": "foobar",
       clientType: "app",

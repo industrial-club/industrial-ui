@@ -4,7 +4,7 @@
 
 import { getInstance } from "../axios";
 
-let instance = getInstance({ serverName: "spms/v1" });
+let instance = getInstance({ serverName: "spms/v1", timeout: 30 });
 
 const api: { [key: string]: any } = {};
 
