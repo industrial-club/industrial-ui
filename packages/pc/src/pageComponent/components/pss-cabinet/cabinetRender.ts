@@ -7,7 +7,7 @@ const parts = [
   "light_on",
   "light_off",
   "light_unknown",
-  "light_single_unknown",
+  "light_single_duanlian",
   "light_single",
   "light_red_on",
 ];
@@ -188,8 +188,6 @@ class cabinet {
     set: (item: cabinet.item, arr: Record<string, ht.Node>) => {
       if (item.state && this.state[item.state]) {
         this.state[item.state](item, arr);
-      } else {
-        this.state.unknown(item, arr);
       }
     },
     blackout: (item: cabinet.item, arr: Record<string, ht.Node>) => {},
@@ -202,11 +200,19 @@ class cabinet {
       });
       brake.setRotationZ(-Math.PI / 2);
     },
-    unknown: (item: cabinet.item, arr: Record<string, ht.Node>) => {
+    duanlian: (item: cabinet.item, arr: Record<string, ht.Node>) => {
       const brake = arr["brake"];
       const light = arr["light"];
       light.s({
-        shape3d: "light_single_unknown", // light_unknown
+        shape3d: "light_single_duanlian", // light_unknown
+      });
+      brake.setRotationZ((Math.PI / 2) * -0.2);
+    },
+    beiyong: (item: cabinet.item, arr: Record<string, ht.Node>) => {
+      const brake = arr["brake"];
+      const light = arr["light"];
+      light.s({
+        shape3d: "light_single", // light_unknown
       });
       brake.setRotationZ((Math.PI / 2) * -0.2);
     },

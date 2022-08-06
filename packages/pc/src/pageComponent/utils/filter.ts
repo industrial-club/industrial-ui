@@ -109,7 +109,7 @@ export const elcRoomFilter = (data) => {
   function loopStatusF(v, loopIds) {
     if (v === "0") {
       // 断连
-      return "unknown";
+      return "duanlian";
     }
     if (v === "1") {
       // 合闸
@@ -121,7 +121,7 @@ export const elcRoomFilter = (data) => {
     }
     if (loopIds.length === 0) {
       // 备用
-      return "unknown";
+      return "beiyong";
     }
   }
   let datas: any = [];
