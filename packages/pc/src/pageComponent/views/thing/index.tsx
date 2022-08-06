@@ -29,18 +29,21 @@ const com = defineComponent({
     });
     let treeDataRecord;
     const filterTree = (arr: any[], key: string) => {
+      let have: boolean = false;
       for (let i = 0; i < arr.length; i++) {
         const obj = arr[i];
-        if (obj.name.indexOf(key) === -1) {
+        let childHave: boolean = false;
+        if (obj.child && obj.child.length != 0) {
+          childHave = filterTree(obj.child, key).have;
+        }
+        if (obj.name.indexOf(key) !== -1 || childHave) {
+          have = true;
+        } else {
           arr.splice(i, 1);
           i--;
-          continue;
-        }
-        if (obj.children && obj.children.length != 0) {
-          filterTree(obj.children, key);
         }
       }
-      return arr;
+      return { arr, have };
     };
     watch(
       () => searchValue.value,
@@ -48,7 +51,7 @@ const com = defineComponent({
         tree.data = filterTree(
           JSON.parse(JSON.stringify(treeDataRecord)),
           searchValue.value
-        );
+        ).arr;
       }
     );
     const getTreeData = () => {
@@ -60,7 +63,7 @@ const com = defineComponent({
         tree.data = filterTree(
           JSON.parse(JSON.stringify(treeDataRecord)),
           searchValue.value
-        );
+        ).arr;
       });
     };
     const selectNode = (
