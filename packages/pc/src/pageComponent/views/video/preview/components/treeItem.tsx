@@ -11,24 +11,6 @@ import { useRoute } from "vue-router";
 import videoApi from "@/api/video";
 import "../../assets/styles/video/preview.less";
 
-// const dataList: any[] = [];
-// const generateList = (data: any) => {
-//   let list: any = [];
-//   list = data;
-//   if (list) {
-//     for (let i = 0; i < list.length; i++) {
-//       const node = list[i];
-//       // if (node.nodeType === 'G') {
-//       //   node.disabled = true;
-//       // }
-//       const { key } = node;
-//       dataList.push({ key, title: key });
-//       if (node.children) {
-//         generateList(node.children);
-//       }
-//     }
-//   }
-// };
 const getParentKey = (
   key: string | number,
   tree: any
@@ -220,20 +202,6 @@ export default defineComponent({
           JSON.parse(JSON.stringify(treeDataRecord)),
           searchValue.value
         );
-        // const expanded = dataList
-        //   .map((item: any) => {
-        //     if (item.title.indexOf(value) > -1) {
-        //       return getParentKey(item.key, gData.value);
-        //     }
-        //     return null;
-        //   })
-        //   .filter(
-        //     (item: any, i: number, self: any[]) =>
-        //       item && self.indexOf(item) === i
-        //   );
-        // expandedKeys.value = expanded;
-        // searchValue.value = value;
-        // autoExpandParent.value = true;
       }
     );
 
@@ -304,25 +272,6 @@ export default defineComponent({
                         alt="在线"
                       />
                     </div>
-                    {/* {item.title.indexOf(searchValue.value) > -1 ? (
-                      <span
-                        class={[
-                          "xj",
-                          item.nodeType === "G" ? "gactive" : "",
-                          item.onlineStatus === "ONLINE" ? "yactive" : "",
-                        ]}
-                      >
-                        {item.title.substr(
-                          0,
-                          item.title.indexOf(searchValue.value)
-                        )}
-                        <span style="color: #f50">{searchValue.value}</span>
-                        {item.title.substr(
-                          item.title.indexOf(searchValue.value) +
-                            searchValue.value.length
-                        )}
-                      </span>
-                    ) : ( */}
                     <span
                       class={[
                         "xj",
