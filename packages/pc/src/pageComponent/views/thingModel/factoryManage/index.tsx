@@ -461,12 +461,12 @@ const FactoryManage = defineComponent({
                         placement='topLeft'
                         v-slots={{
                           title: () => {
-                            return <span>{name}</span>;
+                            return <span>{title}</span>;
                           },
                         }}
                       >
                         <span class={['node_title',`node_title_${dataRef.level}` , selected ? 'on' : '']}>
-                          {name}
+                          {title}
                         </span>
                       </a-tooltip>
                       {selected && (
