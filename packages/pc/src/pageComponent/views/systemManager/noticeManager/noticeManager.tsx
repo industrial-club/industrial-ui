@@ -295,14 +295,16 @@ const noticeManager = defineComponent({
           width={600}
           maskClosable={false}
         >
-          <addNotice
-            formData={data.value}
-            onClose={() => {
-              managerVisible.value = false;
-              data.value = {};
-              http();
-            }}
-          ></addNotice>
+          {managerVisible.value ? (
+            <addNotice
+              formData={data.value}
+              onClose={() => {
+                managerVisible.value = false;
+                data.value = {};
+                http();
+              }}
+            ></addNotice>
+          ) : null}
         </a-modal>
         <a-modal
           v-model={[sendDetailsVisible.value, "visible"]}

@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { message } from "ant-design-vue";
 import dayjs, { Dayjs } from "dayjs";
 import getDepPeopleTreeList from "@/api/enumList";
@@ -143,7 +143,6 @@ export default defineComponent({
               loading.value = false;
             } else {
               message.success("保存成功");
-              formRef.value.resetFields();
               _context.emit("close");
               loading.value = false;
             }
@@ -160,7 +159,6 @@ export default defineComponent({
               loading.value = false;
             } else {
               message.success("保存成功");
-              formRef.value.resetFields();
               _context.emit("close");
               loading.value = false;
             }
@@ -259,6 +257,7 @@ export default defineComponent({
     onMounted(() => {
       depPeopleTreeList();
       getChannelList();
+      formRef.value.resetFields();
     });
     return () => (
       <a-form
@@ -380,7 +379,6 @@ export default defineComponent({
           <a-button
             style={{ marginRight: "20px" }}
             onClick={() => {
-              formRef.value.resetFields();
               _context.emit("close");
             }}
           >
