@@ -43,9 +43,10 @@ const TabItem = defineComponent({
         level: "group",
         parentId: props.tabId,
       });
+      const validGroupList = groupRes.filter((item: any) => item.valid);
       // cell级别 (使用promise.all 防止阻塞)
       const cellPromises: Array<Promise<any>> = [];
-      groupRes.forEach((item: any) => {
+      validGroupList.forEach((item: any) => {
         cellPromises.push(
           api.getGroupList(urlMap.list)({
             level: "cell",
@@ -57,9 +58,9 @@ const TabItem = defineComponent({
       const resList = await Promise.all(cellPromises);
       // 遍历结果 通过index映射存入到group中的_children中
       resList.forEach(({ data }, index) => {
-        groupRes[index]._children = data;
+        groupRes[index]._children = data.filter((item: any) => item.valid);
       });
-      groupList.value = groupRes;
+      groupList.value = validGroupList;
     };
     getGoupAndCellParams();
 
