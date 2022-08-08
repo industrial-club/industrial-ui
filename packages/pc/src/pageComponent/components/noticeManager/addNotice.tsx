@@ -143,6 +143,7 @@ export default defineComponent({
               loading.value = false;
             } else {
               message.success("保存成功");
+              formRef.value.resetFields();
               _context.emit("close");
               loading.value = false;
             }
@@ -159,6 +160,7 @@ export default defineComponent({
               loading.value = false;
             } else {
               message.success("保存成功");
+              formRef.value.resetFields();
               _context.emit("close");
               loading.value = false;
             }
@@ -378,6 +380,7 @@ export default defineComponent({
           <a-button
             style={{ marginRight: "20px" }}
             onClick={() => {
+              formRef.value.resetFields();
               _context.emit("close");
             }}
           >
