@@ -110,7 +110,12 @@ export default defineComponent({
                         <div class="card2-outer-content-panel">
                           <div class="card2-outer-content-panel-content">
                             <div class="card2-outer-content-panel-content-state">
-                              {item.lockCount !== 0 ? "分闸" : "合闸"}
+                              <div class="card2-outer-content-panel-content-state-col">
+                                <span
+                                  class={item.lockCount !== 0 ? "green" : "red"}
+                                ></span>
+                                {item.lockCount !== 0 ? "分闸" : "合闸"}
+                              </div>
                             </div>
                             <div class="card2-outer-content-panel-content-state">
                               <img
