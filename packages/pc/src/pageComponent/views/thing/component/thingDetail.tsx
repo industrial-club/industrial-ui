@@ -100,19 +100,11 @@ export default defineComponent({
             }}
           />
           <a-button
-            type="primary"
-            onClick={() => {
-              save();
-            }}
-          >
-            保存
-          </a-button>
-          <a-button
             onClick={() => {
               context.emit("back");
             }}
           >
-            取消
+            返回
           </a-button>
         </div>
         <div class="basic">
@@ -132,7 +124,10 @@ export default defineComponent({
                     <div class="name">{ele.name}</div>
                     <div>
                       {ele.displayType === "text" ? (
-                        <a-input v-model={[ele.value, "value"]}></a-input>
+                        <a-input
+                          v-model={[ele.value, "value"]}
+                          disabled={true}
+                        ></a-input>
                       ) : (
                         ""
                       )}
@@ -152,26 +147,7 @@ export default defineComponent({
             <div class="icon"></div>
             <div class="name">动态属性</div>
           </div>
-          <a-table
-            rowKey="code"
-            columns={dynamicColumns.value}
-            dataSource={dynamicTableList.value}
-            pagination={false}
-            v-slots={{
-              bodyCell: ({ column, record, index }: any) => {
-                if (
-                  column.dataIndex === "preCode" ||
-                  column.dataIndex === "prePointCode"
-                ) {
-                  return (
-                    <a-input
-                      v-model={[record[column.dataIndex], "value"]}
-                    ></a-input>
-                  );
-                }
-              },
-            }}
-          ></a-table>
+          <div></div>
         </div>
         <div class="basic">
           <div class="title flex">

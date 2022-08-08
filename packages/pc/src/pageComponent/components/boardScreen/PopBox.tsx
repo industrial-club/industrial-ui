@@ -61,9 +61,9 @@ export default defineComponent({
           const { left, top } = popBox.getBoundingClientRect();
 
           const line1 = `L${left + offset.value.x} ${_props.point.y}`;
-          // const line2 = `L${left + offset.value.x} ${top}`;
+          const line2 = `L${left + offset.value.x} ${top}`;
 
-          pathD.value = `M${_props.point.x} ${_props.point.y} ${line1}`;
+          pathD.value = `M${_props.point.x} ${_props.point.y} ${line1} ${line2}`;
         }
       });
     };

@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import "./less/thingInstance.less";
 import { MenuFoldOutlined, DownOutlined } from "@ant-design/icons-vue";
 import useTreeSearch from "./hooks/useTreeSearch";
@@ -11,7 +11,7 @@ import editThing from "./component/editThing";
 import thingDetail from "./component/thingDetail";
 
 const com = defineComponent({
-  components: { thingModal, editThing },
+  components: { thingModal, editThing, thingDetail },
   setup() {
     // 模型树
     const {
@@ -27,12 +27,43 @@ const com = defineComponent({
       title: "name",
       children: "child",
     });
+    let treeDataRecord;
+    const filterTree = (arr: any[], key: string) => {
+      let have: boolean = false;
+      for (let i = 0; i < arr.length; i++) {
+        const obj = arr[i];
+        let childHave: boolean = false;
+        if (obj.child && obj.child.length != 0) {
+          childHave = filterTree(obj.child, key).have;
+        }
+        if (obj.name.indexOf(key) !== -1 || childHave) {
+          have = true;
+        } else {
+          arr.splice(i, 1);
+          i--;
+        }
+      }
+      return { arr, have };
+    };
+    watch(
+      () => searchValue.value,
+      (value) => {
+        tree.data = filterTree(
+          JSON.parse(JSON.stringify(treeDataRecord)),
+          searchValue.value
+        ).arr;
+      }
+    );
     const getTreeData = () => {
       thingApis.findAllThingForTree().then((res) => {
         refresh();
         const data = generateKey("0", res.data);
         generateList(data);
-        tree.data = data;
+        treeDataRecord = data;
+        tree.data = filterTree(
+          JSON.parse(JSON.stringify(treeDataRecord)),
+          searchValue.value
+        ).arr;
       });
     };
     const selectNode = (
@@ -132,8 +163,8 @@ const com = defineComponent({
       page.value = "edit";
     };
     const toCreate = async (row?: any) => {
-      // const res: any = await thingApis.findThingProperties(row.record.ID);
-      page.value = "edit";
+      const res: any = await thingApis.findByCode(formQuery.thingCode);
+      // page.value = "edit";
     };
     const toDetail = async (row?: any) => {
       const res: any = await thingApis.findThingProperties(row.record.ID);
@@ -147,6 +178,13 @@ const com = defineComponent({
         message.success("删除成功");
       }
     };
+    const queryOpts = ref([
+      {
+        name: "暂不可用",
+        prop: "catalogCode",
+        type: "",
+      },
+    ]);
     onMounted(() => {
       getTreeData();
     });
@@ -187,7 +225,7 @@ const com = defineComponent({
               <a-input-search
                 v-model={[searchValue.value, "value"]}
                 style="margin-bottom: 8px"
-                placeholder="Search"
+                placeholder="搜索"
               />
               <div class="mar-t-20 tree_wrap">
                 <a-tree
@@ -204,20 +242,7 @@ const com = defineComponent({
                     title: ({ name }: any) => {
                       return (
                         <span class="tree-node-title">
-                          {name.indexOf(searchValue.value) > -1 ? (
-                            <span>
-                              {name.substr(0, name.indexOf(searchValue.value))}
-                              <span style={{ color: "#f50" }}>
-                                {searchValue.value}
-                              </span>
-                              {name.substr(
-                                name.indexOf(searchValue.value) +
-                                  searchValue.value.length
-                              )}
-                            </span>
-                          ) : (
-                            <span>{name}</span>
-                          )}
+                          <span>{name}</span>
                         </span>
                       );
                     },
@@ -227,10 +252,10 @@ const com = defineComponent({
             </div>
           </div>
           <div class="table_wrap">
-            {/* <div class="option">
+            <div class="option">
               <a-form ref={queryFormRef} model={formQuery}>
                 <a-row gutter={30}>
-                  {queryOpts.map((item) => {
+                  {queryOpts.value.map((item) => {
                     return (
                       <a-col span={6}>
                         <a-form-item label={item.name} name={item.prop}>
@@ -239,7 +264,10 @@ const com = defineComponent({
                       </a-col>
                     );
                   })}
-                  <a-col span={24 - (queryOpts.length % 4) * 6} class="align-r">
+                  <a-col
+                    span={24 - (queryOpts.value.length % 4) * 6}
+                    class="align-r"
+                  >
                     <a-space size={16}>
                       <a-button type="primary" onClick={refresh}>
                         查询
@@ -253,7 +281,7 @@ const com = defineComponent({
                   </a-col>
                 </a-row>
               </a-form>
-            </div> */}
+            </div>
             <a-space size={16}>
               <a-button
                 type="primary"
@@ -305,7 +333,7 @@ const com = defineComponent({
                         </a>
                         <a
                           onClick={() => {
-                            toDetail();
+                            toDetail(row);
                           }}
                         >
                           详情
