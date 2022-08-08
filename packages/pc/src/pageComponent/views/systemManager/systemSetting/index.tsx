@@ -260,28 +260,32 @@ const SystemSetting = defineComponent({
             <div class="systemConfig_vertical">
               <div class="label">{item.label}</div>
               <div class="item">
-                <a-upload
-                  disabled={!edit.value}
-                  class="avatar-uploader"
-                  v-model={[data[`${item.name}fileList`], "file-list"]}
-                  customRequest={(e: any) => customRequest(e, item)}
-                  show-upload-list={false}
-                  onChange={(e: UploadChangeParam) => {
-                    handleLoginPageSystemTitle(e, item);
-                  }}
-                  before-upload={(e: any) => beforeUpload(e, item)}
-                >
+                <div style={{ width: "35.71rem" }}>
                   <a-image
                     width={`${item.width}px`}
                     height={`${item.height}px`}
                     src={data[`${item.name}`]}
-                    preview={false}
+                    preview
                   />
-                  <a-button type="primary" class="btn" disabled={!edit.value}>
-                    {item.btn}
-                  </a-button>
-                </a-upload>
-                <span class="annotation">{item.annotation}</span>
+                </div>
+                <div style={{ marginTop: "1rem" }}>
+                  <a-upload
+                    disabled={!edit.value}
+                    class="avatar-uploader"
+                    v-model={[data[`${item.name}fileList`], "file-list"]}
+                    customRequest={(e: any) => customRequest(e, item)}
+                    show-upload-list={false}
+                    onChange={(e: UploadChangeParam) => {
+                      handleLoginPageSystemTitle(e, item);
+                    }}
+                    before-upload={(e: any) => beforeUpload(e, item)}
+                  >
+                    <a-button type="primary" disabled={!edit.value}>
+                      {item.btn}
+                    </a-button>
+                    <span class="annotation">{item.annotation}</span>
+                  </a-upload>
+                </div>
               </div>
             </div>
           ) : (
