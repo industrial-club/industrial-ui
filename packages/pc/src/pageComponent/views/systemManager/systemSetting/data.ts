@@ -75,7 +75,7 @@ const picList = {
     {
       label: "登陆页系统标题",
       name: "loginPageSystemTitle",
-      width: "140px",
+      // width: "140px",
       height: "30px",
       color: "darkBlue",
       type: "img",
@@ -85,16 +85,16 @@ const picList = {
     {
       label: "登陆页主图",
       name: "loginMainPic",
-      width: "280px",
-      height: "205px",
+      width: "20rem",
+      height: "14.64rem",
       color: "blue",
       type: "img",
       versions: "AB",
     },
     {
       label: "系统名称",
-      width: "280px",
-      height: "30px",
+      width: "20rem",
+      height: "2.14rem",
       color: "green",
       name: "productName",
       type: "text",
@@ -102,8 +102,8 @@ const picList = {
     },
     {
       label: "登陆页系统描述",
-      width: "280px",
-      height: "50px",
+      width: "20rem",
+      height: "3.57rem",
       color: "blue",
       name: "loginSysDesc",
       type: "text",
@@ -113,8 +113,8 @@ const picList = {
   right: [
     {
       label: "登陆页系统logo",
-      width: "70px",
-      height: "45px",
+      width: "5rem",
+      height: "3.21rem",
       color: "blue",
       wrap: true,
       name: "loginSystemLogo",
@@ -122,8 +122,8 @@ const picList = {
     },
     {
       label: "项目名称",
-      width: "150px",
-      height: "45px",
+      width: "10.71rem",
+      height: "3.21rem",
       color: "blue",
       name: "projectName",
       type: "text",

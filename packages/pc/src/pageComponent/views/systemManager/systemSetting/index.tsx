@@ -85,29 +85,30 @@ const SystemSetting = defineComponent({
       { immediate: true }
     );
     const renderClass = (item: any) => {
+      console.log(item);
       const width =
         versions.value == "A"
           ? item.width
           : item.name === "loginMainPic"
-          ? "370px"
+          ? "26.43rem"
           : item.width;
       const height =
         versions.value == "A"
           ? item.height
           : item.name === "loginMainPic"
-          ? "250px"
+          ? "17.86rem"
           : item.height;
       const styleBox: CSSProperties = {
         width,
-        marginBottom: "15px",
+        marginBottom: "1.07rem",
         height: height,
-        marginRight: item.wrap ? "10px" : "",
+        marginRight: item.wrap ? "0.71rem" : "",
         lineHeight: item.wrap ? "" : item.height,
         borderRadius: "4px",
         textAlign: "center",
         position: item.position,
-        top: versions.value == "A" ? "80px" : "20px",
-        left: versions.value == "A" ? "100px" : "30px",
+        top: versions.value == "A" ? "5.71rem" : "1.43rem",
+        left: versions.value == "A" ? "7.14rem" : "2.14rem",
       };
       return styleBox;
     };

@@ -4,72 +4,75 @@
     text-align: right;
     justify-content: flex-end;
   }
-  }
-  .manufactorManager {
-    .tree_data {
-      width: 260px;
-      flex-shrink: 0;
-      background-color: #fff;
-      padding-right:20px;
-      position:relative;
-      &:after{
-        content:'';
-        display:block;
-        width:1px;
-        position:absolute;
-        right:0;
-        top:-24px;
-        bottom:-24px;
-        background:#E7E7E7;
-      }
-    }
-    .info_con {
-      flex-grow: 1;
-      background-color: #fff;
-      margin-left: 20px;
+}
+.manufactorManager {
+  .tree_data {
+    width: 280px;
+    flex-shrink: 0;
+    background-color: #fff;
+    padding-right: 20px;
+    position: relative;
+    &:after {
+      content: "";
+      display: block;
+      width: 1px;
+      position: absolute;
+      right: 0;
+      top: -24px;
+      bottom: -24px;
+      background: #e7e7e7;
     }
   }
-  .flex {
+  .info_con {
+    flex-grow: 1;
+    background-color: #fff;
+    margin-left: 20px;
+  }
+}
+.flex {
   display: flex;
-  }
+}
 
-  .flex-center {
+.flex-center {
   display: flex;
   align-items: center;
-  }
+}
 
-  .flex-colume {
+.flex-colume {
   flex-direction: column;
-  }
-  .flex-between {
+}
+.flex-between {
   display: flex;
   justify-content: space-between;
-  }
-  .f_r {
+}
+.f_r {
   float: right;
-  }
-  .align-r {
+}
+.align-r {
   text-align: right;
-  }
-  .mar-t-20 {
-  margin-top: 20px;
-  }
-  .mar-t-30 {
-  margin-top: 30px;
-  }
-  .bg-fff {
+}
+.mar-t-5 {
+  margin-top: 5px !important;
+}
+.mar-t-20 {
+  margin-top: 20px !important;
+}
+.mar-t-30 {
+  margin-top: 30px !important;
+}
+.bg-fff {
   background: #fff;
-  }
-  .pad-20 {
+}
+.pad-20 {
   padding: 20px;
-  }
-  .pad-b-70 {
+}
+.pad-b-70 {
   padding-bottom: 70px !important;
-  }
-  .bold {
+}
+.bold {
   font-weight: 600;
-  }
-  .detail_footer {
+}
+.detail_footer {
   position: fixed;
   left: 200px;
   bottom: 0;
@@ -80,15 +83,43 @@
   background: #fff;
   right: 0px;
   padding-right: 40px;
-  }
-  .color-red {
+}
+.color-red {
   color: red;
-  }
-  .tree_wrap {
+}
+.color-9 {
+  color: #999;
+}
+.tree_wrap {
   height: calc(100vh - 232px);
   overflow-y: auto;
+}
+.tip {
+  color: #999;
+  margin-top: 10px;
+}
+.node_title {
+  width: 188px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  &.node_title_1{
+    width: 188px;
+    &.on {
+      width: 148px;
+    }
   }
-  .tip{
-	  color: #999;
-	  margin-top: 10px;
+  &.node_title_2{
+    width: 168px;
+    &.on {
+      width: 128px;
+    }
   }
+  &.node_title_3{
+    width: 148px;
+    &.on {
+      width: 108px;
+    }
+  }
+  
+}
