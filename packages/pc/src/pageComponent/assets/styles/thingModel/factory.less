@@ -7,7 +7,7 @@
 }
 .manufactorManager {
   .tree_data {
-    width: 260px;
+    width: 280px;
     flex-shrink: 0;
     background-color: #fff;
     padding-right: 20px;
@@ -51,6 +51,9 @@
 .align-r {
   text-align: right;
 }
+.mar-t-5 {
+  margin-top: 5px;
+}
 .mar-t-20 {
   margin-top: 20px;
 }
@@ -84,6 +87,9 @@
 .color-red {
   color: red;
 }
+.color-9 {
+  color: #999;
+}
 .tree_wrap {
   height: calc(100vh - 232px);
   overflow-y: auto;
@@ -93,11 +99,27 @@
   margin-top: 10px;
 }
 .node_title {
-  width: 168px;
+  width: 188px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
-  &.on {
-    width: 120px;
+  &.node_title_1{
+    width: 188px;
+    &.on {
+      width: 148px;
+    }
   }
+  &.node_title_2{
+    width: 168px;
+    &.on {
+      width: 128px;
+    }
+  }
+  &.node_title_3{
+    width: 148px;
+    &.on {
+      width: 108px;
+    }
+  }
+  
 }

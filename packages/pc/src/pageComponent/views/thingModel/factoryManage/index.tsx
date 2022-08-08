@@ -230,6 +230,7 @@ const FactoryManage = defineComponent({
     } = useTreeSearch({
       title: 'shortName',
       children: 'list',
+	  name:'name'
     });
 
     const getList = () => {
@@ -453,7 +454,6 @@ const FactoryManage = defineComponent({
               auto-expand-parent={autoExpandParent.value}
               v-slots={{
                 title: ({ name, shortName, selected, dataRef }: any) => {
-                  console.log(shortName, dataRef.level);
                   const title = shortName || name;
                   return (
                     <span class='tree-node-title'>
@@ -465,7 +465,7 @@ const FactoryManage = defineComponent({
                           },
                         }}
                       >
-                        <span class={['node_title', selected ? 'on' : '']}>
+                        <span class={['node_title',`node_title_${dataRef.level}` , selected ? 'on' : '']}>
                           {name}
                         </span>
                       </a-tooltip>
@@ -635,14 +635,18 @@ const FactoryManage = defineComponent({
                         name='remark'
                         wrapper-col={{ span: 19 }}
                       >
-                        {isEdit.value ? (
-                          <a-textarea
-                            maxlength={500}
-                            v-model={[infoRef.infoState.remark, 'value']}
-                          />
-                        ) : (
-                          <span>{infoRef.infoState.remark || '暂无'}</span>
-                        )}
+                        <div>
+							{isEdit.value ? (
+							<a-textarea
+								maxlength={500}
+								v-model={[infoRef.infoState.remark, 'value']}
+							/>
+							) : (
+							<p class='mar-t-5'>{infoRef.infoState.remark || '暂无'}</p>
+							)}
+							<p class='color-9 mar-t-5'>注：备注最多可输入500字符</p>
+						</div>
+	
                       </a-form-item>
                     </a-col>
                   </a-row>
