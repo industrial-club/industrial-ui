@@ -1,7 +1,3 @@
-/**
- *  布局组件 - 内容区
- */
-
 import {
   PropType,
   Component,
@@ -9,9 +5,11 @@ import {
   defineComponent,
   ref,
   watch,
+  shallowRef,
 } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
-import { flatMenuList } from "@/utils/route";
+import useMenuCode from "@/hooks/useMenuCode";
+import { getMenuByCode, getOpenUrl } from "@/utils/route";
 import utils from "@/utils";
 
 export interface IRouteItem {
@@ -22,6 +20,9 @@ export interface IRouteItem {
   icon?: string;
 }
 
+/**
+ * 布局组件 - 内容区
+ */
 const LayoutContent = defineComponent({
   props: {
     // 所有组件的一维数组
@@ -29,7 +30,7 @@ const LayoutContent = defineComponent({
       type: Array as PropType<IRouteItem[]>,
       default: () => [],
     },
-    userMenuTree: {
+    menu: {
       type: Array as PropType<any[]>,
       default: () => [],
     },
@@ -41,52 +42,76 @@ const LayoutContent = defineComponent({
   setup(props) {
     const route = useRoute();
     const router = useRouter();
+    const menuCode = useMenuCode();
 
     const tabs = ref<any[]>([]);
     const activeCode = ref<String>();
-    const userNavList = computed(() => flatMenuList(props.userMenuTree));
 
     const tabsRef = ref<HTMLElement>();
 
-    // query的code变化 存入tabs中
+    // 扩展的菜单组件
+    const extendRoutes = computed(() =>
+      props.allRoutes.filter((item) => item.isExtend)
+    );
+
+    // 监听menuCode 加入到tabs中
     watch(
-      route,
-      () => {
-        let { menuCode: code } = route.query as any;
-        const menuItem = userNavList.value.find((item) => item.code === code);
-        // mode为2为iframe
-        if (menuItem && menuItem.mode === 2) {
-          const url = menuItem.url.startsWith("http")
-            ? menuItem.url
-            : location.origin + menuItem.url;
-
-          if (
-            menuItem &&
-            !tabs.value.find((item) => item.code === menuItem.code)
-          ) {
-            tabs.value.push(menuItem);
+      menuCode,
+      (val) => {
+        if (!val) return;
+        // 已经打开的tabs 不需要重复添加 设置为active
+        const isInTabs = tabs.value.find((item) => item.code === val);
+        if (isInTabs) {
+          if (tabs.value.find((item) => item.code === val)) {
+            activeCode.value = val;
           }
-        } else if (code && !tabs.value.find((tab) => tab.code === code)) {
-          const route = props.allRoutes.find((item) => item.code === code);
-          if (!route || !route.component || route.component === RouterView) {
-            return;
-          }
-          const tab = route.isExtend
-            ? route
-            : userNavList.value.find((item: any) => item.code === code);
-
-          tab && tabs.value.push({ ...tab, key: Date.now });
+          return;
         }
-        activeCode.value = code;
+        // 获取到对应的菜单对象
+        const menu =
+          getMenuByCode(val, props.menu) ||
+          extendRoutes.value.find((item) => item.code === val);
+        if (!menu) return;
+        let cpn: any;
+        // mode为2是iframe
+        if (menu.mode === 2) {
+          const iframeUrl = getOpenUrl(menu.url);
+          cpn = shallowRef(<iframe src={iframeUrl} frameborder="0"></iframe>);
+        } else {
+          const menuCpn = props.allRoutes.find(
+            (item) => item.code === val
+          )?.component;
+          if (menuCpn && menuCpn !== RouterView) {
+            cpn = shallowRef(menuCpn);
+          }
+        }
+
+        if (cpn) {
+          tabs.value.push({
+            ...menu,
+            cpn,
+            key: Date.now(),
+          });
+          activeCode.value = val;
+        }
       },
       { immediate: true }
     );
+
+    // tabs滚动条滚动
+    const handleScrollTabs = (distance: number) => {
+      tabsRef.value!.scroll({
+        left: tabsRef.value!.scrollLeft + distance,
+        behavior: "smooth",
+      });
+    };
 
     // 关闭tag
     const handleCloseTag = (idx: number) => {
       const removed = tabs.value.splice(idx, 1);
       if (removed[0]?.code === activeCode.value) {
-        router.push(`/?menuCode=${tabs.value[tabs.value.length - 1]?.code}`);
+        const newMenuCode = tabs.value[tabs.value.length - 1]?.code;
+        menuCode.value = newMenuCode;
       }
     };
     // 关闭到右侧
@@ -98,64 +123,8 @@ const LayoutContent = defineComponent({
     // 关闭其他
     const closeOthers = (idx: number) =>
       (tabs.value = tabs.value.filter((_, i) => i === idx));
-
-    // 刷新组件
+    // 刷新
     const refreshCpn = (idx: number) => (tabs.value[idx].key = Date.now());
-
-    // 当前tabs中缓存的组件
-    const cacheComponents = computed(() => {
-      // iframe页签
-      const iframeRoutes = tabs.value
-        .filter((item) => item.mode === 2)
-        .map((item) => {
-          const isWithOrigin = item.url.startsWith("http");
-          const url = isWithOrigin
-            ? item.url
-            : `${location.origin}${item.url.startsWith("/") ? "" : "/"}${
-                item.url
-              }`;
-
-          const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
-          const urlObj = new URL(url);
-          if (urlObj.hash) {
-            const converceUrl = new URL(
-              urlObj.hash.replace("#", location.origin)
-            );
-            converceUrl.searchParams.set(
-              "token",
-              sessionStorage.getItem("token")!
-            );
-            converceUrl.searchParams.set("userId", userinfo.userId);
-            urlObj.hash = converceUrl.href.replace(location.origin, "#");
-          } else {
-            urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
-            urlObj.searchParams.set("userId", userinfo.userId);
-          }
-          item.url = urlObj.href;
-
-          return {
-            url: item.url,
-            code: item.code,
-            component: () => (
-              <iframe src={urlObj.href} frameborder="0"></iframe>
-            ),
-          };
-        });
-      // 普通页签
-      const tabRoutes = props.allRoutes.filter((item) => {
-        return tabs.value.find((tab) => {
-          return tab.code === item.code && tab.mode === 0;
-        });
-      });
-      // 扩展页签
-      const extendRoutes = props.allRoutes.filter((item) => {
-        return tabs.value.find((tab) => {
-          return tab.code === item.code && tab.isExtend;
-        });
-      });
-
-      return [...tabRoutes, ...iframeRoutes, ...extendRoutes];
-    });
 
     return () => (
       <a-layout-content class="layout-content" style={{ overflow: "auto" }}>
@@ -163,12 +132,8 @@ const LayoutContent = defineComponent({
           {props.showTabs && (
             <div class="tabs-container">
               <a-button
-                onClick={() =>
-                  tabsRef.value!.scroll({
-                    left: tabsRef.value!.scrollLeft - 400,
-                    behavior: "smooth",
-                  })
-                }
+                class="btn-scroll left"
+                onClick={() => handleScrollTabs(-400)}
               >
                 <left-outlined />
               </a-button>
@@ -188,9 +153,9 @@ const LayoutContent = defineComponent({
                           <a-menu-item>
                             <a onClick={() => closeOthers(index)}>关闭其他</a>
                           </a-menu-item>
-                          {/* <a-menu-item>
+                          <a-menu-item>
                             <a onClick={() => refreshCpn(index)}>刷新</a>
-                          </a-menu-item> */}
+                          </a-menu-item>
                         </a-menu>
                       ),
                     }}
@@ -201,7 +166,11 @@ const LayoutContent = defineComponent({
                         "tab-item",
                         item.code === activeCode.value && "active",
                       ]}
-                      to={`/?menuCode=${item.code}`}
+                      to={{
+                        query: {
+                          menuCode: item.code,
+                        },
+                      }}
                     >
                       <a class="tab-item-text">
                         {item.icon && (
@@ -231,12 +200,8 @@ const LayoutContent = defineComponent({
                 ))}
               </div>
               <a-button
-                onClick={() =>
-                  tabsRef.value!.scroll({
-                    left: tabsRef.value!.scrollLeft + 400,
-                    behavior: "smooth",
-                  })
-                }
+                class="btn-scroll right"
+                onClick={() => handleScrollTabs(400)}
               >
                 <right-outlined />
               </a-button>
@@ -246,17 +211,13 @@ const LayoutContent = defineComponent({
             class="main-content"
             style={{ marginTop: props.showTabs ? "" : "0" }}
           >
-            {cacheComponents.value.map(
-              (cpn: any, index) =>
-                cpn && (
-                  <cpn.component
-                    key={cpn.code || cpn.url}
+            {tabs.value.map(
+              (menuItem: any, index) =>
+                menuItem && (
+                  <menuItem.cpn
+                    key={menuItem.key}
                     style={{
-                      display:
-                        cpn.code === activeCode.value ||
-                        cpn.url === activeCode.value
-                          ? ""
-                          : "none",
+                      display: menuItem.code === activeCode.value ? "" : "none",
                     }}
                   />
                 )
