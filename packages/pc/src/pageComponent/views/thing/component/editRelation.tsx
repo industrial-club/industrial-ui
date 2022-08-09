@@ -67,6 +67,10 @@ export default defineComponent({
       });
     };
 
+    const getModalData = async () => {
+      const res = await thingApis.findThingByParams({});
+    };
+
     const tabs = ref<any>([]);
     const tabKey = ref("");
     const columns = ref<any>([
@@ -166,7 +170,15 @@ export default defineComponent({
             })}
           </a-tabs>
           <div class="tableTool">
-            <a-button type="primary">新建</a-button>
+            <a-button
+              type="primary"
+              onClick={() => {
+                getModalData();
+                showModel.value = true;
+              }}
+            >
+              新建
+            </a-button>
             <a-button>删除</a-button>
           </div>
           <a-table

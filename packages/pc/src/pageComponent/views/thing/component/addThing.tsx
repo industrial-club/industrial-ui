@@ -17,10 +17,10 @@ export default defineComponent({
     const colArr = ref([]);
     // 动态表格
     const dynamicColumns = ref([
-      {
-        title: "id",
-        dataIndex: "id",
-      },
+      // {
+      //   title: "id",
+      //   dataIndex: "id",
+      // },
       {
         title: "属性名称",
         dataIndex: "displayLabel",
@@ -58,24 +58,24 @@ export default defineComponent({
       () => props.data,
       (value: any) => {
         colArr.value = JSON.parse(
-          JSON.stringify(value.thingInst?.thing?.thingPropertyList || [])
+          JSON.stringify(value.thingPropertyList || [])
         );
         basicForm.value = [];
         basicForm.value.push(
           {
             name: "name",
-            value: value.thingInst?.name,
+            value: "",
             displayType: "text",
           },
           {
             name: "code",
-            value: value.thingInst?.code,
+            value: "",
             displayType: "text",
           }
         );
         basicForm.value.push(
           ...colArr.value.filter((ele: any) => {
-            ele.value = value.staticMap.map[ele.code];
+            ele.value = "";
             return (
               ele.propertyType === "property" &&
               ele.code !== "CODE" &&
@@ -84,13 +84,8 @@ export default defineComponent({
             );
           })
         );
-        dynamicTableList.value = value.dynamicProperties?.filter((ele: any) => {
-          const pro: any = colArr.value.find((col: any) => {
-            return col.code === ele.thingPropertyCode;
-          });
-          ele.displayLabel = pro.displayLabel;
-          ele.code = pro.code;
-          return pro.propertyType === "metric";
+        dynamicTableList.value = colArr.value.filter((ele: any) => {
+          return ele.propertyType === "metric";
         });
       },
       {
@@ -99,7 +94,15 @@ export default defineComponent({
     );
 
     const save = async () => {
-      const param: any = props.data;
+      const param: any = {
+        dynamicProperties: [],
+        staticMap: {
+          map: {},
+        },
+        thingInst: {
+          thing: props.data,
+        },
+      };
       param.thingInst.name = basicForm.value[0].value;
       param.thingInst.code = basicForm.value[1].value;
       basicForm.value.forEach((element: any, index: number) => {
@@ -107,16 +110,12 @@ export default defineComponent({
           param.staticMap.map[element.code] = element.value;
         }
       });
-      param.dynamicProperties.forEach((element) => {
-        const dy: any = dynamicTableList.value.find((ele: any) => {
-          return element.thingPropertyCode === ele.thingPropertyCode;
-        });
-        element.preCode = dy.preCode;
-        element.prePointCode = dy.prePointCode;
-        element.resetInterval = dy.resetInterval;
-        element.resetValue = dy.resetValue;
+
+      dynamicTableList.value.forEach((ele: any) => {
+        ele.thingPropertyCode = ele.code;
       });
-      const res: any = await thingApis.editThing(param);
+      param.dynamicProperties = dynamicTableList.value;
+      const res: any = await thingApis.addThing(param);
       if (res.code === "M0000") {
         message.success("保存成功");
         context.emit("back");

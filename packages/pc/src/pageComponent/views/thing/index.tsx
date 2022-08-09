@@ -8,10 +8,11 @@ import * as thingApis from "@/api/thingInstance";
 import utils from "@/utils";
 import { message } from "ant-design-vue";
 import editThing from "./component/editThing";
+import addThing from "./component/addThing";
 import thingDetail from "./component/thingDetail";
 
 const com = defineComponent({
-  components: { thingModal, editThing, thingDetail },
+  components: { thingModal, editThing, thingDetail, addThing },
   setup() {
     // 模型树
     const {
@@ -66,6 +67,15 @@ const com = defineComponent({
         ).arr;
       });
     };
+    const getOpiton = async () => {
+      queryOpts.value = [];
+      const res: any = await thingApis.findByCode(formQuery.thingCode);
+      res.data.thingPropertyList.forEach((ele: any) => {
+        if (ele.queryDisplay) {
+          queryOpts.value.push(ele);
+        }
+      });
+    };
     const selectNode = (
       selectedKeys: string[] | number[],
       { selected, node }: any
@@ -77,6 +87,7 @@ const com = defineComponent({
       }
       selectedKeyArr.value = selectedKeys;
       refresh();
+      getOpiton();
     };
 
     const expandNode = (keys: string[]) => {
@@ -86,18 +97,21 @@ const com = defineComponent({
 
     // table
     const queryFormRef = ref();
-    const formQuery = reactive({
-      name: "",
-      thingCode: "",
-      code: "",
-      catalogCode: "",
-      factoryCode: "",
-      brandCode: "",
-      modelCode: "",
-    });
+    const formQuery: any = reactive({});
     const getList = async () => {
+      const param: any = { ...formQuery, wherePojoList: [] };
+
+      queryOpts.value.forEach((ele: any) => {
+        if (ele.value) {
+          param.wherePojoList.push({
+            column: ele.columnName,
+            operation: ele.operation,
+            valueList: [ele.value],
+          });
+        }
+      });
       const res: any = await thingApis.indInsts({
-        ...formQuery,
+        ...param,
         pageNum: currPage.value,
         pageSize: pageSize.value,
       });
@@ -152,6 +166,7 @@ const com = defineComponent({
     };
     const pageData = reactive({
       editData: {},
+      addData: {},
       thingCode: "",
     });
     // 弹框
@@ -164,7 +179,9 @@ const com = defineComponent({
     };
     const toCreate = async (row?: any) => {
       const res: any = await thingApis.findByCode(formQuery.thingCode);
-      // page.value = "edit";
+      pageData.thingCode = formQuery.thingCode;
+      pageData.addData = res.data;
+      page.value = "add";
     };
     const toDetail = async (row?: any) => {
       const res: any = await thingApis.findThingProperties(row.record.ID);
@@ -178,13 +195,7 @@ const com = defineComponent({
         message.success("删除成功");
       }
     };
-    const queryOpts = ref([
-      {
-        name: "暂不可用",
-        prop: "catalogCode",
-        type: "",
-      },
-    ]);
+    const queryOpts = ref([]);
     onMounted(() => {
       getTreeData();
     });
@@ -194,6 +205,16 @@ const com = defineComponent({
         {page.value === "edit" ? (
           <editThing
             data={pageData.editData}
+            onBack={() => {
+              page.value = "list";
+            }}
+          />
+        ) : (
+          ""
+        )}
+        {page.value === "add" ? (
+          <addThing
+            data={pageData.addData}
             onBack={() => {
               page.value = "list";
             }}
@@ -255,11 +276,42 @@ const com = defineComponent({
             <div class="option">
               <a-form ref={queryFormRef} model={formQuery}>
                 <a-row gutter={30}>
-                  {queryOpts.value.map((item) => {
+                  {queryOpts.value.map((item: any) => {
                     return (
                       <a-col span={6}>
-                        <a-form-item label={item.name} name={item.prop}>
-                          <a-input v-model={[formQuery[item.prop], "value"]} />
+                        <a-form-item
+                          label={item.displayLabel}
+                          name={item.columnName}
+                        >
+                          <div class="flex">
+                            <a-select
+                              style="width:80px"
+                              v-model={[item.operation, "value"]}
+                            >
+                              <a-select-option value="EQ">
+                                {"="}
+                              </a-select-option>
+                              <a-select-option value="NE">
+                                {"!="}
+                              </a-select-option>
+                              <a-select-option value="GT">
+                                {">"}
+                              </a-select-option>
+                              <a-select-option value="GTE">
+                                {">="}
+                              </a-select-option>
+                              <a-select-option value="LT">
+                                {"<"}
+                              </a-select-option>
+                              <a-select-option value="LTE">
+                                {"<="}
+                              </a-select-option>
+                              <a-select-option value="LIKE">
+                                {"like"}
+                              </a-select-option>
+                            </a-select>
+                            <a-input v-model={[item.value, "value"]} />
+                          </div>
                         </a-form-item>
                       </a-col>
                     );
