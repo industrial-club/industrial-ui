@@ -124,11 +124,7 @@ export default defineComponent({
                       : "",
                   ]}
                   onClick={() => {
-                    if (roomData.value.rowValue === item.row) {
-                      roomData.value.rowValue = "all";
-                    } else {
-                      roomData.value.rowValue = item.row;
-                    }
+                    roomData.value.rowValue = item.row;
                     _ctx.emit("rowChange");
                   }}
                 >
@@ -149,7 +145,7 @@ export default defineComponent({
                         src="/micro-assets/platform-web/breakBrakePadlock.png"
                         alt=""
                       />
-                      {item.openTotal}
+                      {item.lockTotal}
                     </div>
                     <div class="room-content-panel-item-content-state">
                       <div class="room-content-panel-item-content-state-col">
