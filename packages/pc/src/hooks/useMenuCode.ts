@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 /**
@@ -9,25 +9,17 @@ export default function useMenuCode() {
   const route = useRoute();
 
   // 监听路由中的menuCode 进行同步
-  const menuCode = ref<string>();
-  watch(
-    route,
-    () => {
-      const { menuCode: code } = route.query;
-      menuCode.value = code as string;
+  const menuCode = computed({
+    get() {
+      return route.query.menuCode as string;
     },
-    { immediate: true, deep: true }
-  );
-
-  // 外部更新menuCode时，跳转到对应的路由
-  watch(menuCode, (val) => {
-    if (val !== route.query.menuCode) {
+    set(val) {
       router.push({
         query: {
           menuCode: val,
         },
       });
-    }
+    },
   });
 
   return menuCode;

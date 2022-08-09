@@ -120,8 +120,8 @@ export const getVideo =
  * 获取报警详情
  * @param record 记录对象
  */
-export const getAlarmDetail = (url: string) => (record: any) =>
-  instance.post(url ?? "/alarm/detail", record);
+export const getAlarmDetail = (url?: string) => (id: any) =>
+  instance.post(`${url ?? "/alarm/detailById"}/${id}`);
 
 /**
  * 获取报警类型 map

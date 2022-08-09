@@ -73,16 +73,48 @@ export function getMenuByCode(code: string, menuTree: any[]) {
  * @param menuTree 菜单树结构
  */
 export function getParentMenuByCode(code: string, menuTree: any[]) {
-  for (const menu of menuTree) {
-    if (menu.code === code) {
-      return menu;
-    } else {
-      const res = getParentMenuByCode(code, menu.subList);
-      if (res) {
-        return menu;
+  let stock: string[] = [];
+  let going = true;
+  var warker = function (menuTree: any[], code: string) {
+    menuTree.forEach((item) => {
+      if (!going) return;
+      stock.push(item.code);
+      if (item.code == code) {
+        going = false;
+      } else if (item.subList) {
+        warker(item.subList, code);
+      } else {
+        stock.pop();
       }
-    }
+    });
+    if (going) stock.pop();
+  };
+  warker(menuTree, code);
+  return stock;
+}
+
+/**
+ * 获取需要打开url的地址 (拼接http:// token userId)
+ * @param url 路径
+ */
+export function getOpenUrl(url: string) {
+  const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+  const isWithOrigin = url.startsWith("http");
+  const fullUrl = isWithOrigin
+    ? url
+    : `${location.origin}${url.startsWith("/") ? "" : "/"}${url}`;
+
+  const urlObj = new URL(fullUrl);
+  if (urlObj.hash) {
+    const converceUrl = new URL(urlObj.hash.replace("#", location.origin));
+    converceUrl.searchParams.set("token", sessionStorage.getItem("token")!);
+    converceUrl.searchParams.set("userId", userinfo.userId);
+    urlObj.hash = converceUrl.href.replace(location.origin, "#");
+  } else {
+    urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
+    urlObj.searchParams.set("userId", userinfo.userId);
   }
+  return urlObj.href;
 }
 
 export default "";

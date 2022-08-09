@@ -14,13 +14,25 @@
       right: 0;
       display: flex;
       align-items: center;
-      .ant-btn {
+      .btn-scroll {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 20px;
         height: 20px;
-        margin: 0 8px;
         padding: 0;
         color: #bdc1cf;
-        font-size: 12px;
+        &.left {
+          margin: 8px 8px 8px 0;
+        }
+        &.right {
+          margin: 8px 0 8px 8px;
+        }
+        svg {
+          width: 12px;
+          height: 12px;
+          margin-top: 3px;
+        }
       }
       .tabs-list {
         flex: 1;
