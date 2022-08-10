@@ -1,4 +1,4 @@
-+import axios from 'axios';
+import axios from "axios";
 import {
   Endpoint,
   Events,
@@ -6,9 +6,9 @@ import {
   GetSupportCameraResolutions,
   Media,
   isSupportResolution,
-} from './ZLMRTCClient.js';
+} from "./ZLMRTCClient.js";
 
-const appName = 'live';
+const appName = "live";
 
 export interface PlayVideoArgs {
   videoElm: string;
@@ -81,7 +81,7 @@ export class WebRtcMt {
     const stream = `v${cameraIp}-${cameraRtspPort}-${cameraChannel}-${cameraStream}`;
     // const addRtspProxyUrl = `${mediaServerAddr}/index/api/addStreamProxy?secret=035c73f7-bb6b-4889-a715-d9eb2d1925cc&vhost=__defaultVhost__&app=${appName}&stream=${stream}&url=${rtsp}`;
     const sdpUrl = `${mediaServerAddr}/index/api/webrtc?app=${appName}&stream=${stream}&type=play`;
-    const rtsp = '';
+    const rtsp = "";
     this.streamMap.set(videoElm, stream);
     return { rtsp, stream, addRtspProxyUrl, sdpUrl, hkNvrRtsp };
   }
@@ -98,7 +98,7 @@ export class WebRtcMt {
     if (opt.w) this.config.w = opt.w;
 
     // 判断是否是多个视频同时播放
-    if (Object.prototype.toString.call(opt.plays) === '[object Object]') {
+    if (Object.prototype.toString.call(opt.plays) === "[object Object]") {
       // 单个视频播放
       this.p_player = this.createVideo(opt.plays as PlayVideoArgs);
     } else {
@@ -124,17 +124,17 @@ export class WebRtcMt {
           // 拉流失败删除缓存信息
           this.mediaServerAddrMap.delete(plays.videoElm);
           reject();
-          this.log('err', '从服务端拉流失败，请重试');
+          this.log("err", "从服务端拉流失败，请重试");
         }
       });
     });
   }
 
-  log(type: 'err' | 'info' | 'warn', text: string) {
+  log(type: "err" | "info" | "warn", text: string) {
     switch (type) {
-      case 'err':
+      case "err":
         throw new Error(text);
-      case 'warn':
+      case "warn":
         console.warn(text);
         break;
       default:
@@ -169,30 +169,30 @@ export class WebRtcMt {
     // 下边监听事件如果出现问题得重启一下服务器才行。
     player.on(Events.WEBRTC_ICE_CANDIDATE_ERROR, (e: any) => {
       // ICE 协商出错
-      this.log('err', 'ICE 协商出错');
+      this.log("err", "ICE 协商出错");
       this.rePlay(videoElm);
     });
     player.on(Events.WEBRTC_ON_REMOTE_STREAMS, (e: any) => {
       // 获取到了远端流，可以播放
-      console.log('播放成功', e.streams);
+      console.log("播放成功", e.streams);
     });
     player.on(Events.WEBRTC_OFFER_ANWSER_EXCHANGE_FAILED, (e: any) => {
       // offer anwser 交换失败,这里前端得重新调用添加视频拉流代码。
-      this.log('warn', `offer anwser 交换失败，获取视频流失败, ${e}`);
+      this.log("warn", `offer anwser 交换失败，获取视频流失败, ${e}`);
       this.rePlay(videoElm);
     });
     player.on(Events.DISCONNECTED, (e: any) => {
-      this.log('warn', `事件检测到连接断开${videoElm}`);
+      this.log("warn", `事件检测到连接断开${videoElm}`);
       this.rePlay(videoElm);
     });
     player.on(Events.LOST_SERVER, (e: any) => {
-      this.log('warn', `事件检测到视频服务器丢失${videoElm}`);
+      this.log("warn", `事件检测到视频服务器丢失${videoElm}`);
       this.rePlay(videoElm);
     });
 
     player.on(Events.WEBRTC_ON_CONNECTION_STATE_CHANGE, (state: any) => {
       // RTC 状态变化 ,详情参考 https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/connectionState
-      if (state === 'disconnected' || state === 'failed') {
+      if (state === "disconnected" || state === "failed") {
         this.rePlay(videoElm);
       }
     });

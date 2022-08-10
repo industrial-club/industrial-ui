@@ -1,4 +1,11 @@
-import { defineComponent, onMounted, onUnmounted, PropType, watch } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  PropType,
+  ref,
+  watch,
+} from "vue";
 import utils from "@/utils";
 import api from "@/api/video";
 import { videoInfo } from "./util/interface";
@@ -19,6 +26,8 @@ const VideoPlayer = defineComponent({
     // 视频实例
     let play: WebRtcMt | null;
 
+    const videoInfo = ref<any>({});
+
     // 停止播放
     const stopPlay = () => {
       if (play) {
@@ -27,8 +36,9 @@ const VideoPlayer = defineComponent({
     };
 
     // 初始化视频
-    const init = (camera: videoInfo) => {
+    const init = () => {
       play = null;
+      const camera = videoInfo.value;
       const { channel, streamType } = camera;
       let url = camera.webrtcTemplateMerged;
       url = url.replaceAll("${channel}", channel);
@@ -48,17 +58,31 @@ const VideoPlayer = defineComponent({
       });
     };
 
+    const stopV = (id: string) => {
+      const videoElement: any = document.getElementById(id);
+      videoElement.pause();
+      videoElement.removeAttribute("src"); // empty source
+      videoElement.load();
+    };
+
+    const timer = setInterval(() => {
+      stopPlay();
+      stopV(`videoPlayer${timer}`);
+      init();
+    }, 3600000);
+
     // 播放信息变化初始化视频
     watch(
       () => _prop.camera,
       async (e) => {
         stopPlay();
         if (e && typeof e === "object") {
-          init(e as videoInfo);
+          init();
         } else if (e && typeof e === "string") {
           const res = await api.getCameraByUuid(e as string);
           if (res.data) {
-            init(res.data);
+            videoInfo.value = res.data;
+            init();
           }
         }
       },
@@ -71,6 +95,7 @@ const VideoPlayer = defineComponent({
     // 页面销毁时停止播放视频流
     onUnmounted(() => {
       stopPlay();
+      clearInterval(timer);
     });
     return () => (
       <video
