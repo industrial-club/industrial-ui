@@ -142,7 +142,13 @@ const PersonalSetting = defineComponent({
           <a-form-item
             name="userName"
             label="用户名"
-            rules={[getRequiredRule("用户名")]}
+            rules={[
+              getRequiredRule("用户名"),
+              {
+                pattern: /^[0-9a-zA-Z]*$/g,
+                message: "只能输入数字和字母",
+              },
+            ]}
           >
             {state.canEdit ? (
               <a-input
@@ -173,7 +179,14 @@ const PersonalSetting = defineComponent({
           <a-form-item
             name="phone"
             label="电话"
-            rules={[getRequiredRule("电话")]}
+            rules={[
+              getRequiredRule("电话"),
+              {
+                pattern: /^(1)\d{10}$/,
+                message: "请输入正确的手机号",
+                trigger: "blur",
+              },
+            ]}
           >
             {state.canEdit ? (
               <a-input

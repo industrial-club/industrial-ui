@@ -84,7 +84,6 @@ const UpdateDepDialog = defineComponent({
       }
       return fDep(depList.value);
     });
-    getDepList();
 
     // 员工列表
     const employeeList = ref([]);
@@ -102,6 +101,7 @@ const UpdateDepDialog = defineComponent({
       if (isEmpty(props.record) || !isVisible.value) return;
       await Promise.resolve();
       getEmployeeList();
+      getDepList();
       await Promise.resolve();
       if (props.mode === "edit" && form.value.parentId === null) {
         form.value.parentId = depList.value[0]?.id;

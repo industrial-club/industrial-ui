@@ -20,7 +20,7 @@ export default defineConfig({
       "/vms/": "http://192.168.5.234/",
       "/api/vms/": "http://192.168.5.234/",
       "/api/": {
-        target: "http://192.168.5.234/",
+        target: "http://192.168.5.26/",
       },
     },
   },

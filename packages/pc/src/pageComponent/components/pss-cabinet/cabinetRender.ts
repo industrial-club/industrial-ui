@@ -7,7 +7,7 @@ const parts = [
   "light_on",
   "light_off",
   "light_unknown",
-  "light_single_unknown",
+  "light_single_duanlian",
   "light_single",
   "light_red_on",
 ];
@@ -188,8 +188,6 @@ class cabinet {
     set: (item: cabinet.item, arr: Record<string, ht.Node>) => {
       if (item.state && this.state[item.state]) {
         this.state[item.state](item, arr);
-      } else {
-        this.state.unknown(item, arr);
       }
     },
     blackout: (item: cabinet.item, arr: Record<string, ht.Node>) => {},
@@ -202,11 +200,19 @@ class cabinet {
       });
       brake.setRotationZ(-Math.PI / 2);
     },
-    unknown: (item: cabinet.item, arr: Record<string, ht.Node>) => {
+    duanlian: (item: cabinet.item, arr: Record<string, ht.Node>) => {
       const brake = arr["brake"];
       const light = arr["light"];
       light.s({
-        shape3d: "light_single_unknown", // light_unknown
+        shape3d: "light_single_duanlian", // light_unknown
+      });
+      brake.setRotationZ((Math.PI / 2) * -0.2);
+    },
+    beiyong: (item: cabinet.item, arr: Record<string, ht.Node>) => {
+      const brake = arr["brake"];
+      const light = arr["light"];
+      light.s({
+        shape3d: "light_single", // light_unknown
       });
       brake.setRotationZ((Math.PI / 2) * -0.2);
     },
@@ -396,7 +402,7 @@ class cabinet {
       cardv.p3(-x / 2 + 30, y * 0.05, z + 1);
       cardv.s3(20, 10, 1);
       this.dm.add(cardv);
-      cardv.setTag(`cardv${JSON.stringify(item.loopIds)}`);
+      cardv.setTag(`cardv${JSON.stringify(item.info)}`);
       cardv.setAttr("v", item.cards);
       return cardv;
     },
@@ -519,13 +525,13 @@ class cabinet {
     },
   };
   // 回路事件
-  protected cabinetLoopClick = (e: MouseEvent, id: string) => {
+  protected cabinetLoopClick = (event: MouseEvent, id: string) => {
     if (!(window as any).cabinetLoopClick) {
       return this.errorEvent("window上不存在 ·cabinetLoopClick· 事件 .");
     }
 
     // 给当前点击的盒子添加高亮
-    (window as any).cabinetLoopClick(e, id);
+    (window as any).cabinetLoopClick(event, id);
   };
   protected errorEvent = (s: string) => {
     throw new Error(s);

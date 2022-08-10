@@ -12,7 +12,7 @@ export default defineComponent({
   },
   setup(props, context) {
     // 基础属性
-    const basicForm = ref<any[]>([]);
+    const basicForm = ref([]);
     // 全部属性
     const colArr = ref([]);
     // 动态表格
@@ -23,11 +23,11 @@ export default defineComponent({
       },
       {
         title: "属性名称",
-        dataIndex: "displayLabel",
+        dataIndex: "id",
       },
       {
         title: "属性编码",
-        dataIndex: "code",
+        dataIndex: "thingPropertyCode",
       },
       {
         title: "preCode",
@@ -36,14 +36,6 @@ export default defineComponent({
       {
         title: "prePointCode",
         dataIndex: "prePointCode",
-      },
-      {
-        title: "resetInterval",
-        dataIndex: "resetInterval",
-      },
-      {
-        title: "resetValue",
-        dataIndex: "resetValue",
       },
     ]);
     const dynamicTableList = ref([]);
@@ -58,38 +50,17 @@ export default defineComponent({
       () => props.data,
       (value: any) => {
         colArr.value = JSON.parse(
-          JSON.stringify(value.thingInst?.thing?.thingPropertyList || [])
+          JSON.stringify(value.thingInst.thing.thingPropertyList)
         );
-        basicForm.value = [];
-        basicForm.value.push(
-          {
-            name: "name",
-            value: value.thingInst?.name,
-            displayType: "text",
-          },
-          {
-            name: "code",
-            value: value.thingInst?.code,
-            displayType: "text",
-          }
-        );
-        basicForm.value.push(
-          ...colArr.value.filter((ele: any) => {
-            ele.value = value.staticMap.map[ele.code];
-            return (
-              ele.propertyType === "property" &&
-              ele.code !== "CODE" &&
-              ele.code !== "NAME" &&
-              ele.code !== "ID"
-            );
-          })
-        );
-        dynamicTableList.value = value.dynamicProperties?.filter((ele: any) => {
+        basicForm.value = colArr.value.filter((ele: any) => {
+          ele.value = value.staticMap.map[ele.code];
+          return ele.propertyType === "property";
+        });
+        dynamicTableList.value = value.dynamicProperties.filter((ele: any) => {
           const pro: any = colArr.value.find((col: any) => {
             return col.code === ele.thingPropertyCode;
           });
-          ele.displayLabel = pro.displayLabel;
-          ele.code = pro.code;
+
           return pro.propertyType === "metric";
         });
       },
@@ -100,12 +71,8 @@ export default defineComponent({
 
     const save = async () => {
       const param: any = props.data;
-      param.thingInst.name = basicForm.value[0].value;
-      param.thingInst.code = basicForm.value[1].value;
-      basicForm.value.forEach((element: any, index: number) => {
-        if (index !== 0 && index !== 1) {
-          param.staticMap.map[element.code] = element.value;
-        }
+      basicForm.value.forEach((element: any) => {
+        param.staticMap.map[element.code] = element.value;
       });
       param.dynamicProperties.forEach((element) => {
         const dy: any = dynamicTableList.value.find((ele: any) => {
@@ -113,38 +80,14 @@ export default defineComponent({
         });
         element.preCode = dy.preCode;
         element.prePointCode = dy.prePointCode;
-        element.resetInterval = dy.resetInterval;
-        element.resetValue = dy.resetValue;
       });
       const res: any = await thingApis.editThing(param);
       if (res.code === "M0000") {
         message.success("保存成功");
-        context.emit("back");
+        context.emit("bach");
       } else {
         message.error("服务异常");
       }
-    };
-    const folds = reactive({
-      basic: false,
-      dynamic: false,
-      logic: false,
-      action: false,
-    });
-    const renderSelect = (ele: any) => {
-      const selectInfo = JSON.parse(ele.listInfo || "[]");
-      const arr: any[] = [];
-      for (const key in selectInfo) {
-        arr.push({ key, value: selectInfo[key] });
-      }
-      return (
-        <a-select v-model={[ele.value, "value"]} style="width: 120px">
-          {arr.map((info: any) => {
-            return (
-              <a-select-option value={info.key}>{info.value}</a-select-option>
-            );
-          })}
-        </a-select>
-      );
     };
     return () => (
       <div class="editThing">
@@ -157,19 +100,11 @@ export default defineComponent({
             }}
           />
           <a-button
-            type="primary"
-            onClick={() => {
-              save();
-            }}
-          >
-            保存
-          </a-button>
-          <a-button
             onClick={() => {
               context.emit("back");
             }}
           >
-            取消
+            返回
           </a-button>
         </div>
         <div class="basic">
@@ -189,11 +124,13 @@ export default defineComponent({
                     <div class="name">{ele.name}</div>
                     <div>
                       {ele.displayType === "text" ? (
-                        <a-input v-model={[ele.value, "value"]}></a-input>
+                        <a-input
+                          v-model={[ele.value, "value"]}
+                          disabled={true}
+                        ></a-input>
                       ) : (
                         ""
                       )}
-                      {ele.displayType === "select" ? renderSelect(ele) : ""}
                     </div>
                   </div>
                 );
@@ -210,28 +147,7 @@ export default defineComponent({
             <div class="icon"></div>
             <div class="name">动态属性</div>
           </div>
-          <a-table
-            rowKey="code"
-            columns={dynamicColumns.value}
-            dataSource={dynamicTableList.value}
-            pagination={false}
-            v-slots={{
-              bodyCell: ({ column, record, index }: any) => {
-                if (
-                  column.dataIndex === "preCode" ||
-                  column.dataIndex === "prePointCode" ||
-                  column.dataIndex === "resetInterval" ||
-                  column.dataIndex === "resetValue"
-                ) {
-                  return (
-                    <a-input
-                      v-model={[record[column.dataIndex], "value"]}
-                    ></a-input>
-                  );
-                }
-              },
-            }}
-          ></a-table>
+          <div></div>
         </div>
         <div class="basic">
           <div class="title flex">

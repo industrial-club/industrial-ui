@@ -106,20 +106,22 @@ export const sendStateFilter = (val, data) => {
 
 // 配电柜数据处理
 export const elcRoomFilter = (data) => {
-  function loopStatusF(v) {
-    switch (v) {
-      case "0" || 0:
-        return "unknown";
-        break;
-      case "1" || 1:
-        return "charged";
-        break;
-      case "2" || 2:
-        return "blackout";
-        break;
-      default:
-        return "unknown";
-        break;
+  function loopStatusF(v, loopIds) {
+    if (v === "0") {
+      // 断连
+      return "duanlian";
+    }
+    if (v === "1") {
+      // 合闸
+      return "charged";
+    }
+    if (v === "2") {
+      // 分闸
+      return "blackout";
+    }
+    if (loopIds.length === 0) {
+      // 备用
+      return "beiyong";
     }
   }
   let datas: any = [];
@@ -130,10 +132,15 @@ export const elcRoomFilter = (data) => {
       prepareOffAndOnCount: item.layerCount,
       cabinetName: "配电柜",
       cabinetCode: item.cabinetName,
-      child: item.cardDtos.map((val) => ({
+      child: item.cardDtos.map((val, index) => ({
         powerOffPlateCount: val.loopLockCount,
-        loopStatus: loopStatusF(val.loopStatus),
-        loopIds: val.loopIds,
+        loopStatus: loopStatusF(val.loopStatus, val.loopIds),
+        loopName: val.name,
+        info: {
+          loopIds: val.loopIds,
+          cabinetName: item.cabinetName,
+          index: index + 1,
+        },
       })),
     }));
     datas = [...datas, ...list];

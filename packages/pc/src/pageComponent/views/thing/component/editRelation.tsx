@@ -3,22 +3,103 @@ import * as thingApis from "@/api/thingInstance";
 
 export default defineComponent({
   props: {
-    thingCode: String,
+    ele: Object,
   },
   setup(props, context) {
     watch(
-      () => props.thingCode,
+      () => props.ele?.THING_CODE,
       async (value: any) => {
-        const res1 = thingApis.getTabs("a_2_z", props.thingCode!);
+        const resTab1 = await thingApis.getTabs("a_2_z", props.ele?.THING_CODE);
+
+        const resTab2 = await thingApis.getTabs("z_2_a", props.ele?.THING_CODE);
+        // const resdata2 = await thingApis.getRelationA(
+        //   props.ele?.ID,
+        //   resTab2.data[0].athingCode
+        // );
+        tabs.value = [];
+        resTab1.data.forEach((ele: any) => {
+          tabs.value.push({
+            type: 1,
+            athingCode: ele.athingCode,
+            zthingCode: ele.zthingCode,
+            name: ele.relaName,
+            key: ele.athingCode + ele.zthingCode,
+          });
+        });
+        resTab2.data.forEach((ele: any) => {
+          tabs.value.push({
+            type: 2,
+            athingCode: ele.athingCode,
+            zthingCode: ele.zthingCode,
+            name: ele.relaName,
+            key: ele.athingCode + ele.zthingCode,
+          });
+        });
+        if (tabs.value.length) {
+          tabKey.value = tabs.value[0].key;
+          getTableData(tabKey.value);
+        }
       },
       {
         immediate: true,
       }
     );
-    // 弹窗表格
-    const columns = ref([]);
+
+    const getTableData = async (key: string) => {
+      const tab = tabs.value.find((ele: any) => {
+        return ele.key === key;
+      });
+      let res: any;
+      if (tab.type === 1) {
+        res = await thingApis.getRelationZ(props.ele?.ID, tab.zthingCode);
+      } else {
+        res = await thingApis.getRelationA(props.ele?.ID, tab.athingCode);
+      }
+      tableList.value = [];
+      res.data.forEach((ele: any) => {
+        tableList.value.push({
+          id: ele.thingInst.id,
+          name: ele.thingInst.name,
+          code: ele.thingInst.code,
+          objName: ele.thingInst.thing.name,
+          objCode: ele.thingInst.thing.code,
+        });
+      });
+    };
+
+    const getModalData = async () => {
+      const res = await thingApis.findThingByParams({});
+    };
+
+    const tabs = ref<any>([]);
+    const tabKey = ref("");
+    const columns = ref<any>([
+      {
+        title: "id",
+        dataIndex: "id",
+      },
+      {
+        title: "名称",
+        dataIndex: "name",
+      },
+      {
+        title: "编码",
+        dataIndex: "code",
+      },
+      {
+        title: "物规格名称",
+        dataIndex: "objName",
+      },
+      {
+        title: "物规格编码",
+        dataIndex: "objCode",
+      },
+    ]);
     const tableList = ref([]);
-    const tabKey = ref("1");
+    // 弹窗表格
+    const selColumns = ref([]);
+    const selTableList = ref([]);
+
     const showModel = ref(false);
     const renderModal = () => {
       return (
@@ -67,8 +148,8 @@ export default defineComponent({
             </div>
             <a-table
               rowKey="code"
-              columns={columns.value}
-              dataSource={tableList.value}
+              columns={selColumns.value}
+              dataSource={selTableList.value}
               pagination={null}
             ></a-table>
           </a-modal>
@@ -78,13 +159,26 @@ export default defineComponent({
     return () => (
       <div>
         <div>
-          <a-tabs v-model:activeKey={[tabKey.value, "activeKey"]}>
-            <a-tab-pane key="1" tab="系统包"></a-tab-pane>
-            <a-tab-pane key="2" tab="系统大包"></a-tab-pane>
-            <a-tab-pane key="3" tab="系统小包"></a-tab-pane>
+          <a-tabs
+            v-model:activeKey={[tabKey.value, "activeKey"]}
+            onChange={(key) => {
+              getTableData(key);
+            }}
+          >
+            {tabs.value.map((tab: any, index: number) => {
+              return <a-tab-pane key={tab.key} tab={tab.name}></a-tab-pane>;
+            })}
           </a-tabs>
           <div class="tableTool">
-            <a-button type="primary">新建</a-button>
+            <a-button
+              type="primary"
+              onClick={() => {
+                getModalData();
+                showModel.value = true;
+              }}
+            >
+              新建
+            </a-button>
             <a-button>删除</a-button>
           </div>
           <a-table

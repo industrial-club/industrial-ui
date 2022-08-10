@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { message } from "ant-design-vue";
 import dayjs, { Dayjs } from "dayjs";
 import getDepPeopleTreeList from "@/api/enumList";
@@ -257,6 +257,7 @@ export default defineComponent({
     onMounted(() => {
       depPeopleTreeList();
       getChannelList();
+      formRef.value.resetFields();
     });
     return () => (
       <a-form

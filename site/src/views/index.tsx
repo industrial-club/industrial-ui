@@ -16,11 +16,11 @@ export default defineComponent({
         <menuDemo></menuDemo>
         <formDemo></formDemo> */}
         {/* <videoDemo></videoDemo> */}
-        <baseDemo></baseDemo>
+        {/* <baseDemo></baseDemo> */}
         {/* <alarm-demo></alarm-demo> */}
 
         {/* <systemSetting></systemSetting> */}
-        {/* <factoryDemo /> */}
+        <factoryDemo />
       </div>
     );
   },

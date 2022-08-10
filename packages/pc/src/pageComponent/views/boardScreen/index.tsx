@@ -30,7 +30,7 @@ const boardScreen = defineComponent({
       powerData.value = [];
       postType.value = "newData";
       setCamera.value = true;
-      roomData.rowValue = "all";
+      // roomData.rowValue = "all";
       // await getRowOptions();
       getTupuData();
       // getOrderData();
@@ -135,11 +135,11 @@ const boardScreen = defineComponent({
           const rowData = allRowData[rowIndex];
           const loopData = cabinet.child.reverse().map((loop) => {
             return {
-              // name: handleTagName(loop.loopName, 5),
+              name: handleTagName(loop.loopName, 5),
               // id: loop.loopId,
               state: loop.loopStatus,
               cards: loop.powerOffPlateCount,
-              loopIds: loop.loopIds,
+              info: loop.info,
             };
           });
           const colData = {
@@ -195,6 +195,7 @@ const boardScreen = defineComponent({
         for (const key in res.data) {
           powerData.value.push(res.data[key]);
         }
+        roomData.rowValue = powerData.value[0].row;
         const data = {
           roomId: roomData.roomValue,
           roomName: roomData.roomOptions.find(
@@ -210,7 +211,7 @@ const boardScreen = defineComponent({
     };
     const getData = async (val = true) => {
       await getRoomOptions();
-      roomData.rowValue = "all";
+      // roomData.rowValue = "all";
       // await getRowOptions();
       // getOrderData();
       getTupuData();

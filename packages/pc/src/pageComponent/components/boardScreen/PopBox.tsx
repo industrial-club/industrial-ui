@@ -1,16 +1,10 @@
-import {
-  defineComponent,
-  getCurrentInstance,
-  nextTick,
-  PropType,
-  ref,
-  watch,
-} from "vue";
+import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import dayjs from "dayjs";
 import lodash from "lodash";
 import Card2Outer from "@/pageComponent/components/boardScreen/Card2Outer";
 import { message } from "ant-design-vue";
 import { getloopDetail } from "@/api/boardScreen/powersupply";
+import card2OuterTable from "@/pageComponent/components/boardScreen/card2OuterTable";
 
 const props = {
   point: {
@@ -21,41 +15,48 @@ const props = {
     },
   },
   visible: Boolean,
-  loopId: String,
+  loopInfo: {
+    type: Object as PropType<any>,
+    default: {},
+  },
 };
 
 export default defineComponent({
   components: {
     Card2Outer,
+    card2OuterTable,
   },
   props,
   setup(this, _props, _ctx) {
     const pathD = ref("");
+    const cabinetName = ref("");
+    const index = ref(0);
     const offset = ref({
-      x: 64,
+      x: 0,
       y: 92,
     });
-    const list = ref([]);
+    const list = ref<any>([]);
     watch(
-      () => _props.loopId,
+      () => _props.loopInfo,
       (e) => {
-        console.log(_props.visible);
         if (e && _props.visible) {
           getData();
+          list.value = e.loopIds;
+          cabinetName.value = e.cabinetName;
+          index.value = e.index;
         }
       },
       {
         immediate: true,
+        deep: true,
       }
     );
     const closePop = () => {
       _ctx.emit("update:visible", false);
     };
     const setLinePath = () => {
-      const { proxy } = getCurrentInstance() as any;
       nextTick(() => {
-        const popBox: any = proxy.$el;
-
+        const popBox: any = document.getElementById("popBox");
         if (popBox && popBox.getBoundingClientRect) {
           const { left, top } = popBox.getBoundingClientRect();
 
@@ -66,34 +67,16 @@ export default defineComponent({
         }
       });
     };
-    const getBrandData = async () => {
-      list.value = [];
-      const res = await getloopDetail(_props.loopId);
-      if (res) {
-        list.value = ((res as any).records || []).map((item) => {
-          if (item.record) {
-            const poweroffDate = item.record.poweroffDate;
-            item.record.time = poweroffDate
-              ? dayjs(poweroffDate).format("YYYY.MM.DD HH:mm")
-              : "-";
-          }
 
-          return {
-            ...item,
-          };
-        });
-        setLinePath();
-      }
-    };
     const getData = () => {
       pathD.value = "";
-      getBrandData();
+      setLinePath();
     };
     return () => (
       <>
         {_props.visible ? (
-          <div class="pop-box">
-            {/* <div class="path-line">
+          <div class="pop-box" id="popBox">
+            <div class="path-line">
               <svg
                 width="100%"
                 height="100%"
@@ -103,10 +86,10 @@ export default defineComponent({
                 <path
                   d={pathD.value}
                   stroke-dasharray="5,5"
-                  style="fill: transparent; stroke-width: 1.5; stroke: #fff;"
+                  style="fill: transparent; stroke-width: 1.5; stroke: #3377FF;"
                 />
               </svg>
-            </div> */}
+            </div>
             <div class="close-btn" onClick={closePop}>
               <img
                 src="/micro-assets/platform-web/close.png"
@@ -114,35 +97,39 @@ export default defineComponent({
                 alt=""
               />
             </div>
+            <div class="pop-box-title">
+              挂锁信息-{cabinetName.value}配电柜/第{index.value}个抽屉
+            </div>
             <div class="board-list">
-              {list.value?.map((item, index) => (
+              {list.value?.map((item) => (
                 <div class="board-item">
-                  <card2-outer title={`挂锁/牌 ${index + 1}`}>
-                    <a-row gutter={[0, 6]}>
-                      <a-col span={24}>
-                        回路名称：{lodash.get(item, "record.loopName")}
-                      </a-col>
-                      <a-col span={12}>
-                        停送电状态：{lodash.get(item, "record.progress")}
-                      </a-col>
-                      <a-col span={12}>
-                        停电申请人：{lodash.get(item, "record.applyUserName")}
-                      </a-col>
-                      <a-col span={12}>
-                        挂锁/牌操作人：
-                        {lodash.get(item, "record.poweroffUserName")}
-                      </a-col>
-                      <a-col span={12}>
-                        挂锁/牌时间：{lodash.get(item, "record.time")}
-                      </a-col>
-                      <a-col span={12}>
-                        {lodash.get(item, "nearestOnPO.msg") || "距送电："}
-                      </a-col>
-                      <a-col span={12}>
-                        停电原因：{lodash.get(item, "record.powerOffCause")}
-                      </a-col>
-                    </a-row>
-                  </card2-outer>
+                  <card2-outer
+                    title={item.name}
+                    v-slots={{
+                      content: () => (
+                        <div class="card2-outer-content-panel">
+                          <div class="card2-outer-content-panel-content">
+                            <div class="card2-outer-content-panel-content-state">
+                              <div class="card2-outer-content-panel-content-state-col">
+                                <span
+                                  class={item.lockCount !== 0 ? "green" : "red"}
+                                ></span>
+                                {item.lockCount !== 0 ? "分闸" : "合闸"}
+                              </div>
+                            </div>
+                            <div class="card2-outer-content-panel-content-state">
+                              <img
+                                src="/micro-assets/platform-web/breakBrakePadlock.png"
+                                alt=""
+                              />
+                              {item.lockCount}
+                            </div>
+                          </div>
+                          <card2OuterTable id={item.id}></card2OuterTable>
+                        </div>
+                      ),
+                    }}
+                  ></card2-outer>
                 </div>
               ))}
             </div>

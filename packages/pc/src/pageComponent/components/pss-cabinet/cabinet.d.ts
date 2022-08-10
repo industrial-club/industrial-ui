@@ -26,7 +26,7 @@ declare namespace cabinet {
     id: string;
     cards?: number;
     state?: state;
-    loopIds?: any;
+    info?: any;
     child?: Array<item>;
   }
 

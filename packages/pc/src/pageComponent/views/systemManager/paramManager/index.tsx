@@ -69,7 +69,7 @@ const ParamManager = defineComponent({
         level: "tab",
         parentId: currentMenu.value.id,
       });
-      tabs.value = data;
+      tabs.value = data.filter((item) => item.valid);
     };
 
     watch(

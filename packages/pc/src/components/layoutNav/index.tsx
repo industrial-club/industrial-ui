@@ -1,143 +1,100 @@
-/**
- * 布局组件 - 顶部菜单
- */
-import { defineComponent, onMounted, PropType, reactive, watch } from "vue";
+import {
+  defineComponent,
+  nextTick,
+  PropType,
+  reactive,
+  ref,
+  watch,
+  watchEffect,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
+import useMenuCode from "@/hooks/useMenuCode";
 import { getActiveNavByProp } from "@/utils/route";
 
 import utils from "@/utils";
-import useWatchOnce from "@/pageComponent/hooks/useWatchOnce";
-
-// props
-const props = {
-  menu: {
-    type: Array as PropType<any[]>,
-    default: () => [],
-  },
-  userMenuTree: {
-    type: Array as PropType<any[]>,
-    default: () => [],
-  },
-};
-
-interface SOLT {
-  icon?: Function;
-  title: Function;
-}
 
 interface State {
   selectedKeys: Array<string>;
 }
 
+/**
+ * 布局组件 - 顶部菜单
+ *  1: 默认进入系统 选择上一次的菜单(localStorage)或第一个菜单
+ *  2: 监听menuCode变化，如果是当前导航下的菜单，要选中对应导航菜单
+ *  3: 监听menuCode 设置当前选中的导航
+ */
 const LayoutNav = defineComponent({
-  emits: ["routeChange"],
-  props,
-  setup(prop, context) {
+  emits: ["navChange"],
+  props: {
+    menu: {
+      type: Array as PropType<any[]>,
+      default: () => [],
+    },
+  },
+  setup(props, { emit }) {
     const router = useRouter();
     const route = useRoute();
+    const menuCode = useMenuCode();
 
     const state: State = reactive({
       selectedKeys: [],
     });
 
-    // 刷新页面后恢复选中的nav标签
+    // 设置到localStorage中，为了保存上一次选择的菜单
     watch(
       () => state.selectedKeys,
       (val) => {
         if (val[0]) {
           localStorage.setItem("activeNavKey", val[0]);
         }
+      },
+      { immediate: true }
+    );
+
+    // 跳转对应的导航
+    const jump2Menu = (menu: any) => {
+      const { code } = menu;
+      code && (menuCode.value = code);
+      emit("navChange", menu);
+    };
+
+    // 进入默认的菜单
+    const toDefaultMenu = () => {
+      const activeNavKey = localStorage.getItem("activeNavKey");
+      if (activeNavKey) {
+        const activeNav = props.menu.find((item) => item.code === activeNavKey);
+        activeNav && jump2Menu(activeNav);
+      } else {
+        props.menu[0] && jump2Menu(props.menu[0]);
       }
-    );
-    const cancleWatchMenu = watch(
-      () => prop.menu,
-      (val) => {
-        if (val.length > 0) {
-          cancleWatchMenu();
-          if (state.selectedKeys.length === 0) {
-            const activeKey = localStorage.getItem("activeNavKey");
-            if (!activeKey) return;
-            const activeNav = val.find((item: any) => item.code === activeKey);
-            if (activeNav) {
-              state.selectedKeys = [activeKey];
-              context.emit("routeChange", activeNav);
-            }
-          }
-        }
-      },
-      { immediate: true }
-    );
-
-    // 菜单初始化后选中第一个
-    watch(
-      () => prop.menu,
-      () => {
-        if (
-          prop.menu.length &&
-          !route.query.menuCode &&
-          !state.selectedKeys.length
-        ) {
-          state.selectedKeys = [prop.menu[0].code];
-          context.emit("routeChange", prop.menu[0]);
-        }
-      },
-      { immediate: true, flush: "post" }
-    );
-
-    const toPath = (code: string, item?: any) => {
-      router.push(`/?menuCode=${code}`);
     };
 
-    watch(
-      [route, () => prop.menu],
-      () => {
-        const { menuCode: code } = route.query as any;
-        if (code) {
-          const activeNavCode = getActiveNavByProp(
-            "code",
-            code,
-            prop.userMenuTree
-          );
-          const activeNavUrl = getActiveNavByProp(
-            "url",
-            code,
-            prop.userMenuTree
-          );
-          const activeNav = activeNavCode || activeNavUrl;
-          if (activeNav) {
-            state.selectedKeys = [activeNav.code];
-            context.emit("routeChange", activeNav);
-          }
-        } else if (prop.menu.length) {
-          state.selectedKeys = [prop.menu[0].code];
-          toPath(prop.menu[0].code);
-        }
-      },
-      { immediate: true }
-    );
-
-    const getMenuItem = (obj: any, fPath?: string) => {
-      return obj.map((item: any, index: string) => {
-        return (
-          <a-menu-item
-            key={item.code}
-            title={item.name}
-            onClick={() => toPath(item.code, item)}
-            v-slots={{
-              icon: () =>
-                item.icon && (
-                  <icon-font
-                    style={{ fontSize: "20px" }}
-                    type={item.icon}
-                  ></icon-font>
-                ),
-            }}
-          >
-            {item.name}
-          </a-menu-item>
+    // 监听菜单code
+    const isInit = ref(false);
+    watchEffect(async () => {
+      if (!props.menu?.length) return;
+      if (menuCode.value) {
+        // 设置选中的菜单
+        const activeNav = getActiveNavByProp(
+          "code",
+          menuCode.value,
+          props.menu
         );
-      });
-    };
+        if (activeNav) {
+          state.selectedKeys = [activeNav.code];
+        } else if (!isInit.value) {
+          const prevMenuCode = menuCode.value;
+          toDefaultMenu();
+          setTimeout(() => {
+            menuCode.value = prevMenuCode;
+          });
+        }
+      } else {
+        // 第一次进入系统 没有选择菜单 默认选择第一个
+        toDefaultMenu();
+      }
+      isInit.value = true;
+    });
 
     return () => (
       <a-menu
@@ -145,7 +102,24 @@ const LayoutNav = defineComponent({
         mode="horizontal"
         v-model={[state.selectedKeys, "selectedKeys"]}
       >
-        {getMenuItem(prop.menu)}
+        {props.menu.map((item) => (
+          <a-menu-item
+            key={item.code}
+            title={item.name}
+            onClick={() => jump2Menu(item)}
+          >
+            {{
+              icon: () =>
+                item.icon && (
+                  <icon-font
+                    style={{ fontSize: "20px" }}
+                    type={item.icon}
+                  ></icon-font>
+                ),
+              default: () => item.name,
+            }}
+          </a-menu-item>
+        ))}
       </a-menu>
     );
   },
