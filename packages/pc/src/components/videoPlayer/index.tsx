@@ -8,7 +8,7 @@ import {
 } from "vue";
 import utils from "@/utils";
 import api from "@/api/video";
-import { videoInfo, brandTypePo } from "./util/interface";
+import { videoInfo } from "./util/interface";
 import { WebRtcMt } from "./util/video";
 
 const props = {
