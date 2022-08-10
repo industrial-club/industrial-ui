@@ -1,5 +1,4 @@
 import axios from "axios";
-import { resolve } from "path";
 import {
   Endpoint,
   Events,
@@ -7,7 +6,7 @@ import {
   GetSupportCameraResolutions,
   Media,
   isSupportResolution,
-} from "./ZLMRTCClient.js";
+} from "./ZLMRTCClient";
 
 const appName = "live";
 
@@ -20,7 +19,7 @@ export interface PlayVideoArgs {
   cameraRtspPort: string;
   cameraChannel: string;
   cameraStream: string;
-  addRtspProxyUrl: string;
+  codeStream?: string;
 }
 
 export interface EndpointConfig {
@@ -45,9 +44,7 @@ export class WebRtcMt {
   constructor(opt: WebRtc) {
     this.init(opt);
   }
-
   public p_player: any; // 返回播放视频数据
-
   protected instance = axios.create({
     timeout: 60000,
   });
@@ -65,7 +62,7 @@ export class WebRtcMt {
   };
 
   // 根据参数配置组装相关url
-  protected createRtspUrl(plays: any) {
+  protected createRtspUrl(plays: PlayVideoArgs) {
     const {
       cameraUserName,
       cameraPwd,
@@ -75,14 +72,14 @@ export class WebRtcMt {
       cameraStream,
       videoElm,
       mediaServerAddr,
-      addRtspProxyUrl,
+      codeStream,
     } = plays;
-    // const rtsp = `rtsp://${cameraUserName}:${cameraPwd}@${cameraIp}:${cameraRtspPort}/id=${cameraChannel}%26type=${cameraStream}`;
-    const hkNvrRtsp = `rtsp://%s:%s@%s:%s/Streaming/tracks/%s01/`;
-    const stream = `v${cameraIp}-${cameraRtspPort}-${cameraChannel}-${cameraStream}`;
-    // const addRtspProxyUrl = `${mediaServerAddr}/index/api/addStreamProxy?secret=035c73f7-bb6b-4889-a715-d9eb2d1925cc&vhost=__defaultVhost__&app=${appName}&stream=${stream}&url=${rtsp}`;
+    const rtsp = `rtsp://${cameraUserName}:${cameraPwd}@${cameraIp}:${cameraRtspPort}/h264/ch1/${codeStream}/av_stream`;
+    const hkNvrRtsp = `rtsp://%s:%s@%s:%s/h264/ch1/%s/av_stream`;
+    const stream = `video-${cameraIp}-${cameraRtspPort}-${cameraChannel}-${cameraStream}`;
+    const addRtspProxyUrl = `${mediaServerAddr}/index/api/addStreamProxy?secret=035c73f7-bb6b-4889-a715-d9eb2d1925cc&vhost=__defaultVhost__&app=${appName}&stream=${stream}&url=${rtsp}`;
     const sdpUrl = `${mediaServerAddr}/index/api/webrtc?app=${appName}&stream=${stream}&type=play`;
-    const rtsp = "";
+
     this.streamMap.set(videoElm, stream);
     return { rtsp, stream, addRtspProxyUrl, sdpUrl, hkNvrRtsp };
   }
@@ -114,7 +111,6 @@ export class WebRtcMt {
   protected createVideo(plays: PlayVideoArgs) {
     this.mediaServerAddrMap.set(plays.videoElm, plays);
     const { addRtspProxyUrl } = this.createRtspUrl(plays);
-
     return new Promise((resolve, reject) => {
       this.instance.get(addRtspProxyUrl).then((res: any) => {
         if (res.data.code === 0) {
@@ -143,20 +139,17 @@ export class WebRtcMt {
     }
   }
 
-  protected stop(id: string) {
-    let player = this.playerMap.get(id);
-    if (player) {
-      player.close();
-      this.playerMap.delete(id);
-      player = null;
-    }
-  }
-
   // 停止播放0
   stopPlay(id?: string) {
     if (id) {
-      this.stop(id);
-      this.mediaServerAddrMap.delete(id);
+      // 关闭指定video
+      let player = this.playerMap.get(id);
+      if (player) {
+        player.close();
+        this.playerMap.delete(id);
+        this.mediaServerAddrMap.delete(id);
+        player = null;
+      }
     } else {
       // 关闭所有video
       this.playerMap.forEach((item) => {
@@ -237,14 +230,14 @@ export class WebRtcMt {
   }
 
   // 开始播放
-  async startPlay(plays: PlayVideoArgs) {
-    await this.stop(plays.videoElm);
-    this.play(plays.videoElm);
+  startPlay(plays: PlayVideoArgs) {
+    setTimeout(() => {
+      this.play(plays.videoElm);
+    }, 100);
   }
 }
 
 export default {
-  // test,
   Endpoint,
   Events,
   GetAllScanResolution,
