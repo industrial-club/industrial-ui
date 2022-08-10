@@ -256,7 +256,6 @@ export default defineComponent({
             pagination={false}
           ></a-table>
         </div>
-        <editRelation ele={props.data?.staticMap?.map} />
       </div>
     );
   },
