@@ -12,7 +12,7 @@ const globals = {
 };
 
 export default defineConfig({
-  input: "src/webRtc/webRtcMt.ts",
+  input: "src/webRtc/WebRtcMt.ts",
   output: {
     file: "dist/index.js",
     format: "esm",
