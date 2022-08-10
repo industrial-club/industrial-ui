@@ -34,22 +34,41 @@ export const addThing = (data: any) =>
 export const deleteThing = (id: string) =>
   instance.delete(`/thing/v1/adapter/thing/common/remove/${id}`);
 // 获取关系tab
+// export const getTabs = (direction: string, thingCode: string) =>
+//   instance.get(
+//     `/thing/v1/core/relation/findGroupByDirection/${direction}/${thingCode}`
+//   );
+// 获取关系tab新
 export const getTabs = (direction: string, thingCode: string) =>
   instance.get(
-    `/thing/v1/core/relation/findByDirection/${direction}/${thingCode}`
+    `/thing/v1/core/relation/findGroupByDirection/${direction}/${thingCode}`
   );
-
+// 新增关系
+export const addRelation = (data: any) =>
+  instance.post(`/thing/v1/adapter/thing/relation/create`, data);
+// 删除关系
+export const deleteRelation = (data: any) =>
+  instance.post(`/thing/v1/adapter/thing/relation/delete`, data);
+// 获取关系新
+export const getRelationZ = (id: string, relaClass: string) =>
+  instance.get(
+    `/thing/v1/adapter/thing/relation/findZInstsByClass/${id}/${relaClass}`
+  );
+export const getRelationA = (id: string, relaClass: string) =>
+  instance.get(
+    `/thing/v1/adapter/thing/relation/findAInstsByClass/${id}/${relaClass}`
+  );
 // 获取关系
-export const getRelationZ = (id: string, thingCode: string) =>
-  instance.post(`/thing/v1/adapter/thing/relation/findZ`, {
-    zthingCode: thingCode,
-    instId: id,
-  });
-export const getRelationA = (id: string, thingCode: string) =>
-  instance.post(`/thing/v1/adapter/thing/relation/findA`, {
-    athingCode: thingCode,
-    instId: id,
-  });
+// export const getRelationZ = (id: string, thingCode: string) =>
+//   instance.post(`/thing/v1/adapter/thing/relation/findZ`, {
+//     zthingCode: thingCode,
+//     instId: id,
+//   });
+// export const getRelationA = (id: string, thingCode: string) =>
+//   instance.post(`/thing/v1/adapter/thing/relation/findA`, {
+//     athingCode: thingCode,
+//     instId: id,
+//   });
 // 根据条件查询物实例
 export const findThingByParams = (data: any) =>
   instance.post(

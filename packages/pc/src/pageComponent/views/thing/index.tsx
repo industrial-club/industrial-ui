@@ -162,7 +162,11 @@ const com = defineComponent({
       pageSize,
     } = useTableList(getList, "list", "total");
     const reset = () => {
-      queryFormRef.value.resetFields();
+      queryOpts.value.forEach((ele) => {
+        ele.value = "";
+        ele.operation = "";
+      });
+      refresh();
     };
     const pageData = reactive({
       editData: {},
@@ -191,11 +195,12 @@ const com = defineComponent({
     };
     const deleteThing = async (row) => {
       const res: any = await thingApis.deleteThing(row.record.ID);
+      refresh();
       if ((res.code = "M0000")) {
         message.success("删除成功");
       }
     };
-    const queryOpts = ref([]);
+    const queryOpts = ref<any[]>([]);
     onMounted(() => {
       getTreeData();
     });
@@ -393,7 +398,7 @@ const com = defineComponent({
                         <span
                           class="red pointer"
                           onClick={() => {
-                            // deleteThing(row);
+                            deleteThing(row);
                           }}
                         >
                           删除
