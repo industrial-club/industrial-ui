@@ -8,7 +8,7 @@ import {
 } from "vue";
 import utils from "@/utils";
 import api from "@/api/video";
-import { videoInfo, brandTypePo } from "./util/interface";
+import { videoInfo } from "./util/interface";
 import { WebRtcMt } from "./util/video";
 
 const props = {
@@ -77,6 +77,7 @@ const VideoPlayer = defineComponent({
       async (e) => {
         stopPlay();
         if (e && typeof e === "object") {
+          videoInfo.value = e as videoInfo;
           init();
         } else if (e && typeof e === "string") {
           const res = await api.getCameraByUuid(e as string);
