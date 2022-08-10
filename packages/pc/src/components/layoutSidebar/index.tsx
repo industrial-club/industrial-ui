@@ -1,169 +1,150 @@
-/**
- * 布局组件 - 侧边菜单
- */
-import { defineComponent, reactive, ref, watch, PropType, nextTick } from "vue";
+import {
+  defineComponent,
+  reactive,
+  PropType,
+  computed,
+  watchEffect,
+  watch,
+  nextTick,
+  ref,
+  onMounted,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
+import useMenuCode from "@/hooks/useMenuCode";
 import utils from "@/utils";
-import { getMenuByCode, getParentMenuByCode } from "@/utils/route";
-
-// props
-const props = {
-  menu: {
-    type: Array as PropType<any[]>,
-    default: () => [],
-  },
-  userMenuTree: {
-    type: Array as PropType<any[]>,
-    default: () => [],
-  },
-};
+import {
+  getParentMenuByCode,
+  getOpenUrl,
+  getActiveNavByProp,
+  getMenuByCode,
+} from "@/utils/route";
 
 interface State {
   openKeys: Array<string>;
   selectedKeys: Array<string>;
 }
 
+/**
+ * 布局组件 - 侧边菜单
+ *  1: 递归渲染当前导航菜单的子菜单
+ *  2: 实时更新选中的菜单code
+ *  3: 如果跳转的是新窗口 需要加上协议、ip、端口、token、userId
+ *  4: 首次进入 默认选中第一个菜单 自动展开菜单组
+ */
 const LayoutSidebar = defineComponent({
-  props,
-  setup(prop, context) {
-    const router = useRouter();
-    const route = useRoute();
+  props: {
+    menu: {
+      type: Array as PropType<any[]>,
+      default: () => [],
+    },
+    isGroup: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props, { emit }) {
+    const menuCode = useMenuCode();
 
     const state: State = reactive({
       openKeys: [],
       selectedKeys: [],
     });
+    watchEffect(() => {
+      // 当前选中的菜单
+      if (menuCode.value) {
+        state.selectedKeys = [menuCode.value];
+      }
+    });
 
-    const onOpenChange = (openKeys: string[]) => {
-      state.openKeys = openKeys;
+    // 当前应该展示的菜单
+    const menuList = ref<any[]>([]);
+    watchEffect(() => {
+      if (!props.menu?.length || props.isGroup) return;
+      // 普通情况
+      const activeNav = getActiveNavByProp("code", menuCode.value, props.menu);
+      if (activeNav) menuList.value = activeNav.subList;
+    });
+    // 组类型菜单
+    const cancleWatchGroup = watch(
+      () => props.menu,
+      (val) => {
+        if (val.length) {
+          cancleWatchGroup();
+          if (props.isGroup) {
+            const currentMenu = getMenuByCode(menuCode.value, val);
+            currentMenu && (menuList.value = currentMenu.subList);
+          }
+        }
+      }
+    );
+
+    // 跳转到菜单
+    const jump2Menu = (menu: any) => {
+      // 打开新窗口
+      if (menu.mode === 1) {
+        const url = getOpenUrl(menu.url);
+        window.open(url);
+      } else {
+        // 打开新标签/iframe
+        menuCode.value = menu.code;
+      }
     };
 
-    watch(
-      route,
+    const cancleWatch = watch(
+      [() => props.menu, menuCode],
       async () => {
         await nextTick();
-        const { menuCode: code } = route.query as any;
-        state.selectedKeys = [code];
+        if (props.menu?.length && menuCode.value) {
+          // 只初始化监听一次
+          cancleWatch();
+          const navCodeList = props.menu.map((item) => item.code);
+          const isNavMenuCode = navCodeList.includes(menuCode.value);
+          // 如果当前选择的是导航栏的菜单 默认选择第一个菜单
+          if (isNavMenuCode || props.isGroup) {
+            const getFirstMenu = (menu: any) => {
+              if (Array.isArray(menu.subList) && menu.subList.length) {
+                return getFirstMenu(menu.subList[0]);
+              } else {
+                return menu;
+              }
+            };
+            const firstMenu = getFirstMenu(menuList.value[0]);
+            firstMenu && jump2Menu(firstMenu);
+          }
+
+          // 设置默认展开的菜单
+          const openCodes = getParentMenuByCode(
+            menuCode.value,
+            props.menu
+          ).filter((item) => !navCodeList.includes(item));
+          state.openKeys = openCodes;
+        }
       },
       { immediate: true }
     );
 
-    const toPath = (menu: any) => {
-      if (menu.mode === 0) {
-        router.push(`/?menuCode=${menu.code}`);
-      } else if (menu.mode === 2) {
-        router.push(`/?menuCode=${menu.code}`);
-      } else {
-        const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
-        const isWithOrigin = menu.url.startsWith("http");
-        const url = isWithOrigin
-          ? menu.url
-          : `${location.origin}${menu.url.startsWith("/") ? "" : "/"}${
-              menu.url
-            }`;
+    // 递归渲染菜单
+    const getMenuItem = (menuList: any[]) => {
+      return menuList.map((item) => {
+        const isSubMenu = Array.isArray(item.subList) && item.subList.length;
 
-        const urlObj = new URL(url);
-        if (urlObj.hash) {
-          const converceUrl = new URL(
-            urlObj.hash.replace("#", location.origin)
-          );
-          converceUrl.searchParams.set(
-            "token",
-            sessionStorage.getItem("token")!
-          );
-          converceUrl.searchParams.set("userId", userinfo.userId);
-          urlObj.hash = converceUrl.href.replace(location.origin, "#");
-        } else {
-          urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
-          urlObj.searchParams.set("userId", userinfo.userId);
-        }
-
-        window.open(urlObj.href);
-      }
-    };
-
-    // 第一次进来
-    const cancleWatchMenu = watch(
-      [() => prop.menu, route],
-      async () => {
-        await nextTick();
-        const navCodeList = prop.userMenuTree.map((item: any) => item.code);
-
-        const { menuCode } = route.query as any;
-        const isGroup = route.query.isGroup === "true";
-        const isNavMenu = navCodeList.includes(menuCode);
-        if (prop.menu.length && menuCode) {
-          cancleWatchMenu();
-          // 默认跳转第一个菜单
-          if (isNavMenu || isGroup) {
-            function findFirstMenu(menu: any) {
-              if (Array.isArray(menu.subList) && menu.subList.length) {
-                return findFirstMenu(menu.subList[0]);
-              }
-              return menu;
-            }
-            const firstMenu = findFirstMenu(prop.menu[0]);
-            toPath(firstMenu);
-          }
-          // 递归展开选中的菜单的父级菜单
-          if (!isNavMenu || isGroup) {
-            const menu = getParentMenuByCode(menuCode, prop.menu);
-            if (menu) {
-              state.openKeys = [menu.code];
-            }
-          }
-        }
-      },
-      {
-        immediate: true,
-        deep: true,
-        flush: "post",
-      }
-    );
-
-    const getMenuItem = (item: any, fPath?: string) => {
-      return (
-        <a-menu-item
-          key={item.code}
-          title={item.name}
-          onClick={() => {
-            toPath(item);
-          }}
-          v-slots={{
+        const menuProp = {
+          key: item.code,
+          title: item.name,
+          "v-slots": {
             icon: () =>
               item.icon && (
                 <icon-font sytle={{ fontSize: "20px" }} type={item.icon} />
               ),
-          }}
-        >
-          {item.name}
-        </a-menu-item>
-      );
-    };
-
-    const getSubMenu = (obj: any, fPath?: string) => {
-      return obj.map((item: any, index: string) => {
-        let result: any;
-
-        if (item.subList?.length > 0) {
-          result = (
-            <a-sub-menu
-              key={item.code}
-              title={item.name}
-              v-slots={{
-                icon: () =>
-                  item.icon && (
-                    <icon-font sytle={{ fontSize: "20px" }} type={item.icon} />
-                  ),
-              }}
-            >
-              {getSubMenu(item.subList, item.code)}
-            </a-sub-menu>
-          );
-        } else {
-          result = getMenuItem(item, fPath);
-        }
-        return result;
+          },
+        };
+        return isSubMenu ? (
+          <a-sub-menu {...menuProp}>{getMenuItem(item.subList)}</a-sub-menu>
+        ) : (
+          <a-menu-item {...menuProp} onClick={() => jump2Menu(item)}>
+            {item.name}
+          </a-menu-item>
+        );
       });
     };
 
@@ -176,9 +157,8 @@ const LayoutSidebar = defineComponent({
           [state.selectedKeys, "selectedKeys"],
           [state.openKeys, "openKeys"],
         ]}
-        onOpenChange={onOpenChange}
       >
-        {getSubMenu(prop.menu)}
+        {getMenuItem(menuList.value)}
       </a-menu>
     );
   },

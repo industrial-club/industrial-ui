@@ -1,8 +1,17 @@
-import { defineComponent, ref, provide, PropType } from "vue";
+import {
+  defineComponent,
+  ref,
+  provide,
+  PropType,
+  watchEffect,
+  nextTick,
+} from "vue";
+import { useRoute } from "vue-router";
 import RecordTable from "./record-table";
 import AlarmDetail from "@/pageComponent/views/alarms/alarmDetail";
 import utils from "@/utils";
 import { setInstance } from "@/api/alarm/alarmRecord";
+import { getAlarmDetail } from "@/api/alarm/alarmRecord";
 
 export interface IUrlObj {
   // 获取参数
@@ -39,12 +48,26 @@ const WarningRecord = defineComponent({
     serverName: String,
   },
   setup(props) {
+    const route = useRoute();
+
     const urlObj = { ...props.url };
     provide("urlObj", urlObj);
     setInstance({ prefix: props.prefix, serverName: props.serverName });
 
     const isDetailShow = ref(false);
     const detailRecord = ref();
+
+    // 外部传入的报警详情 需要直接展示
+    watchEffect(async () => {
+      const { dataId } = route.query;
+      if (dataId) {
+        const { data } = await getAlarmDetail(urlObj.alarmDetail)(dataId);
+        detailRecord.value = data;
+        isDetailShow.value = false;
+        await nextTick();
+        isDetailShow.value = true;
+      }
+    });
 
     const handleDetail = (record: any) => {
       detailRecord.value = record;
