@@ -77,6 +77,7 @@ const VideoPlayer = defineComponent({
       async (e) => {
         stopPlay();
         if (e && typeof e === "object") {
+          videoInfo.value = e as videoInfo;
           init();
         } else if (e && typeof e === "string") {
           const res = await api.getCameraByUuid(e as string);
