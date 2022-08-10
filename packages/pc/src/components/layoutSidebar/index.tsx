@@ -131,17 +131,23 @@ const LayoutSidebar = defineComponent({
         const menuProp = {
           key: item.code,
           title: item.name,
-          "v-slots": {
-            icon: () =>
-              item.icon && (
-                <icon-font sytle={{ fontSize: "20px" }} type={item.icon} />
-              ),
-          },
+        };
+        const slots = {
+          icon: () =>
+            item.icon && (
+              <icon-font sytle={{ fontSize: "20px" }} type={item.icon} />
+            ),
         };
         return isSubMenu ? (
-          <a-sub-menu {...menuProp}>{getMenuItem(item.subList)}</a-sub-menu>
+          <a-sub-menu {...menuProp} v-slots={slots}>
+            {getMenuItem(item.subList)}
+          </a-sub-menu>
         ) : (
-          <a-menu-item {...menuProp} onClick={() => jump2Menu(item)}>
+          <a-menu-item
+            {...menuProp}
+            v-slots={slots}
+            onClick={() => jump2Menu(item)}
+          >
             {item.name}
           </a-menu-item>
         );

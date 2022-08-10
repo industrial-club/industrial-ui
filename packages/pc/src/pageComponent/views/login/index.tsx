@@ -1,4 +1,4 @@
-import { Component, defineComponent, PropType, provide } from "vue";
+import { Component, defineComponent, nextTick, PropType, provide } from "vue";
 import { useRouter } from "vue-router";
 import utils from "@/utils";
 import { getInstance } from "@/api/axios";
@@ -14,6 +14,7 @@ const components: Component = {
 };
 
 const Login = defineComponent({
+  emits: ["login"],
   components,
   props: {
     serverName: {
@@ -50,7 +51,7 @@ const Login = defineComponent({
       type: String,
     },
   },
-  setup(prop) {
+  setup(prop, { emit }) {
     const router = useRouter();
 
     // 将相关数据注入到所有子组件中
@@ -82,7 +83,9 @@ const Login = defineComponent({
       });
       if (res.data) {
         message.success("登录成功");
+        emit("login");
       }
+      await nextTick();
       router.push("/");
     };
 
