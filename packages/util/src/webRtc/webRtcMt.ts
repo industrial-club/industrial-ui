@@ -40,7 +40,7 @@ export interface WebRtc {
   endpointConfig?: EndpointConfig;
 }
 
-export class WebRtcMt {
+export class webRtcMt {
   constructor(opt: WebRtc) {
     this.init(opt);
   }

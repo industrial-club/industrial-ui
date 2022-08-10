@@ -29,6 +29,9 @@ const props = {
   },
   cards: {
     type: Array as PropType<Array<CardInfo>>,
+<<<<<<< HEAD
+    default: [],
+=======
     default: [
       {
         name: "aa",
@@ -61,6 +64,7 @@ const props = {
         componentName: "production",
       },
     ],
+>>>>>>> a790429f9799faf2f55ece7405df92fc7f02d3b3
   },
 };
 
