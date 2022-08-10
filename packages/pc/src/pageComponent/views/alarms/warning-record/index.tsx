@@ -1,4 +1,11 @@
-import { defineComponent, ref, provide, PropType, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  provide,
+  PropType,
+  watchEffect,
+  nextTick,
+} from "vue";
 import { useRoute } from "vue-router";
 import RecordTable from "./record-table";
 import AlarmDetail from "@/pageComponent/views/alarms/alarmDetail";
@@ -51,11 +58,13 @@ const WarningRecord = defineComponent({
     const detailRecord = ref();
 
     // 外部传入的报警详情 需要直接展示
-    onMounted(async () => {
+    watchEffect(async () => {
       const { dataId } = route.query;
       if (dataId) {
         const { data } = await getAlarmDetail(urlObj.alarmDetail)(dataId);
         detailRecord.value = data;
+        isDetailShow.value = false;
+        await nextTick();
         isDetailShow.value = true;
       }
     });
