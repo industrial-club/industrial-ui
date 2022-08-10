@@ -263,7 +263,7 @@
     detect-browser "^5.0.0"
     tslib "^2.0.3"
 
-"@antv/g2@^4.2.2":
+"@antv/g2@^4.2.2", "@antv/g2@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@antv/g2/-/g2-4.2.5.tgz#2c6a3c0b177bfa1fd02024f3c2a29dccac6cdd1f"
   integrity sha512-biMlvAGBO6WCyo6O9g97zqkQ1JpOqZb0/Lj2vNuLfTn3EPnGHIe0X4795+CBt+jspdoigtbJ9fat6EhS11VPsA==

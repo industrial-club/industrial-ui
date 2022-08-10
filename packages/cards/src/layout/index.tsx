@@ -56,6 +56,10 @@ const props = {
         name: "aa1",
         componentName: "card_2",
       },
+      {
+        name: "aa1",
+        componentName: "production",
+      },
     ],
   },
 };
