@@ -1,0 +1,179 @@
+.production_box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  > div {
+    flex: 1;
+  }
+  .production_top {
+    .production_top_t {
+      background-image: linear-gradient(
+        rgba(12, 66, 126, 0),
+        rgba(12, 66, 126, 0.4),
+        #25609e
+      );
+      padding: 0.5rem 1.4375rem;
+      overflow: hidden;
+      .title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #f9f9f9;
+        .name {
+          font-size: 1.1rem;
+          margin-right: 0.5625rem;
+        }
+        .num,
+        .unit {
+          font-size: 1.25rem;
+          color: #ffe59e;
+          margin-right: 0.5625rem;
+        }
+        .totalWashingVolumeImg,
+        .totalEnrollmentImg {
+          width: 2.5rem;
+          height: 2.5625rem;
+          margin-right: 0.5625rem;
+        }
+        .totalWashingVolumeImg {
+          width: 1.625rem;
+          height: 1.8125rem;
+        }
+        .totalEnrollmentImg {
+          width: 1.8125rem;
+          height: 1.5rem;
+        }
+        .spotImg {
+          width: 0.375rem;
+          height: 0.375rem;
+          margin-right: 0.5625rem;
+        }
+        .tcName {
+          background-color: #24b8b5;
+          border-radius: 0.3rem;
+          color: #f9f9f9;
+          padding: 0px 8px;
+          font-size: 0.875rem;
+          font-weight: 800;
+        }
+      }
+      .content {
+        color: #fff;
+        display: flex;
+        justify-content: space-around;
+        // margin-top: 0.4rem;
+        li {
+          list-style: none;
+          > div {
+            text-align: center;
+          }
+        }
+        .num {
+          font-weight: 500;
+          font-size: 1rem;
+        }
+        .name {
+          font-size: 0.625rem;
+          color: #add1ea;
+        }
+      }
+    }
+    .production_top_b {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding: 0 0.625rem 0 0.625rem;
+      li {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 4.75rem;
+        height: 4.1875rem;
+        position: relative;
+        padding: 0.4375rem;
+        background: linear-gradient(
+          1deg,
+          rgba(84, 222, 255, 0) 0%,
+          rgba(59, 173, 173, 0.7) 86%,
+          #2aabb1 100%
+        );
+        border-radius: 10px 10px 4px 4px;
+        // clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 50% 100%, 0% 75%);
+        &::after {
+          display: inline;
+          content: "";
+          width: 0.15rem;
+          height: 0.15rem;
+          top: 1rem;
+          border-radius: 50%;
+          position: absolute;
+          background-color: #fff;
+        }
+        &::before {
+          display: inline;
+          content: "";
+          width: 0.1rem;
+          height: 0.1rem;
+          top: 1.4rem;
+          left: 6rem;
+          border-radius: 50%;
+          position: absolute;
+          background-color: #fff;
+        }
+        // &:nth-child(2) {
+        //   margin-right: 0.59375rem;
+        // }
+        // &:nth-child(3) {
+        //   margin-left: 0.59375rem;
+        // }
+      }
+      .vals,
+      .name {
+        &::after {
+          display: inline;
+          content: "";
+          width: 0.15rem;
+          height: 0.15rem;
+          top: 3rem;
+          right: 0.5rem;
+          border-radius: 50%;
+          position: absolute;
+          background-color: #fff;
+        }
+        text-align: center;
+        // display: flex;
+        align-items: center;
+      }
+      .name {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: #fff;
+        justify-content: center;
+        > div:nth-child(2) {
+          display: block;
+          font-weight: 300;
+          font-size: 0.5625rem;
+          color: #c1d9dc;
+        }
+      }
+      .val {
+        font-size: 0.5625rem;
+        color: #ffffff;
+        > div {
+          text-align: center;
+          &:nth-child(1) {
+            color: #ffe59e;
+          }
+        }
+        .num {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  .production_bottom {
+    padding: 0 1rem;
+    margin-top: 1rem;
+  }
+}

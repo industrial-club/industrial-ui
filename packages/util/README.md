@@ -48,19 +48,21 @@ export interface PlayVideoArgs {
   cameraRtspPort: string;
   cameraChannel: string;
   cameraStream: string;
+  codeStream: string;
 }
 ```
 
-|      参数       | 说明         |   类型    | 默认值 |
-| :-------------: | :----------- | :-------: | ------ |
-|    videoElm     | domId        | `string`  |        |
-| mediaServerAddr | 媒体服务地址 | `string`  |        |
-| cameraUserName  | 用户名       | `string`  |        |
-|    cameraPwd    | 密码         | `string`  |        |
-|    cameraIp     | 相机 Ip      | ` string` |        |
-| cameraRtspPort  | 相机 端口    | ` Number` |        |
-|  cameraChannel  | 相机 通道    | ` string` |        |
-|  cameraStream   | 相机 Stream  | `string`  |        |
+|      参数       | 说明         |      类型       | 默认值 |
+| :-------------: | :----------- | :-------------: | ------ |
+|    videoElm     | domId        |    `string`     |        |
+| mediaServerAddr | 媒体服务地址 |    `string`     |        |
+| cameraUserName  | 用户名       |    `string`     |        |
+|    cameraPwd    | 密码         |    `string`     |        |
+|    cameraIp     | 相机 Ip      |    ` string`    |        |
+| cameraRtspPort  | 相机 端口    |    ` Number`    |        |
+|  cameraChannel  | 相机 通道    |    ` string`    |        |
+|  cameraStream   | 相机 Stream  |    `string`     |        |
+|   codeStream    | 相机 码流    | 'main' \| 'sub' |        |
 
 ### 参数描述(EndpointConfig)
 

@@ -22,7 +22,7 @@ const rules = {
     { required: true, message: "请输入模板名称", trigger: "blur" },
   ],
   templateContent: [
-    { required: true, message: "请输入模板内容", trigger: "blur" },
+    { required: true, max: 500, message: "请输入模板内容", trigger: "blur" },
   ],
 };
 
@@ -87,6 +87,8 @@ export default defineComponent({
             <a-textarea
               v-model={[form.value.templateContent, "value"]}
               placeholder="模板内容"
+              showCount
+              maxlength={500}
               rows={8}
             />
           </a-form-item>
