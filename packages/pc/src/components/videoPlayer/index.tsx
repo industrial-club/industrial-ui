@@ -8,7 +8,7 @@ import {
 } from "vue";
 import utils from "@/utils";
 import api from "@/api/video";
-import { videoInfo } from "./util/interface";
+import { videoInfo, brandTypePo } from "./util/interface";
 import { WebRtcMt } from "./util/video";
 
 const props = {
@@ -26,7 +26,7 @@ const VideoPlayer = defineComponent({
     // 视频实例
     let play: WebRtcMt | null;
 
-    const videoInfo = ref<any>({});
+    const videoInfo = ref<videoInfo>({});
 
     // 停止播放
     const stopPlay = () => {
@@ -41,18 +41,18 @@ const VideoPlayer = defineComponent({
       const camera = videoInfo.value;
       const { channel, streamType } = camera;
       let url = camera.webrtcTemplateMerged;
-      url = url.replaceAll("${channel}", channel);
-      url = url.replaceAll("${streamType}", streamType);
+      url = (url as string).replaceAll("${channel}", channel as string);
+      url = (url as string).replaceAll("${streamType}", streamType as string);
       play = new WebRtcMt({
         plays: {
           videoElm: `videoPlayer${timer}`,
-          mediaServerAddr: camera.mediaServerPo.url,
-          cameraUserName: camera.user,
-          cameraPwd: camera.pass,
-          cameraIp: camera.ip,
-          cameraRtspPort: `${camera.rtspPort}`,
-          cameraChannel: camera.channel,
-          cameraStream: camera.streamType,
+          mediaServerAddr: (camera.mediaServerPo as videoInfo).url as string,
+          cameraUserName: camera.user as string,
+          cameraPwd: camera.pass as string,
+          cameraIp: camera.ip as string,
+          cameraRtspPort: camera.rtspPort as string,
+          cameraChannel: camera.channel as string,
+          cameraStream: camera.streamType as string,
           addRtspProxyUrl: url,
         },
       });

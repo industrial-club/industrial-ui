@@ -197,13 +197,13 @@ export class WebRtcMt {
 
   // 重播
   protected rePlay(videoElm: string) {
-    const data = this.mediaServerAddrMap.get(videoElm);
-    this.startPlay(data);
-    if (this.playerMap.has(videoElm)) {
-      setTimeout(() => {
-        this.play(data);
-      }, 3000);
-    }
+    // const data = this.mediaServerAddrMap.get(videoElm);
+    // this.startPlay(data);
+    // if (this.playerMap.has(videoElm)) {
+    setTimeout(() => {
+      this.play(videoElm);
+    }, 3000);
+    // }
   }
 
   // 播放
