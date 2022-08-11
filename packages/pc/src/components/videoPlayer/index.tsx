@@ -1,4 +1,11 @@
-import { defineComponent, onMounted, onUnmounted, PropType, watch } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  PropType,
+  ref,
+  watch,
+} from "vue";
 import utils from "@/utils";
 import api from "@/api/video";
 import { videoInfo } from "./util/interface";
@@ -19,6 +26,8 @@ const VideoPlayer = defineComponent({
     // 视频实例
     let play: WebRtcMt | null;
 
+    const videoInfo = ref<videoInfo>({});
+
     // 停止播放
     const stopPlay = () => {
       if (play) {
@@ -27,26 +36,40 @@ const VideoPlayer = defineComponent({
     };
 
     // 初始化视频
-    const init = (camera: videoInfo) => {
+    const init = () => {
       play = null;
+      const camera = videoInfo.value;
       const { channel, streamType } = camera;
       let url = camera.webrtcTemplateMerged;
-      url = url.replaceAll("${channel}", channel);
-      url = url.replaceAll("${streamType}", streamType);
+      url = (url as string).replaceAll("${channel}", channel as string);
+      url = (url as string).replaceAll("${streamType}", streamType as string);
       play = new WebRtcMt({
         plays: {
           videoElm: `videoPlayer${timer}`,
-          mediaServerAddr: camera.mediaServerPo.url,
-          cameraUserName: camera.user,
-          cameraPwd: camera.pass,
-          cameraIp: camera.ip,
-          cameraRtspPort: `${camera.rtspPort}`,
-          cameraChannel: camera.channel,
-          cameraStream: camera.streamType,
+          mediaServerAddr: (camera.mediaServerPo as videoInfo).url as string,
+          cameraUserName: camera.user as string,
+          cameraPwd: camera.pass as string,
+          cameraIp: camera.ip as string,
+          cameraRtspPort: camera.rtspPort as string,
+          cameraChannel: camera.channel as string,
+          cameraStream: camera.streamType as string,
           addRtspProxyUrl: url,
         },
       });
     };
+
+    const stopV = (id: string) => {
+      const videoElement: any = document.getElementById(id);
+      videoElement.pause();
+      videoElement.removeAttribute("src"); // empty source
+      videoElement.load();
+    };
+
+    const timer = setInterval(() => {
+      stopPlay();
+      stopV(`videoPlayer${timer}`);
+      init();
+    }, 3600000);
 
     // 播放信息变化初始化视频
     watch(
@@ -54,11 +77,13 @@ const VideoPlayer = defineComponent({
       async (e) => {
         stopPlay();
         if (e && typeof e === "object") {
-          init(e as videoInfo);
+          videoInfo.value = e as videoInfo;
+          init();
         } else if (e && typeof e === "string") {
           const res = await api.getCameraByUuid(e as string);
           if (res.data) {
-            init(res.data);
+            videoInfo.value = res.data;
+            init();
           }
         }
       },
@@ -71,6 +96,7 @@ const VideoPlayer = defineComponent({
     // 页面销毁时停止播放视频流
     onUnmounted(() => {
       stopPlay();
+      clearInterval(timer);
     });
     return () => (
       <video

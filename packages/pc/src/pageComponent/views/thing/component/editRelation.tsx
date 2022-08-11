@@ -1,5 +1,6 @@
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import * as thingApis from "@/api/thingInstance";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   props: {
@@ -10,31 +11,49 @@ export default defineComponent({
       () => props.ele?.THING_CODE,
       async (value: any) => {
         const resTab1 = await thingApis.getTabs("a_2_z", props.ele?.THING_CODE);
-
         const resTab2 = await thingApis.getTabs("z_2_a", props.ele?.THING_CODE);
-        // const resdata2 = await thingApis.getRelationA(
-        //   props.ele?.ID,
-        //   resTab2.data[0].athingCode
-        // );
+
         tabs.value = [];
-        resTab1.data.forEach((ele: any) => {
+        for (const key in resTab1.data) {
+          const ele = resTab1.data[key];
           tabs.value.push({
             type: 1,
-            athingCode: ele.athingCode,
-            zthingCode: ele.zthingCode,
-            name: ele.relaName,
-            key: ele.athingCode + ele.zthingCode,
+            name: ele[0].relaName,
+            relaClass: ele[0].relaClass,
+            key: ele[0].athingCode + ele[0].zthingCode,
+            arr: ele,
           });
-        });
-        resTab2.data.forEach((ele: any) => {
+        }
+        for (const key in resTab2.data) {
+          const ele = resTab2.data[key];
           tabs.value.push({
             type: 2,
-            athingCode: ele.athingCode,
-            zthingCode: ele.zthingCode,
-            name: ele.relaName,
-            key: ele.athingCode + ele.zthingCode,
+            name: ele[0].relaName,
+            relaClass: ele[0].relaClass,
+            key: ele[0].athingCode + ele[0].zthingCode,
+            arr: ele,
           });
-        });
+        }
+
+        // resTab1.data.forEach((ele: any) => {
+        //   tabs.value.push({
+        //     type: 1,
+        //     athingCode: ele.athingCode,
+        //     zthingCode: ele.zthingCode,
+        //     name: ele.relaName,
+        //     key: ele.athingCode + ele.zthingCode,
+        //   });
+        // });
+        // resTab2.data.forEach((ele: any) => {
+        //   tabs.value.push({
+        //     type: 2,
+        //     athingCode: ele.athingCode,
+        //     zthingCode: ele.zthingCode,
+        //     name: ele.relaName,
+        //     key: ele.athingCode + ele.zthingCode,
+        //   });
+        // });
+
         if (tabs.value.length) {
           tabKey.value = tabs.value[0].key;
           getTableData(tabKey.value);
@@ -51,9 +70,9 @@ export default defineComponent({
       });
       let res: any;
       if (tab.type === 1) {
-        res = await thingApis.getRelationZ(props.ele?.ID, tab.zthingCode);
+        res = await thingApis.getRelationZ(props.ele?.ID, tab.relaClass);
       } else {
-        res = await thingApis.getRelationA(props.ele?.ID, tab.athingCode);
+        res = await thingApis.getRelationA(props.ele?.ID, tab.relaClass);
       }
       tableList.value = [];
       res.data.forEach((ele: any) => {
@@ -66,9 +85,47 @@ export default defineComponent({
         });
       });
     };
-
+    const resetOption = () => {
+      modelOption.value.forEach((ele) => {
+        ele.value = "";
+        ele.operation = "";
+      });
+      getModalData();
+    };
     const getModalData = async () => {
-      const res = await thingApis.findThingByParams({});
+      const param: any = {};
+      param.wherePojoList = [];
+      modelOption.value.forEach((ele: any) => {
+        if (ele.value) {
+          param.wherePojoList.push({
+            column: ele.columnName,
+            operation: ele.operation,
+            valueList: [ele.value],
+          });
+        }
+      });
+      param.thingCodeList = [];
+      const tab = tabs.value.find((ele: any) => {
+        return ele.key === tabKey.value;
+      });
+      tab.arr.forEach((ele: any) => {
+        if (ele.type === 1) {
+          param.thingCodeList.push(ele.zthingCode);
+        } else {
+          param.thingCodeList.push(ele.athingCode);
+        }
+      });
+      const res = await thingApis.findThingByParams(param);
+      modalTableList.value = [];
+      res.data.forEach((ele: any) => {
+        modalTableList.value.push({
+          id: ele.id,
+          name: ele.name,
+          code: ele.code,
+          objName: ele.thing.name,
+          objCode: ele.thing.code,
+        });
+      });
     };
 
     const tabs = ref<any>([]);
@@ -95,12 +152,78 @@ export default defineComponent({
         dataIndex: "objCode",
       },
     ]);
-    const tableList = ref([]);
+    const tableList = ref<any[]>([]);
     // 弹窗表格
-    const selColumns = ref([]);
-    const selTableList = ref([]);
-
+    const modalTableList = ref<any[]>([]);
+    let modalSelects: any[] = [];
+    const modalSelection = {
+      onChange: (selectedRowKeys: string[], selectedRows: any[]) => {
+        modalSelects = selectedRows;
+      },
+    };
+    let selects: any[] = [];
+    const selection = {
+      onChange: (selectedRowKeys: string[], selectedRows: any[]) => {
+        selects = selectedRows;
+      },
+    };
+    const addRelation = async () => {
+      const param: any = {};
+      const tab = tabs.value.find((ele: any) => {
+        return ele.key === tabKey.value;
+      });
+      param.relaClass = tab.relaClass;
+      for (const ele of modalSelects) {
+        if (tab.type === 1) {
+          param.aid = props.ele!.ID;
+          param.zid = ele.id;
+        } else {
+          param.zid = props.ele!.ID;
+          param.aid = ele.id;
+        }
+        const res = await thingApis.addRelation(param);
+      }
+      message.success("保存成功");
+      showModel.value = false;
+      getTableData(tabKey.value);
+    };
+    const deleteRelation = async () => {
+      const param: any = {};
+      const tab = tabs.value.find((ele: any) => {
+        return ele.key === tabKey.value;
+      });
+      param.relaClass = tab.relaClass;
+      for (const ele of selects) {
+        if (tab.type === 1) {
+          param.aid = props.ele!.ID;
+          param.zid = ele.id;
+        } else {
+          param.zid = props.ele!.ID;
+          param.aid = ele.id;
+        }
+        const res = await thingApis.deleteRelation(param);
+      }
+      message.success("删除成功");
+      getTableData(tabKey.value);
+    };
     const showModel = ref(false);
+    const modelOption = ref<any[]>([
+      {
+        name: "id",
+        columnName: "id",
+        value: "",
+      },
+      {
+        name: "编码",
+        columnName: "code",
+        value: "",
+      },
+      {
+        name: "名称",
+        columnName: "name",
+        value: "",
+      },
+    ]);
     const renderModal = () => {
       return (
         <div>
@@ -108,49 +231,69 @@ export default defineComponent({
             v-model={[showModel.value, "visible"]}
             title="关联物实例"
             class="thingRelationDia"
-            width={600}
+            width={800}
+            onOk={addRelation}
+            onCancel={() => {
+              showModel.value = false;
+            }}
           >
             <div class="flex tools">
               <div class="inputs flex1">
-                <div class="flex element">
-                  <div class="name">类目</div>
-                  <div>
-                    <a-input></a-input>
-                  </div>
-                </div>
-                <div class="flex element">
-                  <div class="name">编码</div>
-                  <div>
-                    <a-input></a-input>
-                  </div>
-                </div>
-                <div class="flex element">
-                  <div class="name">名称</div>
-                  <div>
-                    <a-input></a-input>
-                  </div>
-                </div>
-                <div class="flex element">
-                  <div class="name">ID</div>
-                  <div>
-                    <a-input></a-input>
-                  </div>
-                </div>
+                {modelOption.value.map((option: any) => {
+                  return (
+                    <div class="flex element">
+                      <div class="name">{option.name}</div>
+                      <div class="flex">
+                        <a-select
+                          style="width:80px"
+                          v-model={[option.operation, "value"]}
+                        >
+                          <a-select-option value="EQ">{"="}</a-select-option>
+                          <a-select-option value="NE">{"!="}</a-select-option>
+                          <a-select-option value="GT">{">"}</a-select-option>
+                          <a-select-option value="GTE">{">="}</a-select-option>
+                          <a-select-option value="LT">{"<"}</a-select-option>
+                          <a-select-option value="LTE">{"<="}</a-select-option>
+                          <a-select-option value="LIKE">
+                            {"like"}
+                          </a-select-option>
+                        </a-select>
+                        <a-input v-model={[option.value, "value"]}></a-input>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
               <div class="btns">
                 <div>
-                  <a-button type="primary">搜索</a-button>
+                  <a-button
+                    type="primary"
+                    onClick={() => {
+                      getModalData();
+                    }}
+                  >
+                    搜索
+                  </a-button>
                 </div>
                 <div>
-                  <a-button type="primary">重置</a-button>
+                  <a-button
+                    type="primary"
+                    onClick={() => {
+                      resetOption();
+                    }}
+                  >
+                    重置
+                  </a-button>
                 </div>
               </div>
             </div>
             <a-table
+              rowSelection={modalSelection}
               rowKey="code"
-              columns={selColumns.value}
-              dataSource={selTableList.value}
-              pagination={null}
+              columns={columns.value}
+              dataSource={modalTableList.value}
+              pagination={false}
+              scroll={{ x: 700, y: 500 }}
             ></a-table>
           </a-modal>
         </div>
@@ -179,10 +322,17 @@ export default defineComponent({
             >
               新建
             </a-button>
-            <a-button>删除</a-button>
+            <a-button
+              onClick={() => {
+                deleteRelation();
+              }}
+            >
+              删除
+            </a-button>
           </div>
           <a-table
             rowKey="code"
+            rowSelection={selection}
             columns={columns.value}
             dataSource={tableList.value}
             pagination={null}
@@ -190,13 +340,6 @@ export default defineComponent({
               action: (row: any) => {
                 return (
                   <a-space>
-                    <a
-                      onClick={() => {
-                        // updateModal(row);
-                      }}
-                    >
-                      编辑
-                    </a>
                     <span
                       class="red pointer"
                       onClick={() => {
