@@ -29,9 +29,6 @@ const props = {
   },
   cards: {
     type: Array as PropType<Array<CardInfo>>,
-<<<<<<< HEAD
-    default: [],
-=======
     default: [
       {
         name: "aa",
@@ -62,9 +59,10 @@ const props = {
       {
         name: "aa1",
         componentName: "production",
+        row: "1/3",
+        col: "5/5",
       },
     ],
->>>>>>> a790429f9799faf2f55ece7405df92fc7f02d3b3
   },
 };
 

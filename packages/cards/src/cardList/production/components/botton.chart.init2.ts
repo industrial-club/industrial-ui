@@ -15,21 +15,54 @@ export interface Item {
 }
 
 export default function chartInit(id: string, data: Array<CoalItem>) {
-  console.log(data);
   const chart = new Chart({
     container: id,
     autoFit: true,
-    height: 300,
   });
   chart.data(data);
-  chart.tooltip({
-    title(title, datum) {
-      console.log(datum);
-      return title;
-    },
-  });
   chart.legend({
     position: "bottom",
+  });
+  chart.axis("value", {
+    title: {
+      text: "产量(万吨)\n\n\n",
+      style: { fill: "#197985" },
+      autoRotate: false,
+      position: "end",
+      offset: 0,
+    },
+    label: {
+      style: {
+        fill: "#197985",
+      },
+      // 数值格式化为千分位
+      formatter: (v) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
+    },
+    // x轴网格线
+    grid: {
+      line: {
+        type: "line",
+        style: { fill: "#8993B0", lineWidth: 1 },
+      },
+      alignTick: true,
+    },
+  });
+  chart.axis("timeString", {
+    title: {
+      text: "\r\r\r\r\r\r\r\r\r\r\r日期",
+      style: { fill: "#197985" },
+      position: "end",
+      offset: 15,
+    },
+    label: {
+      style: {
+        fill: "#197985",
+      },
+    },
+  });
+  chart.tooltip({
+    showMarkers: false,
+    shared: true,
   });
   chart
     .interval()
@@ -38,23 +71,23 @@ export default function chartInit(id: string, data: Array<CoalItem>) {
       const types = type as keyof typeof colorMap;
       return colorMap[types];
     })
-    .tooltip("name*value", (name, value) => {
+    .tooltip("type*value", (type, value) => {
       return {
-        name: name,
+        name: type,
         value: value,
       };
     })
     .adjust([
       {
         type: "dodge",
-        dodgeBy: "name", // 按照 type 字段进行分组
+        dodgeBy: "type", // 按照 type 字段进行分组
         marginRatio: 0, // 分组中各个柱子之间不留空隙
       },
       {
         type: "stack",
       },
     ]);
-
+  chart.interaction("active-region");
   chart.render();
   return chart;
 }
