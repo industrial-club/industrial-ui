@@ -123,7 +123,7 @@ export default defineComponent({
       const res: any = await thingApis.addThing(param);
       if (res.code === "M0000") {
         message.success("保存成功");
-        context.emit("back");
+        context.emit("toEdit", res.data.staticMap.map);
       } else {
         message.error("服务异常");
       }

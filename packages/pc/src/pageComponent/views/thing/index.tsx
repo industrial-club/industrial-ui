@@ -215,6 +215,7 @@ const com = defineComponent({
           <editThing
             data={pageData.editData}
             onBack={() => {
+              refresh();
               page.value = "list";
             }}
           />
@@ -225,7 +226,11 @@ const com = defineComponent({
           <addThing
             data={pageData.addData}
             onBack={() => {
+              refresh();
               page.value = "list";
+            }}
+            onToEdit={(res) => {
+              toEdit({ record: res });
             }}
           />
         ) : (
