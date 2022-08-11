@@ -14,7 +14,7 @@ export default defineComponent({
     return () => (
       <inl-card-box>
         <div class="production_box">
-          {/* <prodTop code={_props.code} /> */}
+          <prodTop code={_props.code} />
           <prodBottom code={_props.code} />
         </div>
       </inl-card-box>
