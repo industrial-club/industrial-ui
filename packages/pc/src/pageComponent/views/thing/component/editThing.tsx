@@ -176,12 +176,17 @@ export default defineComponent({
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">基础属性</div>
-            {/* <div class="fold flex">
-              折叠
-              <CaretUpOutlined />
-            </div> */}
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.basic = !folds.basic;
+              }}
+            >
+              {folds.basic ? "展开" : "折叠"}
+              {folds.basic ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
-          <div class="flex content">
+          <div class="flex content" style={folds.basic ? "display:none" : ""}>
             <div class="flex3 grid">
               {basicForm.value.map((ele: any) => {
                 return (
@@ -209,8 +214,19 @@ export default defineComponent({
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">动态属性</div>
+
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.dynamic = !folds.dynamic;
+              }}
+            >
+              {folds.dynamic ? "展开" : "折叠"}
+              {folds.dynamic ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
           <a-table
+            style={folds.dynamic ? "display:none" : ""}
             rowKey="code"
             columns={dynamicColumns.value}
             dataSource={dynamicTableList.value}
@@ -237,8 +253,18 @@ export default defineComponent({
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">逻辑</div>
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.logic = !folds.dynamic;
+              }}
+            >
+              {folds.logic ? "展开" : "折叠"}
+              {folds.logic ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
           <a-table
+            style={folds.logic ? "display:none" : ""}
             rowKey="code"
             columns={actionColumns.value}
             dataSource={actionCTableList.value}
@@ -249,8 +275,18 @@ export default defineComponent({
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">动作</div>
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.action = !folds.action;
+              }}
+            >
+              {folds.action ? "展开" : "折叠"}
+              {folds.action ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
           <a-table
+            style={folds.action ? "display:none" : ""}
             rowKey="code"
             columns={actionColumns.value}
             dataSource={actionCTableList.value}

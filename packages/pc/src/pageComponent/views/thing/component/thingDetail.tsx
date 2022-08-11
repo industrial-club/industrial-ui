@@ -50,13 +50,13 @@ export default defineComponent({
       () => props.data,
       (value: any) => {
         colArr.value = JSON.parse(
-          JSON.stringify(value.thingInst.thing.thingPropertyList)
+          JSON.stringify(value.thingInst?.thing.thingPropertyList || [])
         );
         basicForm.value = colArr.value.filter((ele: any) => {
           ele.value = value.staticMap.map[ele.code];
           return ele.propertyType === "property";
         });
-        dynamicTableList.value = value.dynamicProperties.filter((ele: any) => {
+        dynamicTableList.value = value.dynamicProperties?.filter((ele: any) => {
           const pro: any = colArr.value.find((col: any) => {
             return col.code === ele.thingPropertyCode;
           });
@@ -89,6 +89,12 @@ export default defineComponent({
         message.error("服务异常");
       }
     };
+    const folds = reactive({
+      basic: false,
+      dynamic: false,
+      logic: false,
+      action: false,
+    });
     return () => (
       <div class="editThing">
         <div class="header flex">
@@ -111,12 +117,17 @@ export default defineComponent({
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">基础属性</div>
-            {/* <div class="fold flex">
-              折叠
-              <CaretUpOutlined />
-            </div> */}
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.basic = !folds.basic;
+              }}
+            >
+              {folds.basic ? "展开" : "折叠"}
+              {folds.basic ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
-          <div class="flex content">
+          <div class="flex content" style={folds.basic ? "display:none" : ""}>
             <div class="flex3 grid">
               {basicForm.value.map((ele: any) => {
                 return (
@@ -146,15 +157,37 @@ export default defineComponent({
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">动态属性</div>
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.dynamic = !folds.dynamic;
+              }}
+            >
+              {folds.dynamic ? "展开" : "折叠"}
+              {folds.dynamic ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
-          <div></div>
+          <div
+            class="flex content"
+            style={folds.dynamic ? "display:none" : ""}
+          ></div>
         </div>
         <div class="basic">
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">逻辑</div>
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.logic = !folds.logic;
+              }}
+            >
+              {folds.logic ? "展开" : "折叠"}
+              {folds.logic ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
           <a-table
+            style={folds.logic ? "display:none" : ""}
             rowKey="code"
             columns={actionColumns.value}
             dataSource={actionCTableList.value}
@@ -165,8 +198,18 @@ export default defineComponent({
           <div class="title flex">
             <div class="icon"></div>
             <div class="name">动作</div>
+            <div
+              class="fold flex"
+              onClick={() => {
+                folds.action = !folds.action;
+              }}
+            >
+              {folds.action ? "展开" : "折叠"}
+              {folds.action ? <CaretRightOutlined /> : <CaretUpOutlined />}
+            </div>
           </div>
           <a-table
+            style={folds.action ? "display:none" : ""}
             rowKey="code"
             columns={actionColumns.value}
             dataSource={actionCTableList.value}

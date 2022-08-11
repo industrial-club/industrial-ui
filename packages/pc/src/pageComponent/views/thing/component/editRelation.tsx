@@ -117,14 +117,20 @@ export default defineComponent({
       });
       const res = await thingApis.findThingByParams(param);
       modalTableList.value = [];
+
       res.data.forEach((ele: any) => {
-        modalTableList.value.push({
-          id: ele.id,
-          name: ele.name,
-          code: ele.code,
-          objName: ele.thing.name,
-          objCode: ele.thing.code,
+        const have = tableList.value.find((exist: any) => {
+          return exist.id === ele.id;
         });
+        if (!have) {
+          modalTableList.value.push({
+            id: ele.id,
+            name: ele.name,
+            code: ele.code,
+            objName: ele.thing.name,
+            objCode: ele.thing.code,
+          });
+        }
       });
     };
 
@@ -175,11 +181,11 @@ export default defineComponent({
       param.relaClass = tab.relaClass;
       for (const ele of modalSelects) {
         if (tab.type === 1) {
-          param.aid = props.ele!.ID;
-          param.zid = ele.id;
+          param.aid = props.ele!.ID.toString();
+          param.zid = ele.id.toString();
         } else {
-          param.zid = props.ele!.ID;
-          param.aid = ele.id;
+          param.zid = props.ele!.ID.toString();
+          param.aid = ele.id.toString();
         }
         const res = await thingApis.addRelation(param);
       }
@@ -195,11 +201,11 @@ export default defineComponent({
       param.relaClass = tab.relaClass;
       for (const ele of selects) {
         if (tab.type === 1) {
-          param.aid = props.ele!.ID;
-          param.zid = ele.id;
+          param.aid = props.ele!.ID.toString();
+          param.zid = ele.id.toString();
         } else {
-          param.zid = props.ele!.ID;
-          param.aid = ele.id;
+          param.zid = props.ele!.ID.toString();
+          param.aid = ele.id.toString();
         }
         const res = await thingApis.deleteRelation(param);
       }
@@ -335,7 +341,7 @@ export default defineComponent({
             rowSelection={selection}
             columns={columns.value}
             dataSource={tableList.value}
-            pagination={null}
+            pagination={false}
             v-slots={{
               action: (row: any) => {
                 return (

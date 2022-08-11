@@ -80,12 +80,16 @@ const com = defineComponent({
       selectedKeys: string[] | number[],
       { selected, node }: any
     ) => {
+      if (formQuery.thingCode === node.code) {
+        return;
+      }
       if (selected) {
         formQuery.thingCode = node.code;
       } else {
         formQuery.thingCode = "";
       }
       selectedKeyArr.value = selectedKeys;
+      currPage.value = 1;
       refresh();
       getOpiton();
     };
@@ -194,7 +198,7 @@ const com = defineComponent({
       page.value = "detail";
     };
     const deleteThing = async (row) => {
-      const res: any = await thingApis.deleteThing(row.record.ID);
+      const res: any = await thingApis.deleteThing(row.record.ID.toString());
       refresh();
       if ((res.code = "M0000")) {
         message.success("删除成功");
