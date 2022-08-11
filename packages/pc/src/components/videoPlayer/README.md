@@ -6,7 +6,7 @@
 
 ```tsx
 import { defineComponent, reactive } from "vue";
-import { videoInfo } from "inl-ui/src/components/videoPlayer/util/byUuid";
+import { videoInfo } from "inl-ui";
 
 export default defineComponent({
   setup() {
