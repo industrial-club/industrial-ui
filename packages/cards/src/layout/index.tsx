@@ -3,6 +3,7 @@ import {
   PropType,
   resolveComponent,
   HtmlHTMLAttributes,
+  ref,
 } from "vue";
 import { prefix } from "./../config";
 
@@ -12,6 +13,8 @@ export interface CardInfo {
   row: string;
   col: string;
   componentName: string;
+  tabs?: Array<{ [key: string]: string }>;
+  key?: string;
 }
 
 const props = {
@@ -57,10 +60,25 @@ const props = {
         componentName: "card_2",
       },
       {
-        name: "aa1",
+        name: "生产情况",
         componentName: "production",
         row: "1/3",
         col: "5/5",
+        key: "",
+        tabs: [
+          {
+            name: "11",
+            id: "1",
+          },
+          {
+            name: "22",
+            id: "2",
+          },
+          {
+            name: "33",
+            id: "3",
+          },
+        ],
       },
     ],
   },
@@ -87,7 +105,18 @@ export default defineComponent({
           const componentName = resolveComponent(
             `${prefix}-${item.componentName}`
           );
-          let com = <componentName />;
+          if (item.tabs && item.tabs.length > 0) {
+            item.key = item.tabs[0].id;
+          }
+          let com = (
+            <inl-card-box
+              tabList={item.tabs}
+              titleName={item.name}
+              v-model={[item.key, "activeKey"]}
+            >
+              <componentName code={item.key} />
+            </inl-card-box>
+          );
 
           if (item.col && item.row) {
             const rows = item.row.split("/");
@@ -97,7 +126,16 @@ export default defineComponent({
             const colStart = cols[0];
             const colEnd = `span ${cols[1]}`;
             const gridArea = `${rowStart} / ${colStart} / ${rowEnd} / ${colEnd}`;
-            com = <componentName style={{ gridArea }} />;
+            com = (
+              <inl-card-box
+                style={{ gridArea }}
+                tabList={item.tabs}
+                titleName={item.name}
+                v-model={[item.key, "activeKey"]}
+              >
+                <componentName code={item.key} />
+              </inl-card-box>
+            );
           }
 
           return com;

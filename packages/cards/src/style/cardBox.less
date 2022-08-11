@@ -1,6 +1,23 @@
 .@{prefix}_box {
-    img {
-        width: 100%;
-        height: 100%;
+  background-color: #fff;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+  &-header {
+    padding: 0.71rem 0.36rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-title {
+      font-size: 1.14rem;
+      font-weight: bold;
     }
+  }
+  &-body {
+    height: calc(100% - 3.28rem);
+    overflow-y: auto;
+    padding: 0.71rem;
+    box-sizing: border-box;
+  }
 }
