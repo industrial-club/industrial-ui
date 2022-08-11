@@ -17,6 +17,13 @@ const noticeManagerApi = {
   },
 
   /**
+   * 根据id获取详情
+   */
+  getRecordDetail(id: string) {
+    return instance.get(`/record/${id}`);
+  },
+
+  /**
    * 重发消息给指定用户
    */
   resendTouser(data) {

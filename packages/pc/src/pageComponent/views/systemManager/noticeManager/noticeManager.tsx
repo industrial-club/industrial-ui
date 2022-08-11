@@ -1,4 +1,5 @@
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { message, Modal } from "ant-design-vue";
 import moment from "moment";
 import utils from "@/utils";
@@ -21,6 +22,24 @@ const noticeManager = defineComponent({
     notificationDetails,
   },
   setup() {
+    const route = useRoute();
+
+    // 监听dataId 如果有dataId 就请求详情数据
+    watch(
+      route,
+      async () => {
+        const { dataId } = route.query;
+        if (dataId) {
+          const { data: res } = await noticeManagerApi.getRecordDetail(
+            dataId as string
+          );
+          data.value = res;
+          detailsVisible.value = true;
+        }
+      },
+      { immediate: true }
+    );
+
     // 查询表单
     const form = reactive<{
       channelId?: number;
