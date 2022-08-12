@@ -13,15 +13,15 @@ export default defineComponent({
     const camera = reactive<videoInfo>({
       user: "admin",
       mediaServerPo: {
-        url: "http://192.168.5.43:880",
+        url: "http://192.168.5.43:10880",
       },
-      pass: "password01",
+      pass: "zg654321",
       rtspPort: 554,
-      ip: "172.16.202.53",
+      ip: "172.16.110.18",
       channel: "1",
-      streamType: "0",
+      streamType: "main",
       webrtcTemplateMerged:
-        "http://192.168.5.43:880/index/api/addStreamProxy?vhost=__defaultVhost__&app=live&stream=v172.16.202.53-554-${channel}-${streamType}&url=rtsp://admin:password01@172.16.202.53:554/H264/ch${channel}/${streamType}/av_stream",
+        "http://192.168.5.43:10880/index/api/addStreamProxy?secret=035c73f7-bb6b-4889-a715-d9eb2d1925cc&vhost=__defaultVhost__&app=live&stream=v172.16.110.18-554-${channel}-${streamType}&url=rtsp://admin:zg654321@172.16.110.18:554/H264/ch${channel}/${streamType}/av_stream",
     });
     return () => <inl-video-player camera={camera}></inl-video-player>;
   },
