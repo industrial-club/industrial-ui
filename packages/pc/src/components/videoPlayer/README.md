@@ -20,6 +20,8 @@ export default defineComponent({
       ip: "172.16.202.53",
       channel: "1",
       streamType: "0",
+      webrtcTemplateMerged:
+        "http://192.168.5.43:880/index/api/addStreamProxy?vhost=__defaultVhost__&app=live&stream=v172.16.202.53-554-${channel}-${streamType}&url=rtsp://admin:password01@172.16.202.53:554/H264/ch${channel}/${streamType}/av_stream",
     });
     return () => <inl-video-player camera={camera}></inl-video-player>;
   },

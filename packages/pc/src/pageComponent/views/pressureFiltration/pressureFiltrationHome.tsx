@@ -63,7 +63,7 @@ const pressureFiltrationHome = defineComponent({
     const visible = ref(false);
 
     // 图扑流程图弹窗
-    const htVisible = ref(true);
+    const htVisible = ref(false);
     // 图扑流程图弹窗title
     const htTitle = ref("漏斗");
 

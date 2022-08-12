@@ -65,6 +65,17 @@ export default defineComponent({
         v: false,
       },
     ]);
+    const camera = {
+      user: "admin",
+      mediaServerPo: {
+        url: "http://192.168.5.43:10880",
+      },
+      pass: "zg123456",
+      rtspPort: 554,
+      ip: "172.16.110.19",
+      channel: "1",
+      streamType: "0",
+    };
     return () => (
       <div class="control">
         <div class="control-left">
@@ -152,7 +163,7 @@ export default defineComponent({
         </div>
         <div class="control-right">
           {_props.isBelt ? (
-            <inl-video-player camera={"123"}></inl-video-player>
+            <inl-video-player camera={camera}></inl-video-player>
           ) : (
             <>
               <div class="control-right-title">手动操作</div>
