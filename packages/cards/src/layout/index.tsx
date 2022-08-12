@@ -63,7 +63,7 @@ const props = {
         name: "生产情况",
         componentName: "production",
         row: "1/3",
-        col: "5/5",
+        col: "5/1",
         key: "",
         tabs: [
           {
@@ -102,20 +102,12 @@ export default defineComponent({
         style={layoutStyle}
       >
         {prop.cards.map((item) => {
-          const componentName = resolveComponent(
-            `${prefix}-${item.componentName}`
-          );
-          if (item.tabs && item.tabs.length > 0) {
-            item.key = item.tabs[0].id;
-          }
           let com = (
             <inl-card-box
+              componentName={item.componentName}
               tabList={item.tabs}
               titleName={item.name}
-              v-model={[item.key, "activeKey"]}
-            >
-              <componentName code={item.key} />
-            </inl-card-box>
+            ></inl-card-box>
           );
 
           if (item.col && item.row) {
@@ -129,12 +121,10 @@ export default defineComponent({
             com = (
               <inl-card-box
                 style={{ gridArea }}
+                componentName={item.componentName}
                 tabList={item.tabs}
                 titleName={item.name}
-                v-model={[item.key, "activeKey"]}
-              >
-                <componentName code={item.key} />
-              </inl-card-box>
+              ></inl-card-box>
             );
           }
 

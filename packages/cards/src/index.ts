@@ -3,7 +3,7 @@ import "./style/index.less";
 import { version } from "../package.json";
 import cards from "./cardList";
 import Layout from "./layout";
-import CardBox from "./cardList/cardBox";
+import CardBox from "./components/cardBox";
 import { installCom } from "./utils";
 
 interface ListTpye {

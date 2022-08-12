@@ -1,13 +1,21 @@
-import { defineComponent, PropType, ref, watch } from "vue";
+import { defineComponent, PropType, ref, watch, resolveComponent } from "vue";
 import tabs from "@/components/tabs";
 import { prefix } from "../../config";
 
 const props = {
-  titleName: String,
+  componentName: {
+    type: String,
+    default: "",
+    required: true,
+  },
+  titleName: {
+    type: String,
+    default: "",
+    required: true,
+  },
   tabList: {
     type: Array as PropType<Array<{ [key: string]: string }>>,
   },
-  activeKey: String,
 };
 
 export default defineComponent({
@@ -15,18 +23,19 @@ export default defineComponent({
     tabs,
   },
   props,
-  emits: ["update:activeKey"],
   setup(_props, _ctx) {
-    const activeKey = ref("1");
+    const componentName = resolveComponent(`${prefix}-${_props.componentName}`);
+    const activeKey = ref("");
     watch(
-      () => _props.activeKey,
+      () => _props.tabList,
       (e) => {
         if (e) {
-          activeKey.value = e;
+          activeKey.value = e[0].id;
         }
       },
       {
         immediate: true,
+        deep: true,
       }
     );
     return () => (
@@ -37,13 +46,12 @@ export default defineComponent({
             <tabs
               v-model={[activeKey.value, "activeKey"]}
               tabs={_props.tabList}
-              onChange={() => {
-                _ctx.emit("update:activeKey", activeKey.value);
-              }}
             ></tabs>
           ) : null}
         </div>
-        <div class={prefix + "_box-body"}>{_ctx.slots.default!()}</div>
+        <div class={prefix + "_box-body"}>
+          <componentName code={activeKey.value}></componentName>
+        </div>
       </div>
     );
   },
