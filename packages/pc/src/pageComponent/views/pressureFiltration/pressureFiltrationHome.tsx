@@ -253,7 +253,7 @@ const pressureFiltrationHome = defineComponent({
           maskClosable={false}
           class="htVisible"
         >
-          <htModal></htModal>
+          <htModal isBelt={true}></htModal>
         </a-modal>
       </div>
     );
