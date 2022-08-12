@@ -119,9 +119,8 @@ export const getRootSystem = async () =>
  * @param id 系统id
  */
 export const getChildrenSystem = async (id: string) =>
-  instance.post(
+  instance.get(
     `/thing/v1/adapter/thing/relation/findZInstsByClass/${id}/SYSTEM_MT_SYSTEM_MT`,
-    null,
     { baseURL: "/api/" }
   );
 
@@ -130,9 +129,8 @@ export const getChildrenSystem = async (id: string) =>
  * @param id 系统id
  */
 export const getDeviceListBySystemId = (id: string) =>
-  instance.post(
+  instance.get(
     `/thing/v1/adapter/thing/relation/findZInstsByClass/${id}/SYSTEM_MT_DEVICE`,
-    null,
     { baseURL: "/api/" }
   );
 
