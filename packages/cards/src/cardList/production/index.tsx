@@ -1,4 +1,4 @@
-import { defineComponent, reactive, PropType } from "vue";
+import { defineComponent, ref, PropType, watch } from "vue";
 import prodTop from "./components/top";
 import prodBottom from "./components/botton";
 
@@ -11,13 +11,20 @@ export default defineComponent({
   components: { prodTop, prodBottom },
   props,
   setup(_props, _context) {
+    watch(
+      () => _props.code,
+      (e) => {
+        console.log(e);
+      },
+      {
+        immediate: true,
+      }
+    );
     return () => (
-      <inl-card-box>
-        <div class="production_box">
-          <prodTop code={_props.code} />
-          <prodBottom code={_props.code} />
-        </div>
-      </inl-card-box>
+      <div class="production_box">
+        <prodTop code={_props.code} />
+        <prodBottom code={_props.code} />
+      </div>
     );
   },
 });

@@ -18,6 +18,7 @@ export default function chartInit(id: string, data: Array<CoalItem>) {
   const chart = new Chart({
     container: id,
     autoFit: true,
+    height: 300,
   });
   chart.data(data);
   chart.legend({
