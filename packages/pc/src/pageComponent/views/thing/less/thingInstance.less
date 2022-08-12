@@ -3,18 +3,25 @@
 
   .left_wrap {
     width: 220px;
-    padding-right: 20px;
+    padding-right: 0px !important;
     flex-shrink: 0;
     box-sizing: border-box;
     border-right: #e7e7e7 solid 1px;
+    .flex_lr_c {
+      font-weight: 700;
+      padding-right: 20px;
+    }
     .tree_data {
       margin-top: 20px;
+      .search {
+        padding-right: 20px;
+      }
       .ant-tree-switcher-noop {
         display: none;
       }
     }
     .tree_wrap {
-      height: calc(100vh - 250px);
+      height: calc(100vh - 270px);
       overflow-y: auto;
     }
   }

@@ -58,6 +58,9 @@ const com = defineComponent({
     const getTreeData = () => {
       thingApis.findAllThingForTree().then((res) => {
         refresh();
+        res.data.forEach((ele: any) => {
+          ele.first = true;
+        });
         const data = generateKey("0", res.data);
         generateList(data);
         treeDataRecord = data;
@@ -148,13 +151,16 @@ const com = defineComponent({
     };
     const state = reactive<{
       selectedRowKeys: string[];
+      selectedRows: any[];
       modalVisible: boolean;
     }>({
       selectedRowKeys: [],
+      selectedRows: [],
       modalVisible: true,
     });
-    const onSelectChange = (selectedRowKeys: string[]) => {
+    const onSelectChange = (selectedRowKeys: string[], selectedRows: any[]) => {
       state.selectedRowKeys = selectedRowKeys;
+      state.selectedRows = selectedRows;
     };
     const {
       isLoading,
@@ -205,10 +211,53 @@ const com = defineComponent({
       }
     };
     const queryOpts = ref<any[]>([]);
+    const batchDelete = async () => {
+      for (const row of state.selectedRows) {
+        const res: any = await thingApis.deleteThing(row.ID.toString());
+      }
+      refresh();
+      message.success("删除成功");
+    };
+    const importModal = ref(false);
     onMounted(() => {
       getTreeData();
     });
     const page = ref("list");
+    const file = ref();
+    const renderPointModal = () => {
+      return (
+        <a-modal
+          v-model={[importModal.value, "visible"]}
+          title="批量配点"
+          class="pointModal"
+          width={800}
+          footer={null}
+          onCancel={() => {
+            importModal.value = false;
+          }}
+        >
+          <a-alert
+            message="请先下载当前所有的动态属性并按要求填写信息，否则可能导入失败。上传文件后将覆盖式更新，请谨慎操作！"
+            banner
+          />
+          <a-upload-dragger
+            v-model={[file, "file"]}
+            name="file"
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            onChange={() => {}}
+            onDrop={() => {}}
+          >
+            <p class="ant-upload-drag-icon">
+              <inbox-outlined></inbox-outlined>
+            </p>
+            <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
+            <p class="ant-upload-hint">
+              文件格式：PNG;JPG;JPEG;SVG;大小不超过3M
+            </p>
+          </a-upload-dragger>
+        </a-modal>
+      );
+    };
     return () => (
       <div class="thingApp">
         {page.value === "edit" ? (
@@ -217,6 +266,9 @@ const com = defineComponent({
             onBack={() => {
               refresh();
               page.value = "list";
+            }}
+            onToDetail={(res) => {
+              toDetail({ record: res });
             }}
           />
         ) : (
@@ -229,8 +281,8 @@ const com = defineComponent({
               refresh();
               page.value = "list";
             }}
-            onToEdit={(res) => {
-              toEdit({ record: res });
+            onToDetail={(res) => {
+              toDetail({ record: res });
             }}
           />
         ) : (
@@ -241,6 +293,9 @@ const com = defineComponent({
             data={pageData.editData}
             onBack={() => {
               page.value = "list";
+            }}
+            onToEdit={(res) => {
+              toEdit({ record: res });
             }}
           />
         ) : (
@@ -258,6 +313,7 @@ const com = defineComponent({
 
             <div class="tree_data">
               <a-input-search
+                class="search"
                 v-model={[searchValue.value, "value"]}
                 style="margin-bottom: 8px"
                 placeholder="搜索"
@@ -274,10 +330,12 @@ const com = defineComponent({
                   expanded-keys={expandedKeys.value}
                   auto-expand-parent={autoExpandParent.value}
                   v-slots={{
-                    title: ({ name }: any) => {
+                    title: (ele: any) => {
                       return (
                         <span class="tree-node-title">
-                          <span>{name}</span>
+                          <span style={ele.first ? "font-weight:700" : ""}>
+                            {ele.name}
+                          </span>
                         </span>
                       );
                     },
@@ -324,7 +382,10 @@ const com = defineComponent({
                                 {"like"}
                               </a-select-option>
                             </a-select>
-                            <a-input v-model={[item.value, "value"]} />
+                            <a-input
+                              v-model={[item.value, "value"]}
+                              allowClear={true}
+                            />
                           </div>
                         </a-form-item>
                       </a-col>
@@ -369,15 +430,28 @@ const com = defineComponent({
                 导出选中
               </a-button>
               <a-button
+                onClick={() => {
+                  batchDelete();
+                }}
                 type="danger"
                 disabled={state.selectedRowKeys.length == 0}
               >
                 删除选中
               </a-button>
+              {renderPointModal()}
+              {/* <a-button
+                onClick={() => {
+                  importModal.value = true;
+                }}
+                type="primary"
+                ghost
+              >
+                批量配点
+              </a-button> */}
             </a-space>
             <div class="mar-t-20">
               <a-table
-                rowKey="code"
+                rowKey="ID"
                 columns={columns.value}
                 row-selection={{
                   selectedRowKeys: state.selectedRowKeys,
@@ -386,6 +460,15 @@ const com = defineComponent({
                 dataSource={tableList.value}
                 loading={isLoading.value}
                 pagination={pagination}
+                locale={
+                  formQuery.thingCode
+                    ? {}
+                    : {
+                        emptyText: (
+                          <a-empty description="请先在左侧选择一个物规格"></a-empty>
+                        ),
+                      }
+                }
                 v-slots={{
                   action: (row: any) => {
                     return (
@@ -404,14 +487,16 @@ const com = defineComponent({
                         >
                           详情
                         </a>
-                        <span
-                          class="red pointer"
-                          onClick={() => {
+                        <a-popconfirm
+                          title="确认删除?"
+                          ok-text="确定"
+                          cancel-text="取消"
+                          onConfirm={() => {
                             deleteThing(row);
                           }}
                         >
-                          删除
-                        </span>
+                          <span class="red pointer">删除</span>
+                        </a-popconfirm>
                       </a-space>
                     );
                   },

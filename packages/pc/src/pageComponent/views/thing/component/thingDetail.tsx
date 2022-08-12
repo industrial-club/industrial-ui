@@ -106,6 +106,15 @@ export default defineComponent({
             }}
           />
           <a-button
+            type="primary"
+            onClick={() => {
+              debugger;
+              context.emit("toEdit", props.data!.staticMap.map);
+            }}
+          >
+            编辑
+          </a-button>
+          <a-button
             onClick={() => {
               context.emit("back");
             }}

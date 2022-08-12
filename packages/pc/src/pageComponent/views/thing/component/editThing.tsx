@@ -54,6 +54,11 @@ export default defineComponent({
     // 动作表格
     const actionColumns = ref([]);
     const actionCTableList = ref([]);
+    const form = ref();
+    const formData = reactive({
+      name: "",
+      code: "",
+    });
     watch(
       () => props.data,
       (value: any) => {
@@ -63,16 +68,22 @@ export default defineComponent({
         basicForm.value = [];
         basicForm.value.push(
           {
-            name: "name",
+            name: "名称",
+            code: "name",
             value: value.thingInst?.name,
             displayType: "text",
+            rules: [{ required: true, message: "请输入名称" }],
           },
           {
-            name: "code",
+            name: "编码",
+            code: "code",
             value: value.thingInst?.code,
             displayType: "text",
+            rules: [{ required: true, message: "请输入编码" }],
           }
         );
+        formData.name = value.thingInst?.name;
+        formData.code = value.thingInst?.code;
         basicForm.value.push(
           ...colArr.value.filter((ele: any) => {
             ele.value = value.staticMap.map[ele.code];
@@ -99,6 +110,7 @@ export default defineComponent({
     );
 
     const save = async () => {
+      const valid = await form.value.validateFields();
       const param: any = props.data;
       param.thingInst.name = basicForm.value[0].value;
       param.thingInst.code = basicForm.value[1].value;
@@ -119,7 +131,7 @@ export default defineComponent({
       const res: any = await thingApis.editThing(param);
       if (res.code === "M0000") {
         message.success("保存成功");
-        context.emit("back");
+        context.emit("toDetail", props.data!.staticMap.map);
       } else {
         message.error("服务异常");
       }
@@ -187,26 +199,37 @@ export default defineComponent({
             </div>
           </div>
           <div class="flex content" style={folds.basic ? "display:none" : ""}>
-            <div class="flex3 grid">
+            <a-form class="flex3 grid" ref={form} model={formData}>
               {basicForm.value.map((ele: any) => {
                 return (
                   <div class="flex element">
-                    <div class="name">{ele.name}</div>
-                    <div>
+                    <a-form-item
+                      label={ele.name}
+                      name={ele.code}
+                      rules={ele.rules}
+                    >
                       {ele.displayType === "text" ? (
-                        <a-input v-model={[ele.value, "value"]}></a-input>
+                        <a-input
+                          v-model={[ele.value, "value"]}
+                          disabled={ele.readonly}
+                          onChange={() => {
+                            formData[ele.code] = ele.value;
+                          }}
+                        ></a-input>
                       ) : (
                         ""
                       )}
                       {ele.displayType === "select" ? renderSelect(ele) : ""}
-                    </div>
+                    </a-form-item>
                   </div>
                 );
               })}
-            </div>
+            </a-form>
             <div class="flex1 pic">
               <img src="https://dss2.bdstatic.com/5bVYsj_p_tVS5dKfpU_Y_D3/res/r/image/2022-8-1/0801ban.png" />
-              <a-button type="primary">修改图片</a-button>
+              <a-upload>
+                <a-button type="primary">修改图片</a-button>
+              </a-upload>
             </div>
           </div>
         </div>

@@ -69,10 +69,10 @@ export default defineComponent({
             rules: [{ required: true, message: "请输入名称" }],
           },
           {
-            name: "code",
+            name: "编码",
             value: "",
             displayType: "text",
-            rules: [{ required: true, message: "请输入code" }],
+            rules: [{ required: true, message: "请输入编码" }],
           }
         );
         basicForm.value.push(
@@ -96,8 +96,6 @@ export default defineComponent({
     );
 
     const save = async () => {
-      formData.name = basicForm.value[0].value;
-      formData.code = basicForm.value[1].value;
       const valid = await form.value.validateFields();
       const param: any = {
         dynamicProperties: [],
@@ -123,7 +121,7 @@ export default defineComponent({
       const res: any = await thingApis.addThing(param);
       if (res.code === "M0000") {
         message.success("保存成功");
-        context.emit("toEdit", res.data.staticMap.map);
+        context.emit("toDetail", res.data.staticMap.map);
       } else {
         message.error("服务异常");
       }
@@ -201,7 +199,6 @@ export default defineComponent({
               {basicForm.value.map((ele: any) => {
                 return (
                   <div class="flex element">
-                    {/* <div class="name">{ele.name}</div> */}
                     <a-form-item
                       label={ele.name}
                       name={ele.name}
@@ -210,6 +207,7 @@ export default defineComponent({
                       {ele.displayType === "text" ? (
                         <a-input
                           v-model={[ele.value, "value"]}
+                          disabled={ele.readonly}
                           onChange={() => {
                             formData[ele.name] = ele.value;
                           }}
