@@ -77,6 +77,7 @@ const VideoPlayer = defineComponent({
       () => _prop.camera,
       async (e) => {
         stopPlay();
+        stopV(`videoPlayer${timer}`);
         if (e && typeof e === "object") {
           videoInfo.value = e as videoInfo;
           init();
@@ -97,6 +98,7 @@ const VideoPlayer = defineComponent({
     // 页面销毁时停止播放视频流
     onUnmounted(() => {
       stopPlay();
+      stopV(`videoPlayer${timer}`);
       clearInterval(timer);
     });
     return () => (
