@@ -6,6 +6,7 @@ import {
   ref,
   watch,
 } from "vue";
+import dayjs from "dayjs";
 import utils from "@/utils";
 import api from "@/api/video";
 import { videoInfo } from "./util/interface";
@@ -18,7 +19,7 @@ const props = {
   },
 };
 
-const timer = new Date().getTime();
+const time = dayjs().valueOf();
 const VideoPlayer = defineComponent({
   name: "videoPlayer",
   props,
@@ -31,7 +32,7 @@ const VideoPlayer = defineComponent({
     // 停止播放
     const stopPlay = () => {
       if (play) {
-        play.stopPlay(`videoPlayer${timer}`);
+        play.stopPlay(`videoPlayer${time}`);
       }
     };
 
@@ -45,7 +46,7 @@ const VideoPlayer = defineComponent({
       url = (url as string).replaceAll("${streamType}", streamType as string);
       play = new WebRtcMt({
         plays: {
-          videoElm: `videoPlayer${timer}`,
+          videoElm: `videoPlayer${time}`,
           mediaServerAddr: (camera.mediaServerPo as videoInfo).url as string,
           cameraUserName: camera.user as string,
           cameraPwd: camera.pass as string,
@@ -100,7 +101,7 @@ const VideoPlayer = defineComponent({
     });
     return () => (
       <video
-        id={`videoPlayer${timer}`}
+        id={`videoPlayer${time}`}
         style="height:100%;width:100%;position: relative;background-color: #000000;"
         muted
         autoplay
