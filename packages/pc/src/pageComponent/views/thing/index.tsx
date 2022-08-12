@@ -241,7 +241,7 @@ const com = defineComponent({
             banner
           />
           <a-upload-dragger
-            v-model={[file, "file"]}
+            v-model={[file.value, "file"]}
             name="file"
             action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             onChange={() => {}}
