@@ -352,7 +352,7 @@ export default defineComponent({
                       style="width: 100%"
                       v-slots={{
                         bodyCell: ({ column, record, index }: any) => {
-                          // console.info(text, column, record, index);
+                          // console.log(text, column, record, index);
                           if (column.key === "num") {
                             return index + 1;
                           }

@@ -589,7 +589,7 @@ export default defineComponent({
       selectedRows: [],
     });
     const onSelect = (selectedRowKeys: any[], selectedRows: any) => {
-      console.info(selectedRowKeys, selectedRows);
+      // console.log(selectedRowKeys, selectedRows);
       selectedRow.selectedRowKeys = selectedRowKeys;
       selectedRow.selectedRows = selectedRows;
     };
