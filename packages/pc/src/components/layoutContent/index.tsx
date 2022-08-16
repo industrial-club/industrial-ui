@@ -7,6 +7,7 @@ import {
   watch,
   shallowRef,
   onMounted,
+  nextTick,
 } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 import useMenuCode from "@/hooks/useMenuCode";
