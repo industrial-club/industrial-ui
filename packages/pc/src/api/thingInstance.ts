@@ -76,4 +76,9 @@ export const findThingByParams = (data: any) =>
     data
   );
 
+export const uploadCommon = (data, headers) =>
+  instance.post(`/thing/v1/core/thing/uploadCommon`, data, {
+    headers,
+  });
+
 export default "";

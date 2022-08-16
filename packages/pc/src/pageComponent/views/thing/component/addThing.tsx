@@ -11,6 +11,12 @@ export default defineComponent({
     data: Object,
   },
   setup(props, context) {
+    const userinfo = JSON.parse(window.sessionStorage.getItem("userinfo")!);
+    const headers = {
+      "Content-Type": "multipart/form-data",
+      userId: userinfo.userId,
+      corpId: userinfo.corpId,
+    };
     // 基础属性
     const basicForm = ref<any[]>([]);
     // 全部属性
@@ -54,6 +60,28 @@ export default defineComponent({
     // 动作表格
     const actionColumns = ref([]);
     const actionCTableList = ref([]);
+
+    // form输入类型过滤
+    const typeFilter = (val) => {
+      switch (val) {
+        case "string":
+          return "text";
+          break;
+        case "long":
+          return "number";
+          break;
+        case "double":
+          return "number";
+          break;
+        case "boolean":
+          return "boolean";
+          break;
+        default:
+          return "";
+          break;
+      }
+    };
+
     watch(
       () => props.data,
       (value: any) => {
@@ -64,20 +92,20 @@ export default defineComponent({
         basicForm.value.push(
           {
             name: "名称",
-            value: "",
+            value: null,
             displayType: "text",
             rules: [{ required: true, message: "请输入名称" }],
           },
           {
             name: "编码",
-            value: "",
+            value: null,
             displayType: "text",
             rules: [{ required: true, message: "请输入编码" }],
           }
         );
         basicForm.value.push(
           ...colArr.value.filter((ele: any) => {
-            ele.value = "";
+            ele.value = null;
             return (
               ele.propertyType === "property" &&
               ele.code !== "CODE" &&
@@ -108,6 +136,7 @@ export default defineComponent({
       };
       param.thingInst.name = basicForm.value[0].value;
       param.thingInst.code = basicForm.value[1].value;
+      param.thingInst.photo = fileUrl.value;
       basicForm.value.forEach((element: any, index: number) => {
         if (index !== 0 && index !== 1) {
           param.staticMap.map[element.code] = element.value;
@@ -135,11 +164,18 @@ export default defineComponent({
     const renderSelect = (ele: any) => {
       const selectInfo = JSON.parse(ele.listInfo || "[]");
       const arr: any[] = [];
-      for (const key in selectInfo) {
-        arr.push({ key, value: selectInfo[key] });
+      if (ele.columnType === "long") {
+        for (const key in selectInfo) {
+          arr.push({ key: Number(key), value: selectInfo[key] });
+        }
+      } else if (ele.columnType === "string") {
+        for (const key in selectInfo) {
+          arr.push({ key: key.toString(), value: selectInfo[key] });
+        }
       }
+
       return (
-        <a-select v-model={[ele.value, "value"]} style="width: 120px">
+        <a-select v-model={[ele.value, "value"]} style={{ width: "100%" }}>
           {arr.map((info: any) => {
             return (
               <a-select-option value={info.key}>{info.value}</a-select-option>
@@ -151,9 +187,23 @@ export default defineComponent({
 
     const form = ref();
     const formData = reactive({
-      name: "",
-      code: "",
+      name: null,
+      code: null,
     });
+    const fileUrl = ref("");
+    const customRequest = (options: any) => {
+      const { file, onSuccess, onError } = options;
+      const formData = new FormData();
+      formData.append("file", file as any);
+      thingApis.uploadCommon(formData, headers).then((res: any) => {
+        if (res.code === "M0000") {
+          fileUrl.value = res.data;
+          onSuccess("response", file);
+        } else {
+          onError("error", file);
+        }
+      });
+    };
     return () => (
       <div class="editThing">
         <div class="header flex">
@@ -203,11 +253,15 @@ export default defineComponent({
                       label={ele.name}
                       name={ele.name}
                       rules={ele.rules}
+                      style={{ width: "100%" }}
+                      label-col={{ span: 8 }}
+                      wrapper-col={{ span: 16 }}
                     >
                       {ele.displayType === "text" ? (
                         <a-input
                           v-model={[ele.value, "value"]}
                           disabled={ele.readonly}
+                          type={typeFilter(ele.columnType)}
                           onChange={() => {
                             formData[ele.name] = ele.value;
                           }}
@@ -222,8 +276,14 @@ export default defineComponent({
               })}
             </a-form>
             <div class="flex1 pic">
-              <img src="https://dss2.bdstatic.com/5bVYsj_p_tVS5dKfpU_Y_D3/res/r/image/2022-8-1/0801ban.png" />
-              <a-button type="primary">修改图片</a-button>
+              <img src={fileUrl.value} />
+              <a-upload
+                headers={headers}
+                showUploadList={false}
+                customRequest={(e) => customRequest(e)}
+              >
+                <a-button type="primary">修改图片</a-button>
+              </a-upload>
             </div>
           </div>
         </div>
@@ -258,6 +318,7 @@ export default defineComponent({
                   return (
                     <a-input
                       v-model={[record[column.dataIndex], "value"]}
+                      type={typeFilter(record.columnType)}
                     ></a-input>
                   );
                 }

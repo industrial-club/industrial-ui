@@ -7,12 +7,12 @@ import {
   watch,
   toRaw,
   PropType,
-} from 'vue';
-import '../../../assets/styles/thingModel/factory.less';
-import manufactorApi from '@/api/factory';
-import type { FormInstance, TreeProps } from 'ant-design-vue';
-import moment from 'moment';
-import utils from '@/utils';
+} from "vue";
+import "../../../assets/styles/thingModel/factory.less";
+import manufactorApi from "@/api/factory";
+import type { FormInstance, TreeProps } from "ant-design-vue";
+import moment from "moment";
+import utils from "@/utils";
 import {
   Tree,
   Input,
@@ -27,7 +27,7 @@ import {
   Modal,
   Empty,
   message,
-} from 'ant-design-vue';
+} from "ant-design-vue";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -36,9 +36,9 @@ import {
   SearchOutlined,
   PlusCircleOutlined,
   HolderOutlined,
-} from '@ant-design/icons-vue';
-import useTreeSearch from '@/pageComponent/hooks/treeSearch';
-import { setInstance, setInstance2 } from '@/api/factory';
+} from "@ant-design/icons-vue";
+import useTreeSearch from "@/pageComponent/hooks/treeSearch";
+import { setInstance, setInstance2 } from "@/api/factory";
 
 export interface IUrlObj {
   getList: string;
@@ -74,15 +74,15 @@ interface InfoState {
   createDt?: string;
 }
 const defaultInfoState: InfoState = {
-  name: '',
-  shortName: '',
-  code: '',
+  name: "",
+  shortName: "",
+  code: "",
   validEnable: false,
-  address: '',
-  linkPhone: '',
-  linkUser: '',
-  website: '',
-  remark: '',
+  address: "",
+  linkPhone: "",
+  linkUser: "",
+  website: "",
+  remark: "",
 };
 function infoPart() {
   const isEdit = ref<boolean>(false);
@@ -95,25 +95,25 @@ function infoPart() {
     name: [
       {
         required: true,
-        message: '请输入名称',
+        message: "请输入名称",
       },
     ],
     shortName: [
       {
         required: true,
-        message: '请输入简称',
+        message: "请输入简称",
       },
     ],
     code: [
       {
         required: true,
-        message: '请输入编码',
+        message: "请输入编码",
       },
     ],
     validEnable: [
       {
         required: true,
-        message: '请选择',
+        message: "请选择",
       },
     ],
   });
@@ -152,7 +152,7 @@ const FactoryManage = defineComponent({
       rightInfoShow: false,
       nodeLevel: 0,
     });
-    let insertParantId: string = '';
+    let insertParantId: string = "";
     let selectNodeData: any = null;
     const { infoRef, formRef, rulesRef, isEdit, isNew } = infoPart();
     const validateUniqe = async (
@@ -165,58 +165,58 @@ const FactoryManage = defineComponent({
         { [key]: value, id: isNew.value ? null : selectNodeData.id },
         type
       );
-      if (res.data) return Promise.reject('该' + tip + '已存在');
+      if (res.data) return Promise.reject("该" + tip + "已存在");
     };
     const ruleName = {
       validator: async (_rule: any, value: string) => {
         if (value.trim()) {
           await validateUniqe(
             value.trim(),
-            'name',
-            '名称',
+            "name",
+            "名称",
             getNodeSort().apiSort
           );
         }
         return Promise.resolve();
       },
-      trigger: 'blur',
+      trigger: "blur",
     };
     const ruleCode = {
       validator: async (_rule: any, value: string) => {
         if (value.trim()) {
           await validateUniqe(
             value.trim(),
-            'code',
-            '编码',
+            "code",
+            "编码",
             getNodeSort().apiSort
           );
         }
         return Promise.resolve();
       },
-      trigger: 'blur',
+      trigger: "blur",
     };
     const ruleShortName = {
       validator: async (_rule: any, value: string) => {
         if (value.trim()) {
           await validateUniqe(
             value.trim(),
-            'shortName',
-            '简称',
+            "shortName",
+            "简称",
             getNodeSort().apiSort
           );
         }
         return Promise.resolve();
       },
-      trigger: 'blur',
+      trigger: "blur",
     };
     rulesRef.name.push(ruleName);
     rulesRef.code.push(ruleCode);
     rulesRef.shortName.push(ruleShortName);
     const transformTime = (
       time: number | string | Date,
-      format = 'YYYY-MM-DD HH:mm:ss'
+      format = "YYYY-MM-DD HH:mm:ss"
     ) => {
-      return time ? moment(time).format(format) : '--';
+      return time ? moment(time).format(format) : "--";
     };
     const {
       tree,
@@ -228,16 +228,16 @@ const FactoryManage = defineComponent({
       generateKey,
       generateList,
     } = useTreeSearch({
-      title: 'shortName',
-      children: 'list',
-	  name:'name'
+      title: "shortName",
+      children: "list",
+      name: "name",
     });
 
     const getList = () => {
       manufactorApi
         .getList(props.url.getList)()
         .then((res) => {
-          const data = generateKey('0', res.data);
+          const data = generateKey("0", res.data);
           generateList(data);
           tree.data = data;
           tree.treeDataOrigin = data;
@@ -254,9 +254,9 @@ const FactoryManage = defineComponent({
         <a-col lg={13} xl={9} md={13} offset={1}>
           <a-form-item label={label} name={key}>
             {isEdit.value && editAble ? (
-              <a-input v-model={[infoRef.infoState[key], 'value']} />
+              <a-input v-model={[infoRef.infoState[key], "value"]} />
             ) : (
-              <p style={{ paddingTop: '4px' }}>
+              <p style={{ paddingTop: "4px" }}>
                 {time
                   ? transformTime(infoRef.infoState[key])
                   : infoRef.infoState[key]}
@@ -265,24 +265,24 @@ const FactoryManage = defineComponent({
           </a-form-item>
         </a-col>
       ) : (
-        ''
+        ""
       );
     };
     const getNodeSort = () => {
-      let name = '';
-      let apiSort = '';
+      let name = "";
+      let apiSort = "";
       switch (state.nodeLevel) {
         case 1:
-          name = '厂家';
-          apiSort = 'factory';
+          name = "厂家";
+          apiSort = "factory";
           break;
         case 2:
-          name = '品牌';
-          apiSort = 'brand';
+          name = "品牌";
+          apiSort = "brand";
           break;
         case 3:
-          name = '型号';
-          apiSort = 'model';
+          name = "型号";
+          apiSort = "model";
           break;
         default:
           break;
@@ -299,7 +299,7 @@ const FactoryManage = defineComponent({
       infoRef.infoState = { ...defaultInfoState };
       state.nodeLevel = 1;
       selectedKeyArr.value = [];
-      insertParantId = '';
+      insertParantId = "";
     };
     // 新建
     const create = (node: any) => {
@@ -320,12 +320,12 @@ const FactoryManage = defineComponent({
       Modal.confirm({
         title: `确定要删除${title}吗？`,
         icon: createVNode(ExclamationCircleOutlined),
-        content: '',
+        content: "",
         onOk() {
           manufactorApi
             .remove(props.url)(node.id, getNodeSort().apiSort)
             .then(() => {
-              message.success('删除成功');
+              message.success("删除成功");
               state.rightInfoShow = false;
               selectNodeData = {};
               getList();
@@ -345,8 +345,8 @@ const FactoryManage = defineComponent({
         const resUpdate = await getUserInfo(node.updateUser);
         selectNodeData = {
           ...node.dataRef,
-          createUserName: resCreate.data?.userName || '--',
-          updateUserName: resUpdate.data?.userName || '--',
+          createUserName: resCreate.data?.userName || "--",
+          updateUserName: resUpdate.data?.userName || "--",
         };
         insertParantId = node.code;
         cancel();
@@ -373,7 +373,7 @@ const FactoryManage = defineComponent({
     };
     const submit = () => {
       formRef.value?.validate().then((res) => {
-        const type: string = isNew.value ? 'insert' : 'update';
+        const type: string = isNew.value ? "insert" : "update";
         const extra: any = {};
         if (!isNew.value) {
           extra.id = infoRef.infoState.id;
@@ -393,8 +393,8 @@ const FactoryManage = defineComponent({
             selectNodeData = {
               ...selectNodeData,
               ...resData,
-              createUserName: resCreate.data?.userName || '--',
-              updateUserName: resUpdate.data?.userName || '--',
+              createUserName: resCreate.data?.userName || "--",
+              updateUserName: resUpdate.data?.userName || "--",
             };
             infoRef.infoState = { ...selectNodeData };
             getList();
@@ -410,7 +410,7 @@ const FactoryManage = defineComponent({
       if (!id) {
         return {
           data: {
-            userName: '--',
+            userName: "--",
           },
         };
       }
@@ -428,20 +428,20 @@ const FactoryManage = defineComponent({
       getList();
     });
     return () => (
-      <div class='manufactorManager flex'>
-        <div class='tree_data'>
+      <div class="manufactorManager flex">
+        <div class="tree_data">
           <a-input-search
-		    allowClear
-            v-model={[searchValue.value, 'value']}
-            style='margin-bottom: 8px'
-            placeholder='请输入名称进行搜索'
+            allowClear
+            v-model={[searchValue.value, "value"]}
+            style="margin-bottom: 8px"
+            placeholder="请输入名称进行搜索"
           />
-          <div class='align-r'>
-            <a-button type='primary' ghost onClick={addFactor}>
+          <div class="align-r">
+            <a-button type="primary" ghost onClick={addFactor}>
               新增厂家
             </a-button>
           </div>
-          <div class='mar-t-20 tree_wrap'>
+          <div class="mar-t-20 tree_wrap">
             <a-tree
               show-line
               blockNode={true}
@@ -456,21 +456,27 @@ const FactoryManage = defineComponent({
                 title: ({ name, shortName, selected, dataRef }: any) => {
                   const title = shortName || name;
                   return (
-                    <span class='tree-node-title'>
+                    <span class="tree-node-title">
                       <a-tooltip
-                        placement='topLeft'
+                        placement="topLeft"
                         v-slots={{
                           title: () => {
                             return <span>{title}</span>;
                           },
                         }}
                       >
-                        <span class={['node_title',`node_title_${dataRef.level}` , selected ? 'on' : '']}>
+                        <span
+                          class={[
+                            "node_title",
+                            `node_title_${dataRef.level}`,
+                            selected ? "on" : "",
+                          ]}
+                        >
                           {title}
                         </span>
                       </a-tooltip>
                       {selected && (
-                        <a-space class='f_r'>
+                        <a-space class="f_r">
                           <span>
                             <EditOutlined
                               onClick={(e) => {
@@ -506,26 +512,26 @@ const FactoryManage = defineComponent({
             ></a-tree>
           </div>
         </div>
-        <div class='info_con'>
+        <div class="info_con">
           {state.rightInfoShow ? (
             <div>
-              <div class='flex-between  flex-center'>
-                <h3 class='bold'>
-                  {isNew.value ? '新建' : isEdit.value ? '编辑' : ''}
+              <div class="flex-between  flex-center">
+                <h3 class="bold">
+                  {isNew.value ? "新建" : isEdit.value ? "编辑" : ""}
                   {getNodeSort().name}基本信息
                 </h3>
                 {isEdit.value ? (
                   <a-space>
-                    <a-button type='primary' ghost onClick={cancel}>
+                    <a-button type="primary" ghost onClick={cancel}>
                       取消
                     </a-button>
-                    <a-button type='primary' onClick={submit}>
+                    <a-button type="primary" onClick={submit}>
                       完成
                     </a-button>
                   </a-space>
                 ) : (
                   <a-button
-                    type='primary'
+                    type="primary"
                     onClick={() => {
                       isEdit.value = true;
                     }}
@@ -534,95 +540,95 @@ const FactoryManage = defineComponent({
                   </a-button>
                 )}
               </div>
-              <div class='mar-t-20'>
+              <div class="mar-t-20">
                 <a-form
                   ref={formRef}
                   rules={rulesRef}
                   model={infoRef.infoState}
-                  name='basic'
-                  class='label_form'
+                  name="basic"
+                  class="label_form"
                   wrapper-col={{ span: 14 }}
                 >
                   <a-Row>
                     {getRowInfo(
-                      'shortName',
-                      getNodeSort().name + '简称',
+                      "shortName",
+                      getNodeSort().name + "简称",
                       true,
                       state.nodeLevel !== 3
                     )}
                     {getRowInfo(
-                      'name',
+                      "name",
                       `${
                         state.nodeLevel === 3
-                          ? '型号'
-                          : getNodeSort().name + '名称'
+                          ? "型号"
+                          : getNodeSort().name + "名称"
                       }`,
                       true
                     )}
                     {getRowInfo(
-                      'code',
-                      getNodeSort().name + '编码',
+                      "code",
+                      getNodeSort().name + "编码",
                       isNew.value
                     )}
                     <a-col lg={13} xl={9} md={13} offset={1}>
-                      <a-form-item label='是否生效' name='validEnable'>
+                      <a-form-item label="是否生效" name="validEnable">
                         {isEdit.value ? (
                           <a-switch
-                            v-model={[infoRef.infoState.validEnable, 'checked']}
+                            v-model={[infoRef.infoState.validEnable, "checked"]}
                           />
                         ) : (
                           <span>
-                            {infoRef.infoState.validEnable ? '生效' : '未生效'}
+                            {infoRef.infoState.validEnable ? "生效" : "未生效"}
                           </span>
                         )}
                       </a-form-item>
                     </a-col>
                     {getRowInfo(
-                      'website',
-                      '公司官网',
+                      "website",
+                      "公司官网",
                       true,
                       state.nodeLevel === 1
                     )}
                     {getRowInfo(
-                      'address',
-                      '联系地址',
+                      "address",
+                      "联系地址",
                       true,
                       state.nodeLevel === 1
                     )}
                     {getRowInfo(
-                      'linkUser',
-                      '联系人',
+                      "linkUser",
+                      "联系人",
                       true,
                       state.nodeLevel === 1
                     )}
                     {getRowInfo(
-                      'linkPhone',
-                      '联系电话',
+                      "linkPhone",
+                      "联系电话",
                       true,
                       state.nodeLevel === 1
                     )}
                     {getRowInfo(
-                      'createUserName',
-                      '创建人',
+                      "createUserName",
+                      "创建人",
                       false,
                       !isEdit.value
                     )}
                     {getRowInfo(
-                      'updateUserName',
-                      '更新人',
+                      "updateUserName",
+                      "更新人",
                       false,
                       !isEdit.value
                     )}
                     {getRowInfo(
-                      'createDt',
-                      '创建时间',
+                      "createDt",
+                      "创建时间",
                       false,
                       !isEdit.value,
                       true
                     )}
                     {getRowInfo(
-                      'updateDt',
-                      '更新时间',
+                      "updateDt",
+                      "更新时间",
                       false,
                       !isEdit.value,
                       true
@@ -631,22 +637,25 @@ const FactoryManage = defineComponent({
                   <a-row>
                     <a-col span={20} offset={1}>
                       <a-form-item
-                        label='备注'
-                        name='remark'
+                        label="备注"
+                        name="remark"
                         wrapper-col={{ span: 19 }}
                       >
                         <div>
-							{isEdit.value ? (
-							<a-textarea
-								maxlength={500}
-								v-model={[infoRef.infoState.remark, 'value']}
-							/>
-							) : (
-							<p class='mar-t-5'>{infoRef.infoState.remark || '暂无'}</p>
-							)}
-							<p class='color-9 mar-t-5'>注：备注最多可输入500字符</p>
-						</div>
-	
+                          {isEdit.value ? (
+                            <a-textarea
+                              maxlength={500}
+                              v-model={[infoRef.infoState.remark, "value"]}
+                            />
+                          ) : (
+                            <p class="mar-t-5">
+                              {infoRef.infoState.remark || "暂无"}
+                            </p>
+                          )}
+                          <p class="color-9 mar-t-5">
+                            注：备注最多可输入500字符
+                          </p>
+                        </div>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -660,4 +669,4 @@ const FactoryManage = defineComponent({
   },
 });
 
-export default utils.installComponent(FactoryManage, 'factory-manage');
+export default utils.installComponent(FactoryManage, "factory-manage");
