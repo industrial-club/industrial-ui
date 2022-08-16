@@ -9,6 +9,7 @@ import {
 } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import useMenuCode from "@/hooks/useMenuCode";
+import { cloneDeep } from "lodash";
 import { getActiveNavByProp } from "@/utils/route";
 
 import utils from "@/utils";
@@ -83,10 +84,10 @@ const LayoutNav = defineComponent({
         if (activeNav) {
           state.selectedKeys = [activeNav.code];
         } else if (!isInit.value) {
-          const prevMenuCode = menuCode.value;
+          const prevRouteQuery = cloneDeep(route.query);
           toDefaultMenu();
           setTimeout(() => {
-            menuCode.value = prevMenuCode;
+            router.push({ query: prevRouteQuery });
           });
         }
       } else {

@@ -24,6 +24,7 @@ import Permission from "@/pageComponent/views/video/setting/cameraPermission";
 import System from "@/pageComponent/views/video/setting/system";
 import Play from "@/pageComponent/views/video/play";
 import AlarmRecord from "@/pageComponent/views/alarms/warning-record";
+import AlarmDetail from "./views/alarms/alarmDetail";
 import AlarmConfigure from "@/pageComponent/views/alarms/warning-configure";
 import noticeCenter from "@/pageComponent/views/systemManager/noticeManager/noticeCenter";
 import noticeManager from "@/pageComponent/views/systemManager/noticeManager/noticeManager";
@@ -80,4 +81,5 @@ export default [
   factoryManage,
   elcRoom,
   boardScreen,
+  AlarmDetail,
 ];

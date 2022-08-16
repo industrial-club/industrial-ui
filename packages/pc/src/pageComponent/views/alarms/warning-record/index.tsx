@@ -57,18 +57,6 @@ const WarningRecord = defineComponent({
     const isDetailShow = ref(false);
     const detailRecord = ref();
 
-    // 外部传入的报警详情 需要直接展示
-    watchEffect(async () => {
-      const { dataId } = route.query;
-      if (dataId) {
-        const { data } = await getAlarmDetail(urlObj.alarmDetail)(dataId);
-        detailRecord.value = data;
-        isDetailShow.value = false;
-        await nextTick();
-        isDetailShow.value = true;
-      }
-    });
-
     const handleDetail = (record: any) => {
       detailRecord.value = record;
       isDetailShow.value = true;
