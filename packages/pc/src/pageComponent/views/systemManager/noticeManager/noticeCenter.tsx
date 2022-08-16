@@ -95,12 +95,12 @@ const noticeCenter = defineComponent({
                 if (column.key === "secretKey") {
                   return (
                     <div class="secretKey">
-                      <div>{record.corpId}</div>
-                      {record.corpId ? (
+                      <div>{record.id}</div>
+                      {record.id ? (
                         <a-button
                           type="link"
                           onClick={() => {
-                            copy(record.corpId);
+                            copy(record.id);
                           }}
                           v-slots={{
                             icon: () => <copy-outlined />,
