@@ -259,7 +259,7 @@ const com = defineComponent({
       );
     };
     return () => (
-      <div class="thingApp">
+      <div class="thingApp" style={{ height: "0" }}>
         {page.value === "edit" ? (
           <editThing
             data={pageData.editData}
