@@ -6,12 +6,9 @@ import {
   ref,
   watch,
   shallowRef,
-  onMounted,
-  nextTick,
 } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 import useMenuCode from "@/hooks/useMenuCode";
-import _ from "lodash";
 import { getMenuByCode, getOpenUrl } from "@/utils/route";
 import utils from "@/utils";
 
@@ -25,11 +22,6 @@ export interface IRouteItem {
 
 /**
  * 布局组件 - 内容区
- *  1: 监听menuCode变化 如果不在当前打开的标签页中 就添加一个标签页
- *  2: 如果是已经打开的标签页 把对应的标签页设为激活状态
- *  3: 2中组件 一种是iframe组件 另一种是普通组件
- *  4: 通过更新组件的key来刷新组件
- *  5: isMultiple字段表示可以多开标签 根据multiKey判断当前展示的是哪一个标签
  */
 const LayoutContent = defineComponent({
   props: {
@@ -49,14 +41,13 @@ const LayoutContent = defineComponent({
   },
   setup(props) {
     const route = useRoute();
+    const router = useRouter();
     const menuCode = useMenuCode();
 
     const tabs = ref<any[]>([]);
-    const activeCode = ref<string>();
-    const activeMultiKey = ref<string>();
+    const activeCode = ref<String>();
 
     const tabsRef = ref<HTMLElement>();
-    const marginTop = ref<string>("");
 
     // 扩展的菜单组件
     const extendRoutes = computed(() =>
@@ -65,31 +56,21 @@ const LayoutContent = defineComponent({
 
     // 监听menuCode 加入到tabs中
     watch(
-      [menuCode, () => route.query.multiKey],
-      async ([val]) => {
-        await nextTick();
+      menuCode,
+      (val) => {
         if (!val) return;
-        const { query } = route;
-        // 可以打开多个同类标签
-        const { isMultiple, multiKey: lastMultiKey } = query as any;
-
-        const multiKey =
-          lastMultiKey ||
-          (isMultiple ? (Math.random() * 10 ** 10).toFixed(0) : undefined);
         // 已经打开的tabs 不需要重复添加 设置为active
         const isInTabs = tabs.value.find((item) => item.code === val);
-        if ((isInTabs && !isMultiple) || (isInTabs && lastMultiKey)) {
+        if (isInTabs) {
           if (tabs.value.find((item) => item.code === val)) {
             activeCode.value = val;
-            activeMultiKey.value = multiKey;
           }
           return;
         }
         // 获取到对应的菜单对象
-        const menu = _.cloneDeep(
+        const menu =
           getMenuByCode(val, props.menu) ||
-            extendRoutes.value.find((item) => item.code === val)
-        );
+          extendRoutes.value.find((item) => item.code === val);
         if (!menu) return;
         let cpn: any;
         // mode为2是iframe
@@ -108,13 +89,10 @@ const LayoutContent = defineComponent({
         if (cpn) {
           tabs.value.push({
             ...menu,
-            multiKey,
-            query: _.omit(query, "menuCode"), // 携带原本的query参数
             cpn,
             key: Date.now(),
           });
           activeCode.value = val;
-          activeMultiKey.value = multiKey;
         }
       },
       { immediate: true }
@@ -129,12 +107,11 @@ const LayoutContent = defineComponent({
     };
 
     // 关闭tag
-    const handleCloseTag = async (idx: number) => {
+    const handleCloseTag = (idx: number) => {
       const removed = tabs.value.splice(idx, 1);
-      await nextTick();
       if (removed[0]?.code === activeCode.value) {
-        const tabElList = document.querySelectorAll(".tabs-list .tab-item");
-        (tabElList[tabElList.length - 1] as HTMLDivElement).click();
+        const newMenuCode = tabs.value[tabs.value.length - 1]?.code;
+        menuCode.value = newMenuCode;
       }
     };
     // 关闭到右侧
@@ -148,15 +125,6 @@ const LayoutContent = defineComponent({
       (tabs.value = tabs.value.filter((_, i) => i === idx));
     // 刷新
     const refreshCpn = (idx: number) => (tabs.value[idx].key = Date.now());
-
-    onMounted(() => {
-      if (props.showTabs) {
-        const el = document.getElementsByClassName("tabs-container")[0];
-        marginTop.value = window.getComputedStyle(el).height;
-      } else {
-        marginTop.value = "0";
-      }
-    });
 
     return () => (
       <a-layout-content class="layout-content" style={{ overflow: "auto" }}>
@@ -196,15 +164,11 @@ const LayoutContent = defineComponent({
                       key={item.code}
                       class={[
                         "tab-item",
-                        item.code === activeCode.value &&
-                          item.multiKey === activeMultiKey.value &&
-                          "active",
+                        item.code === activeCode.value && "active",
                       ]}
                       to={{
                         query: {
                           menuCode: item.code,
-                          multiKey: item.multiKey,
-                          ...item.query,
                         },
                       }}
                     >
@@ -221,8 +185,7 @@ const LayoutContent = defineComponent({
                               handleCloseTag(index);
                             }}
                           >
-                            {item.code === activeCode.value &&
-                            item.multiKey === activeMultiKey.value ? (
+                            {item.code === activeCode.value ? (
                               <close-circle-filled
                                 style={{ color: "#cdd0d3" }}
                               />
@@ -246,10 +209,7 @@ const LayoutContent = defineComponent({
           )}
           <div
             class="main-content"
-            style={{
-              marginTop: props.showTabs ? marginTop.value : "0",
-              height: `calc(100% - ${marginTop.value})`,
-            }}
+            style={{ marginTop: props.showTabs ? "" : "0" }}
           >
             {tabs.value.map(
               (menuItem: any, index) =>
@@ -257,11 +217,7 @@ const LayoutContent = defineComponent({
                   <menuItem.cpn
                     key={menuItem.key}
                     style={{
-                      display:
-                        menuItem.code === activeCode.value &&
-                        menuItem.multiKey === activeMultiKey.value
-                          ? ""
-                          : "none",
+                      display: menuItem.code === activeCode.value ? "" : "none",
                     }}
                   />
                 )
