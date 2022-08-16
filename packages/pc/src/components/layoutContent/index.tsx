@@ -6,7 +6,7 @@ import {
   ref,
   watch,
   shallowRef,
-  nextTick,
+  onMounted,
 } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 import useMenuCode from "@/hooks/useMenuCode";
@@ -55,6 +55,7 @@ const LayoutContent = defineComponent({
     const activeMultiKey = ref<string>();
 
     const tabsRef = ref<HTMLElement>();
+    const marginTop = ref<string>("");
 
     // 扩展的菜单组件
     const extendRoutes = computed(() =>
@@ -147,6 +148,15 @@ const LayoutContent = defineComponent({
     // 刷新
     const refreshCpn = (idx: number) => (tabs.value[idx].key = Date.now());
 
+    onMounted(() => {
+      if (props.showTabs) {
+        const el = document.getElementsByClassName("tabs-container")[0];
+        marginTop.value = window.getComputedStyle(el).height;
+      } else {
+        marginTop.value = "0";
+      }
+    });
+
     return () => (
       <a-layout-content class="layout-content" style={{ overflow: "auto" }}>
         <div class="layout-container">
@@ -235,7 +245,10 @@ const LayoutContent = defineComponent({
           )}
           <div
             class="main-content"
-            style={{ marginTop: props.showTabs ? "" : "0" }}
+            style={{
+              marginTop: props.showTabs ? marginTop.value : "0",
+              height: `calc(100% - ${marginTop.value})`,
+            }}
           >
             {tabs.value.map(
               (menuItem: any, index) =>
