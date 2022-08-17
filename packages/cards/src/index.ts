@@ -9,6 +9,7 @@ import { installCom } from "./utils";
 interface ListTpye {
   name: string;
   cname: string;
+  developer: string;
 }
 
 const cardList: Array<ListTpye> = [];
@@ -23,6 +24,7 @@ const createComp = () => {
     cardList.push({
       name: i.name,
       cname: i.cname,
+      developer: i.developer,
     });
   }
 };

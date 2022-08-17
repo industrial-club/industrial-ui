@@ -293,7 +293,7 @@ export default defineComponent({
                 showUploadList={false}
                 customRequest={(e) => customRequest(e)}
               >
-                <a-button type="primary">修改图片</a-button>
+                <a-button type="primary">上传图片</a-button>
               </a-upload>
             </div>
           </div>
