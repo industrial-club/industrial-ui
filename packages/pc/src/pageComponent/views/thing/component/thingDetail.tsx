@@ -128,7 +128,10 @@ export default defineComponent({
           </a-button>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.basic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">基础属性</div>
             <div
@@ -175,7 +178,10 @@ export default defineComponent({
           </div>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.dynamic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动态属性</div>
             <div
@@ -197,7 +203,10 @@ export default defineComponent({
           ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.logic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">逻辑</div>
             <div
@@ -219,7 +228,10 @@ export default defineComponent({
           ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.action ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动作</div>
             <div
