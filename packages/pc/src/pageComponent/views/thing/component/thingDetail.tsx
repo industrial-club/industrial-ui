@@ -108,7 +108,6 @@ export default defineComponent({
           <a-button
             type="primary"
             onClick={() => {
-              debugger;
               context.emit("toEdit", props.data!.staticMap.map);
             }}
           >

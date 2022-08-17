@@ -116,7 +116,12 @@ export default defineComponent({
         formData.fileUrl = value.thingInst?.photo;
         basicForm.value.push(
           ...colArr.value.filter((ele: any) => {
-            ele.value = value.staticMap.map[ele.code];
+            if (ele.columnType === "long") {
+              ele.value = Number(value.staticMap.map[ele.code]);
+            } else {
+              ele.value = value.staticMap.map[ele.code];
+            }
+
             return (
               ele.propertyType === "property" &&
               ele.code !== "CODE" &&
@@ -147,6 +152,15 @@ export default defineComponent({
       param.thingInst.photo = formData.fileUrl;
       basicForm.value.forEach((element: any, index: number) => {
         if (index !== 0 && index !== 1) {
+          if (
+            element.value &&
+            element.columnType === "long" &&
+            element.value.indexOf(".") > -1 &&
+            typeof element.value === "number"
+          ) {
+            message.error(`${element.name}应为整数`);
+            return false;
+          }
           param.staticMap.map[element.code] = element.value;
         }
       });

@@ -139,6 +139,15 @@ export default defineComponent({
       param.thingInst.photo = fileUrl.value;
       basicForm.value.forEach((element: any, index: number) => {
         if (index !== 0 && index !== 1) {
+          if (
+            element.value &&
+            element.columnType === "long" &&
+            element.value.indexOf(".") > -1 &&
+            typeof element.value === "number"
+          ) {
+            message.error(`${element.name}应为整数`);
+            return false;
+          }
           param.staticMap.map[element.code] = element.value;
         }
       });
@@ -173,7 +182,6 @@ export default defineComponent({
           arr.push({ key: key.toString(), value: selectInfo[key] });
         }
       }
-
       return (
         <a-select v-model={[ele.value, "value"]} style={{ width: "100%" }}>
           {arr.map((info: any) => {
