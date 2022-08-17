@@ -201,9 +201,9 @@ export default defineComponent({
     });
     const customRequest = (options: any) => {
       const { file, onSuccess, onError } = options;
-      const formData = new FormData();
-      formData.append("file", file as any);
-      thingApis.uploadCommon(formData, headers).then((res: any) => {
+      const fileData = new FormData();
+      fileData.append("file", file as any);
+      thingApis.uploadCommon(fileData, headers).then((res: any) => {
         if (res.code === "M0000") {
           formData.fileUrl = res.data;
           onSuccess("response", file);
@@ -287,7 +287,7 @@ export default defineComponent({
               })}
             </a-form>
             <div class="flex1 pic">
-              <img src={formData.fileUrl} />
+              <img src={formData.fileUrl || ""} />
               <a-upload
                 headers={headers}
                 showUploadList={false}
