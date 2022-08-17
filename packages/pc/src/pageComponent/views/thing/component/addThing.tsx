@@ -350,7 +350,7 @@ export default defineComponent({
             <div
               class="fold flex"
               onClick={() => {
-                folds.logic = !folds.dynamic;
+                folds.logic = !folds.logic;
               }}
             >
               {folds.logic ? "展开" : "折叠"}
@@ -375,7 +375,7 @@ export default defineComponent({
             <div
               class="fold flex"
               onClick={() => {
-                folds.action = !folds.dynamic;
+                folds.action = !folds.action;
               }}
             >
               {folds.action ? "展开" : "折叠"}
