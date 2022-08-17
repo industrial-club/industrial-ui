@@ -287,7 +287,7 @@ export default defineComponent({
               })}
             </a-form>
             <div class="flex1 pic">
-              <img src={formData.fileUrl} />
+              <img src={formData.fileUrl || ""} />
               <a-upload
                 headers={headers}
                 showUploadList={false}
