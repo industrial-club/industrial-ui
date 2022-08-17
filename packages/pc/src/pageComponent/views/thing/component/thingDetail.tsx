@@ -68,27 +68,33 @@ export default defineComponent({
         immediate: true,
       }
     );
-
-    const save = async () => {
-      const param: any = props.data;
-      basicForm.value.forEach((element: any) => {
-        param.staticMap.map[element.code] = element.value;
-      });
-      param.dynamicProperties.forEach((element) => {
-        const dy: any = dynamicTableList.value.find((ele: any) => {
-          return element.thingPropertyCode === ele.thingPropertyCode;
-        });
-        element.preCode = dy.preCode;
-        element.prePointCode = dy.prePointCode;
-      });
-      const res: any = await thingApis.editThing(param);
-      if (res.code === "M0000") {
-        message.success("保存成功");
-        context.emit("bach");
-      } else {
-        message.error("服务异常");
+    const renderSelect = (ele: any) => {
+      const selectInfo = JSON.parse(ele.listInfo || "[]");
+      const arr: any[] = [];
+      if (ele.columnType === "long") {
+        for (const key in selectInfo) {
+          arr.push({ key: Number(key), value: selectInfo[key] });
+        }
+      } else if (ele.columnType === "string") {
+        for (const key in selectInfo) {
+          arr.push({ key: key.toString(), value: selectInfo[key] });
+        }
       }
+      return (
+        <a-select
+          v-model={[ele.value, "value"]}
+          style={{ width: "100%" }}
+          disabled={true}
+        >
+          {arr.map((info: any) => {
+            return (
+              <a-select-option value={info.key}>{info.value}</a-select-option>
+            );
+          })}
+        </a-select>
+      );
     };
+
     const folds = reactive({
       basic: false,
       dynamic: false,
@@ -96,19 +102,18 @@ export default defineComponent({
       action: false,
     });
     return () => (
-      <div class="editThing">
+      <div class="editThing" style={{ height: "100%", overflow: "auto" }}>
         <div class="header flex">
           <a-page-header
             class="flex1 "
             title="返回物实例列表"
             onBack={() => {
-              context.emit("back");
+              context.emit("backList");
             }}
           />
           <a-button
             type="primary"
             onClick={() => {
-              debugger;
               context.emit("toEdit", props.data!.staticMap.map);
             }}
           >
@@ -123,7 +128,10 @@ export default defineComponent({
           </a-button>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.basic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">基础属性</div>
             <div
@@ -137,12 +145,18 @@ export default defineComponent({
             </div>
           </div>
           <div class="flex content" style={folds.basic ? "display:none" : ""}>
-            <div class="flex3 grid">
+            <a-form class="flex3 grid">
               {basicForm.value.map((ele: any) => {
                 return (
                   <div class="flex element">
-                    <div class="name">{ele.name}</div>
-                    <div>
+                    <a-form-item
+                      label={ele.name}
+                      name={ele.code}
+                      rules={ele.rules}
+                      style={{ width: "100%" }}
+                      label-col={{ span: 8 }}
+                      wrapper-col={{ span: 16 }}
+                    >
                       {ele.displayType === "text" ? (
                         <a-input
                           v-model={[ele.value, "value"]}
@@ -151,11 +165,12 @@ export default defineComponent({
                       ) : (
                         ""
                       )}
-                    </div>
+                      {ele.displayType === "select" ? renderSelect(ele) : ""}
+                    </a-form-item>
                   </div>
                 );
               })}
-            </div>
+            </a-form>
             <div class="flex1 pic">
               <img src="https://dss2.bdstatic.com/5bVYsj_p_tVS5dKfpU_Y_D3/res/r/image/2022-8-1/0801ban.png" />
               <a-button type="primary">修改图片</a-button>
@@ -163,7 +178,10 @@ export default defineComponent({
           </div>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.dynamic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动态属性</div>
             <div
@@ -176,13 +194,19 @@ export default defineComponent({
               {folds.dynamic ? <CaretRightOutlined /> : <CaretUpOutlined />}
             </div>
           </div>
-          <div
-            class="flex content"
+          <a-table
             style={folds.dynamic ? "display:none" : ""}
-          ></div>
+            rowKey="code"
+            columns={dynamicColumns.value}
+            dataSource={dynamicTableList.value}
+            pagination={false}
+          ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.logic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">逻辑</div>
             <div
@@ -204,7 +228,10 @@ export default defineComponent({
           ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.action ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动作</div>
             <div

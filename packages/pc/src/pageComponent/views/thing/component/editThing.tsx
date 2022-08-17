@@ -116,7 +116,12 @@ export default defineComponent({
         formData.fileUrl = value.thingInst?.photo;
         basicForm.value.push(
           ...colArr.value.filter((ele: any) => {
-            ele.value = value.staticMap.map[ele.code];
+            if (ele.columnType === "long") {
+              ele.value = Number(value.staticMap.map[ele.code]);
+            } else {
+              ele.value = value.staticMap.map[ele.code];
+            }
+
             return (
               ele.propertyType === "property" &&
               ele.code !== "CODE" &&
@@ -147,6 +152,15 @@ export default defineComponent({
       param.thingInst.photo = formData.fileUrl;
       basicForm.value.forEach((element: any, index: number) => {
         if (index !== 0 && index !== 1) {
+          if (
+            element.value &&
+            element.columnType === "long" &&
+            element.value.indexOf(".") > -1 &&
+            typeof element.value === "number"
+          ) {
+            message.error(`${element.name}应为整数`);
+            return false;
+          }
           param.staticMap.map[element.code] = element.value;
         }
       });
@@ -212,13 +226,13 @@ export default defineComponent({
       });
     };
     return () => (
-      <div class="editThing">
+      <div class="editThing" style={{ height: "100%", overflow: "auto" }}>
         <div class="header flex">
           <a-page-header
             class="flex1 "
             title="返回物实例列表"
             onBack={() => {
-              context.emit("back");
+              context.emit("backList");
             }}
           />
           <a-button
@@ -238,7 +252,10 @@ export default defineComponent({
           </a-button>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.basic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">基础属性</div>
             <div
@@ -295,7 +312,10 @@ export default defineComponent({
           </div>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.dynamic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动态属性</div>
 
@@ -335,7 +355,10 @@ export default defineComponent({
           ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.logic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">逻辑</div>
             <div
@@ -357,7 +380,10 @@ export default defineComponent({
           ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.action ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动作</div>
             <div
