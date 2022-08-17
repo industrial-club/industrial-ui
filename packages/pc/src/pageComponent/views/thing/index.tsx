@@ -267,6 +267,10 @@ const com = defineComponent({
               refresh();
               page.value = "detail";
             }}
+            onBackList={() => {
+              refresh();
+              page.value = "list";
+            }}
             onToDetail={(res) => {
               toDetail({ record: res });
             }}
@@ -281,6 +285,10 @@ const com = defineComponent({
               refresh();
               page.value = "list";
             }}
+            onBackList={() => {
+              refresh();
+              page.value = "list";
+            }}
             onToDetail={(res) => {
               toDetail({ record: res });
             }}
@@ -292,6 +300,10 @@ const com = defineComponent({
           <thingDetail
             data={pageData.editData}
             onBack={() => {
+              refresh();
+              page.value = "list";
+            }}
+            onBackList={() => {
               refresh();
               page.value = "list";
             }}

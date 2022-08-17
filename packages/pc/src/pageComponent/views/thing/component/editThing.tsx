@@ -232,7 +232,7 @@ export default defineComponent({
             class="flex1 "
             title="返回物实例列表"
             onBack={() => {
-              context.emit("back");
+              context.emit("backList");
             }}
           />
           <a-button
