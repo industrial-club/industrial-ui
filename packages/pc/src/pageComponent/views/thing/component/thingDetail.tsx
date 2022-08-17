@@ -46,6 +46,8 @@ export default defineComponent({
     // 动作表格
     const actionColumns = ref([]);
     const actionCTableList = ref([]);
+
+    const fileUrl = ref(null);
     watch(
       () => props.data,
       (value: any) => {
@@ -56,6 +58,7 @@ export default defineComponent({
           ele.value = value.staticMap.map[ele.code];
           return ele.propertyType === "property";
         });
+        fileUrl.value = value.thingInst?.photo;
         dynamicTableList.value = value.dynamicProperties?.filter((ele: any) => {
           const pro: any = colArr.value.find((col: any) => {
             return col.code === ele.thingPropertyCode;
@@ -172,8 +175,8 @@ export default defineComponent({
               })}
             </a-form>
             <div class="flex1 pic">
-              <img src="https://dss2.bdstatic.com/5bVYsj_p_tVS5dKfpU_Y_D3/res/r/image/2022-8-1/0801ban.png" />
-              <a-button type="primary">修改图片</a-button>
+              <img src={fileUrl.value || ""} />
+              {/* <a-button type="primary">修改图片</a-button> */}
             </div>
           </div>
         </div>

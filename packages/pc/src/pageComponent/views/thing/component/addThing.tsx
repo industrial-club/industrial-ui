@@ -136,7 +136,7 @@ export default defineComponent({
       };
       param.thingInst.name = basicForm.value[0].value;
       param.thingInst.code = basicForm.value[1].value;
-      param.thingInst.photo = fileUrl.value;
+      param.thingInst.photo = formData.fileUrl;
       basicForm.value.forEach((element: any, index: number) => {
         if (index !== 0 && index !== 1) {
           if (
@@ -197,15 +197,15 @@ export default defineComponent({
     const formData = reactive({
       name: null,
       code: null,
+      fileUrl: null,
     });
-    const fileUrl = ref("");
     const customRequest = (options: any) => {
       const { file, onSuccess, onError } = options;
       const formData = new FormData();
       formData.append("file", file as any);
       thingApis.uploadCommon(formData, headers).then((res: any) => {
         if (res.code === "M0000") {
-          fileUrl.value = res.data;
+          formData.fileUrl = res.data;
           onSuccess("response", file);
         } else {
           onError("error", file);
@@ -287,7 +287,7 @@ export default defineComponent({
               })}
             </a-form>
             <div class="flex1 pic">
-              <img src={fileUrl.value} />
+              <img src={formData.fileUrl} />
               <a-upload
                 headers={headers}
                 showUploadList={false}
