@@ -105,6 +105,14 @@ const RuleForm = defineComponent({
           judgeSymbolList.value[0].code)
     );
 
+    // 选择其他系统 清空设备信号
+    watch(
+      () => $store.state.basicForm.systemUuid,
+      () => {
+        ruleForm.value.propertyCode = [];
+      }
+    );
+
     // 表单回显
     watch(
       () => $store.state.ruleForm,
