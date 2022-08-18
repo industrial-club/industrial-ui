@@ -359,6 +359,7 @@ const com = defineComponent({
     const advancedShow = ref(false);
     let userInfo: any;
     onMounted(() => {
+      debugger;
       getData();
       getVideoBrand();
       getMediaAll();
@@ -592,11 +593,11 @@ const com = defineComponent({
         </a-modal>
         <div class="header flex">
           <div class="flex flex1">
-            <span class="lable">名称</span>
+            <span class="lable">相机名称</span>
             <a-input
               class="param"
               v-model={[data.param.nameStr, "value"]}
-              placeholder="请输入名称"
+              placeholder="请相机输入名称"
             ></a-input>
           </div>
 
