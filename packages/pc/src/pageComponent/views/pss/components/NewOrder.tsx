@@ -182,7 +182,7 @@ export default defineComponent({
           formState.value.deviceList = [...old, ...selectedList.value];
           formState.value.deviceList.forEach(async (device: any) => {
             const { data } = await pssApi.applyLoop(device.id);
-            data.equmentId = data.id;
+            device.equmentId = device.id;
             device.list = data;
           });
         });
