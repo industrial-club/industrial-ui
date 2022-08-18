@@ -476,7 +476,7 @@ export default defineComponent({
             ),
           }}
         >
-          <div class="modal_content flex">
+          <div class="modal_content flex" style="max-height: 500px;">
             <div class="left">
               <Input
                 class="serach"
