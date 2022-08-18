@@ -6,9 +6,11 @@ import {
   ref,
   watch,
   shallowRef,
+  nextTick,
 } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 import useMenuCode from "@/hooks/useMenuCode";
+import _ from "lodash";
 import { getMenuByCode, getOpenUrl } from "@/utils/route";
 import utils from "@/utils";
 
@@ -22,6 +24,11 @@ export interface IRouteItem {
 
 /**
  * 布局组件 - 内容区
+ *  1: 监听menuCode变化 如果不在当前打开的标签页中 就添加一个标签页
+ *  2: 如果是已经打开的标签页 把对应的标签页设为激活状态
+ *  3: 2种组件 iframe组件/普通组件
+ *  4: 通过更新组件的key来刷新组件
+ *  5: 如果需要同一个菜单打开多个标签 需要在query中配置isMultiple和multiKey
  */
 const LayoutContent = defineComponent({
   props: {
@@ -41,11 +48,11 @@ const LayoutContent = defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    const router = useRouter();
     const menuCode = useMenuCode();
 
     const tabs = ref<any[]>([]);
-    const activeCode = ref<String>();
+    const activeCode = ref<string>();
+    const activeMultiKey = ref<string>();
 
     const tabsRef = ref<HTMLElement>();
 
@@ -56,21 +63,29 @@ const LayoutContent = defineComponent({
 
     // 监听menuCode 加入到tabs中
     watch(
-      menuCode,
-      (val) => {
+      [menuCode, () => route.query.multiKey],
+      async ([val]) => {
         if (!val) return;
+        const { query } = route;
+        // 可以打开多个同类标签
+        const { multiKey } = query as any;
+
         // 已经打开的tabs 不需要重复添加 设置为active
-        const isInTabs = tabs.value.find((item) => item.code === val);
+        const isInTabs = !!tabs.value.find(
+          (item) => item.code === val && item.multiKey === multiKey
+        );
         if (isInTabs) {
           if (tabs.value.find((item) => item.code === val)) {
             activeCode.value = val;
+            activeMultiKey.value = multiKey;
           }
           return;
         }
         // 获取到对应的菜单对象
-        const menu =
+        const menu = _.cloneDeep(
           getMenuByCode(val, props.menu) ||
-          extendRoutes.value.find((item) => item.code === val);
+            extendRoutes.value.find((item) => item.code === val)
+        );
         if (!menu) return;
         let cpn: any;
         // mode为2是iframe
@@ -89,10 +104,13 @@ const LayoutContent = defineComponent({
         if (cpn) {
           tabs.value.push({
             ...menu,
+            multiKey,
+            query: _.omit(query, "menuCode"), // 携带原本的query参数
             cpn,
             key: Date.now(),
           });
           activeCode.value = val;
+          activeMultiKey.value = multiKey;
         }
       },
       { immediate: true }
@@ -107,11 +125,12 @@ const LayoutContent = defineComponent({
     };
 
     // 关闭tag
-    const handleCloseTag = (idx: number) => {
+    const handleCloseTag = async (idx: number) => {
       const removed = tabs.value.splice(idx, 1);
+      await nextTick();
       if (removed[0]?.code === activeCode.value) {
-        const newMenuCode = tabs.value[tabs.value.length - 1]?.code;
-        menuCode.value = newMenuCode;
+        const tabElList = document.querySelectorAll(".tabs-list .tab-item");
+        (tabElList[tabElList.length - 1] as HTMLDivElement).click();
       }
     };
     // 关闭到右侧
@@ -164,11 +183,15 @@ const LayoutContent = defineComponent({
                       key={item.code}
                       class={[
                         "tab-item",
-                        item.code === activeCode.value && "active",
+                        item.code === activeCode.value &&
+                          item.multiKey === activeMultiKey.value &&
+                          "active",
                       ]}
                       to={{
                         query: {
                           menuCode: item.code,
+                          multiKey: item.multiKey,
+                          ...item.query,
                         },
                       }}
                     >
@@ -185,7 +208,8 @@ const LayoutContent = defineComponent({
                               handleCloseTag(index);
                             }}
                           >
-                            {item.code === activeCode.value ? (
+                            {item.code === activeCode.value &&
+                            item.multiKey === activeMultiKey.value ? (
                               <close-circle-filled
                                 style={{ color: "#cdd0d3" }}
                               />
@@ -209,7 +233,9 @@ const LayoutContent = defineComponent({
           )}
           <div
             class="main-content"
-            style={{ marginTop: props.showTabs ? "" : "0" }}
+            style={{
+              marginTop: props.showTabs ? "" : "0",
+            }}
           >
             {tabs.value.map(
               (menuItem: any, index) =>
@@ -217,7 +243,11 @@ const LayoutContent = defineComponent({
                   <menuItem.cpn
                     key={menuItem.key}
                     style={{
-                      display: menuItem.code === activeCode.value ? "" : "none",
+                      display:
+                        menuItem.code === activeCode.value &&
+                        menuItem.multiKey === activeMultiKey.value
+                          ? ""
+                          : "none",
                     }}
                   />
                 )

@@ -1,0 +1,75 @@
+@color: #1890ff;
+@colorDark: #1d33a2;
+
+.NewOrder {
+}
+
+.newOrder_modal {
+  .modal_content {
+    max-height: 500px;
+    overflow-y: auto;
+
+    .content {
+      flex-direction: column;
+
+      .line {
+        gap: 8px;
+        .all {
+          .num {
+            color: @color;
+          }
+          .num[data-doc-theme="dark"] {
+            color: @colorDark;
+          }
+        }
+      }
+
+      .deviceBox {
+        max-height: 260px;
+        overflow-y: auto;
+        margin-top: 16px;
+
+        .device {
+          margin-bottom: 8px;
+
+          .titleLine {
+            width: 100%;
+            background: #f7f7f7;
+            justify-content: space-between;
+            padding-left: 16px;
+            margin-bottom: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.newOrder_device_modal {
+  .modal_content {
+    .left {
+      flex: 1;
+      border-right: 1px solid #dce1e4;
+      padding-right: 16px;
+      margin-right: 16px;
+    }
+    .right {
+      width: 360px;
+      flex-grow: 0;
+      flex-direction: column;
+
+      .top {
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .activedBox {
+        flex: 1;
+        overflow-y: auto;
+        .tag {
+          margin-bottom: 16px;
+        }
+      }
+    }
+  }
+}

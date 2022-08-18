@@ -8,6 +8,7 @@ const props = {
 export default defineComponent({
   name: "production",
   cname: "生产情况",
+  developer: "前端开发组",
   components: { prodTop, prodBottom },
   props,
   setup(_props, _context) {

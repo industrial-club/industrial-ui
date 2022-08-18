@@ -174,7 +174,6 @@ export class WebRtcMt {
     });
     player.on(Events.WEBRTC_ON_REMOTE_STREAMS, (e: any) => {
       // 获取到了远端流，可以播放
-      console.log("播放成功", e.streams);
     });
     player.on(Events.WEBRTC_OFFER_ANWSER_EXCHANGE_FAILED, (e: any) => {
       // offer anwser 交换失败,这里前端得重新调用添加视频拉流代码。

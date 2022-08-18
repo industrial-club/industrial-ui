@@ -11,6 +11,12 @@ export default defineComponent({
     data: Object,
   },
   setup(props, context) {
+    const userinfo = JSON.parse(window.sessionStorage.getItem("userinfo")!);
+    const headers = {
+      "Content-Type": "multipart/form-data",
+      userId: userinfo.userId,
+      corpId: userinfo.corpId,
+    };
     // 基础属性
     const basicForm = ref<any[]>([]);
     // 全部属性
@@ -56,15 +62,38 @@ export default defineComponent({
     const actionCTableList = ref([]);
     const form = ref();
     const formData = reactive({
-      name: "",
-      code: "",
+      name: null,
+      code: null,
+      fileUrl: null,
     });
+    // form输入类型过滤
+    const typeFilter = (val) => {
+      switch (val) {
+        case "string":
+          return "text";
+          break;
+        case "long":
+          return "number";
+          break;
+        case "double":
+          return "number";
+          break;
+        case "boolean":
+          return "boolean";
+          break;
+        default:
+          return "";
+          break;
+      }
+    };
+
     watch(
       () => props.data,
       (value: any) => {
         colArr.value = JSON.parse(
           JSON.stringify(value.thingInst?.thing?.thingPropertyList || [])
         );
+
         basicForm.value = [];
         basicForm.value.push(
           {
@@ -84,9 +113,15 @@ export default defineComponent({
         );
         formData.name = value.thingInst?.name;
         formData.code = value.thingInst?.code;
+        formData.fileUrl = value.thingInst?.photo;
         basicForm.value.push(
           ...colArr.value.filter((ele: any) => {
-            ele.value = value.staticMap.map[ele.code];
+            if (ele.columnType === "long") {
+              ele.value = Number(value.staticMap.map[ele.code]);
+            } else {
+              ele.value = value.staticMap.map[ele.code];
+            }
+
             return (
               ele.propertyType === "property" &&
               ele.code !== "CODE" &&
@@ -114,8 +149,18 @@ export default defineComponent({
       const param: any = props.data;
       param.thingInst.name = basicForm.value[0].value;
       param.thingInst.code = basicForm.value[1].value;
+      param.thingInst.photo = formData.fileUrl;
       basicForm.value.forEach((element: any, index: number) => {
         if (index !== 0 && index !== 1) {
+          if (
+            element.value &&
+            element.columnType === "long" &&
+            element.value.indexOf(".") > -1 &&
+            typeof element.value === "number"
+          ) {
+            message.error(`${element.name}应为整数`);
+            return false;
+          }
           param.staticMap.map[element.code] = element.value;
         }
       });
@@ -145,11 +190,17 @@ export default defineComponent({
     const renderSelect = (ele: any) => {
       const selectInfo = JSON.parse(ele.listInfo || "[]");
       const arr: any[] = [];
-      for (const key in selectInfo) {
-        arr.push({ key, value: selectInfo[key] });
+      if (ele.columnType === "long") {
+        for (const key in selectInfo) {
+          arr.push({ key: Number(key), value: selectInfo[key] });
+        }
+      } else if (ele.columnType === "string") {
+        for (const key in selectInfo) {
+          arr.push({ key: key.toString(), value: selectInfo[key] });
+        }
       }
       return (
-        <a-select v-model={[ele.value, "value"]} style="width: 120px">
+        <a-select v-model={[ele.value, "value"]} style={{ width: "100%" }}>
           {arr.map((info: any) => {
             return (
               <a-select-option value={info.key}>{info.value}</a-select-option>
@@ -158,14 +209,30 @@ export default defineComponent({
         </a-select>
       );
     };
+
+    const customRequest = (options: any) => {
+      const { file, onSuccess, onError } = options;
+      const fileData = new FormData();
+      fileData.append("file", file as any);
+      thingApis.uploadCommon(fileData, headers).then((res: any) => {
+        if (res.code === "M0000") {
+          formData.fileUrl = res.data;
+          message.success("上传成功");
+          onSuccess("response", file);
+        } else {
+          message.error("上传失败");
+          onError("error", file);
+        }
+      });
+    };
     return () => (
-      <div class="editThing">
+      <div class="editThing" style={{ height: "100%", overflow: "auto" }}>
         <div class="header flex">
           <a-page-header
             class="flex1 "
             title="返回物实例列表"
             onBack={() => {
-              context.emit("back");
+              context.emit("backList");
             }}
           />
           <a-button
@@ -185,7 +252,10 @@ export default defineComponent({
           </a-button>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.basic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">基础属性</div>
             <div
@@ -207,11 +277,15 @@ export default defineComponent({
                       label={ele.name}
                       name={ele.code}
                       rules={ele.rules}
+                      style={{ width: "100%" }}
+                      label-col={{ span: 8 }}
+                      wrapper-col={{ span: 16 }}
                     >
                       {ele.displayType === "text" ? (
                         <a-input
                           v-model={[ele.value, "value"]}
                           disabled={ele.readonly}
+                          type={typeFilter(ele.columnType)}
                           onChange={() => {
                             formData[ele.code] = ele.value;
                           }}
@@ -226,15 +300,22 @@ export default defineComponent({
               })}
             </a-form>
             <div class="flex1 pic">
-              <img src="https://dss2.bdstatic.com/5bVYsj_p_tVS5dKfpU_Y_D3/res/r/image/2022-8-1/0801ban.png" />
-              <a-upload>
+              <img src={formData.fileUrl || ""} />
+              <a-upload
+                headers={headers}
+                showUploadList={false}
+                customRequest={(e) => customRequest(e)}
+              >
                 <a-button type="primary">修改图片</a-button>
               </a-upload>
             </div>
           </div>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.dynamic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动态属性</div>
 
@@ -265,6 +346,7 @@ export default defineComponent({
                   return (
                     <a-input
                       v-model={[record[column.dataIndex], "value"]}
+                      type={typeFilter(record.columnType)}
                     ></a-input>
                   );
                 }
@@ -273,13 +355,16 @@ export default defineComponent({
           ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.logic ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">逻辑</div>
             <div
               class="fold flex"
               onClick={() => {
-                folds.logic = !folds.dynamic;
+                folds.logic = !folds.logic;
               }}
             >
               {folds.logic ? "展开" : "折叠"}
@@ -295,7 +380,10 @@ export default defineComponent({
           ></a-table>
         </div>
         <div class="basic">
-          <div class="title flex">
+          <div
+            class="title flex"
+            style={folds.action ? "margin-bottom:10px" : ""}
+          >
             <div class="icon"></div>
             <div class="name">动作</div>
             <div

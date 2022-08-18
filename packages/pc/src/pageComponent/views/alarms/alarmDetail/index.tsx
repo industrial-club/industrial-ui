@@ -6,8 +6,9 @@ import { Chart } from "@antv/g2";
 import { getAlarmTypeMap, getVideo } from "@/api/alarm/alarmRecord";
 import { getVideoBaseUrl } from "@/api/alarm/alarmRecord";
 import { IUrlObj } from "../warning-record";
+import utils from "@/utils";
 
-export default defineComponent({
+const AlarmDetail = defineComponent({
   props: {
     record: {
       type: Object,
@@ -15,12 +16,14 @@ export default defineComponent({
     onClose: {
       type: Function,
     },
+    showHeader: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props, { emit }) {
     const urlObj = inject<IUrlObj>("urlObj")!;
 
-    const route = useRoute();
-    const router = useRouter();
     const back = () => {
       props.onClose?.();
     };
@@ -30,12 +33,12 @@ export default defineComponent({
     // 获取视频
     const videoBaseUrl = ref("");
     const getVideoUrl = async () => {
-      videoBaseUrl.value = await getVideoBaseUrl(urlObj.videoBaseUrl)();
+      videoBaseUrl.value = await getVideoBaseUrl(urlObj?.videoBaseUrl)();
     };
     getVideoUrl();
     const videoList = ref<string[]>([]);
     const getAlarmVideo = async () => {
-      const { data } = await getVideo(urlObj.getVideo)(
+      const { data } = await getVideo(urlObj?.getVideo)(
         alarmDetail.value.id,
         alarmDetail.value.instanceUuid
       );
@@ -124,8 +127,6 @@ export default defineComponent({
         }
       );
 
-      console.log(chartData.value);
-
       chartIns.value.data(chartData.value);
       chartIns.value.render();
     };
@@ -140,7 +141,7 @@ export default defineComponent({
 
     // 报警类型
     const alarmTypeList = ref<any[]>([]);
-    getAlarmTypeMap(urlObj.alarmTypeList)().then(({ data }) => {
+    getAlarmTypeMap(urlObj?.alarmTypeList)().then(({ data }) => {
       alarmTypeList.value = data;
     });
     const alarmType = computed(() => {
@@ -155,14 +156,14 @@ export default defineComponent({
 
     return () => (
       <div class="alarmDetail">
-        {/* 面包屑 */}
-        {/* <a-breadcrumb>
-          <a-breadcrumb-item>
-            <a onClick={back}>报警记录</a>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>报警详情</a-breadcrumb-item>
-        </a-breadcrumb> */}
-        <a-page-header style={{ padding: 0 }} title="报警详情" onBack={back} />
+        {/* 页头 */}
+        {props.showHeader && (
+          <a-page-header
+            style={{ padding: 0 }}
+            title="报警详情"
+            onBack={back}
+          />
+        )}
         {/* 详情  描述列表*/}
         <a-descriptions
           labelStyle={{ width: "120px", textAlign: "right" }}
@@ -247,3 +248,5 @@ export default defineComponent({
     );
   },
 });
+
+export default utils.installComponent(AlarmDetail, "alarm-detail") as any;

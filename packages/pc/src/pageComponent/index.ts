@@ -80,4 +80,5 @@ export default [
   factoryManage,
   elcRoom,
   boardScreen,
+  AlarmDetail,
 ];

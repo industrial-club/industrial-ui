@@ -99,6 +99,7 @@ export function getParentMenuByCode(code: string, menuTree: any[]) {
  */
 export function getOpenUrl(url: string) {
   const userinfo = JSON.parse(sessionStorage.getItem("userinfo")!);
+  const theme = localStorage.getItem("theme") ?? "light";
   const isWithOrigin = url.startsWith("http");
   const fullUrl = isWithOrigin
     ? url
@@ -109,10 +110,12 @@ export function getOpenUrl(url: string) {
     const converceUrl = new URL(urlObj.hash.replace("#", location.origin));
     converceUrl.searchParams.set("token", sessionStorage.getItem("token")!);
     converceUrl.searchParams.set("userId", userinfo.userId);
+    converceUrl.searchParams.set("theme", theme);
     urlObj.hash = converceUrl.href.replace(location.origin, "#");
   } else {
     urlObj.searchParams.set("token", sessionStorage.getItem("token")!);
     urlObj.searchParams.set("userId", userinfo.userId);
+    urlObj.searchParams.set("theme", theme);
   }
   return urlObj.href;
 }

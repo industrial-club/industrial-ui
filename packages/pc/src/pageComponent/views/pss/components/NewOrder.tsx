@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch, nextTick } from "vue";
 import {
   Button,
   Table,
@@ -13,10 +13,11 @@ import {
 } from "ant-design-vue";
 import {
   PlusOutlined,
-  MinusOutlined,
+  MinusSquareOutlined,
   SearchOutlined,
 } from "@ant-design/icons-vue";
 import useTableList from "@/pageComponent/hooks/useTableList";
+import { cloneDeep } from "lodash";
 
 import dayjs, { Dayjs } from "dayjs";
 
@@ -103,19 +104,19 @@ export default defineComponent({
     const formRef = ref();
 
     const formState = ref({
-      equment: null as any, // 申请设备ID
-      loopIds: [], // 申请停送电回路ids
       bus: 0,
-      // stopTime: dayjs().format(Format),
-      // supplyTime: dayjs().format(Format),
-      stopTime: null,
-      supplyTime: null,
+      deviceList: [] as any, // 设备列表
+      stopTime: dayjs().format(Format),
+      supplyTime: dayjs().format(Format),
+      // stopTime: null,
+      // supplyTime: null,
       duration: 8,
       cause: "检修设备",
       causetext: "",
     });
 
     const selectRows: any = ref([]);
+    const selectedList: any = ref([]);
 
     const eqModal: any = reactive({
       visible: false,
@@ -157,33 +158,34 @@ export default defineComponent({
           item.loop = item.loops.join(",");
           return item;
         });
-        eqModal.visible = true;
 
-        console.log(eqModal, "location");
+        selectRows.value = [];
+        selectedList.value = [];
+        eqModal.visible = true;
       } catch (error) {
         console.log(error);
       }
     };
 
-    // 删除设备
-    const delEq = () => {
-      formState.value.equment = null;
-      loopList.value = [];
+    const onSelectEq = (selectedRowKeys: any, selectedRows: any) => {
+      // console.log(selectedRowKeys, selectedRows);
+      selectRows.value = selectedRowKeys;
+      selectedList.value = selectedRows;
     };
 
-    const onSelectEq = (val: any, selectedRows: any) => {
-      console.info(val, selectedRows);
-      selectRows.value = selectedRows;
-    };
-
-    const loopList: any = ref([]);
     const sureAddEq = async () => {
-      if (selectRows.value.length > 0) {
-        formState.value.equment = selectRows.value[0];
-        const { data } = await pssApi.applyLoop(formState.value.equment.id);
-        console.info(data);
-        loopList.value = data;
-        console.info(555, loopList.value);
+      if (selectedList.value.length > 0) {
+        const old = cloneDeep(formState.value.deviceList);
+        formState.value.deviceList = [];
+
+        nextTick(() => {
+          formState.value.deviceList = [...old, ...selectedList.value];
+          formState.value.deviceList.forEach(async (device: any) => {
+            const { data } = await pssApi.applyLoop(device.id);
+            device.equmentId = device.id;
+            device.list = data;
+          });
+        });
 
         cancelAddEq();
       } else {
@@ -193,7 +195,6 @@ export default defineComponent({
 
     const cancelAddEq = () => {
       eqModal.visible = false;
-      selectRows.value = [];
     };
 
     const ok = async () => {
@@ -205,8 +206,7 @@ export default defineComponent({
         .format(Format);
 
       const param = {
-        equmentId: formState.value.equment.id, // 申请设备ID
-        loopIds: formState.value.loopIds, // 申请停送电回路ids
+        equments: formState.value.deviceList, // 设备信息
         busId: typeColumns[formState.value.bus].value, // stopSupplyPower(低压停送电) stopPower（低压停电） supplyPower（低压送电）
         busName: typeColumns[formState.value.bus].label, // 业务名称
         reason:
@@ -227,18 +227,31 @@ export default defineComponent({
       }
     };
 
+    watch(
+      () => props.showCreate,
+      (val) => {
+        if (val) {
+          formState.value.stopTime = dayjs().format(Format);
+          formState.value.supplyTime = dayjs().format(Format);
+        }
+      }
+    );
+
     const cancelModal = () => {
       context.emit("update:showCreate", false);
-      formRef.value.resetFields();
+      nextTick(() => {
+        formRef.value.resetFields();
+        formState.value.deviceList = [];
+      });
     };
 
     return () => (
       <div class="newOrder">
         <Modal
-          v-model={[props.showCreate, "visible"]}
+          visible={props.showCreate}
           title="新建工单"
-          width="799px"
-          wrapClassName="pssList_modal"
+          width="850px"
+          wrapClassName="newOrder_modal"
           onCancel={cancelModal}
           v-slots={{
             footer: () => (
@@ -251,12 +264,12 @@ export default defineComponent({
             ),
           }}
         >
-          <div class="modal_content" style="height: 400px">
+          <div class="modal_content">
             <Form
               model={formState.value}
               ref={formRef}
               labelCol={{ span: 4 }}
-              wrapperCol={{ span: 10 }}
+              wrapperCol={{ span: 24 }}
               labelAlign="right"
             >
               <FormItem
@@ -267,7 +280,10 @@ export default defineComponent({
                   message: "请选择",
                 }}
               >
-                <a-select v-model={[formState.value.bus, "value"]}>
+                <a-select
+                  v-model={[formState.value.bus, "value"]}
+                  style="width: 200px"
+                >
                   {typeColumns.map((type: any, index: number) => (
                     <a-select-option key={type.value} value={index}>
                       {type.label}
@@ -278,60 +294,85 @@ export default defineComponent({
 
               <FormItem
                 label="停送电设备"
-                name="equment"
+                name="deviceList"
                 rules={{
                   required: true,
                   message: "请选择",
                 }}
               >
-                <div>
-                  {!formState.value.equment && (
+                <div class="content flex">
+                  <div class="line flex-center">
                     <Button onClick={addEq}>
                       <PlusOutlined />
                       添加设备
                     </Button>
-                  )}
 
-                  {formState.value.equment && (
-                    <div
-                      class="flex"
-                      style="justify-content: space-between;  align-items: center;"
-                    >
-                      <span>
-                        {formState.value.equment.id}-
-                        {formState.value.equment.name}
+                    <div class="all">
+                      已选：
+                      <span class="num">
+                        {formState.value.deviceList.length}
                       </span>
-                      <Button type="link" onClick={delEq}>
-                        <MinusOutlined />
-                        删除设备
-                      </Button>
+                      台设备
+                    </div>
+                  </div>
+
+                  {formState.value.deviceList.length > 0 && (
+                    <div class="deviceBox">
+                      {formState.value.deviceList.map(
+                        (device: any, index: number) => (
+                          <div class="device" key={device.id}>
+                            <div class="titleLine flex-center">
+                              <span class="title">{device.name}</span>
+
+                              <Button
+                                type="link"
+                                onClick={() => {
+                                  formState.value.deviceList.splice(index, 1);
+                                }}
+                              >
+                                <MinusSquareOutlined />
+                              </Button>
+                            </div>
+
+                            <div class="loop">
+                              <FormItem
+                                name={["deviceList", index, "loopIds"]}
+                                rules={{
+                                  required: true,
+                                  message: "请选择",
+                                }}
+                              >
+                                <a-checkbox-group
+                                  v-model={[device.loopIds, "value"]}
+                                  style="width: 100%; max-height: 110px; overflow-y: auto;"
+                                >
+                                  <a-row>
+                                    <a-col span="3">
+                                      <div class="title">控制回路</div>
+                                    </a-col>
+                                    {device?.list?.map(
+                                      (loop: any, idx: number) => (
+                                        <a-col span="7">
+                                          <a-checkbox
+                                            key={loop.key}
+                                            value={loop.key}
+                                          >
+                                            {loop.key}-{loop.value}
+                                          </a-checkbox>
+                                        </a-col>
+                                      )
+                                    )}
+                                  </a-row>
+                                </a-checkbox-group>
+                              </FormItem>
+                            </div>
+                          </div>
+                        )
+                      )}
                     </div>
                   )}
                 </div>
               </FormItem>
-
-              {loopList.value.length > 0 && (
-                <a-form-item
-                  label="控制回路"
-                  name="loopIds"
-                  rules={[{ required: true, message: "不能为空!" }]}
-                >
-                  <a-checkbox-group
-                    v-model={[formState.value.loopIds, "value"]}
-                    style="max-height: 110px; overflow-y: auto;"
-                  >
-                    <a-row>
-                      {loopList.value.map((loop: any) => (
-                        <a-col span="24">
-                          <a-checkbox key={loop.key} value={loop.key}>
-                            {loop.value}
-                          </a-checkbox>
-                        </a-col>
-                      ))}
-                    </a-row>
-                  </a-checkbox-group>
-                </a-form-item>
-              )}
 
               {formState.value.bus !== 2 && (
                 <a-form-item
@@ -345,7 +386,7 @@ export default defineComponent({
                     minute-step={10}
                     format={Format}
                     valueFormat={Format}
-                    style="width: 100%"
+                    style="width: 200px"
                   />
                 </a-form-item>
               )}
@@ -361,10 +402,11 @@ export default defineComponent({
                   <a-select
                     v-model={[formState.value.duration, "value"]}
                     options={durationColumns}
+                    style="width: 200px"
                   />
                 </FormItem>
               )}
-              {formState.value.bus === 1 && (
+              {formState.value.bus === 2 && (
                 <a-form-item
                   label="计划送电时间"
                   name="supplyTime"
@@ -376,7 +418,7 @@ export default defineComponent({
                     minute-step={10}
                     format={Format}
                     valueFormat={Format}
-                    style="width: 100%"
+                    style="width: 200px"
                   />
                 </a-form-item>
               )}
@@ -385,7 +427,10 @@ export default defineComponent({
                 name="cause"
                 rules={[{ required: true, message: "不能为空!" }]}
               >
-                <a-select v-model={[formState.value.cause, "value"]}>
+                <a-select
+                  v-model={[formState.value.cause, "value"]}
+                  style="width: 200px"
+                >
                   {reasonColumns2.map((reason: any) => (
                     <a-select-option key={reason} value={reason}>
                       {reason}
@@ -396,11 +441,17 @@ export default defineComponent({
               {formState.value.cause === "其他" && (
                 <a-row class="row">
                   <a-col span="10" offset="4">
-                    <a-textarea
-                      v-model={[formState.value.causetext, "value"]}
-                      placeholder="请输入"
-                      allow-clear
-                    />
+                    <a-form-item
+                      label=""
+                      name="causetext"
+                      rules={[{ required: true, message: "不能为空!" }]}
+                    >
+                      <a-textarea
+                        v-model={[formState.value.causetext, "value"]}
+                        placeholder="请输入"
+                        allow-clear
+                      />
+                    </a-form-item>
                   </a-col>
                 </a-row>
               )}
@@ -411,8 +462,8 @@ export default defineComponent({
         <Modal
           v-model={[eqModal.visible, "visible"]}
           title="添加设备"
-          width="799px"
-          wrapClassName="pssList_modal"
+          width="1200px"
+          wrapClassName="newOrder_device_modal"
           onCancel={cancelAddEq}
           v-slots={{
             footer: () => (
@@ -425,52 +476,107 @@ export default defineComponent({
             ),
           }}
         >
-          <div class="modal_content">
-            <Input
-              class="serach"
-              prefix={<SearchOutlined />}
-              placeholder="设备编号/名称"
-              style="margin-bottom: 24px; width: 307px"
-            />
-            <Form
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              labelAlign="right"
-            >
-              <Row gutter={24}>
-                <Col span={8}>
-                  <FormItem label="所属车间">
-                    <Select></Select>
-                  </FormItem>
-                </Col>
-                <Col span={8}>
-                  <FormItem label="所属系统">
-                    <Select></Select>
-                  </FormItem>
-                </Col>
-                <Col span={8}>
-                  <FormItem label="设备类型">
-                    <Select></Select>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Form>
+          <div class="modal_content flex" style="max-height: 500px;">
+            <div class="left">
+              <Input
+                class="serach"
+                prefix={<SearchOutlined />}
+                placeholder="设备编号/名称"
+                style="margin-bottom: 24px; width: 200px"
+              />
+              <Form
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                labelAlign="right"
+              >
+                <Row gutter={24}>
+                  <Col span={8}>
+                    <FormItem label="所属车间">
+                      <Select></Select>
+                    </FormItem>
+                  </Col>
+                  <Col span={8}>
+                    <FormItem label="所属系统">
+                      <Select></Select>
+                    </FormItem>
+                  </Col>
+                  <Col span={8}>
+                    <FormItem label="设备类型">
+                      <Select></Select>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Form>
 
-            <Table
-              pagination={false}
-              columns={eqModal.columns}
-              scroll={{ y: "400px" }}
-              dataSource={eqModal.dataSource}
-              class="cus-table"
-              rowKey={(record: any) => {
-                return record.id;
-              }}
-              rowSelection={{
-                onChange: onSelectEq,
-                selectedRowKeys: selectRows.value.id,
-                type: "radio",
-              }}
-            ></Table>
+              <Table
+                pagination={false}
+                columns={eqModal.columns}
+                scroll={{ y: "340px" }}
+                dataSource={eqModal.dataSource}
+                class="cus-table"
+                rowKey={(record: any) => {
+                  return record.id;
+                }}
+                rowSelection={{
+                  onChange: onSelectEq,
+                  selectedRowKeys: selectRows.value,
+                  type: "checkbox",
+                  getCheckboxProps: (record: any) => {
+                    const oldDeviceIdList = formState.value.deviceList.map(
+                      (device: any) => device.id
+                    );
+
+                    return {
+                      disabled: oldDeviceIdList.includes(record.id),
+                      name: record.name,
+                    };
+                  },
+                }}
+              ></Table>
+            </div>
+
+            <div class="right flex">
+              <div class="top flex-center">
+                <div>已选{selectedList.value.length}台设备</div>
+                <a-button
+                  type="link"
+                  onClick={() => {
+                    selectRows.value = [];
+                    selectedList.value = [];
+                  }}
+                >
+                  清空
+                </a-button>
+              </div>
+
+              <div class="activedBox">
+                {selectedList.value.map((selected: any, idx: number) => {
+                  const name = `${selected.id}-${selected.name}`;
+                  const textLength = 10;
+                  const title = name.length > textLength ? name : "";
+                  return (
+                    <a-tag
+                      class="tag"
+                      title={title}
+                      key={selected.id}
+                      closable
+                      onClose={() => {
+                        const index = selectedList.value.findIndex(
+                          (item: any) => item.id === selected.id
+                        );
+                        selectRows.value.splice(index, 1);
+
+                        selectedList.value.splice(idx, 1);
+                      }}
+                    >
+                      {name.length > textLength
+                        ? `${name.slice(0, textLength)}...`
+                        : name}
+                    </a-tag>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </Modal>
       </div>

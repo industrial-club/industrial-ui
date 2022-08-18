@@ -241,7 +241,7 @@ const com = defineComponent({
             banner
           />
           <a-upload-dragger
-            v-model={[file, "file"]}
+            v-model={[file.value, "file"]}
             name="file"
             action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             onChange={() => {}}
@@ -259,11 +259,15 @@ const com = defineComponent({
       );
     };
     return () => (
-      <div class="thingApp">
+      <div class="thingApp" style={{ height: "0" }}>
         {page.value === "edit" ? (
           <editThing
             data={pageData.editData}
             onBack={() => {
+              refresh();
+              page.value = "detail";
+            }}
+            onBackList={() => {
               refresh();
               page.value = "list";
             }}
@@ -281,6 +285,10 @@ const com = defineComponent({
               refresh();
               page.value = "list";
             }}
+            onBackList={() => {
+              refresh();
+              page.value = "list";
+            }}
             onToDetail={(res) => {
               toDetail({ record: res });
             }}
@@ -292,6 +300,11 @@ const com = defineComponent({
           <thingDetail
             data={pageData.editData}
             onBack={() => {
+              refresh();
+              page.value = "list";
+            }}
+            onBackList={() => {
+              refresh();
               page.value = "list";
             }}
             onToEdit={(res) => {
@@ -317,6 +330,7 @@ const com = defineComponent({
                 v-model={[searchValue.value, "value"]}
                 style="margin-bottom: 8px"
                 placeholder="搜索"
+                allowClear
               />
               <div class="mar-t-20 tree_wrap">
                 <a-tree
@@ -345,101 +359,117 @@ const com = defineComponent({
             </div>
           </div>
           <div class="table_wrap">
-            <div class="option">
-              <a-form ref={queryFormRef} model={formQuery}>
-                <a-row gutter={30}>
-                  {queryOpts.value.map((item: any) => {
-                    return (
-                      <a-col span={6}>
-                        <a-form-item
-                          label={item.displayLabel}
-                          name={item.columnName}
-                        >
-                          <div class="flex">
-                            <a-select
-                              style="width:80px"
-                              v-model={[item.operation, "value"]}
-                            >
-                              <a-select-option value="EQ">
-                                {"="}
-                              </a-select-option>
-                              <a-select-option value="NE">
-                                {"!="}
-                              </a-select-option>
-                              <a-select-option value="GT">
-                                {">"}
-                              </a-select-option>
-                              <a-select-option value="GTE">
-                                {">="}
-                              </a-select-option>
-                              <a-select-option value="LT">
-                                {"<"}
-                              </a-select-option>
-                              <a-select-option value="LTE">
-                                {"<="}
-                              </a-select-option>
-                              <a-select-option value="LIKE">
-                                {"like"}
-                              </a-select-option>
-                            </a-select>
-                            <a-input
-                              v-model={[item.value, "value"]}
-                              allowClear={true}
-                            />
-                          </div>
-                        </a-form-item>
-                      </a-col>
-                    );
-                  })}
-                  <a-col
-                    span={24 - (queryOpts.value.length % 4) * 6}
-                    class="align-r"
-                  >
-                    <a-space size={16}>
-                      <a-button type="primary" onClick={refresh}>
-                        查询
-                      </a-button>
-                      <a-button onClick={reset}>重置</a-button>
-                      <a-space size={5}>
-                        <span>更多</span>
-                        <DownOutlined />
-                      </a-space>
-                    </a-space>
-                  </a-col>
-                </a-row>
-              </a-form>
-            </div>
-            <a-space size={16}>
-              <a-button
-                type="primary"
-                onClick={() => toCreate()}
-                disabled={!formQuery.thingCode}
-              >
-                新增
-              </a-button>
-              <a-button type="primary" ghost>
-                批量导入
-              </a-button>
-              <a-button type="primary" ghost>
-                导出全部
-              </a-button>
-              <a-button
-                type="primary"
-                disabled={state.selectedRowKeys.length == 0}
-              >
-                导出选中
-              </a-button>
-              <a-button
-                onClick={() => {
-                  batchDelete();
+            {!formQuery.thingCode ? (
+              <a-empty
+                image="/micro-assets/platform-web/empty.png"
+                image-style={{
+                  height: "17.57rem",
                 }}
-                type="danger"
-                disabled={state.selectedRowKeys.length == 0}
-              >
-                删除选中
-              </a-button>
-              {renderPointModal()}
-              {/* <a-button
+                v-slots={{
+                  description: () => (
+                    <span style={{ fontSize: "1rem", color: "#354052" }}>
+                      请先在左侧选择一个物规格
+                    </span>
+                  ),
+                }}
+              ></a-empty>
+            ) : (
+              <>
+                <div class="option">
+                  <a-form ref={queryFormRef} model={formQuery}>
+                    <a-row gutter={30}>
+                      {queryOpts.value.map((item: any) => {
+                        return (
+                          <a-col span={6}>
+                            <a-form-item
+                              label={item.displayLabel}
+                              name={item.columnName}
+                            >
+                              <div class="flex">
+                                <a-select
+                                  style="width:80px"
+                                  v-model={[item.operation, "value"]}
+                                >
+                                  <a-select-option value="EQ">
+                                    {"="}
+                                  </a-select-option>
+                                  <a-select-option value="NE">
+                                    {"!="}
+                                  </a-select-option>
+                                  <a-select-option value="GT">
+                                    {">"}
+                                  </a-select-option>
+                                  <a-select-option value="GTE">
+                                    {">="}
+                                  </a-select-option>
+                                  <a-select-option value="LT">
+                                    {"<"}
+                                  </a-select-option>
+                                  <a-select-option value="LTE">
+                                    {"<="}
+                                  </a-select-option>
+                                  <a-select-option value="LIKE">
+                                    {"like"}
+                                  </a-select-option>
+                                </a-select>
+                                <a-input
+                                  v-model={[item.value, "value"]}
+                                  allowClear={true}
+                                />
+                              </div>
+                            </a-form-item>
+                          </a-col>
+                        );
+                      })}
+                      <a-col
+                        span={24 - (queryOpts.value.length % 4) * 6}
+                        class="align-r"
+                      >
+                        <a-space size={16}>
+                          <a-button type="primary" onClick={refresh}>
+                            查询
+                          </a-button>
+                          <a-button onClick={reset}>重置</a-button>
+                          <a-space size={5}>
+                            <span>更多</span>
+                            <DownOutlined />
+                          </a-space>
+                        </a-space>
+                      </a-col>
+                    </a-row>
+                  </a-form>
+                </div>
+                <a-space size={16}>
+                  <a-button
+                    type="primary"
+                    onClick={() => toCreate()}
+                    disabled={!formQuery.thingCode}
+                  >
+                    新增
+                  </a-button>
+                  <a-button type="primary" ghost>
+                    批量导入
+                  </a-button>
+                  <a-button type="primary" ghost>
+                    导出全部
+                  </a-button>
+                  <a-button
+                    type="primary"
+                    disabled={state.selectedRowKeys.length == 0}
+                  >
+                    导出选中
+                  </a-button>
+                  <a-button
+                    onClick={() => {
+                      batchDelete();
+                    }}
+                    type="danger"
+                    disabled={state.selectedRowKeys.length == 0}
+                  >
+                    删除选中
+                  </a-button>
+                  {renderPointModal()}
+                  {/* <a-button
                 onClick={() => {
                   importModal.value = true;
                 }}
@@ -448,61 +478,54 @@ const com = defineComponent({
               >
                 批量配点
               </a-button> */}
-            </a-space>
-            <div class="mar-t-20">
-              <a-table
-                rowKey="ID"
-                columns={columns.value}
-                row-selection={{
-                  selectedRowKeys: state.selectedRowKeys,
-                  onChange: onSelectChange,
-                }}
-                dataSource={tableList.value}
-                loading={isLoading.value}
-                pagination={pagination}
-                locale={
-                  formQuery.thingCode
-                    ? {}
-                    : {
-                        emptyText: (
-                          <a-empty description="请先在左侧选择一个物规格"></a-empty>
-                        ),
-                      }
-                }
-                v-slots={{
-                  action: (row: any) => {
-                    return (
-                      <a-space>
-                        <a
-                          onClick={() => {
-                            toEdit(row);
-                          }}
-                        >
-                          编辑
-                        </a>
-                        <a
-                          onClick={() => {
-                            toDetail(row);
-                          }}
-                        >
-                          详情
-                        </a>
-                        <a-popconfirm
-                          title="确认删除?"
-                          ok-text="确定"
-                          cancel-text="取消"
-                          onConfirm={() => {
-                            deleteThing(row);
-                          }}
-                        >
-                          <span class="red pointer">删除</span>
-                        </a-popconfirm>
-                      </a-space>
-                    );
-                  },
-                }}
-              ></a-table>
-            </div>
+                </a-space>
+                <div class="mar-t-20">
+                  <a-table
+                    rowKey="ID"
+                    columns={columns.value}
+                    row-selection={{
+                      selectedRowKeys: state.selectedRowKeys,
+                      onChange: onSelectChange,
+                    }}
+                    dataSource={tableList.value}
+                    loading={isLoading.value}
+                    pagination={pagination}
+                    v-slots={{
+                      action: (row: any) => {
+                        return (
+                          <a-space>
+                            <a
+                              onClick={() => {
+                                toEdit(row);
+                              }}
+                            >
+                              编辑
+                            </a>
+                            <a
+                              onClick={() => {
+                                toDetail(row);
+                              }}
+                            >
+                              详情
+                            </a>
+                            <a-popconfirm
+                              title="确认删除?"
+                              ok-text="确定"
+                              cancel-text="取消"
+                              onConfirm={() => {
+                                deleteThing(row);
+                              }}
+                            >
+                              <span class="red pointer">删除</span>
+                            </a-popconfirm>
+                          </a-space>
+                        );
+                      },
+                    }}
+                  ></a-table>
+                </div>
+              </>
+            )}
           </div>
           <thing-modal ref={modalRef} />
         </div>
