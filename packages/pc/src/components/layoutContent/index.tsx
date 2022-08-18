@@ -8,7 +8,7 @@ import {
   shallowRef,
   nextTick,
 } from "vue";
-import { RouterView, useRoute } from "vue-router";
+import { RouterView, useRoute, useRouter } from "vue-router";
 import useMenuCode from "@/hooks/useMenuCode";
 import _ from "lodash";
 import { getMenuByCode, getOpenUrl } from "@/utils/route";
@@ -28,7 +28,7 @@ export interface IRouteItem {
  *  2: 如果是已经打开的标签页 把对应的标签页设为激活状态
  *  3: 2种组件 iframe组件/普通组件
  *  4: 通过更新组件的key来刷新组件
- *  5: isMultiple字段表示可以多开标签 根据multiKey判断当前展示的是哪一个标签
+ *  5: 如果需要同一个菜单打开多个标签 需要在query中配置isMultiple和multiKey
  */
 const LayoutContent = defineComponent({
   props: {
@@ -65,18 +65,16 @@ const LayoutContent = defineComponent({
     watch(
       [menuCode, () => route.query.multiKey],
       async ([val]) => {
-        await nextTick();
         if (!val) return;
         const { query } = route;
         // 可以打开多个同类标签
-        const { isMultiple, multiKey: lastMultiKey } = query as any;
+        const { multiKey } = query as any;
 
-        const multiKey =
-          lastMultiKey ||
-          (isMultiple ? (Math.random() * 10 ** 10).toFixed(0) : undefined);
         // 已经打开的tabs 不需要重复添加 设置为active
-        const isInTabs = tabs.value.find((item) => item.code === val);
-        if ((isInTabs && !isMultiple) || (isInTabs && lastMultiKey)) {
+        const isInTabs = !!tabs.value.find(
+          (item) => item.code === val && item.multiKey === multiKey
+        );
+        if (isInTabs) {
           if (tabs.value.find((item) => item.code === val)) {
             activeCode.value = val;
             activeMultiKey.value = multiKey;
