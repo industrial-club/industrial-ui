@@ -38,7 +38,7 @@ import pressureFiltrationHome from "../pageComponent/views/pressureFiltration/pr
 import factoryManage from "../pageComponent/views/thingModel/factoryManage";
 import elcRoom from "../pageComponent/views/elcRoom";
 import boardScreen from "../pageComponent/views/boardScreen";
-import AlarmDetail from "../pageComponent/views/alarms/alarmDetail";
+import alarmDetail from "../pageComponent/views/alarms/alarmDetail";
 
 export default [
   About,
@@ -81,5 +81,5 @@ export default [
   factoryManage,
   elcRoom,
   boardScreen,
-  AlarmDetail,
+  alarmDetail,
 ];
