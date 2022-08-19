@@ -18,9 +18,6 @@
           .num {
             color: @color;
           }
-          .num[data-doc-theme="dark"] {
-            color: @colorDark;
-          }
         }
       }
 
@@ -38,6 +35,20 @@
             justify-content: space-between;
             padding-left: 16px;
             margin-bottom: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+:root[data-doc-theme="dark"] {
+  .newOrder_modal {
+    .modal_content {
+      .content {
+        .all {
+          .num {
+            color: @colorDark;
           }
         }
       }

@@ -322,7 +322,9 @@ export default defineComponent({
                         (device: any, index: number) => (
                           <div class="device" key={device.id}>
                             <div class="titleLine flex-center">
-                              <span class="title">{device.name}</span>
+                              <span class="title">
+                                {device.id}-{device.name}
+                              </span>
 
                               <Button
                                 type="link"
