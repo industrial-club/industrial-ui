@@ -30,14 +30,14 @@ const typeColumns = [
     label: "低压停送电",
     value: "stopSupplyPower",
   },
-  {
-    label: "低压停电",
-    value: "stopPower",
-  },
-  {
-    label: "低压送电",
-    value: "supplyPower",
-  },
+  // {
+  //   label: "低压停电",
+  //   value: "stopPower",
+  // },
+  // {
+  //   label: "低压送电",
+  //   value: "supplyPower",
+  // },
 ];
 
 const durationColumns = [
