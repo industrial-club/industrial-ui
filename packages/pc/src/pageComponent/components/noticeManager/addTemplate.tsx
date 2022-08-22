@@ -6,7 +6,7 @@ import {
   PropType,
   onMounted,
 } from "vue";
-import noticeCenterApi from "@/api/noticeCenter";
+import noticeCenterApi from "@/api/noticeManager";
 import { message } from "ant-design-vue";
 
 const props = {

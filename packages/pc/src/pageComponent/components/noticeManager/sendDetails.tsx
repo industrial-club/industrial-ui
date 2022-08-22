@@ -14,8 +14,8 @@ import {
   sendMethodFilter,
   sendStatusFilter,
 } from "@/pageComponent/utils/filter";
-import noticeCenterApi from "@/api/noticeCenter";
-import noticeManagerApi from "@/api/noticeManager";
+import noticeCenterApi from "@/api/noticeManager";
+import noticeManagerApi from "@/api/noticeCenter";
 
 interface sendDetailsItem {
   deleted: boolean;

@@ -328,13 +328,16 @@ export default defineComponent({
             >
               新建
             </a-button>
-            <a-button
-              onClick={() => {
+            <a-popconfirm
+              title="确认删除?"
+              ok-text="确定"
+              cancel-text="取消"
+              onConfirm={() => {
                 deleteRelation();
               }}
             >
-              删除
-            </a-button>
+              <a-button>删除</a-button>
+            </a-popconfirm>
           </div>
           <a-table
             rowKey="code"

@@ -7,7 +7,7 @@ import {
   onMounted,
 } from "vue";
 import { message } from "ant-design-vue";
-import noticeCenterApi from "@/api/noticeCenter";
+import noticeCenterApi from "@/api/noticeManager";
 import getEnumList from "@/api/enumList";
 import { gradeColumns } from "../../config/systemConfig";
 

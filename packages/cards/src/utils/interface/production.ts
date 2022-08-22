@@ -28,7 +28,7 @@ export interface dataObj {
   datas: Array<datasItem>;
   cardParamName: string;
 }
-interface Itemval {
+export interface Itemval {
   code: string;
   name: string;
   unit: string;

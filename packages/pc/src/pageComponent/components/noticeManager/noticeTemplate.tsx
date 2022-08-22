@@ -7,7 +7,7 @@ import {
   watch,
 } from "vue";
 import { Modal } from "ant-design-vue";
-import noticeCenterApi from "@/api/noticeCenter";
+import noticeCenterApi from "@/api/noticeManager";
 import addTemplate from "@/pageComponent/components/noticeManager/addTemplate";
 import { templateColumns } from "../../config/systemConfig";
 import moment from "moment";

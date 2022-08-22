@@ -1,5 +1,5 @@
 import { defineComponent, reactive, ref, watch } from "vue";
-import noticeCenterApi from "@/api/noticeCenter";
+import noticeCenterApi from "@/api/noticeManager";
 import { message } from "ant-design-vue";
 
 const props = {
