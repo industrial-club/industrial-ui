@@ -1,0 +1,99 @@
+.energy {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .title {
+    color: #9aa7c1;
+    margin: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.625rem;
+    text-align: right;
+  }
+  .carousel {
+    position: relative;
+    padding: 0 1.375rem;
+    height: calc(100% - 1.9375rem);
+    > span {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      &:nth-child(1) {
+        > img {
+          width: 0.9375rem;
+          height: 0.9375rem;
+          transform: rotate(90deg);
+        }
+        left: 0.4375rem;
+      }
+      &:nth-child(2) {
+        > img {
+          width: 0.9375rem;
+          height: 0.9375rem;
+          transform: rotate(-90deg);
+        }
+        right: 0.4375rem;
+      }
+    }
+    .ant-carousel {
+      height: 100%;
+      .slick-slider {
+        height: 100%;
+        .slick-list {
+          height: 100%;
+          .slick-track {
+            height: 100%;
+            > div {
+              height: calc(100% - 0.3rem);
+            }
+          }
+        }
+        .slick-slide {
+          width: 100%;
+          > div {
+            height: calc(100% - 1rem);
+          }
+        }
+        .carouselDots {
+          > li {
+            > button {
+              width: 0.3125rem;
+              height: 0.3125rem;
+              border-radius: 50%;
+            }
+          }
+          li.slick-active {
+            > button {
+              width: 0.3125rem;
+              height: 0.3125rem;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+
+    .chart {
+      width: 100%;
+      height: 100%;
+      > div {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    // .charts {
+    //   display: flex;
+    //   flex-wrap: wrap;
+    //   height: 100%;
+    //   .chart {
+    //     width: 100%;
+    //     height: 100%;
+    //     overflow: hidden;
+    //     // > div {
+    //     //   width: 100%;
+    //     //   height: 100%;
+    //     // }
+    //   }
+    // }
+  }
+}

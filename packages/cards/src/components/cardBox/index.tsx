@@ -50,7 +50,7 @@ export default defineComponent({
           ) : null}
         </div>
         <div class={prefix + "_box-body"}>
-          <componentName code={activeKey.value}></componentName>
+          <componentName tabId={activeKey.value}></componentName>
         </div>
       </div>
     );

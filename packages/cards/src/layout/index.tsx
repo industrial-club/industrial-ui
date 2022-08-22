@@ -34,49 +34,54 @@ const props = {
     type: Array as PropType<Array<CardInfo>>,
     default: [
       {
-        name: "aa",
-        componentName: "alarm",
-        row: "1/3",
-        col: "1/2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
-        name: "aa1",
-        componentName: "card_2",
-      },
-      {
         name: "生产情况",
         componentName: "production",
-        row: "1/3",
+        row: "1/2",
+        col: "1/1",
+      },
+      {
+        name: "气象站环境数据",
+        componentName: "meteorological",
+        row: "3/1",
+        col: "1/1",
+      },
+      {
+        name: "能源消耗",
+        componentName: "energy",
+        row: "1/1",
         col: "5/1",
-        key: "",
         tabs: [
           {
-            name: "11",
+            name: "药耗",
+            id: "0",
+          },
+          {
+            name: "介耗",
             id: "1",
           },
           {
-            name: "22",
+            name: "水耗",
             id: "2",
           },
           {
-            name: "33",
+            name: "电耗",
             id: "3",
+          },
+        ],
+      },
+      {
+        name: "生产时长",
+        componentName: "productionTime",
+        row: "2/1",
+        col: "5/1",
+        tabs: [
+          {
+            name: "天",
+            id: "DAY",
+          },
+          {
+            name: "月",
+            id: "MONTH",
           },
         ],
       },
