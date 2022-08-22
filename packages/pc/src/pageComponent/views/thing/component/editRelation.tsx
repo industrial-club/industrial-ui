@@ -299,7 +299,7 @@ export default defineComponent({
               columns={columns.value}
               dataSource={modalTableList.value}
               pagination={false}
-              scroll={{ x: 700, y: 500 }}
+              scroll={{ y: 500 }}
             ></a-table>
           </a-modal>
         </div>

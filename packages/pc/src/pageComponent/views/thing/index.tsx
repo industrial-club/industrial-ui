@@ -10,10 +10,15 @@ import { message } from "ant-design-vue";
 import editThing from "./component/editThing";
 import addThing from "./component/addThing";
 import thingDetail from "./component/thingDetail";
+import axios from "axios";
+import dayjs from "dayjs";
 
 const com = defineComponent({
   components: { thingModal, editThing, thingDetail, addThing },
   setup() {
+    const headers = {
+      "Content-Type": "multipart/form-data",
+    };
     // 模型树
     const {
       tree,
@@ -224,6 +229,41 @@ const com = defineComponent({
     });
     const page = ref("list");
     const file = ref();
+
+    // 自定义上传
+    const customRequest = async (options: any) => {
+      console.log(options);
+      const { file, onSuccess, onError } = options;
+      const fileData = new FormData();
+      fileData.append("file", file as any);
+      const res: any = await thingApis.importExcel(fileData, headers);
+      if (res.code === "M0000") {
+        message.error("上传成功");
+        onSuccess("response", file);
+      } else {
+        message.error("上传失败");
+        onError("error", file);
+      }
+    };
+
+    const exportFun = async () => {
+      const res: any = await thingApis.exportExcelTemplate();
+      const blob = new Blob([res], {
+        type: "text/html;charset=UTF-8",
+      });
+      console.log(blob);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "物实例数据.xls";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    };
+    const handleChange = (info) => {
+      console.log(info);
+    };
+    const fileList = ref([]);
     const renderPointModal = () => {
       return (
         <a-modal
@@ -450,10 +490,22 @@ const com = defineComponent({
                   >
                     新增
                   </a-button>
-                  <a-button type="primary" ghost>
-                    批量导入
-                  </a-button>
-                  <a-button type="primary" ghost>
+                  <a-upload
+                    headers={headers}
+                    showUploadList={false}
+                    customRequest={(e) => customRequest(e)}
+                  >
+                    <a-button type="primary" ghost>
+                      批量导入
+                    </a-button>
+                  </a-upload>
+                  <a-button
+                    type="primary"
+                    onClick={() => {
+                      exportFun();
+                    }}
+                    ghost
+                  >
                     导出全部
                   </a-button>
                   <a-button

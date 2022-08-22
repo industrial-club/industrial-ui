@@ -75,10 +75,27 @@ export const findThingByParams = (data: any) =>
     `/thing/v1/adapter/thing/common/simpleFindEntityAndThing`,
     data
   );
-
+// 上传图片
 export const uploadCommon = (data, headers) =>
   instance.post(`/thing/v1/core/thing/uploadCommon`, data, {
     headers,
   });
-
+// 导入Excel
+export const importExcel = (data, headers) =>
+  instance.post(`/thing/v1/core/excelOpt/importExcel`, data, {
+    headers,
+  });
+// 导出Excel
+export const exportExcelTemplate = () =>
+  instance.post(
+    `/thing/v1/core/excelOpt/exportExcelTemplate`,
+    {},
+    {
+      responseType: "blob",
+      headers: {
+        "Content-Disposition": "attachment",
+        "Content-Type": "text/html;charset=UTF-8",
+      },
+    }
+  );
 export default "";
