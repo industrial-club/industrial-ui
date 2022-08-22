@@ -16,6 +16,10 @@ const AlarmDetail = defineComponent({
     onClose: {
       type: Function,
     },
+    showHeader: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props, { emit }) {
     const urlObj = inject<IUrlObj>("urlObj")!;
@@ -152,14 +156,14 @@ const AlarmDetail = defineComponent({
 
     return () => (
       <div class="alarmDetail">
-        {/* 面包屑 */}
-        {/* <a-breadcrumb>
-          <a-breadcrumb-item>
-            <a onClick={back}>报警记录</a>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>报警详情</a-breadcrumb-item>
-        </a-breadcrumb> */}
-        <a-page-header style={{ padding: 0 }} title="报警详情" onBack={back} />
+        {/* 页头 */}
+        {props.showHeader && (
+          <a-page-header
+            style={{ padding: 0 }}
+            title="报警详情"
+            onBack={back}
+          />
+        )}
         {/* 详情  描述列表*/}
         <a-descriptions
           labelStyle={{ width: "120px", textAlign: "right" }}

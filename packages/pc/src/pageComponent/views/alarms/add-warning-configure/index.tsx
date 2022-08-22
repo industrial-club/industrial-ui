@@ -38,6 +38,10 @@ const AddWarningConfigure = defineComponent({
     const router = useRouter();
     const route = useRoute();
 
+    // 编辑模式
+    const isEdit = ref(false);
+    provide("isEdit", isEdit);
+
     const configureId = ref();
 
     // 获取规则详情 回显表单
@@ -45,12 +49,15 @@ const AddWarningConfigure = defineComponent({
       const { data } = await getRuleConfigureById(urlObj.getDetail)(
         configureId.value
       );
+      console.log(data);
+
       if (data) $store.commit("setDetail", data);
     };
 
     // 判断路径中有没有id 如果有id =》 编辑模式
     if (props.id !== undefined) {
       configureId.value = props.id;
+      isEdit.value = true;
       getDetail();
     }
 

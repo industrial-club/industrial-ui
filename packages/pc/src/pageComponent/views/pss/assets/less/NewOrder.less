@@ -1,3 +1,6 @@
+@color: #1890ff;
+@colorDark: #1d33a2;
+
 .NewOrder {
 }
 
@@ -13,7 +16,10 @@
         gap: 8px;
         .all {
           .num {
-            color: #3e7eff;
+            color: @color;
+          }
+          .num[data-doc-theme="dark"] {
+            color: @colorDark;
           }
         }
       }
@@ -41,7 +47,6 @@
 
 .newOrder_device_modal {
   .modal_content {
-    max-height: 500px;
     .left {
       flex: 1;
       border-right: 1px solid #dce1e4;
@@ -49,7 +54,8 @@
       margin-right: 16px;
     }
     .right {
-      width: 350px;
+      width: 360px;
+      flex-grow: 0;
       flex-direction: column;
 
       .top {

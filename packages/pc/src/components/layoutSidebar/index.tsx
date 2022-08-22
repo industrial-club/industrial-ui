@@ -87,6 +87,7 @@ const LayoutSidebar = defineComponent({
       } else {
         // 打开新标签/iframe
         menuCode.value = menu.code;
+        return menu.code;
       }
     };
 
@@ -99,6 +100,7 @@ const LayoutSidebar = defineComponent({
           cancleWatch();
           const navCodeList = props.menu.map((item) => item.code);
           const isNavMenuCode = navCodeList.includes(menuCode.value);
+          let tempMenuCode = menuCode.value;
           // 如果当前选择的是导航栏的菜单 默认选择第一个菜单
           if (isNavMenuCode || props.isGroup) {
             const getFirstMenu = (menu: any) => {
@@ -109,14 +111,18 @@ const LayoutSidebar = defineComponent({
               }
             };
             const firstMenu = getFirstMenu(menuList.value[0]);
-            firstMenu && jump2Menu(firstMenu);
+            if (firstMenu) {
+              const code = jump2Menu(firstMenu);
+              code && (tempMenuCode = code);
+            }
           }
 
           // 设置默认展开的菜单
           const openCodes = getParentMenuByCode(
-            menuCode.value,
+            tempMenuCode,
             props.menu
           ).filter((item) => !navCodeList.includes(item));
+
           state.openKeys = openCodes;
         }
       },

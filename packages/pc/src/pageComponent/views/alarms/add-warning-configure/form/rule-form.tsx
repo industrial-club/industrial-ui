@@ -6,6 +6,7 @@ import {
   watch,
   ref,
   inject,
+  Ref,
 } from "vue";
 import { message } from "ant-design-vue";
 import $store from "@/pageComponent/store";
@@ -43,6 +44,9 @@ const RuleForm = defineComponent({
     const formRef = ref();
     const setFormRef: any = inject("setFormRef");
     setFormRef(formRef);
+
+    const isEdit = inject<Ref<boolean>>("isEdit")!;
+    const isInitSetSysId = ref(false);
 
     // 报警类型是否为阈值类
     const isThread = computed(
@@ -103,6 +107,25 @@ const RuleForm = defineComponent({
       () =>
         (ruleForm.value.alarmConditionList[0].operator =
           judgeSymbolList.value[0].code)
+    );
+
+    // 选择其他系统 清空设备信号
+    watch(
+      () => $store.state.basicForm.systemUuid,
+      () => {
+        if (!isEdit.value || isInitSetSysId.value) {
+          ruleForm.value.propertyCode = [];
+        } else if (isEdit.value) {
+          isInitSetSysId.value = true;
+        }
+      }
+    );
+
+    watch(
+      () => _props.instanceList,
+      (val) => {
+        console.log(val, ruleForm.value.propertyCode);
+      }
     );
 
     // 表单回显
