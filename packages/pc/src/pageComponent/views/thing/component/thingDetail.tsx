@@ -105,7 +105,7 @@ export default defineComponent({
       action: false,
     });
     return () => (
-      <div class="editThing" style={{ height: "100%", overflow: "auto" }}>
+      <div class="editThing">
         <div class="header flex">
           <a-page-header
             class="flex1 "

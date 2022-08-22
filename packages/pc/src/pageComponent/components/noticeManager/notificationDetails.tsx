@@ -1,6 +1,6 @@
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import dayjs, { Dayjs } from "dayjs";
-import noticeCenterApi from "@/api/noticeCenter";
+import noticeCenterApi from "@/api/noticeManager";
 import { channelFilter, resendTypeFilter } from "@/pageComponent/utils/filter";
 
 const props = {

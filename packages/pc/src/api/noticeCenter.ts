@@ -10,66 +10,45 @@ api.setInstance = (serverName: string, prefix?: string) => {
 
 const noticeCenterApi = {
   /**
-   * 字典查询
+   * 通知记录列表
    */
-  getEnumList(enumName) {
-    return instance.get(`/enum/${enumName}`);
+  getRecordList(data) {
+    return instance.post(`/record/list`, data);
   },
 
   /**
-   * 获取通道列表
+   * 重发消息给指定用户
    */
-  getChannelList() {
-    return instance.get("/channel/list");
+  resendTouser(data) {
+    return instance.post(`/resend/touser`, data);
   },
 
   /**
-   * 新增通道
+   * 重发消息
    */
-  getChannelAdd(data) {
-    return instance.post("/channel/add", data);
+  resend(data) {
+    return instance.post(`/resend`, data);
   },
 
   /**
-   * 更新通道
+   * 发送消息
    */
-  getChannelUpdate(data) {
-    return instance.post("/channel/update", data);
+  sendMessage(data) {
+    return instance.post(`/sendMessage`, data);
   },
 
   /**
-   * 获取通道详情信息
+   * 删除消息
    */
-  getChannelDetail(id) {
-    return instance.get(`/channel/detail?channelId=${id}`);
+  recordDelete(id) {
+    return instance.post(`/record/delete?recordId=${id}`);
   },
 
   /**
-   * 新增通道详情信息
+   * 修改通知内容
    */
-  getChannelDetailAdd(data) {
-    return instance.post(`/channel/detail/add`, data);
-  },
-
-  /**
-   * 获取模板
-   */
-  getChannelTemplateList(data) {
-    return instance.post(`/channel/template/list`, data);
-  },
-
-  /**
-   * 新增模板
-   */
-  getChannelTemplateAdd(data) {
-    return instance.post(`/channel/template/add`, data);
-  },
-
-  /**
-   * 删除模板
-   */
-  getChannelTemplateDelete(id) {
-    return instance.post(`/channel/template/delete?id=${id}`);
+  recordUpdate(data) {
+    return instance.post(`record/update`, data);
   },
 };
 

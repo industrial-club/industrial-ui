@@ -259,7 +259,7 @@ const com = defineComponent({
       );
     };
     return () => (
-      <div class="thingApp" style={{ height: "0" }}>
+      <div class="thingApp">
         {page.value === "edit" ? (
           <editThing
             data={pageData.editData}
@@ -332,7 +332,10 @@ const com = defineComponent({
                 placeholder="搜索"
                 allowClear
               />
-              <div class="mar-t-20 tree_wrap">
+              <div
+                class="mar-t-20 tree_wrap"
+                style={{ height: "calc(100vh - 240px)" }}
+              >
                 <a-tree
                   show-line
                   blockNode={true}

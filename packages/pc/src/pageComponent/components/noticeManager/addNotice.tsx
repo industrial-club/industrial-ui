@@ -3,8 +3,8 @@ import { message } from "ant-design-vue";
 import dayjs, { Dayjs } from "dayjs";
 import getDepPeopleTreeList from "@/api/enumList";
 import { fomatDepPeopleTree } from "@/pageComponent/utils/format";
-import noticeCenterApi from "@/api/noticeCenter";
-import noticeManagerApi from "@/api/noticeManager";
+import noticeCenterApi from "@/api/noticeManager";
+import noticeManagerApi from "@/api/noticeCenter";
 
 const props = {
   formData: Object,
@@ -29,7 +29,10 @@ const rules = {
   sendType: [{ required: true, message: "请选择发送时间", trigger: "change" }],
   channelId: [{ required: true, message: "请选择通道", trigger: "change" }],
   level: [{ required: true, message: "请选择等级", trigger: "change" }],
-  messageContent: [{ required: true, message: "请输入内容", trigger: "blur" }],
+  messageContent: [
+    { required: true, message: "请输入内容", trigger: "blur" },
+    { max: 500, message: "最多只能输入500字", trigger: "blur" },
+  ],
 };
 
 export default defineComponent({
@@ -367,6 +370,7 @@ export default defineComponent({
           </a-select>
           <a-textarea
             v-model={[formState.value.messageContent, "value"]}
+            maxlength={500}
             rows={4}
           />
         </a-form-item>
